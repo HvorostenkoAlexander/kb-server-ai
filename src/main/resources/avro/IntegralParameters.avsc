@@ -1,0 +1,107 @@
+{
+	"namespace":"nlmk.l3.sup",
+	"type":"record",
+	"doc":"peredacha integralnyh parametrov",
+	"name":"IntegralParameters",
+	"fields":
+		[	{"name":"ts", "type":"string",	"doc":"data i vremya peredachi"},
+			{"name":"op", "type": {"type":"enum","name":"enum_op","symbols":["I","U","D"]},"doc":"operaciya"},
+			{"name":"pk", "type": {"type":"record","name":"RecordPk","fields":[{"name":"id","type":"int","doc":"ID EM SUP"}]}},
+			{"name":"data","type":[
+									"null",
+									{
+										"type":"record",
+										"name":"RecordData",
+										"fields":[
+													{
+														"name":"primeID",
+														"type":"string",
+														"doc":"identifikator (ID) edenicy EM v pervoistochnike CCM"
+													},
+													{
+														"name":"kceh",
+														"type":"int",
+														"doc":"nomer ceha"
+													},
+													{
+														"name":"kcehName",
+														"type":"string",
+														"doc":"nazvanie ceha"
+													},
+													{
+														"name":"unitCode",
+														"type":"int",
+														"doc":"kod agregata"
+													},
+													{
+														"name":"unitName",
+														"type":"string",
+														"doc":"nazvanie agregata"
+													},
+													{
+														"name":"werksCode",
+														"type":"int",
+														"doc":"kod zavoda"
+													},
+													{
+														"name":"werksName",
+														"type":"string",
+														"doc":"naimenovanie zavoda"
+													},
+													{
+														"name":"specifications",
+														"type":{
+															"type":"array",
+															"items":{
+																	"type":"record",
+																	"name":"RecordSpecifications",
+																	"fields":[
+																				{
+																					"name":"specCode",
+																					"type":"int",
+																					"doc":"kod harakteristiki"
+																				},
+																				{
+																					"name":"specName",
+																					"type":"string",
+																					"doc":"naimenovanie harakteristiki"
+																				},
+																				{
+																					"name":"specTypeCode",
+																					"type":"int",
+																					"doc":"tip dannyh (1-string, 2-number, 3-date)"
+																				},
+																				{
+																					"name":"specTypeName",
+																					"type":"string",
+																					"doc":"naimenovanie tipa dannyh"
+																				},
+																				{
+																					"name":"specValue",
+																					"type":["null","float"],
+																					"doc":"znacheniye harakteristiki",
+																					"default":null
+																				},
+																				{
+																					"name":"specFormat",
+																					"type":["null","string"],
+																					"doc":"fomat peredachi harakteristiki",
+																					"default":null
+																				},
+																				{
+																					"name":"specMeasure",
+																					"type":["null","string"],
+																					"doc":"edenica izmerenya",
+																					"default":null
+																				}
+																	]
+															}
+														}
+													}
+										]
+									}
+			],
+				"default":null
+			}
+		]
+}
