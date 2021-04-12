@@ -1,0 +1,3 @@
+[submodule "gitlab-ci"]
+	path = gitlab-ci
+	url = ../gitlab-ci.git
