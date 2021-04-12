@@ -28,5 +28,5 @@
 * `java -jar kb-server-<version>.jar`
 * `./kb-server-<version>.jar`
 
-Дополнительно рядом с jar файлом можно положить файл `application.properties` с нужными настройками.
+Дополнительно рядом с jar файлом можно положить файл `application.properties` с нужными настройками. 
  
