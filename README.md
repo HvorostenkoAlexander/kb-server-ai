@@ -25,8 +25,8 @@
 
 Запуск можно производить 2 способами:
 
-* `java -jar nsi-server-<version>.jar`
-* `./nsi-server-<version>.jar`
+* `java -jar kb-server-<version>.jar`
+* `./kb-server-<version>.jar`
 
 Дополнительно рядом с jar файлом можно положить файл `application.properties` с нужными настройками.
  
