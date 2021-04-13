@@ -13,6 +13,13 @@ import java.io.IOException;
 public class KbServerApplication {
 
     public static void main(String[] args) throws IOException {
+
+        FileCopyUtils.copy(new ClassPathResource("ssl/client.truststore.jks").getInputStream(),
+                new FileOutputStream("kafkaSsl/client.truststore.jks"));
+
+        FileCopyUtils.copy(new ClassPathResource("ssl/client.keystore.jks").getInputStream(),
+                new FileOutputStream("kafkaSsl/client.keystore.jks"));
+
         SpringApplication.run(KbServerApplication.class, args);
     }
 
