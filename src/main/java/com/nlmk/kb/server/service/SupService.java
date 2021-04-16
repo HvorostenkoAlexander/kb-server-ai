@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class SupService {
 
     @KafkaListener(topics = {"${kafka.sup.topicIp}"},
-            containerFactory = "kafkaListenerContainerFactory")
+            containerFactory = "kafkaListenerContainerFactoryIp")
     public void receiveMessage(@Payload IntegralParameters supIntegralParameters) {
 
         log.info("--- received integralParameters: {}", supIntegralParameters);

@@ -38,7 +38,7 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, IntegralParameters> consumerFactory(){
+    public ConsumerFactory<String, IntegralParameters> consumerFactoryIp(){
 
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
@@ -48,12 +48,12 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> kafkaListenerContainerFactory(){
+    public ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> kafkaListenerContainerFactoryIp(){
 
         ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactoryIp());
         factory.setConcurrency(1); // todo устанавливается по количеству partitions в топике https://howtoprogram.xyz/2016/09/25/spring-kafka-multi-threaded-message-consumption/
 
         return factory;
