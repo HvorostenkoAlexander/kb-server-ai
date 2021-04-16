@@ -52,9 +52,12 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
             }
             return result;
         } catch (Exception ex) {
+
+            Arrays.stream(ex.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
+
             throw new SerializationException(
                   //  "Can't deserialize data '" + Arrays.toString(data) + "' from topic '" + topic + "'", ex);
-                    "Can't deserialize data '" + "' from topic '" + topic + "'"+"exception: "+ex.getMessage(), ex);
+                    "Can't deserialize data '" + "' from topic '" + topic + "'"+"exception: "+ex.toString(), ex);
         }
     }
 }
