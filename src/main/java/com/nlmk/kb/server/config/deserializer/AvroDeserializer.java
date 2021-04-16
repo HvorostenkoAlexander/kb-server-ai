@@ -37,19 +37,20 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
             T result = null;
 
             if (data != null) {
-                log.debug("data='{}'", DatatypeConverter.printHexBinary(data));
+                log.info("data='{}'", DatatypeConverter.printHexBinary(data));
 
                 DatumReader<GenericRecord> datumReader =
                         new SpecificDatumReader<>(targetType.getDeclaredConstructor().newInstance().getSchema());
                 Decoder decoder = DecoderFactory.get().binaryDecoder(data, null);
 
                 result = (T) datumReader.read(null, decoder);
-                log.debug("deserialized data='{}'", result);
+                log.info("deserialized data='{}'", result);
             }
             return result;
         } catch (Exception ex) {
             throw new SerializationException(
-                    "Can't deserialize data '" + Arrays.toString(data) + "' from topic '" + topic + "'", ex);
+                  //  "Can't deserialize data '" + Arrays.toString(data) + "' from topic '" + topic + "'", ex);
+                    "Can't deserialize data '" + "' from topic '" + topic + "'", ex);
         }
     }
 }
