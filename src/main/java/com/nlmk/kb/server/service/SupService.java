@@ -22,7 +22,7 @@ public class SupService {
                     topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
                                     partitionOffsets =
                                     @PartitionOffset(partition = "0", initialOffset = "24")),})
-    public void receiveMessage(@Payload String supIntegralParameters) {
+    public void receiveMessage(@Payload IntegralParameters supIntegralParameters) {
 
         log.info("--- received integralParameters: {}", supIntegralParameters);
     }
