@@ -19,7 +19,7 @@ public class SupService {
 
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
-                    topicPartitions = {@TopicPartition(topic = "topic2", partitions = "0",
+                    topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
                                     partitionOffsets =
                                     @PartitionOffset(partition = "0", initialOffset = "24")),})
     public void receiveMessage(@Payload String supIntegralParameters) {
