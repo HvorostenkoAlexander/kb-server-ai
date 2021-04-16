@@ -15,8 +15,8 @@ import org.apache.avro.message.SchemaStore;
 /** peredacha integralnyh parametrov */
 @org.apache.avro.specific.AvroGenerated
 public class IntegralParameters extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -4138241852774211860L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"IntegralParameters\",\"namespace\":\"nlmk.l3.sup\",\"doc\":\"peredacha integralnyh parametrov\",\"fields\":[{\"name\":\"ts\",\"type\":\"string\",\"doc\":\"data i vremya peredachi\"},{\"name\":\"op\",\"type\":{\"type\":\"enum\",\"name\":\"enum_op\",\"symbols\":[\"I\",\"U\",\"D\"]},\"doc\":\"operaciya\"},{\"name\":\"pk\",\"type\":{\"type\":\"record\",\"name\":\"RecordPk\",\"fields\":[{\"name\":\"id\",\"type\":\"int\",\"doc\":\"ID EM SUP\"}]}},{\"name\":\"data\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"RecordData\",\"fields\":[{\"name\":\"primeID\",\"type\":\"string\",\"doc\":\"identifikator (ID) edenicy EM v pervoistochnike CCM\"},{\"name\":\"kceh\",\"type\":\"int\",\"doc\":\"nomer ceha\"},{\"name\":\"kcehName\",\"type\":\"string\",\"doc\":\"nazvanie ceha\"},{\"name\":\"unitCode\",\"type\":\"int\",\"doc\":\"kod agregata\"},{\"name\":\"unitName\",\"type\":\"string\",\"doc\":\"nazvanie agregata\"},{\"name\":\"werksCode\",\"type\":\"int\",\"doc\":\"kod zavoda\"},{\"name\":\"werksName\",\"type\":\"string\",\"doc\":\"naimenovanie zavoda\"},{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordSpecifications\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\",\"doc\":\"kod harakteristiki\"},{\"name\":\"specName\",\"type\":\"string\",\"doc\":\"naimenovanie harakteristiki\"},{\"name\":\"specTypeCode\",\"type\":\"int\",\"doc\":\"tip dannyh (1-string, 2-number, 3-date)\"},{\"name\":\"specTypeName\",\"type\":\"string\",\"doc\":\"naimenovanie tipa dannyh\"},{\"name\":\"specValue\",\"type\":[\"null\",\"float\"],\"doc\":\"znacheniye harakteristiki\",\"default\":null},{\"name\":\"specFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"fomat peredachi harakteristiki\",\"default\":null},{\"name\":\"specMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"edenica izmerenya\",\"default\":null}]}}}]}],\"default\":null}]}");
+  private static final long serialVersionUID = 4083428910120594752L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"IntegralParameters\",\"namespace\":\"nlmk.l3.sup\",\"doc\":\"peredacha integralnyh parametrov\",\"fields\":[{\"name\":\"ts\",\"type\":\"string\",\"doc\":\"data i vremya peredachi\"},{\"name\":\"op\",\"type\":{\"type\":\"enum\",\"name\":\"EnumOp\",\"symbols\":[\"D\",\"I\",\"U\"]},\"doc\":\"operaciya\"},{\"name\":\"pk\",\"type\":{\"type\":\"record\",\"name\":\"RecordPk\",\"fields\":[{\"name\":\"id\",\"type\":\"int\",\"doc\":\"ID EM SUP\"}]}},{\"name\":\"data\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"RecordData\",\"fields\":[{\"name\":\"primeId\",\"type\":\"string\",\"doc\":\"identifikator (ID) edenicy EM v pervoistochnike CCM\"},{\"name\":\"kceh\",\"type\":\"int\",\"doc\":\"nomer ceha\"},{\"name\":\"kcehName\",\"type\":\"string\",\"doc\":\"nazvanie ceha\"},{\"name\":\"unitCode\",\"type\":\"int\",\"doc\":\"kod agregata\"},{\"name\":\"unitName\",\"type\":\"string\",\"doc\":\"nazvanie agregata\"},{\"name\":\"werks\",\"type\":\"int\",\"doc\":\"kod zavoda\"},{\"name\":\"werksName\",\"type\":\"string\",\"doc\":\"naimenovanie zavoda\"},{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordSpecifications\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\",\"doc\":\"kod harakteristiki\"},{\"name\":\"specName\",\"type\":\"string\",\"doc\":\"naimenovanie harakteristiki\"},{\"name\":\"specTypeCode\",\"type\":\"int\",\"doc\":\"tip dannyh (1-string, 2-number, 3-date)\"},{\"name\":\"specTypeName\",\"type\":\"string\",\"doc\":\"naimenovanie tipa dannyh\"},{\"name\":\"specValue\",\"type\":[\"null\",\"float\"],\"doc\":\"znacheniye harakteristiki\",\"default\":null},{\"name\":\"specFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"fomat peredachi harakteristiki\",\"default\":null},{\"name\":\"specMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"edenica izmerenya\",\"default\":null}]}}}]}],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -75,7 +75,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
   /** data i vremya peredachi */
    private java.lang.CharSequence ts;
   /** operaciya */
-   private nlmk.l3.sup.enum_op op;
+   private nlmk.l3.sup.EnumOp op;
    private nlmk.l3.sup.RecordPk pk;
    private nlmk.l3.sup.RecordData data;
 
@@ -93,7 +93,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
    * @param pk The new value for pk
    * @param data The new value for data
    */
-  public IntegralParameters(java.lang.CharSequence ts, nlmk.l3.sup.enum_op op, nlmk.l3.sup.RecordPk pk, nlmk.l3.sup.RecordData data) {
+  public IntegralParameters(java.lang.CharSequence ts, nlmk.l3.sup.EnumOp op, nlmk.l3.sup.RecordPk pk, nlmk.l3.sup.RecordData data) {
     this.ts = ts;
     this.op = op;
     this.pk = pk;
@@ -118,7 +118,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: ts = (java.lang.CharSequence)value$; break;
-    case 1: op = (nlmk.l3.sup.enum_op)value$; break;
+    case 1: op = (nlmk.l3.sup.EnumOp)value$; break;
     case 2: pk = (nlmk.l3.sup.RecordPk)value$; break;
     case 3: data = (nlmk.l3.sup.RecordData)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
@@ -147,7 +147,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
    * Gets the value of the 'op' field.
    * @return operaciya
    */
-  public nlmk.l3.sup.enum_op getOp() {
+  public nlmk.l3.sup.EnumOp getOp() {
     return op;
   }
 
@@ -157,7 +157,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
    * operaciya
    * @param value the value to set.
    */
-  public void setOp(nlmk.l3.sup.enum_op value) {
+  public void setOp(nlmk.l3.sup.EnumOp value) {
     this.op = value;
   }
 
@@ -239,7 +239,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
     /** data i vremya peredachi */
     private java.lang.CharSequence ts;
     /** operaciya */
-    private nlmk.l3.sup.enum_op op;
+    private nlmk.l3.sup.EnumOp op;
     private nlmk.l3.sup.RecordPk pk;
     private nlmk.l3.sup.RecordPk.Builder pkBuilder;
     private nlmk.l3.sup.RecordData data;
@@ -355,7 +355,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
       * operaciya
       * @return The value.
       */
-    public nlmk.l3.sup.enum_op getOp() {
+    public nlmk.l3.sup.EnumOp getOp() {
       return op;
     }
 
@@ -366,7 +366,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
       * @param value The value of 'op'.
       * @return This builder.
       */
-    public nlmk.l3.sup.IntegralParameters.Builder setOp(nlmk.l3.sup.enum_op value) {
+    public nlmk.l3.sup.IntegralParameters.Builder setOp(nlmk.l3.sup.EnumOp value) {
       validate(fields()[1], value);
       this.op = value;
       fieldSetFlags()[1] = true;
@@ -552,7 +552,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
       try {
         IntegralParameters record = new IntegralParameters();
         record.ts = fieldSetFlags()[0] ? this.ts : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.op = fieldSetFlags()[1] ? this.op : (nlmk.l3.sup.enum_op) defaultValue(fields()[1]);
+        record.op = fieldSetFlags()[1] ? this.op : (nlmk.l3.sup.EnumOp) defaultValue(fields()[1]);
         if (pkBuilder != null) {
           try {
             record.pk = this.pkBuilder.build();
@@ -628,7 +628,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
     if (fieldOrder == null) {
       this.ts = in.readString(this.ts instanceof Utf8 ? (Utf8)this.ts : null);
 
-      this.op = nlmk.l3.sup.enum_op.values()[in.readEnum()];
+      this.op = nlmk.l3.sup.EnumOp.values()[in.readEnum()];
 
       if (this.pk == null) {
         this.pk = new nlmk.l3.sup.RecordPk();
@@ -653,7 +653,7 @@ public class IntegralParameters extends org.apache.avro.specific.SpecificRecordB
           break;
 
         case 1:
-          this.op = nlmk.l3.sup.enum_op.values()[in.readEnum()];
+          this.op = nlmk.l3.sup.EnumOp.values()[in.readEnum()];
           break;
 
         case 2:
