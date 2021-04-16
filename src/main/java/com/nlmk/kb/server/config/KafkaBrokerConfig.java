@@ -51,8 +51,8 @@ public class KafkaBrokerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
-                errorHandlingDeserializer
-          //      new AvroDeserializer(String.class)
+           //     errorHandlingDeserializer
+                new AvroDeserializer(IntegralParameters.class)
         );
     }
 
@@ -63,12 +63,12 @@ public class KafkaBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactoryIp());
-        factory.setErrorHandler(new SeekToCurrentErrorHandler(
-                (record, error) -> {
-                    log.error("--- ERROR: "+error.getMessage());
-                    log.error("--- ERROR RECORD: "+record.toString());
-                }, new FixedBackOff(5000L, 1))
-        );
+//        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+//                (record, error) -> {
+//                    log.error("--- ERROR: "+error.getMessage());
+//                    log.error("--- ERROR RECORD: "+record.toString());
+//                }, new FixedBackOff(5000L, 1))
+//        );
         factory.setConcurrency(1); // todo устанавливается по количеству partitions в топике https://howtoprogram.xyz/2016/09/25/spring-kafka-multi-threaded-message-consumption/
 
         return factory;
