@@ -31,7 +31,8 @@ public class KafkaBrokerConfig {
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, supConsumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
+     //  props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG,supConsumerProperties.getKafkaGroupId());
         props.put (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
         props.put (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,false);
@@ -40,23 +41,24 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, IntegralParameters> consumerFactoryIp(){
+    public ConsumerFactory<String, String> consumerFactoryIp(){
 
-        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
-                = new ErrorHandlingDeserializer<>(new AvroDeserializer<>(IntegralParameters.class));
+//        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
+//                = new ErrorHandlingDeserializer<>(new AvroDeserializer<>(IntegralParameters.class));
 
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
-                errorHandlingDeserializer
+                new StringDeserializer()
+          //      errorHandlingDeserializer
               //  new AvroDeserializer<>(IntegralParameters.class)
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> kafkaListenerContainerFactoryIp(){
+    public ConcurrentKafkaListenerContainerFactory<String,String> kafkaListenerContainerFactoryIp(){
 
-        ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> factory =
+        ConcurrentKafkaListenerContainerFactory<String,String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactoryIp());

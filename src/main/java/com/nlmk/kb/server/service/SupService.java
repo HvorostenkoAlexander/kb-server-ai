@@ -12,7 +12,7 @@ public class SupService {
 
     @KafkaListener(topics = {"${kafka.sup.topicIp}"},
             containerFactory = "kafkaListenerContainerFactoryIp")
-    public void receiveMessage(@Payload IntegralParameters supIntegralParameters) {
+    public void receiveMessage(@Payload String supIntegralParameters) {
 
         log.info("--- received integralParameters: {}", supIntegralParameters);
     }
