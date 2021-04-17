@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.config;
 
 import com.nlmk.kb.server.config.deserializer.AvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
@@ -33,26 +34,31 @@ public class KafkaBrokerConfig {
         Map<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, supConsumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+       // props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
        //props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG,supConsumerProperties.getKafkaGroupId());
         props.put (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
         props.put (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,false);
+        props.put("schema.registry.url", "http://kafka-rest-000-1.dp.nlmk.com:8081");
+        props.put("specific.avro.reader", "true");
 
         return props;
     }
 
     @Bean
-    public ConsumerFactory<String, IntegralParameters> consumerFactoryIp(){
+    public ConsumerFactory<String, Object> consumerFactoryIp(){
 
-        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
-                = new ErrorHandlingDeserializer<>(new AvroDeserializer<>(IntegralParameters.class));
+//        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
+//                = new ErrorHandlingDeserializer<>(new AvroDeserializer<>(IntegralParameters.class));
 
+        KafkaAvroDeserializer avroDeser = new KafkaAvroDeserializer();
+        avroDeser.configure(consumerConfigs(), false);
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
            //     errorHandlingDeserializer
-                new AvroDeserializer(IntegralParameters.class)
+                avroDeser
         );
     }
 
