@@ -12,16 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class SupService {
 
-//    @TopicPartition(topic = "topic2", partitions = "0",
-//            partitionOffsets = @PartitionOffset(partition = "1", initialOffset = "100")
-//@KafkaListener(topics = {"${kafka.sup.topicIp}"},
-//        containerFactory = "kafkaListenerContainerFactoryIp")
-
+//todo убрать лишнее из KafkaListener
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
                     topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
                                     partitionOffsets =
-                                    @PartitionOffset(partition = "0", initialOffset = "24")),})
+                                    @PartitionOffset(partition = "0", initialOffset = "0")),})
     public void receiveMessage(@Payload IntegralParameters supIntegralParameters) {
 
         log.info("--- received integralParameters: {}", supIntegralParameters);

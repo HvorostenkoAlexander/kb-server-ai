@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.config.deserializer;
+package com.nlmk.kb.server.config.dev.deserializer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.generic.GenericRecord;
@@ -11,7 +11,6 @@ import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.Arrays;
 import java.util.Map;
 
 @Slf4j
