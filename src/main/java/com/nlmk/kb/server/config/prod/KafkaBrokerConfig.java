@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.config;
+package com.nlmk.kb.server.config.prod;
 
-import com.nlmk.kb.server.config.deserializer.AvroDeserializer;
+import com.nlmk.kb.server.config.SupConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,23 +9,19 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@EnableKafka
 @Configuration
 @RequiredArgsConstructor
+@Profile("prod")
 public class KafkaBrokerConfig {
-    //todo в application-prod.properties указать правильные десериализаторы для ключа и значения
 
     private final SupConsumerProperties supConsumerProperties;
 
@@ -35,12 +31,10 @@ public class KafkaBrokerConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, supConsumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-       // props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
-       //props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG,supConsumerProperties.getKafkaGroupId());
         props.put (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
         props.put (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,false);
-        props.put("schema.registry.url", "http://kafka-rest-000-1.dp.nlmk.com:8081");
+        props.put("schema.registry.url", supConsumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
         return props;
@@ -49,16 +43,16 @@ public class KafkaBrokerConfig {
     @Bean
     public ConsumerFactory<String, Object> consumerFactoryIp(){
 
+        KafkaAvroDeserializer avroDeserializer = new KafkaAvroDeserializer();
+        avroDeserializer.configure(consumerConfigs(), false);
 //        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
-//                = new ErrorHandlingDeserializer<>(new AvroDeserializer<>(IntegralParameters.class));
+//                = new ErrorHandlingDeserializer<>(avroDeser);
 
-        KafkaAvroDeserializer avroDeser = new KafkaAvroDeserializer();
-        avroDeser.configure(consumerConfigs(), false);
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new StringDeserializer(),
            //     errorHandlingDeserializer
-                avroDeser
+                avroDeserializer
         );
     }
 
