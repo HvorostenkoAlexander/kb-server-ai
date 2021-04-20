@@ -29,16 +29,17 @@ public class SupService {
                     partitionOffsets =
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
     public void receiveMessage(@Headers MessageHeaders headers,
+                               @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                               @Header(KafkaHeaders.OFFSET) String offset,
+                               @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
                                @Payload IntegralParameters supIntegralParameters) {
-//        log.info("--- received message: Key: {} ; Timestamp: {}; offset: {}; value:{}",
-//                key, timestamp, offset,
-//                supIntegralParameters);
-//        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
-//        @Header(KafkaHeaders.TIMESTAMP) String timestamp,
-//        @Header(KafkaHeaders.OFFSET) String offset,
 
-        headers.keySet().forEach(key -> {
-            log.info("--- {}: {}", key, headers.get(key));
+        log.info("--- received message: Key: {} ; Timestamp: {}; offset: {}; value:{}",
+                key, timestamp, offset,
+                supIntegralParameters);
+
+        headers.keySet().forEach(k -> {
+            log.info("--- {}: {}", k, headers.get(k));
         });
 
         IntegralParam ip = ParamConverter.toIntegralParam(supIntegralParameters);
