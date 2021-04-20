@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.entity.IntegralParam;
+import com.nlmk.kb.server.entity.KafkaIntegralParamMessage;
 import com.nlmk.kb.server.util.ParamConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SupService {
 
-    private final IntegralParamService integralParamService;
+    private final KafkaIntegralParamMessageService integralParamMessageService;
 
     //todo убрать лишнее из KafkaListener
 
@@ -30,7 +31,7 @@ public class SupService {
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
     public void receiveMessage(@Headers MessageHeaders headers,
                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
-                               @Header(KafkaHeaders.OFFSET) String offset,
+                               @Header(KafkaHeaders.OFFSET) int offset,
                                @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                @Payload IntegralParameters supIntegralParameters) {
@@ -39,12 +40,16 @@ public class SupService {
                 key, timestamp, offset, topic,
                 supIntegralParameters);
 
-        headers.keySet().forEach(k -> {
-            log.info("--- {}: {}", k, headers.get(k));
-        });
-
         IntegralParam ip = ParamConverter.toIntegralParam(supIntegralParameters);
 
-        //integralParamService.save(ip);
+        KafkaIntegralParamMessage message = KafkaIntegralParamMessage.builder()
+                .key(key)
+                .timestamp(timestamp)
+                .offset(offset)
+                .topic(topic)
+                .param(ip)
+                .build();
+
+        integralParamMessageService.messageProcessing(message);
     }
 }
