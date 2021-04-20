@@ -14,15 +14,12 @@ public class IntegralParamServiceImpl implements IntegralParamService {
 
     private final IntegralParamRepository integralParamRepository;
 
-
-    public IntegralParam save(IntegralParam integralParam) {
-        return integralParamRepository.save(integralParam);
-    }
-
     @Override
-    public void processingIntegralParam(IntegralParam integralParam) {
-        IntegralParam integralParam1 = this.save(integralParam);
-
-        System.out.println("--- saved ip: "+ integralParam);
+    public void save(IntegralParam integralParam) {
+        if (integralParam==null) {
+            log.info("--- invalid integralParam: null");
+        }
+        integralParamRepository.save(integralParam);
+        log.info("--- Successfully saved integralParam: {}",integralParam);
     }
 }

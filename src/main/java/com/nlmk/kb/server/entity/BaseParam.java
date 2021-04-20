@@ -30,6 +30,6 @@ public class BaseParam {
     private Integer recordPk;//Id EM СУП
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(unique = false) // todo определиться с уникальностью
+    @JoinColumn(unique = false)
     private RecData data;// может быть null
 }

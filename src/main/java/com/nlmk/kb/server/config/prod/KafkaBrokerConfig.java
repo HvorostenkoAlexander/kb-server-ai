@@ -69,7 +69,7 @@ public class KafkaBrokerConfig {
 //                    log.error("--- ERROR RECORD: "+record.toString());
 //                }, new FixedBackOff(5000L, 1))
 //        );
-        factory.setConcurrency(1); // todo устанавливается по количеству partitions в топике https://howtoprogram.xyz/2016/09/25/spring-kafka-multi-threaded-message-consumption/
+        factory.setConcurrency(1);
 
         return factory;
     }
