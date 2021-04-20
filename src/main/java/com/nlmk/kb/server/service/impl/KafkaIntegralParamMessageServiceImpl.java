@@ -26,7 +26,7 @@ public class KafkaIntegralParamMessageServiceImpl implements KafkaIntegralParamM
             return;
         }
 
-        messageRepository.save(message);
-        log.info("--- Successfully saved message: {}", message);
+       // messageRepository.save(message);
+       // log.info("--- Successfully saved message: {}", message);
     }
 }
