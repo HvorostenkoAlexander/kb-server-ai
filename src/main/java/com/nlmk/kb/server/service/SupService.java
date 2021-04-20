@@ -32,10 +32,11 @@ public class SupService {
                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                @Header(KafkaHeaders.OFFSET) String offset,
                                @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
+                               @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                @Payload IntegralParameters supIntegralParameters) {
 
-        log.info("--- received message: Key: {} ; Timestamp: {}; offset: {}; value:{}",
-                key, timestamp, offset,
+        log.info("--- received message: Key: {} ; Timestamp: {}; offset: {}; topic: {}; value:{}",
+                key, timestamp, offset, topic,
                 supIntegralParameters);
 
         headers.keySet().forEach(k -> {
