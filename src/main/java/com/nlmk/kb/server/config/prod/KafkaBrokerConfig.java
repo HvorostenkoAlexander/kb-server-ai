@@ -26,14 +26,15 @@ public class KafkaBrokerConfig {
     private final SupConsumerProperties supConsumerProperties;
 
     @Bean
-    public Map<String,Object> consumerConfigs(){
-        Map<String,Object> props = new HashMap<>();
+    public Map<String, Object> consumerConfigs() {
+        Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, supConsumerProperties.getKafkaServer());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        //props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG,supConsumerProperties.getKafkaGroupId());
-        props.put (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
-        props.put (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,false);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, supConsumerProperties.getKafkaGroupId());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put("schema.registry.url", supConsumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
@@ -41,25 +42,30 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactoryIp(){
+    public ConsumerFactory<Object, Object> consumerFactoryIp() {
 
-        KafkaAvroDeserializer avroDeserializer = new KafkaAvroDeserializer();
-        avroDeserializer.configure(consumerConfigs(), false);
+        KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
+        keyDeserializer.configure(consumerConfigs(), true);
+
+        KafkaAvroDeserializer valueDeserializer = new KafkaAvroDeserializer();
+        valueDeserializer.configure(consumerConfigs(), false);
+
 //        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
 //                = new ErrorHandlingDeserializer<>(avroDeser);
 
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
-                new StringDeserializer(),
-           //     errorHandlingDeserializer
-                avroDeserializer
+                keyDeserializer,
+                //    new StringDeserializer(),
+                //     errorHandlingDeserializer
+                valueDeserializer
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> kafkaListenerContainerFactoryIp(){
+    public ConcurrentKafkaListenerContainerFactory<String, IntegralParameters> kafkaListenerContainerFactoryIp() {
 
-        ConcurrentKafkaListenerContainerFactory<String,IntegralParameters> factory =
+        ConcurrentKafkaListenerContainerFactory<String, IntegralParameters> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactoryIp());
