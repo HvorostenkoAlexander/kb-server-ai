@@ -23,6 +23,8 @@ public class SupService {
 
     private final KafkaIntegralParamMessageService integralParamMessageService;
 
+    // внимание, при работе с продуктовым топиком, количество партиций будет > 1
+    // сейчас при таких настройках сведения только из одной партиции (как в тестовом топике)
     //todo убрать лишнее из KafkaListener
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
@@ -42,7 +44,7 @@ public class SupService {
 
         IntegralParam ip = ParamConverter.toIntegralParam(supIntegralParameters);
 
-        KafkaIntegralParamMessage message = KafkaIntegralParamMessage.builder()
+        KafkaIntegralParamMessage receivedMessage = KafkaIntegralParamMessage.builder()
                 .key(key)
                 .timestamp(timestamp)
                 .offset(offset)
@@ -50,6 +52,6 @@ public class SupService {
                 .param(ip)
                 .build();
 
-        integralParamMessageService.messageProcessing(message);
+        integralParamMessageService.messageProcessing(receivedMessage);
     }
 }

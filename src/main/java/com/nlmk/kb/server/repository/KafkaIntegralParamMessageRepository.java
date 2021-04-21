@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface KafkaIntegralParamMessageRepository extends JpaRepository<KafkaIntegralParamMessage,Long> {
 
     public boolean existsByKey(String key);
+    public boolean existsByOffset(int offset);
 }

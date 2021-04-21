@@ -21,12 +21,12 @@ public class KafkaIntegralParamMessageServiceImpl implements KafkaIntegralParamM
             log.info("--- invalid message: null");
         }
 
-        if (messageRepository.existsByKey(message.getKey())) {
-            log.info("--- the message with key = {} is already present in the database ", message.getKey());
+        if (messageRepository.existsByOffset(message.getOffset())) {
+            log.info("--- the message with offset = {} is already present in the database ", message.getKey());
             return;
         }
 
-       // messageRepository.save(message);
-       // log.info("--- Successfully saved message: {}", message);
+        messageRepository.save(message);
+        log.info("--- Successfully saved message: {}", message);
     }
 }

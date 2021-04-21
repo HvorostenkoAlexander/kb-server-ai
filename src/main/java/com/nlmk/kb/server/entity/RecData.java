@@ -50,11 +50,9 @@ public class RecData {
     @Column(nullable = false)
     private String werksName;// название завода
 
-    @OneToMany(cascade = CascadeType.ALL)// todo определиться с каскадными типами
+    @OneToMany(cascade = CascadeType.ALL)//
     @JoinColumn(name = "record_data_id",
                 nullable = false)
-    @Size(min=1,
-          message = "Список спецификации не содержит данных.")
     private List<RecSpec> specifications=new ArrayList<>();
 
     public void addSpec(RecSpec recordSpecification) {
