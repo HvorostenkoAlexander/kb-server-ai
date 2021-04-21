@@ -1,15 +1,15 @@
 {"ts": "2021-04-16T08:17:28.811-03:00",
   "op": "U",
   "pk": {"id": 144954755},
-  "data": {"primeId": "0001020210416033915922670",
+  "data": {
+    "primeId": "0001020210416033915922670",
     "kceh": 12,
     "kcehName": "ЦГП",
     "unitCode": 37,
     "unitName": "Стан 2000 (П3)",
     "werks": 1011,
     "werksName": "NLMK",
-    "specifications":
-    [
+    "specifications":[
       {"specCode": 11, "specName": "Уставка на Ткп (min)","specTypeCode": 1, "specTypeName": "number", "specValue": 835.0, "specFormat": null, "specMeasure": null},
       {"specCode": 12, "specName": "Уставка на Ткп (max)", "specTypeCode": 1, "specTypeName": "number", "specValue": 875.0, "specFormat": null, "specMeasure": null},
       {"specCode": 9, "specName": "Уставка на Тсм (min)", "specTypeCode": 1, "specTypeName": "number", "specValue": 650.0, "specFormat": null, "specMeasure": null},

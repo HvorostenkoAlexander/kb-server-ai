@@ -1,0 +1,22 @@
+{"ts": "2021-04-16T08:17:28.898-03:00",
+  "op": "U",
+  "pk": {"id": 144954755},
+  "data": {
+    "primeId": "0001020210416033915922670",
+    "kceh": 12,
+    "kcehName": "ЦГП",
+    "unitCode": 37,
+    "unitName": "Стан 2000 (П3)",
+    "werks": 1011,
+    "werksName": "NLMK",
+    "specifications": [
+      {
+        "specCode": 19,
+        "specName": "Высота местных утолщений по ширине полосы (М12-07)",
+        "specTypeCode": 1, "specTypeName": "number", "specValue": 7.0,
+        "specFormat": null,
+        "specMeasure": null
+      }
+    ]
+  }
+}
