@@ -5,6 +5,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
+import nlmk.l3.sup.UnrecoverableParametersTrends;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +41,7 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
-    public ConsumerFactory<Object, Object> consumerFactoryIp() {
+    public ConsumerFactory<Object, Object> consumerFactory() {
 
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
         keyDeserializer.configure(consumerConfigs(), true);
@@ -65,13 +66,25 @@ public class KafkaBrokerConfig {
         ConcurrentKafkaListenerContainerFactory<String, IntegralParameters> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
-        factory.setConsumerFactory(consumerFactoryIp());
+        factory.setConsumerFactory(consumerFactory());
 //        factory.setErrorHandler(new SeekToCurrentErrorHandler(
 //                (record, error) -> {
 //                    log.error("--- ERROR: "+error.getMessage());
 //                    log.error("--- ERROR RECORD: "+record.toString());
 //                }, new FixedBackOff(5000L, 1))
 //        );
+        factory.setConcurrency(1);
+
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, UnrecoverableParametersTrends> kafkaListenerContainerFactoryUp() {
+
+        ConcurrentKafkaListenerContainerFactory<String, UnrecoverableParametersTrends> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+
+        factory.setConsumerFactory(consumerFactory());
         factory.setConcurrency(1);
 
         return factory;

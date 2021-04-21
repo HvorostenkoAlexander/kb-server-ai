@@ -2,10 +2,12 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.entity.IntegralParam;
 import com.nlmk.kb.server.entity.KafkaIntegralParamMessage;
+import com.nlmk.kb.server.entity.UnrecoverableParam;
 import com.nlmk.kb.server.util.ParamConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
+import nlmk.l3.sup.UnrecoverableParametersTrends;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -31,7 +33,7 @@ public class SupService {
             topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
                     partitionOffsets =
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
-    public void receiveMessage(@Headers MessageHeaders headers,
+    public void receiveMessageIp(@Headers MessageHeaders headers,
                                @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                @Header(KafkaHeaders.OFFSET) int offset,
                                @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
@@ -44,6 +46,8 @@ public class SupService {
 
         IntegralParam ip = ParamConverter.toIntegralParam(supIntegralParameters);
 
+        log.info("--- ip: {}",ip);
+
         KafkaIntegralParamMessage receivedMessage = KafkaIntegralParamMessage.builder()
                 .key(key)
                 .timestamp(timestamp)
@@ -52,6 +56,35 @@ public class SupService {
                 .param(ip)
                 .build();
 
-        integralParamMessageService.messageProcessing(receivedMessage);
+      //  integralParamMessageService.messageProcessing(receivedMessage);
+    }
+
+    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
+            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicUp}",
+                    partitionOffsets =
+                    @PartitionOffset(partition = "0", initialOffset = "0")),})
+    public void receiveMessageUp(@Headers MessageHeaders headers,
+                                 @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                                 @Header(KafkaHeaders.OFFSET) int offset,
+                                 @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
+                                 @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                 @Payload UnrecoverableParametersTrends supUnrecoverableParametersTrends) {
+
+        log.info("--- received message: Key: {} ; Timestamp: {}; offset: {}; topic: {}; value:{}",
+                key, timestamp, offset, topic,
+                supUnrecoverableParametersTrends);
+
+        UnrecoverableParam up = ParamConverter.toUnrecoverableParam(supUnrecoverableParametersTrends);
+
+        log.info("--- up: {}",up);
+//        KafkaIntegralParamMessage receivedMessage = KafkaIntegralParamMessage.builder()
+//                .key(key)
+//                .timestamp(timestamp)
+//                .offset(offset)
+//                .topic(topic)
+//                .param(up)
+//                .build();
+//
+//        integralParamMessageService.messageProcessing(receivedMessage);
     }
 }

@@ -3,14 +3,33 @@ package com.nlmk.kb.server.util;
 import com.nlmk.kb.server.entity.IntegralParam;
 import com.nlmk.kb.server.entity.RecData;
 import com.nlmk.kb.server.entity.RecSpec;
+import com.nlmk.kb.server.entity.UnrecoverableParam;
 import nlmk.l3.sup.IntegralParameters;
 import nlmk.l3.sup.RecordData;
 import nlmk.l3.sup.RecordSpecifications;
+import nlmk.l3.sup.UnrecoverableParametersTrends;
 import org.springframework.util.Assert;
 
 public class ParamConverter {
     private ParamConverter() {
         throw new RuntimeException("ParamConverter is utility class, only for create parameters entities.");
+    }
+
+    public static UnrecoverableParam toUnrecoverableParam(UnrecoverableParametersTrends up) {
+        Assert.notNull(up, "Значение UnrecoverableParametersTrends не должно быть null");
+
+        UnrecoverableParam unrecoverableParam = new UnrecoverableParam();
+        unrecoverableParam.setOperation(up.getOp().toString());
+        unrecoverableParam.setRecordPk(up.getPk().getId());
+        unrecoverableParam.setTs(up.getTs().toString());
+
+        if (up.getData() != null) {
+            unrecoverableParam.setData(
+                    toRecData(up.getData())
+            );
+        }
+
+        return unrecoverableParam;
     }
 
     public static IntegralParam toIntegralParam(IntegralParameters ip) {

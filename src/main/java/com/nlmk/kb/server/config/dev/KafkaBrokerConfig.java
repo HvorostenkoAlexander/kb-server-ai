@@ -6,6 +6,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
+import nlmk.l3.sup.UnrecoverableParametersTrends;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -64,6 +65,27 @@ public class KafkaBrokerConfig {
 //                }, new FixedBackOff(5000L, 1))
 //        );
         factory.setConcurrency(1); // todo устанавливается по количеству partitions в топике https://howtoprogram.xyz/2016/09/25/spring-kafka-multi-threaded-message-consumption/
+
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, UnrecoverableParametersTrends> consumerFactoryUp(){
+
+        return new DefaultKafkaConsumerFactory<>(
+                consumerConfigs(),
+                new StringDeserializer(),
+                new AvroDeserializer<>(UnrecoverableParametersTrends.class)
+        );
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, UnrecoverableParametersTrends> kafkaListenerContainerFactoryUp(){
+
+        ConcurrentKafkaListenerContainerFactory<String,UnrecoverableParametersTrends> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryUp());
+        factory.setConcurrency(1);
 
         return factory;
     }
