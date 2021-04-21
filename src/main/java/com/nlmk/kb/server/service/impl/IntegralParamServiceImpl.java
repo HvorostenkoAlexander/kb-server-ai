@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,5 +23,10 @@ public class IntegralParamServiceImpl implements IntegralParamService {
         }
         integralParamRepository.save(integralParam);
         log.info("--- Successfully saved integralParam: {}",integralParam);
+    }
+
+    @Override
+    public List<IntegralParam> findByRecordPk(Integer recordPk) {
+        return integralParamRepository.findIntegralParamByRecordPk(recordPk);
     }
 }

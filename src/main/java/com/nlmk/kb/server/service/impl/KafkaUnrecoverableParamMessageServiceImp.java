@@ -1,8 +1,8 @@
 package com.nlmk.kb.server.service.impl;
 
-import com.nlmk.kb.server.entity.KafkaIntegralParamMessage;
-import com.nlmk.kb.server.repository.KafkaIntegralParamMessageRepository;
-import com.nlmk.kb.server.service.KafkaIntegralParamMessageService;
+import com.nlmk.kb.server.entity.KafkaUnrecoverableParamMessage;
+import com.nlmk.kb.server.repository.KafkaUnrecoverableParamMessageRepository;
+import com.nlmk.kb.server.service.KafkaUnrecoverableParamMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KafkaIntegralParamMessageServiceImpl implements KafkaIntegralParamMessageService {
+public class KafkaUnrecoverableParamMessageServiceImp implements KafkaUnrecoverableParamMessageService {
 
-    private final KafkaIntegralParamMessageRepository messageRepository;
+    private final KafkaUnrecoverableParamMessageRepository messageRepository;
 
     @Override
-    public void messageProcessing(KafkaIntegralParamMessage message) {
+    public void messageProcessing(KafkaUnrecoverableParamMessage message) {
 
-        if (message==null) {
+       if (message==null) {
             log.info("--- invalid message: null");
         }
 

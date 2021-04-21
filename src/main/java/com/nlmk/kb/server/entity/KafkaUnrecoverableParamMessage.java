@@ -16,22 +16,22 @@ import javax.persistence.Table;
 @Data
 @Builder
 @Entity
-@Table(name = "messages_of_integral_parameters")
-public class KafkaIntegralParamMessage {
+@Table(name = "messages_of_unrecoverable_parameters")
+public class KafkaUnrecoverableParamMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "id")
     private Long id;
 
+    @Column(nullable = false,name="message_partition")
+    private int partition;
+
     @Column(unique = false, nullable = false, name="message_key")
     private String key;
 
     @Column(nullable = false)
     private String timestamp;
-
-    @Column(nullable = false,name="message_partition")
-    private int partition;
 
     @Column(nullable = false,name="message_offset")
     private int offset;
@@ -41,5 +41,5 @@ public class KafkaIntegralParamMessage {
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(unique = false)
-    private IntegralParam param;
+    private UnrecoverableParam param;
 }
