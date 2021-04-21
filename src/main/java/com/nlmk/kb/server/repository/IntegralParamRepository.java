@@ -8,4 +8,5 @@ import java.util.List;
 public interface IntegralParamRepository extends JpaRepository<IntegralParam,Long> {
 
     public List<IntegralParam> findIntegralParamByRecordPk(Integer recordPk);
+    public List<IntegralParam> findIntegralParamByData_PrimeID(String primeId);
 }

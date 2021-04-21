@@ -63,8 +63,10 @@ public class SupService {
 
         integralParamMessageService.messageProcessing(receivedMessage);
 
-        List<IntegralParam> integralParams = integralParamService.findByRecordPk(ip.getRecordPk());
-        log.info("--- integralParams with recordPK: {} count:{}; values:{} ",ip.getRecordPk(),integralParams.size(),integralParams);
+        if (ip.getData()!=null) {
+            List<IntegralParam> integralParams = integralParamService.findByDataPrimeId(ip.getData().getPrimeID());
+            log.info("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
+        }
     }
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",

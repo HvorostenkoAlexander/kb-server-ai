@@ -9,4 +9,5 @@ public interface IntegralParamService {
     public void save(IntegralParam integralParam);
 
     public List<IntegralParam> findByRecordPk(Integer recordPk);
+    public List<IntegralParam> findByDataPrimeId(String primeId);
 }

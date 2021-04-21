@@ -29,4 +29,9 @@ public class IntegralParamServiceImpl implements IntegralParamService {
     public List<IntegralParam> findByRecordPk(Integer recordPk) {
         return integralParamRepository.findIntegralParamByRecordPk(recordPk);
     }
+
+    @Override
+    public List<IntegralParam> findByDataPrimeId(String primeId) {
+        return integralParamRepository.findIntegralParamByData_PrimeID(primeId);
+    }
 }
