@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,14 +52,13 @@ public class KafkaBrokerConfig {
         KafkaAvroDeserializer valueDeserializer = new KafkaAvroDeserializer();
         valueDeserializer.configure(consumerConfigs(), false);
 
-//        ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
-//                = new ErrorHandlingDeserializer<>(avroDeser);
+        ErrorHandlingDeserializer<Object> errorHandlingValueDeserializer
+                = new ErrorHandlingDeserializer<>(valueDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 keyDeserializer,
-                //     errorHandlingDeserializer
-                valueDeserializer
+                errorHandlingValueDeserializer
         );
     }
 
@@ -67,12 +69,12 @@ public class KafkaBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
-//        factory.setErrorHandler(new SeekToCurrentErrorHandler(
-//                (record, error) -> {
-//                    log.error("--- ERROR: "+error.getMessage());
-//                    log.error("--- ERROR RECORD: "+record.toString());
-//                }, new FixedBackOff(5000L, 1))
-//        );
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+                (record, error) -> {
+                    log.error("--- ERROR: "+error.getMessage());
+                    log.error("--- ERROR RECORD: "+record.toString());
+                }, new FixedBackOff(5000L, 1))
+        );
         factory.setConcurrency(1);
 
         return factory;
@@ -85,6 +87,12 @@ public class KafkaBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+                (record, error) -> {
+                    log.error("--- ERROR: "+error.getMessage());
+                    log.error("--- ERROR RECORD: "+record.toString());
+                }, new FixedBackOff(5000L, 1))
+        );
         factory.setConcurrency(1);
 
         return factory;

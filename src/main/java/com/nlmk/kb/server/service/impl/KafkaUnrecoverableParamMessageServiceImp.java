@@ -16,7 +16,6 @@ public class KafkaUnrecoverableParamMessageServiceImp implements KafkaUnrecovera
 
     @Override
     public void messageProcessing(KafkaUnrecoverableParamMessage message) {
-
        if (message==null) {
             log.info("--- invalid message: null");
         }

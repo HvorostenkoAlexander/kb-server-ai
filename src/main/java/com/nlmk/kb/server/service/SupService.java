@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
 import nlmk.l3.sup.UnrecoverableParametersTrends;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.PartitionOffset;
-import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -32,19 +30,21 @@ public class SupService {
 
     // внимание, при работе с продуктовым топиком, количество партиций будет > 1
     // сейчас при таких настройках сведения только из одной партиции (как в тестовом топике)
-    //todo убрать лишнее из KafkaListener
 
+    //        @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
+    //            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
+    //            partitionOffsets =
+    //            @PartitionOffset(partition = "0", initialOffset = "0")),})
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
-            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
-                    partitionOffsets =
-                    @PartitionOffset(partition = "0", initialOffset = "0")),})
+            topics = {"${kafka.sup.topicIp}"}
+    )
     public void receiveMessageIp(@Headers MessageHeaders headers,
-                               @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                                 @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
-                               @Header(KafkaHeaders.OFFSET) int offset,
-                               @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                               @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                               @Payload IntegralParameters supIntegralParameters) {
+                                 @Header(KafkaHeaders.OFFSET) int offset,
+                                 @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
+                                 @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                 @Payload IntegralParameters supIntegralParameters) {
 
         log.info("--- received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
                 key, timestamp, partition, offset, topic,
@@ -63,16 +63,19 @@ public class SupService {
 
         integralParamMessageService.messageProcessing(receivedMessage);
 
-        if (ip.getData()!=null) {
+        if (ip.getData() != null) {
             List<IntegralParam> integralParams = integralParamService.findByDataPrimeId(ip.getData().getPrimeID());
             log.info("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
         }
     }
 
+    //    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
+//            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicUp}",
+//                    partitionOffsets =
+//                    @PartitionOffset(partition = "0", initialOffset = "0")),})
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
-            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicUp}",
-                    partitionOffsets =
-                    @PartitionOffset(partition = "0", initialOffset = "0")),})
+            topics = {"${kafka.sup.topicUp}"}
+    )
     public void receiveMessageUp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
