@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -17,7 +18,7 @@ public class CcmService {
                 topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
                 partitionOffsets =
                 @PartitionOffset(partition = "0", initialOffset = "0")),})
-    public void receiveMessageReq(@Payload String request){
+    public void receiveMessageReq(@Payload AttestationRequest request){
         log.info("--- receiveMessageReq from CCM AttestationRequest: "+ request);
     }
 }
