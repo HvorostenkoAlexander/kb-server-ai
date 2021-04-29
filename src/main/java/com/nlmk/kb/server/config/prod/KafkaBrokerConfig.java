@@ -9,6 +9,7 @@ import nlmk.l3.sup.UnrecoverableParametersTrends;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -44,6 +45,7 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
+    @Primary
     public ConsumerFactory<Object, Object> consumerFactory() {
 
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
