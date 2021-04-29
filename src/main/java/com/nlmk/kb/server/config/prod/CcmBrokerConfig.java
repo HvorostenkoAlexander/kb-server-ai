@@ -37,8 +37,8 @@ public class CcmBrokerConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getKafkaGroupId());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-//        props.put("schema.registry.url", supConsumerProperties.getSchemaRegistryUrl());
-//        props.put("specific.avro.reader", "true");
+        props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
+        props.put("specific.avro.reader", "true");
 
         return props;
     }
