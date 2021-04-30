@@ -14,11 +14,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CcmService {
 
-            @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
-                topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
-                partitionOffsets =
-                @PartitionOffset(partition = "0", initialOffset = "0")),})
-    public void receiveMessageReq(@Payload AttestationRequest request){
-        log.info("--- receiveMessageReq from CCM AttestationRequest: "+ request);
+    private final PamService pamService;
+
+    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
+            topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
+                    partitionOffsets =
+                    @PartitionOffset(partition = "0", initialOffset = "0")),})
+    public void receiveMessageReq(@Payload AttestationRequest request) {
+
+        log.info("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
+                " op: {}; pk.id: {}; data.primeId: {}",
+                request.getTs(),request.getOp(), request.getPk().getId(),request.getData().getPrimeId());
+
+       pamService.postAttestationRequest(request);
     }
 }
