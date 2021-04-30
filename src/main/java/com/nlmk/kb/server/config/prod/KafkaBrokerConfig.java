@@ -45,7 +45,7 @@ public class KafkaBrokerConfig {
     }
 
     @Bean
-    @Primary
+   // @Primary
     public ConsumerFactory<Object, Object> consumerFactory() {
 
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
