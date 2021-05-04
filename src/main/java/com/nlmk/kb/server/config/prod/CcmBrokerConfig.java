@@ -13,9 +13,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,6 @@ public class CcmBrokerConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getKafkaGroupId());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
@@ -52,18 +49,13 @@ public class CcmBrokerConfig {
         KafkaAvroDeserializer valueDeserializer = new KafkaAvroDeserializer();
         valueDeserializer.configure(ccmConsumerConfigs(), false);
 
-//        ErrorHandlingDeserializer<Object> errorHandlingValueDeserializer
-//                = new ErrorHandlingDeserializer<>(valueDeserializer);
-//
-//        return new DefaultKafkaConsumerFactory<>(
-//                consumerConfigs(),
-//                keyDeserializer,
-//                errorHandlingValueDeserializer
-//        );
+        ErrorHandlingDeserializer<Object> errorHandlingValueDeserializer
+                = new ErrorHandlingDeserializer<>(valueDeserializer);
+
         return new DefaultKafkaConsumerFactory<>(
                 ccmConsumerConfigs(),
                 keyDeserializer,
-                valueDeserializer
+                errorHandlingValueDeserializer
         );
     }
 
@@ -74,12 +66,10 @@ public class CcmBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(ccmConsumerFactory());
-//        factory.setErrorHandler(new SeekToCurrentErrorHandler(
-//                (record, error) -> {
-//                    log.error("--- ERROR: "+error.getMessage());
-//                    log.error("--- ERROR RECORD: "+record.toString());
-//                }, new FixedBackOff(5000L, 1))
-//        );
+        factory.setErrorHandler(((thrownException, data) -> {
+            log.error("--- ERROR: " + thrownException.getMessage());
+            log.error("--- ERROR RECORD: " + data.toString());//todo сохранять необработанное сообщение
+        }));
         factory.setConcurrency(1);
         return factory;
     }

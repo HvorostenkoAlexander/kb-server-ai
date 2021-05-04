@@ -71,12 +71,10 @@ public class KafkaBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
-        factory.setErrorHandler(new SeekToCurrentErrorHandler(
-                (record, error) -> {
-                    log.error("--- ERROR: "+error.getMessage());
-                    log.error("--- ERROR RECORD: "+record.toString());
-                }, new FixedBackOff(5000L, 1))
-        );
+        factory.setErrorHandler(((thrownException, data) -> {
+            log.error("--- ERROR: " + thrownException.getMessage());
+            log.error("--- ERROR RECORD: " + data.toString());//todo сохранять необработанное сообщение
+        }));
         factory.setConcurrency(1);
 
         return factory;
