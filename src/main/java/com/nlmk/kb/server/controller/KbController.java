@@ -38,7 +38,7 @@ public class KbController {
         val sadimStub = new ObjectMapper()
                 .readValue(stubJson, PreAttestationParam.class);
 
-        sadimStub.setPrimeID(primeId);
+        sadimStub.setPrimeId(primeId);
 
         return  ResponseEntity.ok(sadimStub);
     }
