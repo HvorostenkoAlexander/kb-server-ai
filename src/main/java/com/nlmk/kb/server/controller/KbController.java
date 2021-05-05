@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class KbController {
 
-    @GetMapping("/sadim/{primeId}")
-    public ResponseEntity<PreAttestationParam> sadimStub(@PathVariable String primeId) throws JsonProcessingException {
+    // @RequestParam(value = "tkNum", required = false) String tkNum
 
-        val stubJson="{\n" +
-                "\"primeID\": \"0\",\n" +
+    @GetMapping("/sadim")
+    public ResponseEntity<PreAttestationParam> sadimStub(@RequestParam(value = "primeId", required = true) String primeId) throws JsonProcessingException {
+
+        val stubJson = "{\n" +
+                "\"primeId\": \"0\",\n" +
                 "\"t12_min\": 865,\n" +
                 "\"t12_max\": 905,\n" +
                 "\"tcm_min\": 550,\n" +
@@ -40,6 +42,6 @@ public class KbController {
 
         sadimStub.setPrimeId(primeId);
 
-        return  ResponseEntity.ok(sadimStub);
+        return ResponseEntity.ok(sadimStub);
     }
 }
