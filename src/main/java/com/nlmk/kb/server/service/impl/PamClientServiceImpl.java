@@ -41,7 +41,6 @@ public class PamClientServiceImpl implements PamClientService {
                 com.nlmk.kb.server.entity.pam.AttestationRequest.class);
     }
 
-    //     с целью проверки работы exception handler
     private void generateException(String operation){
         if (operation.equals("D")) {
             throw new RuntimeException("не удалось передать сообщение в pam-server.");

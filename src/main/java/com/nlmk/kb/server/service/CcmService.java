@@ -19,13 +19,13 @@ public class CcmService {
 
     private final PamClientService pamClientService;
 
-    //    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
-//            topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
-//                    partitionOffsets =
-//                    @PartitionOffset(partition = "0", initialOffset = "0")),})
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
-            topics = {"${kafka.ccm.topicReq}"}
-    )
+        @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
+            topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
+                    partitionOffsets =
+                    @PartitionOffset(partition = "0", initialOffset = "0")),})
+//    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
+//            topics = {"${kafka.ccm.topicReq}"}
+//    )
     public void receiveMessageReq(@Payload AttestationRequest request) {
 
         log.info("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
