@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PreAttestationParam {
-    @JsonProperty("primeID")
-    private String primeID; //"идентификатор"
+    @JsonProperty("primeId")
+    private String primeId; //"идентификатор"
 
     @JsonProperty("t12_min")
     private Long t12Min;// "Температура конца прокатки (мin)"
