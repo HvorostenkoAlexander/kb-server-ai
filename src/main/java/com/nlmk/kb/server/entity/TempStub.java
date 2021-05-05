@@ -1,7 +1,11 @@
 package com.nlmk.kb.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class TempStub {
     @JsonProperty("primeID")
     private String primeID; //"идентификатор"
@@ -40,7 +44,7 @@ public class TempStub {
     private Long ph23sgp;// "Процент длины полосы, на которой толщина входит в (2/3) допуска"
 
     @JsonProperty("lclThckng")
-    private Long lclThckng;// "Высота местных утолщений по ширине полосы"
+    private Long[] lclThckng;// "Высота местных утолщений по ширине полосы"
 
     @JsonProperty("estimate")
     private Long estimate;// "Оценка годности полосы"
