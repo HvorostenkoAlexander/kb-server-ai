@@ -34,6 +34,6 @@ public class CcmService {
 
         val value = ValueConverter.fromKafkaAttestationRequest(request);
 
-        pamClientService.postAttestationRequest(value);
+       // pamClientService.postAttestationRequest(value);
     }
 }
