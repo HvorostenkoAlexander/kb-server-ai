@@ -22,7 +22,8 @@ public class KafkaIntegralParamMessageServiceImpl implements KafkaIntegralParamM
         }
 
         if (messageRepository.existsByOffsetAndPartition(message.getOffset(), message.getPartition())) {
-            log.info("--- the message with offset = {} is already present in the database ", message.getKey());
+            log.info("--- the message with offset = {} is already present in the database. message key: {} ",
+                    message.getOffset(), message.getKey());
             return;
         }
 
