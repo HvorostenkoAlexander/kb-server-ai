@@ -2,26 +2,22 @@ package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.kb.server.entity.TempStub;
+import com.nlmk.kb.server.entity.PreAttestationParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import nlmk.l3.ccm.pgp.AttestationRequest;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class KbController {
 
-    @GetMapping("/sadim/{primeID}")
-    public ResponseEntity<TempStub> sadimStub(@PathVariable String primeID) throws JsonProcessingException {
+    @GetMapping("/sadim/{primeId}")
+    public ResponseEntity<PreAttestationParam> sadimStub(@PathVariable String primeId) throws JsonProcessingException {
 
         val stubJson="{\n" +
                 "\"primeID\": \"0\",\n" +
@@ -40,9 +36,9 @@ public class KbController {
                 "\"estimate\": 5\n" +
                 "}";
         val sadimStub = new ObjectMapper()
-                .readValue(stubJson, TempStub.class);
+                .readValue(stubJson, PreAttestationParam.class);
 
-        sadimStub.setPrimeID(primeID);
+        sadimStub.setPrimeID(primeId);
 
         return  ResponseEntity.ok(sadimStub);
     }

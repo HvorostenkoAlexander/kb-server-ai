@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class TempStub {
+public class PreAttestationParam {
     @JsonProperty("primeID")
     private String primeID; //"идентификатор"
 
