@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,9 +37,10 @@ public class PamClientServiceImpl implements PamClientService {
             header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
 
-        restTemplate.postForEntity(pamUrl,
+        ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
                 new HttpEntity<Object>(pamAttestetionRequest, header),
-                com.nlmk.kb.server.entity.pam.AttestationRequest.class);
+                Long.class);
+        log.info("--- response: "+response.getBody());
     }
 
     private void generateException(String operation){
