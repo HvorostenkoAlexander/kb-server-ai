@@ -37,7 +37,7 @@ public class PdmService {
 //                key, timestamp, partition, offset, topic,
 //                 request);
         log.info("--- PDM consumer record: {}",request);
-
+        log.info("--- PDM SpEquivalents: {}",(SpEquivalents) request.value());
 
     }
 }
