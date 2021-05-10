@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nlmk.pdm.NsdAsapChemicalProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@Profile("prod")
 public class PdmService {
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
@@ -22,16 +24,20 @@ public class PdmService {
 //                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )
-    public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
-                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
-                                  @Header(KafkaHeaders.OFFSET) int offset,
-                                  @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                  @Payload Object request) {
+    public void receiveMessageReq(
+                                  @Payload NsdAsapChemicalProperties request) {
 
-        log.info("--- PDM received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
-                key, timestamp, partition, offset, topic,
-                (NsdAsapChemicalProperties) request);
+        log.info("--- PDM received message:  value:{}", request);
+
+//        log.info("--- PDM received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
+//                key, timestamp, partition, offset, topic,
+//                 request);
     }
+
+//    @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+//    @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+//    @Header(KafkaHeaders.OFFSET) int offset,
+//    @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
+//    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
 
 }
