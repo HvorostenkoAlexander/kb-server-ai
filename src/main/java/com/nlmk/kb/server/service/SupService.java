@@ -63,9 +63,9 @@ public class SupService {
 
         integralParamMessageService.messageProcessing(receivedMessage);
 
-        if (ip.getData() != null) {
+        if (ip.getData() != null && log.isDebugEnabled()) {
             List<IntegralParam> integralParams = integralParamService.findByDataPrimeId(ip.getData().getPrimeID());
-            log.info("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
+            log.debug("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
         }
     }
 
