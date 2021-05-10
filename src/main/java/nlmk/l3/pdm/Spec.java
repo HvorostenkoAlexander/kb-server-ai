@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package nlmk.pdm;
+package nlmk.l3.pdm;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Spec extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 5858419302362969191L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Spec\",\"namespace\":\"nlmk.pdm\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\"},{\"name\":\"specName\",\"type\":\"string\"},{\"name\":\"specTypeCode\",\"type\":\"int\"},{\"name\":\"specValue\",\"type\":\"string\"},{\"name\":\"specMeasure\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = -371951307473448421L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Spec\",\"namespace\":\"nlmk.l3.pdm\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\"},{\"name\":\"specName\",\"type\":\"string\"},{\"name\":\"specTypeCode\",\"type\":\"int\"},{\"name\":\"specValue\",\"type\":\"string\"},{\"name\":\"specMeasure\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -216,8 +216,8 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
    * Creates a new Spec RecordBuilder.
    * @return A new Spec RecordBuilder
    */
-  public static nlmk.pdm.Spec.Builder newBuilder() {
-    return new nlmk.pdm.Spec.Builder();
+  public static nlmk.l3.pdm.Spec.Builder newBuilder() {
+    return new nlmk.l3.pdm.Spec.Builder();
   }
 
   /**
@@ -225,11 +225,11 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
    * @param other The existing builder to copy.
    * @return A new Spec RecordBuilder
    */
-  public static nlmk.pdm.Spec.Builder newBuilder(nlmk.pdm.Spec.Builder other) {
+  public static nlmk.l3.pdm.Spec.Builder newBuilder(nlmk.l3.pdm.Spec.Builder other) {
     if (other == null) {
-      return new nlmk.pdm.Spec.Builder();
+      return new nlmk.l3.pdm.Spec.Builder();
     } else {
-      return new nlmk.pdm.Spec.Builder(other);
+      return new nlmk.l3.pdm.Spec.Builder(other);
     }
   }
 
@@ -238,11 +238,11 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
    * @param other The existing instance to copy.
    * @return A new Spec RecordBuilder
    */
-  public static nlmk.pdm.Spec.Builder newBuilder(nlmk.pdm.Spec other) {
+  public static nlmk.l3.pdm.Spec.Builder newBuilder(nlmk.l3.pdm.Spec other) {
     if (other == null) {
-      return new nlmk.pdm.Spec.Builder();
+      return new nlmk.l3.pdm.Spec.Builder();
     } else {
-      return new nlmk.pdm.Spec.Builder(other);
+      return new nlmk.l3.pdm.Spec.Builder(other);
     }
   }
 
@@ -268,7 +268,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(nlmk.pdm.Spec.Builder other) {
+    private Builder(nlmk.l3.pdm.Spec.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.specCode)) {
         this.specCode = data().deepCopy(fields()[0].schema(), other.specCode);
@@ -296,7 +296,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
      * Creates a Builder by copying an existing Spec instance
      * @param other The existing instance to copy.
      */
-    private Builder(nlmk.pdm.Spec other) {
+    private Builder(nlmk.l3.pdm.Spec other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.specCode)) {
         this.specCode = data().deepCopy(fields()[0].schema(), other.specCode);
@@ -334,7 +334,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * @param value The value of 'specCode'.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder setSpecCode(int value) {
+    public nlmk.l3.pdm.Spec.Builder setSpecCode(int value) {
       validate(fields()[0], value);
       this.specCode = value;
       fieldSetFlags()[0] = true;
@@ -354,7 +354,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * Clears the value of the 'specCode' field.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder clearSpecCode() {
+    public nlmk.l3.pdm.Spec.Builder clearSpecCode() {
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -373,7 +373,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * @param value The value of 'specName'.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder setSpecName(java.lang.CharSequence value) {
+    public nlmk.l3.pdm.Spec.Builder setSpecName(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.specName = value;
       fieldSetFlags()[1] = true;
@@ -393,7 +393,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * Clears the value of the 'specName' field.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder clearSpecName() {
+    public nlmk.l3.pdm.Spec.Builder clearSpecName() {
       specName = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -413,7 +413,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * @param value The value of 'specTypeCode'.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder setSpecTypeCode(int value) {
+    public nlmk.l3.pdm.Spec.Builder setSpecTypeCode(int value) {
       validate(fields()[2], value);
       this.specTypeCode = value;
       fieldSetFlags()[2] = true;
@@ -433,7 +433,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * Clears the value of the 'specTypeCode' field.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder clearSpecTypeCode() {
+    public nlmk.l3.pdm.Spec.Builder clearSpecTypeCode() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -452,7 +452,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * @param value The value of 'specValue'.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder setSpecValue(java.lang.CharSequence value) {
+    public nlmk.l3.pdm.Spec.Builder setSpecValue(java.lang.CharSequence value) {
       validate(fields()[3], value);
       this.specValue = value;
       fieldSetFlags()[3] = true;
@@ -472,7 +472,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * Clears the value of the 'specValue' field.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder clearSpecValue() {
+    public nlmk.l3.pdm.Spec.Builder clearSpecValue() {
       specValue = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -492,7 +492,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * @param value The value of 'specMeasure'.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder setSpecMeasure(java.lang.CharSequence value) {
+    public nlmk.l3.pdm.Spec.Builder setSpecMeasure(java.lang.CharSequence value) {
       validate(fields()[4], value);
       this.specMeasure = value;
       fieldSetFlags()[4] = true;
@@ -512,7 +512,7 @@ public class Spec extends org.apache.avro.specific.SpecificRecordBase implements
       * Clears the value of the 'specMeasure' field.
       * @return This builder.
       */
-    public nlmk.pdm.Spec.Builder clearSpecMeasure() {
+    public nlmk.l3.pdm.Spec.Builder clearSpecMeasure() {
       specMeasure = null;
       fieldSetFlags()[4] = false;
       return this;

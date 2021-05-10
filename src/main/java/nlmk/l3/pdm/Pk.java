@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package nlmk.pdm;
+package nlmk.l3.pdm;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Pk extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 2009358026424619032L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Pk\",\"namespace\":\"nlmk.pdm\",\"fields\":[{\"name\":\"systemCode\",\"type\":\"string\"},{\"name\":\"directoryId\",\"type\":\"string\"},{\"name\":\"Id\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = 8762320896145865848L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Pk\",\"namespace\":\"nlmk.l3.pdm\",\"fields\":[{\"name\":\"systemCode\",\"type\":\"string\"},{\"name\":\"directoryId\",\"type\":\"string\"},{\"name\":\"Id\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -172,8 +172,8 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
    * Creates a new Pk RecordBuilder.
    * @return A new Pk RecordBuilder
    */
-  public static nlmk.pdm.Pk.Builder newBuilder() {
-    return new nlmk.pdm.Pk.Builder();
+  public static nlmk.l3.pdm.Pk.Builder newBuilder() {
+    return new nlmk.l3.pdm.Pk.Builder();
   }
 
   /**
@@ -181,11 +181,11 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
    * @param other The existing builder to copy.
    * @return A new Pk RecordBuilder
    */
-  public static nlmk.pdm.Pk.Builder newBuilder(nlmk.pdm.Pk.Builder other) {
+  public static nlmk.l3.pdm.Pk.Builder newBuilder(nlmk.l3.pdm.Pk.Builder other) {
     if (other == null) {
-      return new nlmk.pdm.Pk.Builder();
+      return new nlmk.l3.pdm.Pk.Builder();
     } else {
-      return new nlmk.pdm.Pk.Builder(other);
+      return new nlmk.l3.pdm.Pk.Builder(other);
     }
   }
 
@@ -194,11 +194,11 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
    * @param other The existing instance to copy.
    * @return A new Pk RecordBuilder
    */
-  public static nlmk.pdm.Pk.Builder newBuilder(nlmk.pdm.Pk other) {
+  public static nlmk.l3.pdm.Pk.Builder newBuilder(nlmk.l3.pdm.Pk other) {
     if (other == null) {
-      return new nlmk.pdm.Pk.Builder();
+      return new nlmk.l3.pdm.Pk.Builder();
     } else {
-      return new nlmk.pdm.Pk.Builder(other);
+      return new nlmk.l3.pdm.Pk.Builder(other);
     }
   }
 
@@ -222,7 +222,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(nlmk.pdm.Pk.Builder other) {
+    private Builder(nlmk.l3.pdm.Pk.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.systemCode)) {
         this.systemCode = data().deepCopy(fields()[0].schema(), other.systemCode);
@@ -242,7 +242,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
      * Creates a Builder by copying an existing Pk instance
      * @param other The existing instance to copy.
      */
-    private Builder(nlmk.pdm.Pk other) {
+    private Builder(nlmk.l3.pdm.Pk other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.systemCode)) {
         this.systemCode = data().deepCopy(fields()[0].schema(), other.systemCode);
@@ -272,7 +272,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
       * @param value The value of 'systemCode'.
       * @return This builder.
       */
-    public nlmk.pdm.Pk.Builder setSystemCode(java.lang.CharSequence value) {
+    public nlmk.l3.pdm.Pk.Builder setSystemCode(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.systemCode = value;
       fieldSetFlags()[0] = true;
@@ -292,7 +292,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
       * Clears the value of the 'systemCode' field.
       * @return This builder.
       */
-    public nlmk.pdm.Pk.Builder clearSystemCode() {
+    public nlmk.l3.pdm.Pk.Builder clearSystemCode() {
       systemCode = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -312,7 +312,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
       * @param value The value of 'directoryId'.
       * @return This builder.
       */
-    public nlmk.pdm.Pk.Builder setDirectoryId(java.lang.CharSequence value) {
+    public nlmk.l3.pdm.Pk.Builder setDirectoryId(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.directoryId = value;
       fieldSetFlags()[1] = true;
@@ -332,7 +332,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
       * Clears the value of the 'directoryId' field.
       * @return This builder.
       */
-    public nlmk.pdm.Pk.Builder clearDirectoryId() {
+    public nlmk.l3.pdm.Pk.Builder clearDirectoryId() {
       directoryId = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -352,7 +352,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
       * @param value The value of 'Id'.
       * @return This builder.
       */
-    public nlmk.pdm.Pk.Builder setId(java.lang.CharSequence value) {
+    public nlmk.l3.pdm.Pk.Builder setId(java.lang.CharSequence value) {
       validate(fields()[2], value);
       this.Id = value;
       fieldSetFlags()[2] = true;
@@ -372,7 +372,7 @@ public class Pk extends org.apache.avro.specific.SpecificRecordBase implements o
       * Clears the value of the 'Id' field.
       * @return This builder.
       */
-    public nlmk.pdm.Pk.Builder clearId() {
+    public nlmk.l3.pdm.Pk.Builder clearId() {
       Id = null;
       fieldSetFlags()[2] = false;
       return this;

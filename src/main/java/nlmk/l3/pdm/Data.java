@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package nlmk.pdm;
+package nlmk.l3.pdm;
 
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Data extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2093848080158099998L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Data\",\"namespace\":\"nlmk.pdm\",\"fields\":[{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Spec\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\"},{\"name\":\"specName\",\"type\":\"string\"},{\"name\":\"specTypeCode\",\"type\":\"int\"},{\"name\":\"specValue\",\"type\":\"string\"},{\"name\":\"specMeasure\",\"type\":\"string\"}]}}}]}");
+  private static final long serialVersionUID = -397930285544613647L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Data\",\"namespace\":\"nlmk.l3.pdm\",\"fields\":[{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Spec\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\"},{\"name\":\"specName\",\"type\":\"string\"},{\"name\":\"specTypeCode\",\"type\":\"int\"},{\"name\":\"specValue\",\"type\":\"string\"},{\"name\":\"specMeasure\",\"type\":\"string\"}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -71,7 +71,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
     return DECODER.decode(b);
   }
 
-   private java.util.List<nlmk.pdm.Spec> specifications;
+   private java.util.List<nlmk.l3.pdm.Spec> specifications;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -84,7 +84,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
    * All-args constructor.
    * @param specifications The new value for specifications
    */
-  public Data(java.util.List<nlmk.pdm.Spec> specifications) {
+  public Data(java.util.List<nlmk.l3.pdm.Spec> specifications) {
     this.specifications = specifications;
   }
 
@@ -102,7 +102,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: specifications = (java.util.List<nlmk.pdm.Spec>)value$; break;
+    case 0: specifications = (java.util.List<nlmk.l3.pdm.Spec>)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -111,7 +111,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
    * Gets the value of the 'specifications' field.
    * @return The value of the 'specifications' field.
    */
-  public java.util.List<nlmk.pdm.Spec> getSpecifications() {
+  public java.util.List<nlmk.l3.pdm.Spec> getSpecifications() {
     return specifications;
   }
 
@@ -120,7 +120,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
    * Sets the value of the 'specifications' field.
    * @param value the value to set.
    */
-  public void setSpecifications(java.util.List<nlmk.pdm.Spec> value) {
+  public void setSpecifications(java.util.List<nlmk.l3.pdm.Spec> value) {
     this.specifications = value;
   }
 
@@ -128,8 +128,8 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
    * Creates a new Data RecordBuilder.
    * @return A new Data RecordBuilder
    */
-  public static nlmk.pdm.Data.Builder newBuilder() {
-    return new nlmk.pdm.Data.Builder();
+  public static nlmk.l3.pdm.Data.Builder newBuilder() {
+    return new nlmk.l3.pdm.Data.Builder();
   }
 
   /**
@@ -137,11 +137,11 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
    * @param other The existing builder to copy.
    * @return A new Data RecordBuilder
    */
-  public static nlmk.pdm.Data.Builder newBuilder(nlmk.pdm.Data.Builder other) {
+  public static nlmk.l3.pdm.Data.Builder newBuilder(nlmk.l3.pdm.Data.Builder other) {
     if (other == null) {
-      return new nlmk.pdm.Data.Builder();
+      return new nlmk.l3.pdm.Data.Builder();
     } else {
-      return new nlmk.pdm.Data.Builder(other);
+      return new nlmk.l3.pdm.Data.Builder(other);
     }
   }
 
@@ -150,11 +150,11 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
    * @param other The existing instance to copy.
    * @return A new Data RecordBuilder
    */
-  public static nlmk.pdm.Data.Builder newBuilder(nlmk.pdm.Data other) {
+  public static nlmk.l3.pdm.Data.Builder newBuilder(nlmk.l3.pdm.Data other) {
     if (other == null) {
-      return new nlmk.pdm.Data.Builder();
+      return new nlmk.l3.pdm.Data.Builder();
     } else {
-      return new nlmk.pdm.Data.Builder(other);
+      return new nlmk.l3.pdm.Data.Builder(other);
     }
   }
 
@@ -165,7 +165,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Data>
     implements org.apache.avro.data.RecordBuilder<Data> {
 
-    private java.util.List<nlmk.pdm.Spec> specifications;
+    private java.util.List<nlmk.l3.pdm.Spec> specifications;
 
     /** Creates a new Builder */
     private Builder() {
@@ -176,7 +176,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(nlmk.pdm.Data.Builder other) {
+    private Builder(nlmk.l3.pdm.Data.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.specifications)) {
         this.specifications = data().deepCopy(fields()[0].schema(), other.specifications);
@@ -188,7 +188,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
      * Creates a Builder by copying an existing Data instance
      * @param other The existing instance to copy.
      */
-    private Builder(nlmk.pdm.Data other) {
+    private Builder(nlmk.l3.pdm.Data other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.specifications)) {
         this.specifications = data().deepCopy(fields()[0].schema(), other.specifications);
@@ -200,7 +200,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
       * Gets the value of the 'specifications' field.
       * @return The value.
       */
-    public java.util.List<nlmk.pdm.Spec> getSpecifications() {
+    public java.util.List<nlmk.l3.pdm.Spec> getSpecifications() {
       return specifications;
     }
 
@@ -210,7 +210,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
       * @param value The value of 'specifications'.
       * @return This builder.
       */
-    public nlmk.pdm.Data.Builder setSpecifications(java.util.List<nlmk.pdm.Spec> value) {
+    public nlmk.l3.pdm.Data.Builder setSpecifications(java.util.List<nlmk.l3.pdm.Spec> value) {
       validate(fields()[0], value);
       this.specifications = value;
       fieldSetFlags()[0] = true;
@@ -230,7 +230,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
       * Clears the value of the 'specifications' field.
       * @return This builder.
       */
-    public nlmk.pdm.Data.Builder clearSpecifications() {
+    public nlmk.l3.pdm.Data.Builder clearSpecifications() {
       specifications = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -241,7 +241,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
     public Data build() {
       try {
         Data record = new Data();
-        record.specifications = fieldSetFlags()[0] ? this.specifications : (java.util.List<nlmk.pdm.Spec>) defaultValue(fields()[0]);
+        record.specifications = fieldSetFlags()[0] ? this.specifications : (java.util.List<nlmk.l3.pdm.Spec>) defaultValue(fields()[0]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -278,7 +278,7 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
     out.writeArrayStart();
     out.setItemCount(size0);
     long actualSize0 = 0;
-    for (nlmk.pdm.Spec e0: this.specifications) {
+    for (nlmk.l3.pdm.Spec e0: this.specifications) {
       actualSize0++;
       out.startItem();
       e0.customEncode(out);
@@ -295,17 +295,17 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
     org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
       long size0 = in.readArrayStart();
-      java.util.List<nlmk.pdm.Spec> a0 = this.specifications;
+      java.util.List<nlmk.l3.pdm.Spec> a0 = this.specifications;
       if (a0 == null) {
-        a0 = new SpecificData.Array<nlmk.pdm.Spec>((int)size0, SCHEMA$.getField("specifications").schema());
+        a0 = new SpecificData.Array<nlmk.l3.pdm.Spec>((int)size0, SCHEMA$.getField("specifications").schema());
         this.specifications = a0;
       } else a0.clear();
-      SpecificData.Array<nlmk.pdm.Spec> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<nlmk.pdm.Spec>)a0 : null);
+      SpecificData.Array<nlmk.l3.pdm.Spec> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<nlmk.l3.pdm.Spec>)a0 : null);
       for ( ; 0 < size0; size0 = in.arrayNext()) {
         for ( ; size0 != 0; size0--) {
-          nlmk.pdm.Spec e0 = (ga0 != null ? ga0.peek() : null);
+          nlmk.l3.pdm.Spec e0 = (ga0 != null ? ga0.peek() : null);
           if (e0 == null) {
-            e0 = new nlmk.pdm.Spec();
+            e0 = new nlmk.l3.pdm.Spec();
           }
           e0.customDecode(in);
           a0.add(e0);
@@ -317,17 +317,17 @@ public class Data extends org.apache.avro.specific.SpecificRecordBase implements
         switch (fieldOrder[i].pos()) {
         case 0:
           long size0 = in.readArrayStart();
-          java.util.List<nlmk.pdm.Spec> a0 = this.specifications;
+          java.util.List<nlmk.l3.pdm.Spec> a0 = this.specifications;
           if (a0 == null) {
-            a0 = new SpecificData.Array<nlmk.pdm.Spec>((int)size0, SCHEMA$.getField("specifications").schema());
+            a0 = new SpecificData.Array<nlmk.l3.pdm.Spec>((int)size0, SCHEMA$.getField("specifications").schema());
             this.specifications = a0;
           } else a0.clear();
-          SpecificData.Array<nlmk.pdm.Spec> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<nlmk.pdm.Spec>)a0 : null);
+          SpecificData.Array<nlmk.l3.pdm.Spec> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<nlmk.l3.pdm.Spec>)a0 : null);
           for ( ; 0 < size0; size0 = in.arrayNext()) {
             for ( ; size0 != 0; size0--) {
-              nlmk.pdm.Spec e0 = (ga0 != null ? ga0.peek() : null);
+              nlmk.l3.pdm.Spec e0 = (ga0 != null ? ga0.peek() : null);
               if (e0 == null) {
-                e0 = new nlmk.pdm.Spec();
+                e0 = new nlmk.l3.pdm.Spec();
               }
               e0.customDecode(in);
               a0.add(e0);

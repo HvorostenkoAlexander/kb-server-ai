@@ -80,7 +80,7 @@
       "name": "data"
     }
   ],
-  "namespace": "nlmk.pdm",
+  "namespace": "nlmk.l3.pdm",
   "type": "record",
   "name": "SpEquivalents"
 }

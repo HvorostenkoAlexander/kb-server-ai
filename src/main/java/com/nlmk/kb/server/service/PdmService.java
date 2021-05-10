@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import lombok.extern.slf4j.Slf4j;
-import nlmk.pdm.SpEquivalents;
+import nlmk.l3.pdm.SpEquivalents;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
