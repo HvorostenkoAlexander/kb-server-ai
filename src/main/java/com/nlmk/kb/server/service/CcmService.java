@@ -34,6 +34,7 @@ public class CcmService {
 
         val value = ValueConverter.fromKafkaAttestationRequest(request);
 
+        //todo убрать отправку данных в pam в другое место. тут должна быть только обработка сообщения.
         pamClientService.postAttestationRequest(value);
     }
 }
