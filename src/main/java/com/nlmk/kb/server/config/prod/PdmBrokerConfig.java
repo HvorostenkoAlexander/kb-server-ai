@@ -4,7 +4,7 @@ import com.nlmk.kb.server.config.PdmConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.pdm.SpEquivalents;
+import nlmk.l3.pdm.SpEquivalents;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
