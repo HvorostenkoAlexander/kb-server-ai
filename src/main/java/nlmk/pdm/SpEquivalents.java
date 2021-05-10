@@ -13,24 +13,24 @@ import org.apache.avro.message.BinaryMessageDecoder;
 import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
-public class NsdAsapChemicalProperties extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2974090949876310479L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"NsdAsapChemicalProperties\",\"namespace\":\"nlmk.pdm\",\"fields\":[{\"name\":\"ts\",\"type\":\"string\"},{\"name\":\"op\",\"type\":{\"type\":\"enum\",\"name\":\"opEnum\",\"symbols\":[\"I\",\"U\",\"D\"]}},{\"name\":\"pk\",\"type\":{\"type\":\"record\",\"name\":\"Pk\",\"fields\":[{\"name\":\"systemCode\",\"type\":\"string\"},{\"name\":\"directoryId\",\"type\":\"string\"},{\"name\":\"Id\",\"type\":\"string\"}]}},{\"name\":\"data\",\"type\":{\"type\":\"record\",\"name\":\"Data\",\"fields\":[{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Spec\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\"},{\"name\":\"specName\",\"type\":\"string\"},{\"name\":\"specTypeCode\",\"type\":\"int\"},{\"name\":\"specValue\",\"type\":\"string\"},{\"name\":\"specMeasure\",\"type\":\"string\"}]}}}]}}]}");
+public class SpEquivalents extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  private static final long serialVersionUID = 5698586218514934449L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"SpEquivalents\",\"namespace\":\"nlmk.pdm\",\"fields\":[{\"name\":\"ts\",\"type\":\"string\"},{\"name\":\"op\",\"type\":{\"type\":\"enum\",\"name\":\"opEnum\",\"symbols\":[\"I\",\"U\",\"D\"]}},{\"name\":\"pk\",\"type\":{\"type\":\"record\",\"name\":\"Pk\",\"fields\":[{\"name\":\"systemCode\",\"type\":\"string\"},{\"name\":\"directoryId\",\"type\":\"string\"},{\"name\":\"Id\",\"type\":\"string\"}]}},{\"name\":\"data\",\"type\":{\"type\":\"record\",\"name\":\"Data\",\"fields\":[{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Spec\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\"},{\"name\":\"specName\",\"type\":\"string\"},{\"name\":\"specTypeCode\",\"type\":\"int\"},{\"name\":\"specValue\",\"type\":\"string\"},{\"name\":\"specMeasure\",\"type\":\"string\"}]}}}]}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
 
-  private static final BinaryMessageEncoder<NsdAsapChemicalProperties> ENCODER =
-      new BinaryMessageEncoder<NsdAsapChemicalProperties>(MODEL$, SCHEMA$);
+  private static final BinaryMessageEncoder<SpEquivalents> ENCODER =
+      new BinaryMessageEncoder<SpEquivalents>(MODEL$, SCHEMA$);
 
-  private static final BinaryMessageDecoder<NsdAsapChemicalProperties> DECODER =
-      new BinaryMessageDecoder<NsdAsapChemicalProperties>(MODEL$, SCHEMA$);
+  private static final BinaryMessageDecoder<SpEquivalents> DECODER =
+      new BinaryMessageDecoder<SpEquivalents>(MODEL$, SCHEMA$);
 
   /**
    * Return the BinaryMessageEncoder instance used by this class.
    * @return the message encoder used by this class
    */
-  public static BinaryMessageEncoder<NsdAsapChemicalProperties> getEncoder() {
+  public static BinaryMessageEncoder<SpEquivalents> getEncoder() {
     return ENCODER;
   }
 
@@ -38,7 +38,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
    * Return the BinaryMessageDecoder instance used by this class.
    * @return the message decoder used by this class
    */
-  public static BinaryMessageDecoder<NsdAsapChemicalProperties> getDecoder() {
+  public static BinaryMessageDecoder<SpEquivalents> getDecoder() {
     return DECODER;
   }
 
@@ -47,12 +47,12 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
    * @param resolver a {@link SchemaStore} used to find schemas by fingerprint
    * @return a BinaryMessageDecoder instance for this class backed by the given SchemaStore
    */
-  public static BinaryMessageDecoder<NsdAsapChemicalProperties> createDecoder(SchemaStore resolver) {
-    return new BinaryMessageDecoder<NsdAsapChemicalProperties>(MODEL$, SCHEMA$, resolver);
+  public static BinaryMessageDecoder<SpEquivalents> createDecoder(SchemaStore resolver) {
+    return new BinaryMessageDecoder<SpEquivalents>(MODEL$, SCHEMA$, resolver);
   }
 
   /**
-   * Serializes this NsdAsapChemicalProperties to a ByteBuffer.
+   * Serializes this SpEquivalents to a ByteBuffer.
    * @return a buffer holding the serialized data for this instance
    * @throws java.io.IOException if this instance could not be serialized
    */
@@ -61,12 +61,12 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
   }
 
   /**
-   * Deserializes a NsdAsapChemicalProperties from a ByteBuffer.
+   * Deserializes a SpEquivalents from a ByteBuffer.
    * @param b a byte buffer holding serialized data for an instance of this class
-   * @return a NsdAsapChemicalProperties instance decoded from the given buffer
+   * @return a SpEquivalents instance decoded from the given buffer
    * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
    */
-  public static NsdAsapChemicalProperties fromByteBuffer(
+  public static SpEquivalents fromByteBuffer(
       java.nio.ByteBuffer b) throws java.io.IOException {
     return DECODER.decode(b);
   }
@@ -81,7 +81,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
    * to their default values from the schema.  If that is desired then
    * one should use <code>newBuilder()</code>.
    */
-  public NsdAsapChemicalProperties() {}
+  public SpEquivalents() {}
 
   /**
    * All-args constructor.
@@ -90,7 +90,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
    * @param pk The new value for pk
    * @param data The new value for data
    */
-  public NsdAsapChemicalProperties(java.lang.CharSequence ts, nlmk.pdm.opEnum op, nlmk.pdm.Pk pk, nlmk.pdm.Data data) {
+  public SpEquivalents(java.lang.CharSequence ts, nlmk.pdm.opEnum op, nlmk.pdm.Pk pk, nlmk.pdm.Data data) {
     this.ts = ts;
     this.op = op;
     this.pk = pk;
@@ -191,45 +191,45 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
   }
 
   /**
-   * Creates a new NsdAsapChemicalProperties RecordBuilder.
-   * @return A new NsdAsapChemicalProperties RecordBuilder
+   * Creates a new SpEquivalents RecordBuilder.
+   * @return A new SpEquivalents RecordBuilder
    */
-  public static nlmk.pdm.NsdAsapChemicalProperties.Builder newBuilder() {
-    return new nlmk.pdm.NsdAsapChemicalProperties.Builder();
+  public static nlmk.pdm.SpEquivalents.Builder newBuilder() {
+    return new nlmk.pdm.SpEquivalents.Builder();
   }
 
   /**
-   * Creates a new NsdAsapChemicalProperties RecordBuilder by copying an existing Builder.
+   * Creates a new SpEquivalents RecordBuilder by copying an existing Builder.
    * @param other The existing builder to copy.
-   * @return A new NsdAsapChemicalProperties RecordBuilder
+   * @return A new SpEquivalents RecordBuilder
    */
-  public static nlmk.pdm.NsdAsapChemicalProperties.Builder newBuilder(nlmk.pdm.NsdAsapChemicalProperties.Builder other) {
+  public static nlmk.pdm.SpEquivalents.Builder newBuilder(nlmk.pdm.SpEquivalents.Builder other) {
     if (other == null) {
-      return new nlmk.pdm.NsdAsapChemicalProperties.Builder();
+      return new nlmk.pdm.SpEquivalents.Builder();
     } else {
-      return new nlmk.pdm.NsdAsapChemicalProperties.Builder(other);
+      return new nlmk.pdm.SpEquivalents.Builder(other);
     }
   }
 
   /**
-   * Creates a new NsdAsapChemicalProperties RecordBuilder by copying an existing NsdAsapChemicalProperties instance.
+   * Creates a new SpEquivalents RecordBuilder by copying an existing SpEquivalents instance.
    * @param other The existing instance to copy.
-   * @return A new NsdAsapChemicalProperties RecordBuilder
+   * @return A new SpEquivalents RecordBuilder
    */
-  public static nlmk.pdm.NsdAsapChemicalProperties.Builder newBuilder(nlmk.pdm.NsdAsapChemicalProperties other) {
+  public static nlmk.pdm.SpEquivalents.Builder newBuilder(nlmk.pdm.SpEquivalents other) {
     if (other == null) {
-      return new nlmk.pdm.NsdAsapChemicalProperties.Builder();
+      return new nlmk.pdm.SpEquivalents.Builder();
     } else {
-      return new nlmk.pdm.NsdAsapChemicalProperties.Builder(other);
+      return new nlmk.pdm.SpEquivalents.Builder(other);
     }
   }
 
   /**
-   * RecordBuilder for NsdAsapChemicalProperties instances.
+   * RecordBuilder for SpEquivalents instances.
    */
   @org.apache.avro.specific.AvroGenerated
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<NsdAsapChemicalProperties>
-    implements org.apache.avro.data.RecordBuilder<NsdAsapChemicalProperties> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<SpEquivalents>
+    implements org.apache.avro.data.RecordBuilder<SpEquivalents> {
 
     private java.lang.CharSequence ts;
     private nlmk.pdm.opEnum op;
@@ -247,7 +247,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(nlmk.pdm.NsdAsapChemicalProperties.Builder other) {
+    private Builder(nlmk.pdm.SpEquivalents.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.ts)) {
         this.ts = data().deepCopy(fields()[0].schema(), other.ts);
@@ -274,10 +274,10 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
     }
 
     /**
-     * Creates a Builder by copying an existing NsdAsapChemicalProperties instance
+     * Creates a Builder by copying an existing SpEquivalents instance
      * @param other The existing instance to copy.
      */
-    private Builder(nlmk.pdm.NsdAsapChemicalProperties other) {
+    private Builder(nlmk.pdm.SpEquivalents other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.ts)) {
         this.ts = data().deepCopy(fields()[0].schema(), other.ts);
@@ -313,7 +313,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * @param value The value of 'ts'.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder setTs(java.lang.CharSequence value) {
+    public nlmk.pdm.SpEquivalents.Builder setTs(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.ts = value;
       fieldSetFlags()[0] = true;
@@ -333,7 +333,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * Clears the value of the 'ts' field.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder clearTs() {
+    public nlmk.pdm.SpEquivalents.Builder clearTs() {
       ts = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -353,7 +353,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * @param value The value of 'op'.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder setOp(nlmk.pdm.opEnum value) {
+    public nlmk.pdm.SpEquivalents.Builder setOp(nlmk.pdm.opEnum value) {
       validate(fields()[1], value);
       this.op = value;
       fieldSetFlags()[1] = true;
@@ -373,7 +373,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * Clears the value of the 'op' field.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder clearOp() {
+    public nlmk.pdm.SpEquivalents.Builder clearOp() {
       op = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -393,7 +393,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * @param value The value of 'pk'.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder setPk(nlmk.pdm.Pk value) {
+    public nlmk.pdm.SpEquivalents.Builder setPk(nlmk.pdm.Pk value) {
       validate(fields()[2], value);
       this.pkBuilder = null;
       this.pk = value;
@@ -430,7 +430,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
      * @return This builder.
      */
 
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder setPkBuilder(nlmk.pdm.Pk.Builder value) {
+    public nlmk.pdm.SpEquivalents.Builder setPkBuilder(nlmk.pdm.Pk.Builder value) {
       clearPk();
       pkBuilder = value;
       return this;
@@ -448,7 +448,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * Clears the value of the 'pk' field.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder clearPk() {
+    public nlmk.pdm.SpEquivalents.Builder clearPk() {
       pk = null;
       pkBuilder = null;
       fieldSetFlags()[2] = false;
@@ -469,7 +469,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * @param value The value of 'data'.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder setData(nlmk.pdm.Data value) {
+    public nlmk.pdm.SpEquivalents.Builder setData(nlmk.pdm.Data value) {
       validate(fields()[3], value);
       this.dataBuilder = null;
       this.data = value;
@@ -506,7 +506,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
      * @return This builder.
      */
 
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder setDataBuilder(nlmk.pdm.Data.Builder value) {
+    public nlmk.pdm.SpEquivalents.Builder setDataBuilder(nlmk.pdm.Data.Builder value) {
       clearData();
       dataBuilder = value;
       return this;
@@ -524,7 +524,7 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
       * Clears the value of the 'data' field.
       * @return This builder.
       */
-    public nlmk.pdm.NsdAsapChemicalProperties.Builder clearData() {
+    public nlmk.pdm.SpEquivalents.Builder clearData() {
       data = null;
       dataBuilder = null;
       fieldSetFlags()[3] = false;
@@ -533,9 +533,9 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
 
     @Override
     @SuppressWarnings("unchecked")
-    public NsdAsapChemicalProperties build() {
+    public SpEquivalents build() {
       try {
-        NsdAsapChemicalProperties record = new NsdAsapChemicalProperties();
+        SpEquivalents record = new SpEquivalents();
         record.ts = fieldSetFlags()[0] ? this.ts : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.op = fieldSetFlags()[1] ? this.op : (nlmk.pdm.opEnum) defaultValue(fields()[1]);
         if (pkBuilder != null) {
@@ -568,8 +568,8 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumWriter<NsdAsapChemicalProperties>
-    WRITER$ = (org.apache.avro.io.DatumWriter<NsdAsapChemicalProperties>)MODEL$.createDatumWriter(SCHEMA$);
+  private static final org.apache.avro.io.DatumWriter<SpEquivalents>
+    WRITER$ = (org.apache.avro.io.DatumWriter<SpEquivalents>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
     throws java.io.IOException {
@@ -577,8 +577,8 @@ public class NsdAsapChemicalProperties extends org.apache.avro.specific.Specific
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumReader<NsdAsapChemicalProperties>
-    READER$ = (org.apache.avro.io.DatumReader<NsdAsapChemicalProperties>)MODEL$.createDatumReader(SCHEMA$);
+  private static final org.apache.avro.io.DatumReader<SpEquivalents>
+    READER$ = (org.apache.avro.io.DatumReader<SpEquivalents>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {

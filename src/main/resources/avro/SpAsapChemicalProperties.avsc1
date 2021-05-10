@@ -82,5 +82,5 @@
   ],
   "namespace": "nlmk.pdm",
   "type": "record",
-  "name": "NsdEquivalents"
+  "name": "SpAsapChemicalProperties"
 }
