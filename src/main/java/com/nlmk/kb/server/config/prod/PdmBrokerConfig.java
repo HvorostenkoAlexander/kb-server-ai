@@ -4,8 +4,8 @@ import com.nlmk.kb.server.config.PdmConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.pdm.NsdAsapChemicalProperties;
+import nlmk.pdm.NsdEquivalents;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,9 +54,9 @@ public class PdmBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, NsdAsapChemicalProperties> kafkaListenerContainerFactoryPdm() {
+    public ConcurrentKafkaListenerContainerFactory<String, NsdEquivalents> kafkaListenerContainerFactoryPdm() {
 
-        ConcurrentKafkaListenerContainerFactory<String, NsdAsapChemicalProperties> factory =
+        ConcurrentKafkaListenerContainerFactory<String, NsdEquivalents> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(pdmConsumerFactory());

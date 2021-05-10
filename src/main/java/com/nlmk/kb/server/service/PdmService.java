@@ -2,11 +2,11 @@ package com.nlmk.kb.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nlmk.pdm.NsdAsapChemicalProperties;
+import nlmk.pdm.NsdEquivalents;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -18,14 +18,14 @@ public class PdmService {
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topicPartitions = {
-                    @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0",
-                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
-//                    @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-equivalents.0",
-//                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
+//                    @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0",
+//                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-equivalents.0",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )
     public void receiveMessageReq(
-                                  @Payload NsdAsapChemicalProperties request) {
+                                  @Payload NsdEquivalents request) {
 
         log.info("--- PDM received message:  value:{}", request);
 
