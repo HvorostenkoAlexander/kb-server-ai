@@ -30,10 +30,10 @@ public class PdmService {
                                    @Header(KafkaHeaders.OFFSET) int offset,
                                    @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
                                    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                   @Payload SpEquivalents request) {
+                                   @Payload Object request) {
 
         log.info("--- PDM received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
                 key, timestamp, partition, offset, topic,
-                request);
+                (SpEquivalents) request);
     }
 }

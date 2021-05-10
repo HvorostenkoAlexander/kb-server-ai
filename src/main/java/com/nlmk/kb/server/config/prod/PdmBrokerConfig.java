@@ -53,9 +53,9 @@ public class PdmBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SpEquivalents> kafkaListenerContainerFactoryPdm() {
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactoryPdm() {
 
-        ConcurrentKafkaListenerContainerFactory<String, SpEquivalents> factory =
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(pdmConsumerFactory());
