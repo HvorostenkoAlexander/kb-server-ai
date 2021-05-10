@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PdmService {
 
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
+    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topicPartitions = {
                     @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
