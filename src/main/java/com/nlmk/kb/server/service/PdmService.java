@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.pdm.SpEquivalents;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
@@ -30,10 +31,13 @@ public class PdmService {
                                    @Header(KafkaHeaders.OFFSET) int offset,
                                    @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
                                    @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                   @Payload Object request) {
+                                   @Payload ConsumerRecord request) {
 
-        log.info("--- PDM received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
-                key, timestamp, partition, offset, topic,
-                (SpEquivalents) request);
+//        log.info("--- PDM received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
+//                key, timestamp, partition, offset, topic,
+//                 request);
+        log.info("--- PDM consumer record: {}",request);
+
+
     }
 }
