@@ -20,8 +20,8 @@ public class PdmService {
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topicPartitions = {
-//                    @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0",
-//                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.asap-chemical-properties}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
 //                    @TopicPartition(topic = "000-1.l3-pdm.cdc.sp-equivalents.0",
 //                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
                     @TopicPartition(topic = "${kafka.pdm.topic.microstructure}",

@@ -7,6 +7,7 @@ import com.nlmk.kb.server.entity.pdm.Data;
 import com.nlmk.kb.server.entity.pdm.Spec;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import nlmk.l3.pdm.SpAsapChemicalProperties;
 import nlmk.l3.pdm.SpMicrostructure;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -33,6 +34,13 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0":{
+                val pdmDictionary = fromSpAsapChemicalProperties((SpAsapChemicalProperties) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default:{
                 log.error("Not supported type of: {}",record);
                 throw new IllegalArgumentException("Not supported type of: "+record);
@@ -53,6 +61,22 @@ public class PdmConverter {
 
         if (micro.getTs() != null) {
             pdmDictionaryBuilder.ts(micro.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    public static PdmDictionary fromSpAsapChemicalProperties(SpAsapChemicalProperties spChemicalProperties){
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(spChemicalProperties.getOp().name())
+                .pk(
+                        fromPk(spChemicalProperties.getPk())
+                )
+                .data(
+                        fromData(spChemicalProperties.getData())
+                );
+
+        if (spChemicalProperties.getTs() != null) {
+            pdmDictionaryBuilder.ts(spChemicalProperties.getTs().toString());
         }
         return pdmDictionaryBuilder.build();
     }
