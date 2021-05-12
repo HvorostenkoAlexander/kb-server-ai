@@ -8,6 +8,7 @@ import com.nlmk.kb.server.entity.pdm.Spec;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
+import nlmk.l3.pdm.SpEquivalents;
 import nlmk.l3.pdm.SpMicrostructure;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -36,6 +37,13 @@ public class PdmConverter {
             }
             case "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0":{
                 val pdmDictionary = fromSpAsapChemicalProperties((SpAsapChemicalProperties) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-equivalents.0":{
+                val pdmDictionary = fromSpEquivalents((SpEquivalents) record.value());
                 message.setOp(pdmDictionary.getOp());
                 message.setTs(pdmDictionary.getTs());
                 message.setDictionary(pdmDictionary);
@@ -77,6 +85,22 @@ public class PdmConverter {
 
         if (spChemicalProperties.getTs() != null) {
             pdmDictionaryBuilder.ts(spChemicalProperties.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    public static PdmDictionary fromSpEquivalents(SpEquivalents equivalents){
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(equivalents.getOp().name())
+                .pk(
+                        fromPk(equivalents.getPk())
+                )
+                .data(
+                        fromData(equivalents.getData())
+                );
+
+        if (equivalents.getTs() != null) {
+            pdmDictionaryBuilder.ts(equivalents.getTs().toString());
         }
         return pdmDictionaryBuilder.build();
     }
