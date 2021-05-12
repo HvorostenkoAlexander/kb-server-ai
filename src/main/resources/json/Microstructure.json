@@ -1,0 +1,35 @@
+{"ts": "2021-05-11T09:00:26.1252864+03:00",
+  "op": "I",
+  "pk": {
+          "systemCode": "30",
+          "directoryId": "402644",
+          "id": "815"
+        },
+        "data": {
+            "specifications": [
+              {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "11ЮА", "specMeasure": ""},
+              {"specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "ТУ 14-106-454-94", "specMeasure": ""},
+              {"specCode": 416, "specName": "Толщина проката", "specTypeCode": 1, "specValue": "4.00..8.00", "specMeasure": ""},
+              {"specCode": 417, "specName": "Категория (ГОСТ 4041)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 419, "specName": "Зерно феррита, №", "specTypeCode": 1, "specValue": "5..*", "specMeasure": ""},
+              {"specCode": 420, "specName": "Неравномерность зерна феррита (в пределах смежных номеров)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 421, "specName": "Структурно-свободный цементит, балл (ГОСТ 5640-68)", "specTypeCode": 1, "specValue": "0..3", "specMeasure": ""},
+              {"specCode": 75, "specName": "Неметаллические включения (оксиды), балл (ГОСТ 1778-70)", "specTypeCode": 1, "specValue": "0..5", "specMeasure": ""},
+              {"specCode": 73, "specName": "Неметаллические включения (сульфиды), балл (ГОСТ 1778-70)", "specTypeCode": 1, "specValue": "0..5", "specMeasure": ""},
+              {"specCode": 76, "specName": "Неметаллические включения (нитриды), балл (ГОСТ 1778-70)", "specTypeCode": 1, "specValue": "0..5", "specMeasure": ""},
+              {"specCode": 422, "specName": "Неметаллические включения (оксиды - тип В), балл (ASTM E 45-13)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 423, "specName": "Неметаллические включения (сульфиды - тип А), балл (ASTM E 45-13)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 424, "specName": "Неметаллические включения (силикаты - тип С), балл (ASTM E 45-13)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 425, "specName": "Неметаллические включения, балл (ISO 4967:2013)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 426, "specName": "Полосчатость феррито-перлитной структуры, балл (ГОСТ 5640-68)", "specTypeCode": 1, "specValue": "0..2", "specMeasure": ""},
+              {"specCode": 348, "specName": "Глубина обезуглероженного слоя (ГОСТ 1763-68)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 427, "specName": "Зерно перлита, балл (ГОСТ 5640-68)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 138, "specName": "Примечание Дополнительные требования", "specTypeCode": 1, "specValue": "пункт 6", "specMeasure": ""},
+              {"specCode": 222, "specName": "Номер ТК", "specTypeCode": 1, "specValue": "ТК 1,2-3-4-238.03", "specMeasure": ""},
+              {"specCode": 415, "specName": "Маршрут в рамках ТК", "specTypeCode": 1, "specValue": "1", "specMeasure": ""},
+              {"specCode": 418, "specName": "Cсылочный стандарт на аттестацию по микроструктуре", "specTypeCode": 1, "specValue": "ТУ 14-106-454-94", "specMeasure": ""},
+              {"specCode": 74, "specName": "Неметаллические включения (силикаты), балл (ГОСТ 1778-70)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+              {"specCode": 449, "specName": "Неметаллические включения (глобулярные оксиды - тип D), балл (ASTM E 45-13)", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+            ]
+        }
+}
