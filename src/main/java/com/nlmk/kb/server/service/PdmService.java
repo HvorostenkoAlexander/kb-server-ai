@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.entity.PdmMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,13 +11,16 @@ import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
-@Profile("prod")
+//@Profile("prod")
 @RequiredArgsConstructor
 public class PdmService {
 
     private final PdmMessageService messageService;
+    private final NsiClientService nsiClientService;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topicPartitions = {
@@ -38,6 +42,10 @@ public class PdmService {
                 request.key()
         );
 
-        messageService.save(request);
+        Optional<PdmMessage> savedMessage = messageService.save(request);
+
+        if (savedMessage.isPresent()){
+            nsiClientService.sendPdmDictionary(savedMessage.get());
+        }
     }
 }

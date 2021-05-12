@@ -3,11 +3,13 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.kb.server.service.PamClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.nlmk.kb.server.entity.pam.AttestationRequest;
 
 
 @Slf4j
@@ -18,13 +20,13 @@ public class PamClientServiceImpl implements PamClientService {
     private final RestTemplate restTemplate;
 
     public PamClientServiceImpl( @Value("${pam.url}") String pamUrl,
-                                 RestTemplate restTemplate) {
+                                 RestTemplateBuilder restTemplateBuilder) {
         this.pamUrl = pamUrl;
-        this.restTemplate = restTemplate;
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     @Override
-    public void postAttestationRequest(com.nlmk.kb.server.entity.pam.AttestationRequest pamAttestetionRequest) {
+    public void postAttestationRequest(AttestationRequest pamAttestetionRequest) {
 //       // с целью проверки работы exception handler
 //       // this.generateException(pamAttestetionRequest.getValue().getOp());
 
@@ -38,7 +40,7 @@ public class PamClientServiceImpl implements PamClientService {
         }
 
         ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
-                new HttpEntity<Object>(pamAttestetionRequest, header),
+                new HttpEntity<>(pamAttestetionRequest, header),
                 Long.class);
         log.info("--- response: "+response.getBody());
     }
