@@ -1,10 +1,12 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.PdmMessage;
+import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -45,7 +47,12 @@ public class PdmService {
         Optional<PdmMessage> savedMessage = messageService.save(request);
 
         if (savedMessage.isPresent()){
-            nsiClientService.sendPdmDictionary(savedMessage.get());
+            val message = savedMessage.get();
+            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
+            if (response.getStatusCode()== HttpStatus.ACCEPTED) {
+                message.setPosted(true);
+                messageService.save(message);
+            }
         }
     }
 }

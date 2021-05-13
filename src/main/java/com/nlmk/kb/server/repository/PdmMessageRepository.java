@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.repository;
 
-import com.nlmk.kb.server.entity.PdmMessage;
+import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PdmMessageRepository extends JpaRepository<PdmMessage,Long> {

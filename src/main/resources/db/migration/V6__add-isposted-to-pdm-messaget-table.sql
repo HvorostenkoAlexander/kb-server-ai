@@ -1,0 +1,1 @@
+ALTER TABLE public.pdm_message ADD COLUMN is_posted boolean default FALSE;

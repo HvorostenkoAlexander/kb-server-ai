@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.entity.pdm;
 
-import com.nlmk.kb.server.entity.Operation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

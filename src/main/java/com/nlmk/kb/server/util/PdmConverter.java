@@ -1,10 +1,12 @@
 package com.nlmk.kb.server.util;
 
-import com.nlmk.kb.server.entity.PdmMessage;
+import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
+import com.nlmk.kb.server.entity.pdm.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.Pk;
 import com.nlmk.kb.server.entity.pdm.Data;
 import com.nlmk.kb.server.entity.pdm.Spec;
+import com.nlmk.kb.server.entity.pdm.SpecDto;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
@@ -18,7 +20,32 @@ public class PdmConverter {
         throw new RuntimeException("PdmConverter is utility class, only for create PdmDictionary objects.");
     }
 
-    public static PdmMessage fromConsumerRecord(ConsumerRecord record){
+    public static PdmMessageDto toPdmMessageDto(PdmMessage pdmMessage) {
+        val pdmMessageDto = PdmMessageDto.builder()
+                .id(pdmMessage.getId().longValue())
+                .topic(pdmMessage.getTopic())
+                .partition(pdmMessage.getPartition().intValue())
+                .offset(pdmMessage.getOffset().longValue())
+                .key(pdmMessage.getKey())
+                .ts(pdmMessage.getTs())
+                .op(pdmMessage.getOp())
+                .build();
+
+        if (pdmMessage.getDictionary() != null) {
+            pdmMessageDto.setPk_Id(pdmMessage.getDictionary().getPk().getId());
+            pdmMessageDto.setPk_systemCode(pdmMessage.getDictionary().getPk().getSystemCode());
+            pdmMessageDto.setPk_directoryId(pdmMessage.getDictionary().getPk().getDirectoryId());
+
+            if (pdmMessage.getDictionary().getData().getSpecifications() != null) {
+                pdmMessage.getDictionary().getData().getSpecifications().forEach(
+                        s -> pdmMessageDto.addSpec(toSpecDto(s))
+                );
+            }
+        }
+        return pdmMessageDto;
+    }
+
+    public static PdmMessage fromConsumerRecord(ConsumerRecord record) {
         val topic = record.topic();
         PdmMessage message = new PdmMessage();
         message.setTopic(record.topic());
@@ -26,8 +53,8 @@ public class PdmConverter {
         message.setOffset(record.offset());
         message.setPartition(record.partition());
 
-        switch (topic){
-            case "000-1.l3-pdm.cdc.sp-microstructure.0":{// todo убрать хардкод
+        switch (topic) {
+            case "000-1.l3-pdm.cdc.sp-microstructure.0": {// todo убрать хардкод
 
                 val pdmDictionary = fromSpMicrostructure((SpMicrostructure) record.value());
                 message.setOp(pdmDictionary.getOp());
@@ -35,23 +62,23 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
-            case "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0":{
+            case "000-1.l3-pdm.cdc.sp-asap-chemical-properties.0": {
                 val pdmDictionary = fromSpAsapChemicalProperties((SpAsapChemicalProperties) record.value());
                 message.setOp(pdmDictionary.getOp());
                 message.setTs(pdmDictionary.getTs());
                 message.setDictionary(pdmDictionary);
                 break;
             }
-            case "000-1.l3-pdm.cdc.sp-equivalents.0":{
+            case "000-1.l3-pdm.cdc.sp-equivalents.0": {
                 val pdmDictionary = fromSpEquivalents((SpEquivalents) record.value());
                 message.setOp(pdmDictionary.getOp());
                 message.setTs(pdmDictionary.getTs());
                 message.setDictionary(pdmDictionary);
                 break;
             }
-            default:{
-                log.error("Not supported type of: {}",record);
-                throw new IllegalArgumentException("Not supported type of: "+record);
+            default: {
+                log.error("Not supported type of: {}", record);
+                throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
@@ -73,7 +100,7 @@ public class PdmConverter {
         return pdmDictionaryBuilder.build();
     }
 
-    public static PdmDictionary fromSpAsapChemicalProperties(SpAsapChemicalProperties spChemicalProperties){
+    public static PdmDictionary fromSpAsapChemicalProperties(SpAsapChemicalProperties spChemicalProperties) {
         val pdmDictionaryBuilder = PdmDictionary.builder()
                 .op(spChemicalProperties.getOp().name())
                 .pk(
@@ -89,7 +116,7 @@ public class PdmConverter {
         return pdmDictionaryBuilder.build();
     }
 
-    public static PdmDictionary fromSpEquivalents(SpEquivalents equivalents){
+    public static PdmDictionary fromSpEquivalents(SpEquivalents equivalents) {
         val pdmDictionaryBuilder = PdmDictionary.builder()
                 .op(equivalents.getOp().name())
                 .pk(
@@ -118,6 +145,21 @@ public class PdmConverter {
             pkBuilder.directoryId(pdmPk.getDirectoryId().toString());
         }
         return pkBuilder.build();
+    }
+
+    private static SpecDto toSpecDto(com.nlmk.kb.server.entity.pdm.Spec spec) {
+        val specDto = SpecDto.builder()
+                .specCode(spec.getSpecCode())
+                .specName(spec.getSpecName())
+                .specTypeCode(spec.getSpecTypeCode())
+                .build();
+        if (spec.getSpecMeasure()!=null) {
+            specDto.setSpecMeasure(spec.getSpecMeasure());
+        }
+        if (spec.getSpecValue()!=null) {
+            specDto.setSpecValue(spec.getSpecValue());
+        }
+        return specDto;
     }
 
     private static Data fromData(nlmk.l3.pdm.Data pdmData) {

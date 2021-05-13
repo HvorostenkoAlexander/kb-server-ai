@@ -1,6 +1,5 @@
-package com.nlmk.kb.server.entity;
+package com.nlmk.kb.server.entity.pdm;
 
-import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -46,6 +45,10 @@ public class PdmMessage {
 
     @Column(nullable = false)
     private String op;
+
+    @Column(name = "is_posted",
+            nullable = false)
+    private boolean isPosted=false;
 
     @Type(type = "json")
     @Column(columnDefinition = "json")

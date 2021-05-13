@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.impl;
 
-import com.nlmk.kb.server.entity.PdmMessage;
+import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.util.PdmConverter;
@@ -43,5 +43,10 @@ public class PdmMessageServiceImpl implements PdmMessageService {
                 record.key());
 
         return Optional.of(pdmMessege);
+    }
+
+    @Override
+    public Optional<PdmMessage> save(PdmMessage message) {
+        return Optional.of(messageRepository.save(message));
     }
 }

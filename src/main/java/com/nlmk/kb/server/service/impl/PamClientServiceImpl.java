@@ -26,11 +26,11 @@ public class PamClientServiceImpl implements PamClientService {
     }
 
     @Override
-    public void postAttestationRequest(AttestationRequest pamAttestetionRequest) {
+    public void postAttestationRequest(AttestationRequest pamAttestationRequest) {
 //       // с целью проверки работы exception handler
-//       // this.generateException(pamAttestetionRequest.getValue().getOp());
+//       // this.generateException(pamAttestationRequest.getValue().getOp());
 
-        log.info("--- request: " + pamAttestetionRequest.getValue().getPk());
+        log.info("--- request: " + pamAttestationRequest.getValue().getPk());
 
         String authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
 
@@ -40,7 +40,7 @@ public class PamClientServiceImpl implements PamClientService {
         }
 
         ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
-                new HttpEntity<>(pamAttestetionRequest, header),
+                new HttpEntity<>(pamAttestationRequest, header),
                 Long.class);
         log.info("--- response: "+response.getBody());
     }
