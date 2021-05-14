@@ -35,7 +35,7 @@ public class NsiClientServiceImpl implements NsiClientService {
 
         val topic = message.getTopic();
         ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
-
+        log.info("--- TOPIC: {}",topic);
         if (topic.equals(topicMicro)){
             response = microstructureMessageSender.send(message);
         } else if (topic.equals(topicChemicalProp)) {
