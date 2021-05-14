@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CcmService {
+public class KafkaCcmService {
 
     private final PamClientService pamClientService;
 

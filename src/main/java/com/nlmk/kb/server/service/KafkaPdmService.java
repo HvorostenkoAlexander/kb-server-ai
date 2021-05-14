@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 //@Profile("prod")
 @RequiredArgsConstructor
-public class PdmService {
+public class KafkaPdmService {
 
     private final PdmMessageService messageService;
     private final NsiClientService nsiClientService;

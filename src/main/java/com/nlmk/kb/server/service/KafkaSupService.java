@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SupService {
+public class KafkaSupService {
 
     private final KafkaIntegralParamMessageService integralParamMessageService;
     private final KafkaUnrecoverableParamMessageService unrecoverableParamMessageService;
