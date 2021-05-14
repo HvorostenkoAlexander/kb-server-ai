@@ -49,6 +49,7 @@ public class PdmService {
         if (savedMessage.isPresent()){
             val message = savedMessage.get();
             ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
+
             if (response.getStatusCode()== HttpStatus.ACCEPTED) {
                 message.setPosted(true);
                 messageService.save(message);
