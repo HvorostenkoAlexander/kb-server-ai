@@ -40,19 +40,18 @@ public class MicrostructureMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        MicrostructureDto micro = PdmConverter.toMicrostructureDto(message.getDictionary());
+        val sendingDto = PdmConverter.toMicrostructureDto(message.getDictionary());
 
-        String authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
+        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
 
         HttpHeaders header = new HttpHeaders();
         if (authHeaderValue != null) {
             header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-
-        HttpEntity<MicrostructureDto> request = new HttpEntity<>(micro,header);
+        HttpEntity<MicrostructureDto> request = new HttpEntity<>(sendingDto,header);
+        ResponseEntity<Long> response=new ResponseEntity<>(0L,HttpStatus.BAD_REQUEST);
 
         val operation = message.getOp();
-        ResponseEntity<Long> response=new ResponseEntity<>(0L,HttpStatus.BAD_REQUEST);
 
         switch (operation) {
             case "I":{

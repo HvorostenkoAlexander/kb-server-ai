@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.util;
 
+import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.LimitDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
@@ -200,47 +201,88 @@ public class PdmConverter {
         return specBuilder.build();
     }
 
-    public static MicrostructureDto toMicrostructureDto(PdmDictionary dictionary) {
-        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        Date ts=null;
-        try {
-            ts = format.parse(dictionary.getTs());
-        } catch (ParseException e) {
-            log.error("Ошибка парсинга ts: {}",dictionary.getTs());
-            throw new RuntimeException("Ошибка парсинга ts: "+dictionary.getTs()+"; "+e);
-        }
-
-
+    public static ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary){
         val specs = dictionary.getData().getSpecifications();
 
-        MicrostructureDto microstructureDto = MicrostructureDto.builder()
+        val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(ts)
-                .tkNum(getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
-                .tkRoute(getSpecValue(specs,415))
+                .ts(parseToDate(dictionary.getTs()))
                 .prProdMark(getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
                 .prStandMark(getSpecValue(specs,SpecCode.PRODUCT_STANDARD.getValue()))
-                .prThickUncoat(stringToLimit(getSpecValue(specs,416)))
-                .category(getSpecValue(specs,417))
-                .attestStand(getSpecValue(specs,418))
-                .ferriteGrain(stringToLimit(getSpecValue(specs,419)))
-                .unevenessFerriteGrain(getSpecValue(specs,420))
-                .structFreeCementite(stringToLimit(getSpecValue(specs,421)))
+                .c(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_C.getValue())))
+                .si(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_SI.getValue())))
+                .mn(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_MN.getValue())))
+                .s(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_S.getValue())))
+                .p(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_P.getValue())))
+                .al(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_AL.getValue())))
+                .cr(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_CR.getValue())))
+                .ni(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_NI.getValue())))
+                .cu(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_CU.getValue())))
+                .n(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_N.getValue())))
+                .ti(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_TI.getValue())))
+                .nb(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_NB.getValue())))
+                .v(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_V.getValue())))
+                .b(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_B.getValue())))
+                .mo(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_MO.getValue())))
+                .ca(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_CA.getValue())))
+                .w(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_W.getValue())))
+                .as(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_AS.getValue())))
+                .cP(stringToLimit(getSpecValue(specs,SpecCode.CP.getValue())))
+                .sP(stringToLimit(getSpecValue(specs,SpecCode.SP.getValue())))
+                .crNiMoCu(stringToLimit(getSpecValue(specs,SpecCode.CrNiCuMo.getValue())))
+                .crMo(stringToLimit(getSpecValue(specs,SpecCode.CrMo.getValue())))
+                .alTi(stringToLimit(getSpecValue(specs,SpecCode.AlTi.getValue())))
+                .alTiVNb(stringToLimit(getSpecValue(specs,SpecCode.AlTiVNb.getValue())))
+                .bTiVNb(stringToLimit(getSpecValue(specs,SpecCode.BTiVNb.getValue())))
+                .vNbTi(stringToLimit(getSpecValue(specs,SpecCode.TiVNb.getValue())))
+                .tiNb(stringToLimit(getSpecValue(specs,SpecCode.TiNb.getValue())))
+                .ti34n15s(stringToLimit(getSpecValue(specs,SpecCode.Ti34N15S.getValue())))
+                .prAnnotation(getSpecValue(specs,SpecCode.NOTE.getValue()))
+                .build();
+        return chemicalStdLimitDto;
+    }
+
+    public static MicrostructureDto toMicrostructureDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val microstructureDto = MicrostructureDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(parseToDate(dictionary.getTs()))
+                .tkNum(getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
+                .tkRoute(getSpecValue(specs,SpecCode.ROUTE_TK.getValue()))
+                .prProdMark(getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
+                .prStandMark(getSpecValue(specs,SpecCode.PRODUCT_STANDARD.getValue()))
+                .prThickUncoat(stringToLimit(getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+                .category(getSpecValue(specs,SpecCode.CATEGORY_GOST_4041.getValue()))
+                .attestStand(getSpecValue(specs,SpecCode.MICROCTRUCTURE_STANDART.getValue()))
+                .ferriteGrain(stringToLimit(getSpecValue(specs,SpecCode.FERRIT_GRAIN.getValue())))
+                .unevenessFerriteGrain(getSpecValue(specs,SpecCode.UNEVENNESS_OF_FERRIT_GRAIN.getValue()))
+                .structFreeCementite(stringToLimit(getSpecValue(specs,SpecCode.CEMENTITE.getValue())))
                 .unmetallInclusionsOxides(stringToLimit(getSpecValue(specs,SpecCode.OXIDES.getValue())))
                 .unmetallInclusionsSulfides(stringToLimit(getSpecValue(specs,SpecCode.SULPHIDES.getValue())))
                 .unmetallInclusionsNitrides(stringToLimit(getSpecValue(specs,SpecCode.NITRIDES.getValue())))
                 .unmetallInclusionsSilicates(stringToLimit(getSpecValue(specs,SpecCode.SILICATES.getValue())))
-                .unmetallInclusionsOxidesB(stringToLimit(getSpecValue(specs,422)))
-                .unmetallInclusionsSulfidesA(stringToLimit(getSpecValue(specs,423)))
-                .unmetallInclusionsSilicatesC(stringToLimit(getSpecValue(specs,424)))
-                .unmetallInclusionsGlobOxidesD(stringToLimit(getSpecValue(specs,449)))
-                .unmetallInclusions(stringToLimit(getSpecValue(specs,425)))
-                .polFerPerStruct(stringToLimit(getSpecValue(specs,426)))
-                .depthDecarbLayer(stringToLimit(getSpecValue(specs,348)))
-                .perliteGrain(stringToLimit(getSpecValue(specs,427)))
-                .prAnnotation(getSpecValue(specs,138))
+                .unmetallInclusionsOxidesB(stringToLimit(getSpecValue(specs,SpecCode.OXIDES_TYPE_B.getValue())))
+                .unmetallInclusionsSulfidesA(stringToLimit(getSpecValue(specs,SpecCode.SULPHIDES_TYPE_A.getValue())))
+                .unmetallInclusionsSilicatesC(stringToLimit(getSpecValue(specs,SpecCode.SILICATES_TYPE_C.getValue())))
+                .unmetallInclusionsGlobOxidesD(stringToLimit(getSpecValue(specs,SpecCode.OXIDES_TYPE_D.getValue())))
+                .unmetallInclusions(stringToLimit(getSpecValue(specs,SpecCode.NON_METALLIC_INCLUSIONS_ISO_4967_2013.getValue())))
+                .polFerPerStruct(stringToLimit(getSpecValue(specs,SpecCode.BANDING_OF_FERRIE_PEARLITE_STRUCTURE.getValue())))
+                .depthDecarbLayer(stringToLimit(getSpecValue(specs,SpecCode.DEPTH_WITHOUT_C_LAYER.getValue())))
+                .perliteGrain(stringToLimit(getSpecValue(specs,SpecCode.PERLITE_GRAIN.getValue())))
+                .prAnnotation(getSpecValue(specs,SpecCode.NOTE.getValue()))
                 .build();
         return microstructureDto;
+    }
+
+    private static Date parseToDate(String stringDate){
+        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        try {
+            return format.parse(stringDate);
+        } catch (ParseException e) {
+            log.error("Ошибка парсинга ts: {}",stringDate);
+            throw new RuntimeException("Ошибка парсинга ts: "+stringDate+"; "+e);
+        }
     }
 
     private static String getSpecValue(List<com.nlmk.kb.server.entity.pdm.Spec> specs, int code) {

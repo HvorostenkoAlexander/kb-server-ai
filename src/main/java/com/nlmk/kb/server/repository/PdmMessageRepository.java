@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PdmMessageRepository extends JpaRepository<PdmMessage,Long> {
 
     public boolean existsByTopicAndOffsetAndPartition(String topic, long offset, int partition);
+    public PdmMessage findByTopicAndOffsetAndPartition(String topic, long offset, int partition);
 }

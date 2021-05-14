@@ -17,7 +17,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-//@Profile("prod")
 @RequiredArgsConstructor
 public class KafkaPdmService {
 

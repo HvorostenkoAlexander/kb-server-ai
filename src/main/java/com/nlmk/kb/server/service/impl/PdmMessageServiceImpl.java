@@ -30,7 +30,9 @@ public class PdmMessageServiceImpl implements PdmMessageService {
                 record.topic(), record.offset(), record.partition())) {
             log.info("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
                     record.offset(), record.topic(), record.key());
-            return Optional.empty();
+
+            // return Optional.empty();//todo закомментированно с цель проверки работы алгоритмов передачи в nsi-server, как будет проверено ВЕРНУТЬ!
+            return Optional.of(messageRepository.findByTopicAndOffsetAndPartition(record.topic(), record.offset(), record.partition()));
         }
 
         val pdmMessege = PdmConverter.fromConsumerRecord(record);
