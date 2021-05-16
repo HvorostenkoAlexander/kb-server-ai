@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,6 +15,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -43,23 +45,30 @@ public class KafkaPdmService {
     )
     public void receiveMessageReq(@Payload ConsumerRecord request) {
 
-        log.info("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
+        //todo вынести в interceptor
+        MDC.put("KAFKA_ID", UUID.randomUUID().toString());
+
+        try {
+            log.info("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),
                 request.offset(),
                 request.key()
-        );
+            );
 
-        Optional<PdmMessage> savedMessage = messageService.save(request);
+            Optional<PdmMessage> savedMessage = messageService.save(request);
 
-        if (savedMessage.isPresent()){
-            val message = savedMessage.get();
-            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
+            if (savedMessage.isPresent()) {
+                val message = savedMessage.get();
+                ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
 
-            if (response.getStatusCode()== HttpStatus.ACCEPTED) {
-                message.setPosted(true);
-                messageService.save(message);
+                if (response.getStatusCode() == HttpStatus.ACCEPTED) {
+                    message.setPosted(true);
+                    messageService.save(message);
+                }
             }
+        } finally {
+            MDC.remove("KAFKA_ID");
         }
     }
 }

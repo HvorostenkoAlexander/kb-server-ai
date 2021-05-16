@@ -4,8 +4,10 @@ import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.util.PdmConverter;
+import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -46,12 +48,12 @@ public class AsapChemicalPropMessageSender implements MessageSender {
         val sendingDto = PdmConverter.toChemicalStdLimitDto(message.getDictionary());
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
 
-        HttpHeaders header = new HttpHeaders();
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get("KAFKA_ID"));
         if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
+            headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ChemicalStdLimitDto> request = new HttpEntity<>(sendingDto, header);
-        ResponseEntity<Long> response = new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
+        HttpEntity<ChemicalStdLimitDto> request = new HttpEntity<>(sendingDto, headers);
+        ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
 
         val operation = message.getOp();
         switch (operation) {

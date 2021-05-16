@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
 import nlmk.l3.sup.UnrecoverableParametersTrends;
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.MessageHeaders;
@@ -18,6 +19,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -36,7 +38,7 @@ public class KafkaSupService {
     //            partitionOffsets =
     //            @PartitionOffset(partition = "0", initialOffset = "0")),})
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
-            topics = {"${kafka.sup.topicIp}"}
+        topics = {"${kafka.sup.topicIp}"}
     )
     public void receiveMessageIp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
@@ -46,13 +48,17 @@ public class KafkaSupService {
                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                  @Payload IntegralParameters supIntegralParameters) {
 
-        log.info("--- received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
+        //todo вынести в interceptor
+        MDC.put("KAFKA_ID", UUID.randomUUID().toString());
+
+        try {
+            log.info("--- received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
                 key, timestamp, partition, offset, topic,
                 supIntegralParameters);
 
-        IntegralParam ip = ParamConverter.toIntegralParam(supIntegralParameters);
+            IntegralParam ip = ParamConverter.toIntegralParam(supIntegralParameters);
 
-        KafkaIntegralParamMessage receivedMessage = KafkaIntegralParamMessage.builder()
+            KafkaIntegralParamMessage receivedMessage = KafkaIntegralParamMessage.builder()
                 .key(key)
                 .timestamp(timestamp)
                 .partition(partition)
@@ -61,11 +67,14 @@ public class KafkaSupService {
                 .param(ip)
                 .build();
 
-        integralParamMessageService.messageProcessing(receivedMessage);
+            integralParamMessageService.messageProcessing(receivedMessage);
 
-        if (ip.getData() != null && log.isDebugEnabled()) {
-            List<IntegralParam> integralParams = integralParamService.findByDataPrimeId(ip.getData().getPrimeID());
-            log.debug("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
+            if (ip.getData() != null && log.isDebugEnabled()) {
+                List<IntegralParam> integralParams = integralParamService.findByDataPrimeId(ip.getData().getPrimeID());
+                log.debug("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
+            }
+        } finally {
+            MDC.remove("KAFKA_ID");
         }
     }
 
@@ -74,7 +83,7 @@ public class KafkaSupService {
 //                    partitionOffsets =
 //                    @PartitionOffset(partition = "0", initialOffset = "0")),})
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
-            topics = {"${kafka.sup.topicUp}"}
+        topics = {"${kafka.sup.topicUp}"}
     )
     public void receiveMessageUp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
@@ -84,13 +93,17 @@ public class KafkaSupService {
                                  @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                  @Payload UnrecoverableParametersTrends supUnrecoverableParametersTrends) {
 
-        log.info("--- received message: Key: {} ; Timestamp: {}; partition {}; offset: {}; topic: {}; value:{}",
+        //todo вынести в interceptor
+        MDC.put("KAFKA_ID", UUID.randomUUID().toString());
+
+        try {
+            log.info("--- received message: Key: {} ; Timestamp: {}; partition {}; offset: {}; topic: {}; value:{}",
                 key, timestamp, partition, offset, topic,
                 supUnrecoverableParametersTrends);
 
-        UnrecoverableParam up = ParamConverter.toUnrecoverableParam(supUnrecoverableParametersTrends);
+            UnrecoverableParam up = ParamConverter.toUnrecoverableParam(supUnrecoverableParametersTrends);
 
-        KafkaUnrecoverableParamMessage receivedMessage = KafkaUnrecoverableParamMessage.builder()
+            KafkaUnrecoverableParamMessage receivedMessage = KafkaUnrecoverableParamMessage.builder()
                 .key(key)
                 .timestamp(timestamp)
                 .partition(partition)
@@ -99,6 +112,10 @@ public class KafkaSupService {
                 .param(up)
                 .build();
 
-        unrecoverableParamMessageService.messageProcessing(receivedMessage);
+            unrecoverableParamMessageService.messageProcessing(receivedMessage);
+        } finally {
+            MDC.remove("KAFKA_ID");
+        }
     }
 }
+

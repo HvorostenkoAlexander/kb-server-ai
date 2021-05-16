@@ -5,8 +5,10 @@ import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
 import com.nlmk.kb.server.util.PdmConverter;
+import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -40,12 +42,12 @@ public class MicrostructureMessageSender implements MessageSender {
         val sendingDto = PdmConverter.toMicrostructureDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-        HttpHeaders header = new HttpHeaders();
-        if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
-        }
 
-        HttpEntity<MicrostructureDto> request = new HttpEntity<>(sendingDto,header);
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get("KAFKA_ID"));
+        if (authHeaderValue != null) {
+            headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
+        }
+        HttpEntity<MicrostructureDto> request = new HttpEntity<>(sendingDto, headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

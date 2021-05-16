@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -28,13 +31,20 @@ public class KafkaCcmService {
 //    )
     public void receiveMessageReq(@Payload AttestationRequest request) {
 
-        log.info("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
-                        " op: {}; pk.id: {}; data.primeId: {}",
+        //todo вынести в interceptor
+        MDC.put("KAFKA_ID", UUID.randomUUID().toString());
+
+        try {
+            log.info("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
+                    " op: {}; pk.id: {}; data.primeId: {}",
                 request.getTs(), request.getOp(), request.getPk().getId(), request.getData().getPrimeId());
 
-        val value = ValueConverter.fromKafkaAttestationRequest(request);
+            val value = ValueConverter.fromKafkaAttestationRequest(request);
 
-        //todo убрать отправку данных в pam в другое место. тут должна быть только обработка сообщения.
-        pamClientService.postAttestationRequest(value);
+            //todo убрать отправку данных в pam в другое место. тут должна быть только обработка сообщения.
+            pamClientService.postAttestationRequest(value);
+        } finally {
+            MDC.remove("KAFKA_ID");
+        }
     }
 }

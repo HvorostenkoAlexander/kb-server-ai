@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.service.PamClientService;
+import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -32,13 +34,10 @@ public class PamClientServiceImpl implements PamClientService {
 
         String authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
 
-        HttpHeaders header = new HttpHeaders();
-        if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
-        }
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get("KAFKA_ID"));
 
         ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
-                new HttpEntity<>(pamAttestationRequest, header),
+                new HttpEntity<>(pamAttestationRequest, headers),
                 Long.class);
         log.info("--- PAM-server response: "+response.getBody());
     }
