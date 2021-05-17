@@ -31,7 +31,6 @@ public class NsiClientServiceImpl implements NsiClientService {
         if (sender==null){
             throw new IllegalArgumentException("Не поддерживается отправка сообщений в nsi-server для топика: "+message.getTopic());
         }
-
         return sender.send(message);
     }
 }
