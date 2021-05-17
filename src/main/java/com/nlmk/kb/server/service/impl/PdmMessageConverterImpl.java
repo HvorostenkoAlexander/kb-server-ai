@@ -22,7 +22,7 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
 
     @Override
     public ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary){
-        List<Spec> specs = dictionary.getData().getSpecifications();
+        val specs = dictionary.getData().getSpecifications();
 
         log.info("--- toChemicalEquivalentStdDto PDM DICTIONARY: {} ", dictionary);
 
@@ -35,13 +35,13 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                         converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue()))
                 )
                 .prStrengthClass(converter.getSpecValue(specs,SpecCode.STRENGTH_CLASS.getValue()))
-                .ceqNum(converter.getSpecValue(specs,SpecCode.NUMBER_FORMULA_OF_UGLER_EQUVALENT.getValue()))
+                .ceqNum(converter.getSpecValue(specs,SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
                 .ceq(converter.stringToLimit(
-                                converter.getSpecValue(specs,SpecCode.VALUE_OF_UGLER_EQUVALENT.getValue()))
+                                converter.getSpecValue(specs,SpecCode.CARBON_EQUIVALENT.getValue()))
                 )
-                .pcmNum(converter.getSpecValue(specs,SpecCode.NUMBER_FORMULA_OF_CRACK_RESISTANCE_COEFFICIENT.getValue()))
+                .pcmNum(converter.getSpecValue(specs,SpecCode.CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER.getValue()))
                 .pcm(converter.stringToLimit(
-                        converter.getSpecValue(specs,SpecCode.VALUE_OF_CRACK_RESISTANCE_COEFFICIENT.getValue()))
+                        converter.getSpecValue(specs,SpecCode.CRACK_RESISTANCE_COEFFICIENT.getValue()))
                 )
                 .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
                 .build();
