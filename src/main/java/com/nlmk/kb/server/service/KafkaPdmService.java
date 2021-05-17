@@ -30,8 +30,9 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.equivalents}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.microstructure}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.match-tk-num}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
-
             }
     )
     public void receiveMessageReq(@Payload ConsumerRecord request) {

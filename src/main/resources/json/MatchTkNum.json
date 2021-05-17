@@ -1,0 +1,14 @@
+{
+  "ts": "2021-04-29T08:05:50.833",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "155296",
+    "Id": "50290"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 474, "specName": "Номер ТК из SAP", "specTypeCode": 1, "specValue": "ВТК 1,2-3-4-855.00", "specMeasure": ""},
+      {"specCode": 222, "specName": "Номер ТК", "specTypeCode": 1, "specValue": "ВТК 1.2-3-4-855.00", "specMeasure": ""},
+      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+    ]}}
