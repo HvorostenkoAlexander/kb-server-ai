@@ -24,19 +24,22 @@ public class AsapChemicalPropMessageSender implements MessageSender {
     private final RestTemplate restTemplate;
     private final String url_dictionary;
     private final String URL_NSI_DICTIONARY;
+    private final String type;
 
     public AsapChemicalPropMessageSender(RestTemplateBuilder restTemplateBuilder,
-                                       @Value("${nsi.url.asap-chemical-propertiese}") String url_dictionary,
-                                       @Value("${nsi.url.dict}") String nsiDictionary
+                                         @Value("${nsi.url.asap-chemical-propertiese}") String url_dictionary,
+                                         @Value("${nsi.url.dict}") String nsiDictionary,
+                                         @Value("${kafka.pdm.topic.asap-chemical-properties}") String topicName
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url_dictionary = url_dictionary;
         this.URL_NSI_DICTIONARY = nsiDictionary;
+        this.type = topicName;
     }
 
     @Override
     public ResponseEntity<Long> send(PdmMessage message) {
-        Assert.notNull(message,()-> {
+        Assert.notNull(message, () -> {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
@@ -47,13 +50,13 @@ public class AsapChemicalPropMessageSender implements MessageSender {
         if (authHeaderValue != null) {
             header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ChemicalStdLimitDto> request = new HttpEntity<>(sendingDto,header);
-        ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
+        HttpEntity<ChemicalStdLimitDto> request = new HttpEntity<>(sendingDto, header);
+        ResponseEntity<Long> response = new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
 
         val operation = message.getOp();
         switch (operation) {
-            case "I":{
-                log.info("--- post to NSI: "+request);
+            case "I": {
+                log.info("--- post to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
@@ -61,8 +64,8 @@ public class AsapChemicalPropMessageSender implements MessageSender {
                                 Long.class);
                 break;
             }
-            case "U":{
-                log.info("--- put to NSI: "+request);
+            case "U": {
+                log.info("--- put to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.PUT,
@@ -70,8 +73,8 @@ public class AsapChemicalPropMessageSender implements MessageSender {
                                 Long.class);
                 break;
             }
-            case "D" :{
-                log.info("--- delete from NSI: "+request);
+            case "D": {
+                log.info("--- delete from NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.DELETE,
@@ -79,11 +82,16 @@ public class AsapChemicalPropMessageSender implements MessageSender {
                                 Long.class);
                 break;
             }
-            default:{
-                throw new IllegalArgumentException("not supported operation: "+operation);
+            default: {
+                throw new IllegalArgumentException("not supported operation: " + operation);
             }
         }
-        log.info("--- response from NSI: "+response.getBody());
+        log.info("--- response from NSI: " + response.getBody());
         return response;
+    }
+
+    @Override
+    public String getType() {
+        return this.type;
     }
 }

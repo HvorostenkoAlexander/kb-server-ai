@@ -24,14 +24,17 @@ public class MicrostructureMessageSender implements MessageSender {
     private final RestTemplate restTemplate;
     private final String url_dictionary;
     private final String URL_NSI_DICTIONARY;
+    private final String type;
 
     public MicrostructureMessageSender(RestTemplateBuilder restTemplateBuilder,
                                        @Value("${nsi.url.microstructure}")String url_dictionary,
-                                       @Value("${nsi.url.dict}") String nsiDictionary
+                                       @Value("${nsi.url.dict}") String nsiDictionary,
+                                       @Value("${kafka.pdm.topic.microstructure}") String topicName
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url_dictionary = url_dictionary;
         this.URL_NSI_DICTIONARY = nsiDictionary;
+        this.type = topicName;
     }
 
     @Override
@@ -87,5 +90,10 @@ public class MicrostructureMessageSender implements MessageSender {
         }
         log.info("--- response from NSI: "+response.getBody());
         return response;
+    }
+
+    @Override
+    public String getType() {
+        return this.type;
     }
 }
