@@ -3,12 +3,15 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
+import com.nlmk.kb.server.entity.pdm.Spec;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.PdmMessageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -19,11 +22,11 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
 
     @Override
     public ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary){
-        val specs = dictionary.getData().getSpecifications();
+        List<Spec> specs = dictionary.getData().getSpecifications();
 
         log.info("--- toChemicalEquivalentStdDto PDM DICTIONARY: {} ", dictionary);
 
-        val chemicalEquivalentStdDto = ChemicalEquivalentStdDto.builder()
+        ChemicalEquivalentStdDto chemicalEquivalentStdDto = ChemicalEquivalentStdDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(converter.parseToDate(dictionary.getTs()))
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
