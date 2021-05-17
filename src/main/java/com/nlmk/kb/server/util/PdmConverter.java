@@ -204,6 +204,8 @@ public class PdmConverter {
     public static ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary){
         val specs = dictionary.getData().getSpecifications();
 
+        log.info("--- PDM DICTIONARY: {} ", dictionary);
+
         val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                // .ts(parseToDate(dictionary.getTs())) //todo заменить как решиться вопрос с датой в топиках на стророне НЛМК
@@ -247,6 +249,8 @@ public class PdmConverter {
             log.error("Ошибка парсинга ts: {}",dictionary.getTs());
             throw new RuntimeException("Ошибка парсинга ts: "+dictionary.getTs()+"; "+e);
         }
+
+        log.info("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
 
         return chemicalStdLimitDto;
     }
