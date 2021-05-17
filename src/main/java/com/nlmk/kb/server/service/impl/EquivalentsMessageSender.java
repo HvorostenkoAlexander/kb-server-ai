@@ -61,7 +61,7 @@ public class EquivalentsMessageSender implements MessageSender {
 
         switch (operation) {
             case "I":{
-                log.debug("--- post to NSI: "+request);
+                log.info("--- post to NSI: "+request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
@@ -79,7 +79,7 @@ public class EquivalentsMessageSender implements MessageSender {
                 break;
             }
             case "D" :{
-                log.debug("--- delete from NSI: "+request);
+                log.info("--- delete from NSI: "+request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.DELETE,
@@ -91,7 +91,7 @@ public class EquivalentsMessageSender implements MessageSender {
                 throw new IllegalArgumentException("not supported operation: "+operation);
             }
         }
-        log.debug("--- response from NSI: "+response.getBody());
+        log.info("--- response from NSI: "+response.getBody());
         return response;
     }
 
