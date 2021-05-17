@@ -27,6 +27,11 @@ public class NsiClientServiceImpl implements NsiClientService {
     public ResponseEntity<Long> sendPdmDictionary(PdmMessage message) {
 
         MessageSender sender = senders.get(message.getTopic());
+
+        if (sender==null){
+            throw new IllegalArgumentException("Не поддерживается отправка сообщений в nsi-server для топика: "+message.getTopic());
+        }
+
         return sender.send(message);
     }
 }
