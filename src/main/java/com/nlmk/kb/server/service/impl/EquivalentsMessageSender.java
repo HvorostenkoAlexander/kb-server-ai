@@ -61,7 +61,7 @@ public class EquivalentsMessageSender implements MessageSender {
 
         switch (operation) {
             case "I":{
-                log.info("--- post to NSI: "+request);
+                log.info("--- post to NSI:  "+request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
