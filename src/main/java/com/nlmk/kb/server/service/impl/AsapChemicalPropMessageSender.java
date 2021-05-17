@@ -56,7 +56,7 @@ public class AsapChemicalPropMessageSender implements MessageSender {
         val operation = message.getOp();
         switch (operation) {
             case "I": {
-                log.info("--- post to NSI: " + request);
+                log.debug("--- post to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
@@ -65,7 +65,7 @@ public class AsapChemicalPropMessageSender implements MessageSender {
                 break;
             }
             case "U": {
-                log.info("--- put to NSI: " + request);
+                log.debug("--- put to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.PUT,
@@ -74,7 +74,7 @@ public class AsapChemicalPropMessageSender implements MessageSender {
                 break;
             }
             case "D": {
-                log.info("--- delete from NSI: " + request);
+                log.debug("--- delete from NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.DELETE,
@@ -86,7 +86,7 @@ public class AsapChemicalPropMessageSender implements MessageSender {
                 throw new IllegalArgumentException("not supported operation: " + operation);
             }
         }
-        log.info("--- response from NSI: " + response.getBody());
+        log.debug("--- response from NSI: " + response.getBody());
         return response;
     }
 

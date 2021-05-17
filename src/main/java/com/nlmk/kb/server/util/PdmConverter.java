@@ -204,7 +204,7 @@ public class PdmConverter {
     public static ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary){
         val specs = dictionary.getData().getSpecifications();
 
-        log.info("--- PDM DICTIONARY: {} ", dictionary);
+        log.debug("--- PDM DICTIONARY: {} ", dictionary);
 
         val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
@@ -250,7 +250,7 @@ public class PdmConverter {
             throw new RuntimeException("Ошибка парсинга ts: "+dictionary.getTs()+"; "+e);
         }
 
-        log.info("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
+        log.debug("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
 
         return chemicalStdLimitDto;
     }
