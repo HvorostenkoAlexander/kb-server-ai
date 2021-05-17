@@ -1,0 +1,19 @@
+{"ts": "2021-05-11T13:33:03.598946+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "419968",
+    "Id": "3"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "17ГС;17Г1С;17Г1С-У", "specMeasure": ""},
+      {"specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "ТУ 14-106-502-96", "specMeasure": ""},
+      {"specCode": 416, "specName": "Толщина проката, мм", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 491, "specName": "Класс прочности", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 584, "specName": "Номер ф-лы углер. эквивалента", "specTypeCode": 1, "specValue": "6", "specMeasure": ""},
+      {"specCode": 464, "specName": "Значение углер. эквивалента", "specTypeCode": 1, "specValue": "*..0.46", "specMeasure": ""},
+      {"specCode": 585, "specName": "Номер ф-лы к-та трещиностойкости", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 465, "specName": "Значение к-та трещиностойкости", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+    ]}}
