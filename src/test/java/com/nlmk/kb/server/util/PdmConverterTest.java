@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import io.micrometer.core.instrument.util.IOUtils;
+import nlmk.l3.pdm.SpAsapChemicalProperties;
 import nlmk.l3.pdm.SpMicrostructure;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,20 @@ public class PdmConverterTest {
                 );
 
         PdmDictionary pdmDictionary = PdmConverter.fromSpMicrostructure(micro);
+
+        Assertions.assertNotNull(pdmDictionary);
+    }
+
+    @Test
+    void fromAsapChemicalPropertiesTest() throws FileNotFoundException, JsonProcessingException {
+
+        SpAsapChemicalProperties chP = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/main/resources/json/AsapChemicalProperties.json"),
+                        SpAsapChemicalProperties.class
+                );
+
+        PdmDictionary pdmDictionary = PdmConverter.fromSpAsapChemicalProperties(chP);
 
         Assertions.assertNotNull(pdmDictionary);
     }

@@ -206,7 +206,7 @@ public class PdmConverter {
 
         val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(parseToDate(dictionary.getTs()))
+               // .ts(parseToDate(dictionary.getTs())) //todo заменить как решиться вопрос с датой в топиках на стророне НЛМК
                 .prProdMark(getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
                 .prStandMark(getSpecValue(specs,SpecCode.PRODUCT_STANDARD.getValue()))
                 .c(stringToLimit(getSpecValue(specs,SpecCode.MASS_FRACTION_C.getValue())))
@@ -239,6 +239,15 @@ public class PdmConverter {
                 .ti34n15s(stringToLimit(getSpecValue(specs,SpecCode.Ti34N15S.getValue())))
                 .prAnnotation(getSpecValue(specs,SpecCode.NOTE.getValue()))
                 .build();
+
+        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
+        try {
+            chemicalStdLimitDto.setTs(format.parse(dictionary.getTs()));
+        } catch (ParseException e) {
+            log.error("Ошибка парсинга ts: {}",dictionary.getTs());
+            throw new RuntimeException("Ошибка парсинга ts: "+dictionary.getTs()+"; "+e);
+        }
+
         return chemicalStdLimitDto;
     }
 
