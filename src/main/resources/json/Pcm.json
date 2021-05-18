@@ -1,0 +1,12 @@
+{
+  "ts": "2021-05-11T08:44:21.3468648+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "222594",
+    "Id": "1"
+  },
+  "data": {"specifications": [
+    {"specCode": 585, "specName": "Номер формулы к-та растрескивания", "specTypeCode": 1, "specValue": "1.1", "specMeasure": ""},
+    {"specCode": 477, "specName": "Формула коэффициента растрескивания", "specTypeCode": 1, "specValue": "C+(Mn+Cu+Cr)/20+Si/30+Ni/15+V/10+5B", "specMeasure": ""},
+    {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""}]}}
