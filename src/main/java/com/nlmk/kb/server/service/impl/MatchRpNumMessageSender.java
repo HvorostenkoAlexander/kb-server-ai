@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Slf4j
-@Service
+//@Service
 public class MatchRpNumMessageSender implements MessageSender {
 
     private final RestTemplate restTemplate;

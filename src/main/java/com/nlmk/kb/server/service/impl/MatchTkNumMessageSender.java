@@ -18,7 +18,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
-@Service
+//@Service
 public class MatchTkNumMessageSender implements MessageSender {
 
     private final RestTemplate restTemplate;
