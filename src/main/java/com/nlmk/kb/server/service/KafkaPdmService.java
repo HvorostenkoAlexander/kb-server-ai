@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class KafkaPdmService {
 
@@ -32,6 +32,8 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.microstructure}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.match-tk-num}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.match-rabplan-num}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )

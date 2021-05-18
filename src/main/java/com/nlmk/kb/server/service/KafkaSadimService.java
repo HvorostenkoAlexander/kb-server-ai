@@ -18,6 +18,6 @@ public class KafkaSadimService {
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
     public void receiveMessageReq(@Payload Object jsonNode) {
 
-        log.info("--- data from SADIM topic: {}",jsonNode);
+        log.info(" SADIM data from topic: {}",jsonNode);
     }
 }
