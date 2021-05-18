@@ -1,0 +1,12 @@
+{
+  "ts": "2021-05-11T07:56:49.227",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "165834",
+    "Id": "332"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 475, "specName": "Номер РП из SAP", "specTypeCode": 1, "specValue": "test", "specMeasure": ""},
+      {"specCode": 223, "specName": "Номер РП", "specTypeCode": 1, "specValue": "", "specMeasure": ""}]}}
