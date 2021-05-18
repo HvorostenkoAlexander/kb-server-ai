@@ -27,10 +27,8 @@ public class PamClientServiceImpl implements PamClientService {
 
     @Override
     public void postAttestationRequest(AttestationRequest pamAttestationRequest) {
-//       // с целью проверки работы exception handler
-//       // this.generateException(pamAttestationRequest.getValue().getOp());
 
-        log.info("--- request: " + pamAttestationRequest.getValue().getPk());
+        log.debug("--- request: " + pamAttestationRequest.getValue().getPk());
 
         String authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
 
@@ -42,12 +40,6 @@ public class PamClientServiceImpl implements PamClientService {
         ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
                 new HttpEntity<>(pamAttestationRequest, header),
                 Long.class);
-        log.info("--- response: "+response.getBody());
-    }
-
-    private void generateException(String operation){
-        if (operation.equals("D")) {
-            throw new RuntimeException("не удалось передать сообщение в pam-server.");
-        }
+        log.info("--- PAM-server response: "+response.getBody());
     }
 }
