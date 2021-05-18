@@ -14,8 +14,12 @@ import com.nlmk.kb.server.entity.pdm.SpecDto;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
+import nlmk.l3.pdm.SpAsapTolLinks;
 import nlmk.l3.pdm.SpEquivalents;
+import nlmk.l3.pdm.SpMatchRabplanNum;
+import nlmk.l3.pdm.SpMatchTkNum;
 import nlmk.l3.pdm.SpMicrostructure;
+import nlmk.l3.pdm.SpPcm;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.text.ParseException;
@@ -62,9 +66,9 @@ public class PdmConverter {
         message.setOffset(record.offset());
         message.setPartition(record.partition());
 
+        //todo избавиться от лишнего кода!!!, убрать хардкод
         switch (topic) {
-            case "000-1.l3-pdm.cdc.sp-microstructure.0": {// todo убрать хардкод
-
+            case "000-1.l3-pdm.cdc.sp-microstructure.0": {
                 val pdmDictionary = fromSpMicrostructure((SpMicrostructure) record.value());
                 message.setOp(pdmDictionary.getOp());
                 message.setTs(pdmDictionary.getTs());
@@ -85,12 +89,104 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-match-tk-num.0": {
+                val pdmDictionary = fromSpMatchTkNum((SpMatchTkNum) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-match-rabplan-num.0": {
+                val pdmDictionary = fromSpMatchRabplanNum((SpMatchRabplanNum) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-pcm.0": {
+                val pdmDictionary = fromSpPcm((SpPcm) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-asap-tol-links.0": {
+                val pdmDictionary = fromSpAsapTolLinks((SpAsapTolLinks) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default: {
                 log.error("Not supported type of: {}", record);
                 throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
+    }
+
+    private static PdmDictionary fromSpAsapTolLinks(SpAsapTolLinks value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    private static PdmDictionary fromSpPcm(SpPcm value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    private static PdmDictionary fromSpMatchRabplanNum(SpMatchRabplanNum value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    private static PdmDictionary fromSpMatchTkNum(SpMatchTkNum value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
     }
 
     public static PdmDictionary fromSpMicrostructure(SpMicrostructure micro) {
