@@ -20,28 +20,28 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Profile("prod")
 public class SadimBrokedConfig {
 
     @Bean
-    public ConsumerFactory<String,JsonNode> sadimConsumerFactory(){
+    public ConsumerFactory<String,Object> sadimConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "nl-st-hkafka01.ao.nlmk:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaJsonSchemaDeserializer.class);
+     //   props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaJsonSchemaDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "apcs.kb.sadim");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(KafkaJsonDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
+       // props.put(KafkaJsonDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
 
         return new DefaultKafkaConsumerFactory<>(
                 props
         );
     }
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, JsonNode> kafkaListenerContainerFactorySadim() {
+    @Bean(name = "kafkaListenerSadim")
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerSadim() {
 
-        ConcurrentKafkaListenerContainerFactory<String, JsonNode> factory =
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(sadimConsumerFactory());

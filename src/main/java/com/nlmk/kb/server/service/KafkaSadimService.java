@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaSadimService {
 
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactorySadim",
+    @KafkaListener(containerFactory = "kafkaListenerSadim",
             topicPartitions = {@TopicPartition(topic = "PA-MU.NLMK.P3.HSM",
                     partitionOffsets =
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
-    public void receiveMessageReq(@Payload JsonNode jsonNode) {
+    public void receiveMessageReq(@Payload Object jsonNode) {
 
         log.info("--- data from SADIM topic: {}",jsonNode);
     }
