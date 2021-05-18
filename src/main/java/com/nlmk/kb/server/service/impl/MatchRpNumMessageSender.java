@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
+import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
@@ -46,7 +47,7 @@ public class MatchRpNumMessageSender implements MessageSender {
         val sendingDto = pdmMessageConverter.toMatchRpDto(message.getDictionary());
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
 
-        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get("KAFKA_ID"));
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
