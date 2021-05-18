@@ -8,8 +8,8 @@ import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 public interface PdmMessageConverter {
 
     public ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary);
-
-    MatchTkDto toMatchTkDto(PdmDictionary dictionary);
-
-    MatchRpDto toMatchRpDto(PdmDictionary dictionary);
+//
+//    MatchTkDto toMatchTkDto(PdmDictionary dictionary);
+//
+//    MatchRpDto toMatchRpDto(PdmDictionary dictionary);
 }

@@ -45,53 +45,54 @@ public class MatchTkNumMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toMatchTkDto(message.getDictionary());
+//        val sendingDto = pdmMessageConverter.toMatchTkDto(message.getDictionary());
+//
+//        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
+//
+//        HttpHeaders header = new HttpHeaders();
+//        if (authHeaderValue != null) {
+//            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
+//        }
+//        HttpEntity<MatchTkDto> request = new HttpEntity<>(sendingDto,header);
+//        ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
+//
+//        val operation = message.getOp();
+//
+//        switch (operation) {
+//            case "I":{
+//                log.info("--- post to NSI: "+request);
+//                response = restTemplate
+//                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
+//                                HttpMethod.POST,
+//                                request,
+//                                Long.class);
+//                break;
+//            }
+//            case "U":{
+//                log.debug("--- put to NSI: "+request);
+//                response = restTemplate
+//                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
+//                                HttpMethod.PUT,
+//                                request,
+//                                Long.class);
+//                break;
+//            }
+//            case "D" :{
+//                log.info("--- delete from NSI: "+request);
+//                response = restTemplate
+//                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
+//                                HttpMethod.DELETE,
+//                                request,
+//                                Long.class);
+//                break;
+//            }
+//            default:{
+//                throw new IllegalArgumentException("not supported operation: "+operation);
+//            }
+//        }
 
-        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-
-        HttpHeaders header = new HttpHeaders();
-        if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
-        }
-        HttpEntity<MatchTkDto> request = new HttpEntity<>(sendingDto,header);
-        ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
-
-        val operation = message.getOp();
-
-        switch (operation) {
-            case "I":{
-                log.info("--- post to NSI: "+request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.POST,
-                                request,
-                                Long.class);
-                break;
-            }
-            case "U":{
-                log.debug("--- put to NSI: "+request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.PUT,
-                                request,
-                                Long.class);
-                break;
-            }
-            case "D" :{
-                log.info("--- delete from NSI: "+request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.DELETE,
-                                request,
-                                Long.class);
-                break;
-            }
-            default:{
-                throw new IllegalArgumentException("not supported operation: "+operation);
-            }
-        }
-
-        return response;
+   //     return response;
+        return null;
     }
 
     @Override
