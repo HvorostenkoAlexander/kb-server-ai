@@ -34,6 +34,10 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.match-tk-num}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.match-rabplan-num}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.pcm}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.asap-tol-links}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )

@@ -1,0 +1,17 @@
+{
+  "ts": "2021-05-11T13:32:36.5636689+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "416617",
+    "Id": "3"
+  },
+  "data": {"specifications": [
+    {"specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "ТУ 14-106-328-89", "specMeasure": ""},
+    {"specCode": 220, "specName": "Использовать доп. стандарт на продукцию", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 580, "specName": "Стандарт на допуски по толщине", "specTypeCode": 1, "specValue": "ГОСТ 19903-2015", "specMeasure": ""},
+    {"specCode": 581, "specName": "Стандарт на допуски по ширине", "specTypeCode": 1, "specValue": "ГОСТ 19903-2015", "specMeasure": ""},
+    {"specCode": 582, "specName": "Стандарт на допуски по длине", "specTypeCode": 1, "specValue": "ГОСТ 19903-2015", "specMeasure": ""},
+    {"specCode": 583, "specName": "Стандарт на допуски по плоскостности", "specTypeCode": 1, "specValue": "ГОСТ 19903-2015", "specMeasure": ""},
+    {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "ТУ", "specMeasure": ""}
+  ]}}

@@ -3,6 +3,8 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 //import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 //import com.nlmk.attestation.product.api.nsi.MatchTkDto;
+import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.attestation.product.api.nsi.ToleranceDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -101,4 +103,42 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
 //        log.debug("--- PDM MatchRpDto: {} ", matchTkDto);
 //        return matchTkDto;
 //    }
+
+    @Override
+    public PcmDto toPcmDto(PdmDictionary dictionary){
+        val specs = dictionary.getData().getSpecifications();
+        log.debug("--- toPcmDto PDM DICTIONARY: {} ", dictionary);
+
+        val pcmDto = PcmDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .pcmNum(converter.getSpecValue(specs,SpecCode.CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER.getValue()))
+                .pcmFormula(converter.getSpecValue(specs,SpecCode.CRACK_RESISTANCE_FORMULA.getValue()))
+                .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
+                .build();
+
+        log.debug("--- toPcmDto PcmDto: {} ", pcmDto);
+        return pcmDto;
+    }
+
+    @Override
+    public ToleranceDto toToleranceDto(PdmDictionary dictionary){
+        val specs = dictionary.getData().getSpecifications();
+        log.debug("--- toleranceDto PDM DICTIONARY: {} ", dictionary);
+
+        val toleranceDto = ToleranceDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .prStandMark(converter.getSpecValue(specs,SpecCode.PRODUCT_STANDARD.getValue()))
+                .useStandMark(converter.getSpecValue(specs,SpecCode.PRODUCT_STANDARD_ADDITIONAL.getValue()))
+                .standTolThick(converter.getSpecValue(specs,SpecCode.THICKNESS_TOLERANCE_STANDART.getValue()))
+                .standTolWidth(converter.getSpecValue(specs,SpecCode.WIDTH_TOLERANCE_STANDART.getValue()))
+                .standTolLength(converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_STANDART.getValue()))
+                .standTolEvenness(converter.getSpecValue(specs,SpecCode.EVENNESS_TOLERANCE_STANDART.getValue()))
+                .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
+                .build();
+
+        log.debug("--- toPcmDto PcmDto: {} ", toleranceDto);
+        return toleranceDto;
+    }
 }
