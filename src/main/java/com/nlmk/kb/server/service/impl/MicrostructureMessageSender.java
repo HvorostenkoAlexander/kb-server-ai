@@ -3,9 +3,11 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
+import com.nlmk.kb.server.service.NsiCommonSender;
 import com.nlmk.kb.server.util.PdmConverter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -25,6 +27,9 @@ public class MicrostructureMessageSender implements MessageSender {
     private final String url_dictionary;
     private final String URL_NSI_DICTIONARY;
     private final String type;
+
+    @Autowired
+    private NsiCommonSender nsiCommonSender; //todo проверить как работает, если OK то final
 
     public MicrostructureMessageSender(RestTemplateBuilder restTemplateBuilder,
                                        @Value("${nsi.url.microstructure}")String url_dictionary,
@@ -46,50 +51,14 @@ public class MicrostructureMessageSender implements MessageSender {
         val sendingDto = PdmConverter.toMicrostructureDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-
         HttpHeaders header = new HttpHeaders();
         if (authHeaderValue != null) {
             header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
+
         HttpEntity<MicrostructureDto> request = new HttpEntity<>(sendingDto,header);
-        ResponseEntity<Long> response=new ResponseEntity<>(0L,HttpStatus.BAD_REQUEST);
 
-        val operation = message.getOp();
-
-        switch (operation) {
-            case "I":{
-                log.debug("--- post to NSI: "+request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.POST,
-                                request,
-                                Long.class);
-                break;
-            }
-            case "U":{
-                log.debug("--- put to NSI: "+request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.PUT,
-                                request,
-                                Long.class);
-                break;
-            }
-            case "D" :{
-                log.debug("--- delete from NSI: "+request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.DELETE,
-                                request,
-                                Long.class);
-                break;
-            }
-            default:{
-                throw new IllegalArgumentException("not supported operation: "+operation);
-            }
-        }
-        log.debug("--- response from NSI: "+response.getBody());
-        return response;
+        return nsiCommonSender.exchange(request,url_dictionary, message.getOp());
     }
 
     @Override
