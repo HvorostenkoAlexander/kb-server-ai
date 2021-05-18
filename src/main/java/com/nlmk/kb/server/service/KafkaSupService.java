@@ -52,7 +52,7 @@ public class KafkaSupService {
         MDC.put("KAFKA_ID", UUID.randomUUID().toString());
 
         try {
-            log.info("--- received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
+            log.debug("--- received message: Key: {} ; Timestamp: {};partition {}; offset: {}; topic: {}; value:{}",
                 key, timestamp, partition, offset, topic,
                 supIntegralParameters);
 
@@ -97,7 +97,7 @@ public class KafkaSupService {
         MDC.put("KAFKA_ID", UUID.randomUUID().toString());
 
         try {
-            log.info("--- received message: Key: {} ; Timestamp: {}; partition {}; offset: {}; topic: {}; value:{}",
+            log.debug("--- received message: Key: {} ; Timestamp: {}; partition {}; offset: {}; topic: {}; value:{}",
                 key, timestamp, partition, offset, topic,
                 supUnrecoverableParametersTrends);
 

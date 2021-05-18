@@ -28,7 +28,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         if (messageRepository.existsByTopicAndOffsetAndPartition(
                 record.topic(), record.offset(), record.partition())) {
-            log.info("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
+            log.debug("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
                     record.offset(), record.topic(), record.key());
 
             // return Optional.empty();//todo закомментированно с цель проверки работы алгоритмов передачи в nsi-server, как будет проверено ВЕРНУТЬ!

@@ -35,7 +35,7 @@ public class KafkaCcmService {
         MDC.put("KAFKA_ID", UUID.randomUUID().toString());
 
         try {
-            log.info("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
+            log.debug("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
                     " op: {}; pk.id: {}; data.primeId: {}",
                 request.getTs(), request.getOp(), request.getPk().getId(), request.getData().getPrimeId());
 

@@ -22,7 +22,7 @@ public class IntegralParamServiceImpl implements IntegralParamService {
             log.info("--- invalid integralParam: null");
         }
         integralParamRepository.save(integralParam);
-        log.info("--- Successfully saved integralParam: {}",integralParam);
+        log.debug("--- Successfully saved integralParam: {}",integralParam);
     }
 
     @Override

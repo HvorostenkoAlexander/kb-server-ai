@@ -49,7 +49,7 @@ public class KafkaPdmService {
         MDC.put("KAFKA_ID", UUID.randomUUID().toString());
 
         try {
-            log.info("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
+            log.debug("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),
                 request.offset(),
