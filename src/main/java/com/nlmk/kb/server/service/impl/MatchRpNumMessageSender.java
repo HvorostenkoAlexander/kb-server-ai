@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.impl;
 
-import com.nlmk.attestation.product.api.nsi.MatchRpDto;
+//import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.PdmMessageConverter;
