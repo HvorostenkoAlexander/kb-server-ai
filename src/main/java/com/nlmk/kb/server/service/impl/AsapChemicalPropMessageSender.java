@@ -3,40 +3,36 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
-import com.nlmk.kb.server.util.PdmConverter;
+import com.nlmk.kb.server.service.NsiCommonSender;
+import com.nlmk.kb.server.service.PdmMessageConverter;
 import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
 public class AsapChemicalPropMessageSender implements MessageSender {
-
-    private final RestTemplate restTemplate;
     private final String url_dictionary;
-    private final String URL_NSI_DICTIONARY;
     private final String type;
+    private final PdmMessageConverter pdmMessageConverter;
+    private final NsiCommonSender commonSender;
 
-    public AsapChemicalPropMessageSender(RestTemplateBuilder restTemplateBuilder,
-                                         @Value("${nsi.url.asap-chemical-propertiese}") String url_dictionary,
-                                         @Value("${nsi.url.dict}") String nsiDictionary,
-                                         @Value("${kafka.pdm.topic.asap-chemical-properties}") String topicName
+    public AsapChemicalPropMessageSender(@Value("${nsi.url.asap-chemical-propertiese}") String url_dictionary,
+                                         @Value("${kafka.pdm.topic.asap-chemical-properties}") String topicName,
+                                         NsiCommonSender commonSender,
+                                         PdmMessageConverter pdmMessageConverter
     ) {
-        this.restTemplate = restTemplateBuilder.build();
         this.url_dictionary = url_dictionary;
-        this.URL_NSI_DICTIONARY = nsiDictionary;
         this.type = topicName;
+        this.commonSender = commonSender;
+        this.pdmMessageConverter = pdmMessageConverter;
     }
 
     @Override
@@ -45,51 +41,16 @@ public class AsapChemicalPropMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = PdmConverter.toChemicalStdLimitDto(message.getDictionary());
-        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
+        val sendingDto = pdmMessageConverter.toChemicalStdLimitDto(message.getDictionary());
 
+        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get("KAFKA_ID"));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
         HttpEntity<ChemicalStdLimitDto> request = new HttpEntity<>(sendingDto, headers);
-        ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
 
-        val operation = message.getOp();
-        switch (operation) {
-            case "I": {
-                log.debug("--- post to NSI: " + request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.POST,
-                                request,
-                                Long.class);
-                break;
-            }
-            case "U": {
-                log.debug("--- put to NSI: " + request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.PUT,
-                                request,
-                                Long.class);
-                break;
-            }
-            case "D": {
-                log.debug("--- delete from NSI: " + request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.DELETE,
-                                request,
-                                Long.class);
-                break;
-            }
-            default: {
-                throw new IllegalArgumentException("not supported operation: " + operation);
-            }
-        }
-        log.debug("--- response from NSI: " + response.getBody());
-        return response;
+        return commonSender.exchange(request,url_dictionary, message.getOp());
     }
 
     @Override

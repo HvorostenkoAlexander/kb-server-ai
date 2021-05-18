@@ -5,8 +5,10 @@ import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
 import com.nlmk.kb.server.service.PdmMessageConverter;
+import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,11 +44,11 @@ public class ToleranceMessageSender implements MessageSender {
         val sendingDto = pdmMessageConverter.toToleranceDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-        HttpHeaders header = new HttpHeaders();
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get("KAFKA_ID"));
         if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
+            headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ToleranceDto> request = new HttpEntity<>(sendingDto,header);
+        HttpEntity<ToleranceDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }
