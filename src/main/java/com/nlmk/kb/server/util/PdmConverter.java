@@ -16,10 +16,13 @@ import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
 import nlmk.l3.pdm.SpAsapTolLinks;
 import nlmk.l3.pdm.SpEquivalents;
+import nlmk.l3.pdm.SpKatSteelMarkGost4041;
 import nlmk.l3.pdm.SpMatchRabplanNum;
 import nlmk.l3.pdm.SpMatchTkNum;
 import nlmk.l3.pdm.SpMicrostructure;
 import nlmk.l3.pdm.SpPcm;
+import nlmk.l3.pdm.SpTolThick;
+import nlmk.l3.pdm.SpTolWidth;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.text.ParseException;
@@ -66,7 +69,7 @@ public class PdmConverter {
         message.setOffset(record.offset());
         message.setPartition(record.partition());
 
-        //todo избавиться от лишнего кода!!!, убрать хардкод
+        //todo избавиться от лишнего кода!!!,перенести в PdmComminConverter? убрать хардкод
         switch (topic) {
             case "000-1.l3-pdm.cdc.sp-microstructure.0": {
                 val pdmDictionary = fromSpMicrostructure((SpMicrostructure) record.value());
@@ -117,12 +120,81 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-kat-steel-mark-gost4041.0": {
+                val pdmDictionary = fromKatSteel4041((SpKatSteelMarkGost4041) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-tol-thick.0": {
+                val pdmDictionary = fromSpTolThick((SpTolThick) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-tol-width.0": {
+                val pdmDictionary = fromSpTolWidth((SpTolWidth) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default: {
                 log.error("Not supported type of: {}", record);
                 throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
+    }
+
+    private static PdmDictionary fromSpTolWidth(SpTolWidth value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    private static PdmDictionary fromSpTolThick(SpTolThick value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    private static PdmDictionary fromKatSteel4041(SpKatSteelMarkGost4041 value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
     }
 
     private static PdmDictionary fromSpAsapTolLinks(SpAsapTolLinks value) {
