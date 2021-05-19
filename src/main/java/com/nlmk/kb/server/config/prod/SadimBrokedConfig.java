@@ -32,7 +32,7 @@ public class SadimBrokedConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "apcs.kb.sadim");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put("schema.registry.url", "http://localhost:8081");
-       // props.put(KafkaJsonDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
+        props.put(KafkaJsonDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
 
         KafkaJsonSchemaDeserializer valueDeserializer = new KafkaJsonSchemaDeserializer();
         valueDeserializer.configure(props,false);
