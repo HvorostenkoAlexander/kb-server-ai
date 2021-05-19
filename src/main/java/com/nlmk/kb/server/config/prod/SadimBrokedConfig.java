@@ -22,7 +22,7 @@ import java.util.Map;
 public class SadimBrokedConfig {
 
     @Bean
-    public ConsumerFactory<String,Object> sadimConsumerFactory(){
+    public ConsumerFactory<String,String> sadimConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "nl-st-hkafka01.ao.nlmk:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -33,14 +33,16 @@ public class SadimBrokedConfig {
        // props.put(KafkaJsonDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
 
         return new DefaultKafkaConsumerFactory<>(
-                props
+                props,
+                new StringDeserializer(),
+                new StringDeserializer()
         );
     }
 
     @Bean(name = "kafkaListenerSadim")
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerSadim() {
+    public ConcurrentKafkaListenerContainerFactory<String, String > kafkaListenerSadim() {
 
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(sadimConsumerFactory());
