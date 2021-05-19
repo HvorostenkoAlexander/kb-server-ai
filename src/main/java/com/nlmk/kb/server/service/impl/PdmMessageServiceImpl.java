@@ -39,7 +39,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         messageRepository.save(pdmMessege);
 
-        log.info("--- PDM Successfully saved message: offset: {}; topic: {}, key:{};",
+        log.debug("--- PDM Successfully saved message: offset: {}; topic: {}, key:{};",
                 record.offset(),
                 record.topic(),
                 record.key());
