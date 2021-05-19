@@ -25,7 +25,7 @@ public class SadimBrokedConfig {
     @Bean
     public ConsumerFactory<String,String> sadimConsumerFactory(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "nl-st-hkafka01.ao.nlmk:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "nl-sp-hkafka01.ao.nlmk:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
      //   props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaJsonSchemaDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
