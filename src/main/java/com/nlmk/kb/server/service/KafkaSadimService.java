@@ -15,7 +15,7 @@ public class KafkaSadimService {
             topicPartitions = {@TopicPartition(topic = "PA-MU.NLMK.P3.HSM",
                     partitionOffsets =
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
-    public void receiveMessageReq(@Payload String jsonNode) {
+    public void receiveMessageReq(@Payload Object jsonNode) {
 
         log.info(" SADIM data from topic: {}",jsonNode);
     }
