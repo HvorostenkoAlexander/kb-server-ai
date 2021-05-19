@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.util;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
+import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LimitDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
@@ -21,6 +22,7 @@ import nlmk.l3.pdm.SpMatchRabplanNum;
 import nlmk.l3.pdm.SpMatchTkNum;
 import nlmk.l3.pdm.SpMicrostructure;
 import nlmk.l3.pdm.SpPcm;
+import nlmk.l3.pdm.SpTolLength;
 import nlmk.l3.pdm.SpTolThick;
 import nlmk.l3.pdm.SpTolWidth;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -141,12 +143,35 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-tol-length.0": {
+                val pdmDictionary = fromSpTolLength((SpTolLength) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default: {
                 log.error("Not supported type of: {}", record);
                 throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
+    }
+
+    private static PdmDictionary fromSpTolLength(SpTolLength value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
     }
 
     private static PdmDictionary fromSpTolWidth(SpTolWidth value) {

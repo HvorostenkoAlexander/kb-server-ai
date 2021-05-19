@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.KatSteelMarkGost4041Dto;
+import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
@@ -35,4 +36,6 @@ public interface PdmMessageConverter {
     ThicknessTkLimitDto toThicknessTkLimitDto(PdmDictionary dictionary);
 
     WidthTkLimitDto toWidthTkLimitDto(PdmDictionary dictionary);
+
+    LengthTkLimitDto toLengthTkLimitDto(PdmDictionary dictionary);
 }

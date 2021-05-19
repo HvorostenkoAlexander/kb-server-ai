@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.KatSteelMarkGost4041Dto;
+import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
@@ -149,6 +150,30 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                 .build();
 
         return widthTkLimitDto;
+    }
+
+    @Override
+    public LengthTkLimitDto toLengthTkLimitDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val lengthTkLimitDto = LengthTkLimitDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .standSort(converter.getSpecValue(specs,SpecCode.ASSORTMENT_STANDARD.getValue()))
+                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+                .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.LENGTH_PRODUCT.getValue())))
+                .prLengthTolMax(Double.parseDouble(
+                    converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_MAX.getValue())
+                ))
+                .rollingLengthAccuracy(converter.getSpecValue(specs,SpecCode.MANUFACTURING_PRECISION_BY_LENGTH.getValue()))
+                .prLengthTolMaxPerc(converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_PERCENT.getValue()))
+                .koefLengthTolMax(Double.parseDouble(
+                    converter.getSpecValue(specs,SpecCode.LENGTH_K.getValue())
+                ))
+                .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
+                .build();
+
+        return lengthTkLimitDto;
     }
 
     @Override

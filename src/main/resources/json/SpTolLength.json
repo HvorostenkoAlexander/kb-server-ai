@@ -1,0 +1,19 @@
+{
+  "ts": "2021-05-18T16:30:08.4329031+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "49558",
+    "Id": "1"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 5, "specName": "Стандарт на сортамент", "specTypeCode": 1, "specValue": "ГОСТ 19904-90", "specMeasure": ""},
+      {"specCode": 592, "specName": "Длина продукции", "specTypeCode": 1, "specValue": "0..1500", "specMeasure": ""},
+      {"specCode": 237, "specName": "Допуск по длине (+)", "specTypeCode": 1, "specValue": "2", "specMeasure": ""},
+      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 416, "specName": "Толщина продукции", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 595, "specName": "Точность изготовления по длине", "specTypeCode": 1, "specValue": "ВД", "specMeasure": ""},
+      {"specCode": 596, "specName": "Допуск по длине в процентах (+)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 597, "specName": "Коэффициент (K) для расчета допуска (К х длина листа из заказа)", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+    ]}}
