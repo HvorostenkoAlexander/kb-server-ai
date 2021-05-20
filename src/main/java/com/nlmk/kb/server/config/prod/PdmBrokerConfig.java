@@ -62,7 +62,7 @@ public class PdmBrokerConfig {
         factory.setErrorHandler(((thrownException, data) -> {
             log.error("--- ERROR: " + thrownException.getMessage());
             log.error("--- ERROR RECORD: " + data.toString());//todo сохранять необработанное сообщение
-            Arrays.stream(thrownException.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
+            //Arrays.stream(thrownException.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
         }));
         factory.setConcurrency(1);
         return factory;

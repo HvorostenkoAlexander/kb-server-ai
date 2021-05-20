@@ -18,10 +18,13 @@ public class KafkaSadimService {
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord) {
 
-        log.info("SADIM data from topic: timestamp: {}, key:{}, offset:{}",
-                consumerRecord.timestamp(),
-                consumerRecord.key(),
-                consumerRecord.offset()
+//        log.info("SADIM data from topic: timestamp: {}, key:{}, offset:{}",
+//                consumerRecord.timestamp(),
+//                consumerRecord.key(),
+//                consumerRecord.offset()
+//        );
+        log.info("SADIM data from topic: {}",
+                consumerRecord.value()
         );
     }
 }
