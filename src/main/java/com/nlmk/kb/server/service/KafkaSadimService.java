@@ -18,12 +18,7 @@ public class KafkaSadimService {
                     partitionOffsets =
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord) {
-        try {
-            Sadim sadim = (Sadim) consumerRecord.value();
-            log.info("SADIM data from topic: {}",consumerRecord);
-        } catch (ClassCastException cce){
-            log.error("cce to example: "+cce);
-            log.info("SADIM data from topic: {}",consumerRecord);
-        }
+
+        log.info("SADIM data from topic: {}",consumerRecord.value());
     }
 }
