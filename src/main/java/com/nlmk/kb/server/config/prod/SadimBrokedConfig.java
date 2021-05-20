@@ -1,10 +1,8 @@
 package com.nlmk.kb.server.config.prod;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.confluent.kafka.serializers.KafkaJsonDeserializerConfig;
-import io.confluent.kafka.serializers.json.KafkaJsonSchemaDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.sadim.Example;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,35 +21,31 @@ import java.util.Map;
 public class SadimBrokedConfig {
 
     @Bean
-    public ConsumerFactory sadimConsumerFactory(){
+    public Map<String, Object> sadimConsumerConfigs(){
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "nl-sp-hkafka01.ao.nlmk:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaJsonSchemaDeserializer.class);
-       // props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "apcs.kb.sadim");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put("schema.registry.url", "http://localhost:8081");
-        props.put(KafkaJsonDeserializerConfig.JSON_VALUE_TYPE, JsonNode.class.getName());
 
-        KafkaJsonSchemaDeserializer valueDeserializer = new KafkaJsonSchemaDeserializer();
-        valueDeserializer.configure(props,false);
-
-        return new DefaultKafkaConsumerFactory<>(
-                props,
-                new StringDeserializer(),
-                valueDeserializer
-        );
+        return props;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<Object, Object > kafkaListenerSadim() {
+    public ConsumerFactory<String, Example> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(sadimConsumerConfigs());
+    }
 
-        ConcurrentKafkaListenerContainerFactory<Object, Object> factory =
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Example > kafkaListenerSadim() {
+
+        ConcurrentKafkaListenerContainerFactory<String, Example> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-
-        factory.setConsumerFactory(sadimConsumerFactory());
+        factory.setConsumerFactory(consumerFactory());
+        factory.setMessageConverter(new StringJsonMessageConverter());
         factory.setConcurrency(1);
+
         return factory;
     }
 }

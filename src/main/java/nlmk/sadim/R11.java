@@ -1,0 +1,95 @@
+package nlmk.sadim;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "ENTER",
+        "EXIT"
+})
+@Generated("jsonschema2pojo")
+public class R11 {
+
+    /**
+     * Время начала 1-го прохода в клети №1 стана 2000
+     * <p>
+     *
+     *
+     */
+    @JsonProperty("ENTER")
+    private Date enter;
+    /**
+     * Время окончания 1-го прохода в клети №1 стана 2000
+     * <p>
+     *
+     *
+     */
+    @JsonProperty("EXIT")
+    private Date exit;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    /**
+     * Время начала 1-го прохода в клети №1 стана 2000
+     * <p>
+     *
+     *
+     */
+    @JsonProperty("ENTER")
+    public Date getEnter() {
+        return enter;
+    }
+
+    /**
+     * Время начала 1-го прохода в клети №1 стана 2000
+     * <p>
+     *
+     *
+     */
+    @JsonProperty("ENTER")
+    public void setEnter(Date enter) {
+        this.enter = enter;
+    }
+
+    /**
+     * Время окончания 1-го прохода в клети №1 стана 2000
+     * <p>
+     *
+     *
+     */
+    @JsonProperty("EXIT")
+    public Date getExit() {
+        return exit;
+    }
+
+    /**
+     * Время окончания 1-го прохода в клети №1 стана 2000
+     * <p>
+     *
+     *
+     */
+    @JsonProperty("EXIT")
+    public void setExit(Date exit) {
+        this.exit = exit;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
+
+}
