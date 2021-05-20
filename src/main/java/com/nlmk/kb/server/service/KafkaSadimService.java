@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nlmk.sadim.Example;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -16,8 +17,8 @@ public class KafkaSadimService {
             topicPartitions = {@TopicPartition(topic = "PA-MU.NLMK.P3.HSM",
                     partitionOffsets =
                     @PartitionOffset(partition = "0", initialOffset = "0")),})
-    public void receiveMessageReq(@Payload String jsonNode) {
+    public void receiveMessageReq(@Payload ConsumerRecord jsonNode) {
 
-        log.info(" SADIM data from topic: {}",jsonNode);
+        log.info(" SADIM data from topic: {}",jsonNode.value());
     }
 }

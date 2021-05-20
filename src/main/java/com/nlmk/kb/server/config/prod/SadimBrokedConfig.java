@@ -33,17 +33,17 @@ public class SadimBrokedConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, String> sadimConsumerFactory() {
+    public ConsumerFactory<String, Object> sadimConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(sadimConsumerConfigs());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String > kafkaListenerSadim() {
+    public ConcurrentKafkaListenerContainerFactory<String, Object > kafkaListenerSadim() {
 
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(sadimConsumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
+       // factory.setMessageConverter(new StringJsonMessageConverter());
         factory.setConcurrency(1);
 
         return factory;
