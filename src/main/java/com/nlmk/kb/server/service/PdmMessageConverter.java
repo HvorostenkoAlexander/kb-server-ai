@@ -2,14 +2,12 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
-import com.nlmk.attestation.product.api.nsi.KatSteelMarkGost4041Dto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
-import com.nlmk.attestation.product.api.nsi.MatchRpDto;
-import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.ToleranceDto;
 import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
@@ -31,7 +29,7 @@ public interface PdmMessageConverter {
 
     ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary);
 
-    KatSteelMarkGost4041Dto toKatSteel4041Dto(PdmDictionary dictionary);
+    SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary);
 
     ThicknessTkLimitDto toThicknessTkLimitDto(PdmDictionary dictionary);
 

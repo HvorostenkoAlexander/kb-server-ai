@@ -2,12 +2,12 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
-import com.nlmk.attestation.product.api.nsi.KatSteelMarkGost4041Dto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.ToleranceDto;
 import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
@@ -86,14 +86,14 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
     }
 
     @Override
-    public KatSteelMarkGost4041Dto toKatSteel4041Dto(PdmDictionary dictionary) {
+    public SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary) {
         val specs = dictionary.getData().getSpecifications();
 
-        val katSteel4041Dto = KatSteelMarkGost4041Dto.builder()
+        val katSteel4041Dto = SteelCategoryG4041Dto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(converter.parseToDate(dictionary.getTs()))
                 .prProdMark(converter.getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
-                .prThickUncoat(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue()))
+                .prThickUncoata(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .category(converter.getSpecValue(specs,SpecCode.CATEGORY_GOST_4041.getValue()))
                 .build();
         return katSteel4041Dto;

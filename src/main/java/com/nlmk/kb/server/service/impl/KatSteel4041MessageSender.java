@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.impl;
 
-import com.nlmk.attestation.product.api.nsi.KatSteelMarkGost4041Dto;
+import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -49,7 +49,7 @@ public class KatSteel4041MessageSender implements MessageSender {
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<KatSteelMarkGost4041Dto> request = new HttpEntity<>(sendingDto,headers);
+        HttpEntity<SteelCategoryG4041Dto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }
