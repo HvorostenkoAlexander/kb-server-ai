@@ -12,11 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaSadimService {
 
+    //    @KafkaListener(containerFactory = "kafkaListenerSadim",
+//            topicPartitions = {@TopicPartition(topic = "PA-MU.NLMK.P3.HSM",
+//            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")
+//            ),
+//            })
     @KafkaListener(containerFactory = "kafkaListenerSadim",
-            topicPartitions = {@TopicPartition(topic = "PA-MU.NLMK.P3.HSM"
-        //    partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")
-            ),
-            })
+            topics = {"PA-MU.NLMK.P3.HSM"}
+    )
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord) {
 
 //        log.info("SADIM data from topic: timestamp: {}, key:{}, offset:{}",
