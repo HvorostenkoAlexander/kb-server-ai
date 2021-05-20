@@ -35,10 +35,13 @@ public class Asis {
      */
     @JsonProperty("estimate")
     private Integer estimate;
+
     @JsonProperty("headers")
     private List<Header> headers = null;
+
     @JsonProperty("values")
-    private List<List<Double>> values = null;
+    private List<List<String>> values = null;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -75,12 +78,12 @@ public class Asis {
     }
 
     @JsonProperty("values")
-    public List<List<Double>> getValues() {
+    public List<List<String>> getValues() {
         return values;
     }
 
     @JsonProperty("values")
-    public void setValues(List<List<Double>> values) {
+    public void setValues(List<List<String>> values) {
         this.values = values;
     }
 

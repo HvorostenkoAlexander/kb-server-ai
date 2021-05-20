@@ -28,8 +28,10 @@ public class Rm312 {
 
     @JsonProperty("headers")
     private List<Header__1> headers = null;
+
     @JsonProperty("values")
     private List<List<Double>> values = null;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
