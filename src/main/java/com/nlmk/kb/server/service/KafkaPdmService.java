@@ -38,6 +38,14 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.pcm}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.asap-tol-links}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.tol-thick}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.kat-steel-4041}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.tol-width}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.tol-length}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )
