@@ -1,0 +1,14 @@
+{
+  "ts": "2021-05-18T16:29:24.7668951+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "416614",
+    "Id": "2"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "08кп;08пс;08;10кп;10пс;10;15кп;15пс;20пс;20;25пс;25;30;35;40;15;20кп", "specMeasure": ""},
+      {"specCode": 416, "specName": "Толщина проката", "specTypeCode": 1, "specValue": "(4.00..14.00]", "specMeasure": ""},
+      {"specCode": 417, "specName": "Категория", "specTypeCode": 1, "specValue": "1", "specMeasure": ""}
+    ]}}

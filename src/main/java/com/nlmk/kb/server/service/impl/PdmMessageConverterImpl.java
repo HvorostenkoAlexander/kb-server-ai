@@ -2,11 +2,15 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
+import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
+import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.ToleranceDto;
+import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -79,6 +83,97 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
         log.debug("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
 
         return chemicalStdLimitDto;
+    }
+
+    @Override
+    public SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val katSteel4041Dto = SteelCategoryG4041Dto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .prProdMark(converter.getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
+                .prThickUncoata(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+                .category(converter.getSpecValue(specs,SpecCode.CATEGORY_GOST_4041.getValue()))
+                .build();
+        return katSteel4041Dto;
+    }
+
+    @Override
+    public ThicknessTkLimitDto toThicknessTkLimitDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val thicknessTkLimitDto = ThicknessTkLimitDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .routeShop(converter.getSpecValue(specs,SpecCode.ROUTE_SHOP.getValue()))
+                .standSort(converter.getSpecValue(specs,SpecCode.ASSORTMENT_STANDARD.getValue()))
+                .prProdMark(converter.getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
+                .prStrengthClass(converter.getSpecValue(specs,SpecCode.STRENGTH_CLASS.getValue()))
+                .thickValues(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue()))
+                .rollingThickAccuracy(converter.getSpecValue(specs,SpecCode.MANUFACTURING_PRECISION_BY_THICKNESS.getValue()))
+                .prYield(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.YIELD_POINT.getValue())))
+                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs,586)))
+                .prWidthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.WHIDTH_PRODUCT.getValue())))
+                .prThickTolMin(converter.getSpecValue(specs,SpecCode.THICKNESS_TOLERANCE_MIN.getValue()))
+                .prThickTolMax(converter.getSpecValue(specs,SpecCode.THICKNESS_TOLERANCE_MAX.getValue()))
+                .prThickTolMinPerc(converter.getSpecValue(specs,SpecCode.THICKNESS_TOLERANCE_PERCENT_MIN.getValue()))
+                .prThickTolMaxPerc(converter.getSpecValue(specs,SpecCode.THICKNESS_TOLERANCE_PERCENT_MAX.getValue()))
+                .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
+                .build();
+        return thicknessTkLimitDto;
+    }
+
+    @Override
+    public WidthTkLimitDto toWidthTkLimitDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val widthTkLimitDto  = WidthTkLimitDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .standSort(converter.getSpecValue(specs,SpecCode.ASSORTMENT_STANDARD.getValue()))
+                .prProdMark(converter.getSpecValue(specs,SpecCode.STEEL_MARK.getValue()))
+                .prStandSteel(converter.getSpecValue(specs,SpecCode.MARK_STANDARD.getValue()))
+                .prFormSap(converter.getSpecValue(specs,SpecCode.FORM_SAP.getValue()))
+                .prWidthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.WHIDTH_PRODUCT.getValue())))
+                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+                .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.LENGTH_PRODUCT.getValue())))
+                .prCrop(converter.getSpecValue(specs,SpecCode.EDGE_CHARACTER.getValue()))
+                .rollingWidthAccuracy(converter.getSpecValue(specs,SpecCode.MANUFACTURING_PRECISION_BY_WIDTH.getValue()))
+                .prWidthTolMin(Double.parseDouble(
+                        converter.getSpecValue(specs,SpecCode.WIDTH_TOLERANCE_MIN.getValue())
+                ))
+                .prWidthTolMax(Double.parseDouble(
+                        converter.getSpecValue(specs,SpecCode.WIDTH_TOLERANCE_MAX.getValue())
+                ))
+                .prWidthTolPerc(converter.getSpecValue(specs,SpecCode.WHIDTH_TOLERANCE_PERCENT.getValue()))
+                .build();
+
+        return widthTkLimitDto;
+    }
+
+    @Override
+    public LengthTkLimitDto toLengthTkLimitDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val lengthTkLimitDto = LengthTkLimitDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .standSort(converter.getSpecValue(specs,SpecCode.ASSORTMENT_STANDARD.getValue()))
+                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+                .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.LENGTH_PRODUCT.getValue())))
+                .prLengthTolMax(Double.parseDouble(
+                    converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_MAX.getValue())
+                ))
+                .rollingLengthAccuracy(converter.getSpecValue(specs,SpecCode.MANUFACTURING_PRECISION_BY_LENGTH.getValue()))
+                .prLengthTolMaxPerc(converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_PERCENT.getValue()))
+                .koefLengthTolMax(Double.parseDouble(
+                    converter.getSpecValue(specs,SpecCode.LENGTH_K.getValue())
+                ))
+                .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
+                .build();
+
+        return lengthTkLimitDto;
     }
 
     @Override

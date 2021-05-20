@@ -1,0 +1,22 @@
+{
+  "ts": "2021-05-18T16:30:02.0183075+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "49553",
+    "Id": "1"
+  },
+  "data": {"specifications": [
+    {"specCode": 5, "specName": "Стандарт на сортамент", "specTypeCode": 1, "specValue": "ГОСТ 19904-90", "specMeasure": ""},
+    {"specCode": 587, "specName": "Ширина продукции", "specTypeCode": 1, "specValue": "(1000..1500]", "specMeasure": ""},
+    {"specCode": 416, "specName": "Толщина продукции", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 431, "specName": "Характер кромки", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 233, "specName": "Допуск по ширине (+)", "specTypeCode": 1, "specValue": "5", "specMeasure": ""},
+    {"specCode": 234, "specName": "Допуск по ширине (-)", "specTypeCode": 1, "specValue": "0", "specMeasure": ""},
+    {"specCode": 593, "specName": "Точность изготовления по ширине", "specTypeCode": 1, "specValue": "АШ", "specMeasure": ""},
+    {"specCode": 594, "specName": "Допуск по ширине в процентах (+)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 591, "specName": "Вид поставки", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 592, "specName": "Длина продукции", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 2, "specName": "Стандарт на марку по выплавке", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+  ]}}
