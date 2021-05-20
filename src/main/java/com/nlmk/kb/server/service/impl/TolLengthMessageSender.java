@@ -54,7 +54,7 @@ public class TolLengthMessageSender implements MessageSender {
         HttpEntity<LengthTkLimitDto> request = new HttpEntity<>(sendingDto,headers);
         ResponseEntity<Long> responseEntity = commonSender.exchange(request,url_dictionary, message.getOp());
 
-        log.info("response: {}; LengthTkLimitDto: {}",responseEntity.getBody(), sendingDto);
+        //log.info("response: {}; LengthTkLimitDto: {}",responseEntity.getBody(), sendingDto);
 
         return responseEntity;
     }

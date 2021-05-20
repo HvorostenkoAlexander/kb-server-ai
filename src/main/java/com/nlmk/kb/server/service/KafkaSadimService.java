@@ -17,9 +17,9 @@ public class KafkaSadimService {
 //            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")
 //            ),
 //            })
-    @KafkaListener(containerFactory = "kafkaListenerSadim",
-            topics = {"PA-MU.NLMK.P3.HSM"}
-    )
+//    @KafkaListener(containerFactory = "kafkaListenerSadim",
+//            topics = {"PA-MU.NLMK.P3.HSM"}
+//    )
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord) {
 
 //        log.info("SADIM data from topic: timestamp: {}, key:{}, offset:{}",
@@ -27,8 +27,8 @@ public class KafkaSadimService {
 //                consumerRecord.key(),
 //                consumerRecord.offset()
 //        );
-        log.info("SADIM data from topic: {}",
-                consumerRecord.value()
-        );
+//        log.info("SADIM data from topic: {}",
+//                consumerRecord.value()
+//        );
     }
 }
