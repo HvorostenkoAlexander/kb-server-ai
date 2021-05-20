@@ -13,6 +13,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +62,7 @@ public class PdmBrokerConfig {
         factory.setErrorHandler(((thrownException, data) -> {
             log.error("--- ERROR: " + thrownException.getMessage());
             log.error("--- ERROR RECORD: " + data.toString());//todo сохранять необработанное сообщение
+            Arrays.stream(thrownException.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
         }));
         factory.setConcurrency(1);
         return factory;
