@@ -24,8 +24,8 @@ public class SadimBrokedConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "nl-sp-hkafka01.ao.nlmk:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apcs.kb.sadim");
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "apcs.kb.sadim-group");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
         return props;
     }
