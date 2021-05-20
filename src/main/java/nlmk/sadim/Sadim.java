@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "time_unload"
 })
 @Generated("jsonschema2pojo")
-public class Example {
+public class Sadim {
 
     @JsonProperty("chemical")
     private Chemical chemical;
