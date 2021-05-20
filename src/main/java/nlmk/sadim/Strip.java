@@ -58,7 +58,7 @@ public class Strip {
      *
      */
     @JsonProperty("ID2")
-    private Integer id2;
+    private Long id2;
     /**
      * Идентификатор MES
      * <p>
@@ -102,7 +102,7 @@ public class Strip {
      *
      */
     @JsonProperty("coiler")
-    private Integer coiler;
+    private Long coiler;
     /**
      * Данные от профилимера, установленного после чистовой группы стана
      * <p>
@@ -118,7 +118,7 @@ public class Strip {
      *
      */
     @JsonProperty("specific_tension")
-    private Integer specificTension;
+    private Long specificTension;
     /**
      * Марка стали для прокатки (марка стали по выплавке)
      * <p>
@@ -144,7 +144,7 @@ public class Strip {
      *
      */
     @JsonProperty("tension_percent")
-    private Integer tensionPercent;
+    private Long tensionPercent;
     /**
      * Фактическое время прокатки в чистовой группе стана
      * <p>
@@ -152,7 +152,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_time_fact")
-    private Integer rollingTimeFact;
+    private Long rollingTimeFact;
     /**
      * Расчётное время прокатки в чистовой группе стана
      * <p>
@@ -160,7 +160,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_time_calc")
-    private Integer rollingTimeCalc;
+    private Long rollingTimeCalc;
     /**
      * Фактическая пауза при прокатке в чистовой группе стана
      * <p>
@@ -168,7 +168,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_pause_fact")
-    private Integer rollingPauseFact;
+    private Long rollingPauseFact;
     /**
      * Расчётная пауза при прокатке в чистовой группе стана
      * <p>
@@ -176,7 +176,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_pause_calc")
-    private Integer rollingPauseCalc;
+    private Long rollingPauseCalc;
     /**
      * Время окончания смотки полосы
      * <p>
@@ -315,7 +315,7 @@ public class Strip {
      *
      */
     @JsonProperty("ID2")
-    public Integer getId2() {
+    public Long getId2() {
         return id2;
     }
 
@@ -326,7 +326,7 @@ public class Strip {
      *
      */
     @JsonProperty("ID2")
-    public void setId2(Integer id2) {
+    public void setId2(Long id2) {
         this.id2 = id2;
     }
 
@@ -445,7 +445,7 @@ public class Strip {
      *
      */
     @JsonProperty("coiler")
-    public Integer getCoiler() {
+    public Long getCoiler() {
         return coiler;
     }
 
@@ -456,7 +456,7 @@ public class Strip {
      *
      */
     @JsonProperty("coiler")
-    public void setCoiler(Integer coiler) {
+    public void setCoiler(Long coiler) {
         this.coiler = coiler;
     }
 
@@ -489,7 +489,7 @@ public class Strip {
      *
      */
     @JsonProperty("specific_tension")
-    public Integer getSpecificTension() {
+    public Long getSpecificTension() {
         return specificTension;
     }
 
@@ -500,7 +500,7 @@ public class Strip {
      *
      */
     @JsonProperty("specific_tension")
-    public void setSpecificTension(Integer specificTension) {
+    public void setSpecificTension(Long specificTension) {
         this.specificTension = specificTension;
     }
 
@@ -565,7 +565,7 @@ public class Strip {
      *
      */
     @JsonProperty("tension_percent")
-    public Integer getTensionPercent() {
+    public Long getTensionPercent() {
         return tensionPercent;
     }
 
@@ -576,7 +576,7 @@ public class Strip {
      *
      */
     @JsonProperty("tension_percent")
-    public void setTensionPercent(Integer tensionPercent) {
+    public void setTensionPercent(Long tensionPercent) {
         this.tensionPercent = tensionPercent;
     }
 
@@ -587,7 +587,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_time_fact")
-    public Integer getRollingTimeFact() {
+    public Long getRollingTimeFact() {
         return rollingTimeFact;
     }
 
@@ -598,7 +598,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_time_fact")
-    public void setRollingTimeFact(Integer rollingTimeFact) {
+    public void setRollingTimeFact(Long rollingTimeFact) {
         this.rollingTimeFact = rollingTimeFact;
     }
 
@@ -609,7 +609,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_time_calc")
-    public Integer getRollingTimeCalc() {
+    public Long getRollingTimeCalc() {
         return rollingTimeCalc;
     }
 
@@ -620,7 +620,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_time_calc")
-    public void setRollingTimeCalc(Integer rollingTimeCalc) {
+    public void setRollingTimeCalc(Long rollingTimeCalc) {
         this.rollingTimeCalc = rollingTimeCalc;
     }
 
@@ -631,7 +631,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_pause_fact")
-    public Integer getRollingPauseFact() {
+    public Long getRollingPauseFact() {
         return rollingPauseFact;
     }
 
@@ -642,7 +642,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_pause_fact")
-    public void setRollingPauseFact(Integer rollingPauseFact) {
+    public void setRollingPauseFact(Long rollingPauseFact) {
         this.rollingPauseFact = rollingPauseFact;
     }
 
@@ -653,7 +653,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_pause_calc")
-    public Integer getRollingPauseCalc() {
+    public Long getRollingPauseCalc() {
         return rollingPauseCalc;
     }
 
@@ -664,7 +664,7 @@ public class Strip {
      *
      */
     @JsonProperty("rolling_pause_calc")
-    public void setRollingPauseCalc(Integer rollingPauseCalc) {
+    public void setRollingPauseCalc(Long rollingPauseCalc) {
         this.rollingPauseCalc = rollingPauseCalc;
     }
 
