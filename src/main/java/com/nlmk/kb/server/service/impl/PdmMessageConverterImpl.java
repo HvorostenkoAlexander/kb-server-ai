@@ -18,6 +18,7 @@ import com.nlmk.kb.server.service.PdmMessageConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -140,14 +141,16 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                 .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.LENGTH_PRODUCT.getValue())))
                 .prCrop(converter.getSpecValue(specs,SpecCode.EDGE_CHARACTER.getValue()))
                 .rollingWidthAccuracy(converter.getSpecValue(specs,SpecCode.MANUFACTURING_PRECISION_BY_WIDTH.getValue()))
-                .prWidthTolMin(Double.parseDouble(
+                .prWidthTolMin(this.toDouble(
                         converter.getSpecValue(specs,SpecCode.WIDTH_TOLERANCE_MIN.getValue())
                 ))
-                .prWidthTolMax(Double.parseDouble(
+                .prWidthTolMax(this.toDouble(
                         converter.getSpecValue(specs,SpecCode.WIDTH_TOLERANCE_MAX.getValue())
                 ))
                 .prWidthTolPerc(converter.getSpecValue(specs,SpecCode.WHIDTH_TOLERANCE_PERCENT.getValue()))
                 .build();
+
+                val widthTolMinStr = converter.getSpecValue(specs,SpecCode.WIDTH_TOLERANCE_MIN.getValue());
 
         return widthTkLimitDto;
     }
@@ -162,12 +165,12 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                 .standSort(converter.getSpecValue(specs,SpecCode.ASSORTMENT_STANDARD.getValue()))
                 .prThickGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs,SpecCode.LENGTH_PRODUCT.getValue())))
-                .prLengthTolMax(Double.parseDouble(
+                .prLengthTolMax(this.toDouble(
                     converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_MAX.getValue())
                 ))
                 .rollingLengthAccuracy(converter.getSpecValue(specs,SpecCode.MANUFACTURING_PRECISION_BY_LENGTH.getValue()))
                 .prLengthTolMaxPerc(converter.getSpecValue(specs,SpecCode.LENGTH_TOLERANCE_PERCENT.getValue()))
-                .koefLengthTolMax(Double.parseDouble(
+                .koefLengthTolMax(this.toDouble(
                     converter.getSpecValue(specs,SpecCode.LENGTH_K.getValue())
                 ))
                 .prAnnotation(converter.getSpecValue(specs,SpecCode.NOTE.getValue()))
@@ -326,5 +329,12 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
 
         log.debug("--- toPcmDto PcmDto: {} ", toleranceDto);
         return toleranceDto;
+    }
+
+    private Double toDouble(String stringValue){
+        if (StringUtils.isAllBlank(stringValue)){
+            return null;
+        }
+        return Double.parseDouble(stringValue);
     }
 }
