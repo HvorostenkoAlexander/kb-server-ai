@@ -35,10 +35,6 @@ public class KafkaCcmService {
                         " op: {}; pk.id: {}; data.primeId: {}",
                 request.getTs(), request.getOp(), request.getPk().getId(), request.getData().getPrimeId());
 
-        if (offset==104) {
-            log.info("--- !!! request with offset = 104: {}",request);
-        }
-
         val value = ValueConverter.fromKafkaAttestationRequest(request);
 
         //todo убрать отправку данных в pam в другое место. тут должна быть только обработка сообщения.
