@@ -25,4 +25,20 @@ public class SadimTest {
         System.out.println("---sadim: "+value);
         assertNotNull(value);
     }
+
+    @Test
+    void test(){
+
+        int i=0;
+
+        while (true) {
+            if (i==5) {
+                System.out.println("i=5");
+                break;
+            }
+            i++;
+        }
+
+        System.out.println("end");
+    }
 }

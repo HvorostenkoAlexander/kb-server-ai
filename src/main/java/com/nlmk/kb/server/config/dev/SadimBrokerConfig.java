@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.config.prod;
+package com.nlmk.kb.server.config.dev;
 
 import com.nlmk.kb.server.config.SadimConsumerProperties;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Profile("prod")
-public class SadimBrokedConfig {
+@Profile("dev")
+public class SadimBrokerConfig {
 
     private final SadimConsumerProperties consumerProperties;
 
@@ -30,7 +30,7 @@ public class SadimBrokedConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getKafkaGroupId());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         return props;
     }
@@ -46,7 +46,7 @@ public class SadimBrokedConfig {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(sadimConsumerFactory());
-       // factory.setMessageConverter(new StringJsonMessageConverter());
+        // factory.setMessageConverter(new StringJsonMessageConverter());
         factory.setConcurrency(1);
 
         return factory;
