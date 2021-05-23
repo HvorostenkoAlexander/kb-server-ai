@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.kb.server.entity.PreAttestationParam;
 
 import java.util.Optional;
