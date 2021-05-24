@@ -19,7 +19,7 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @Profile("prod")
-public class SadimBrokedConfig {
+public class SadimBrokerConfig {
 
     private final SadimConsumerProperties consumerProperties;
 

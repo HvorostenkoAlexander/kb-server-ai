@@ -11,7 +11,6 @@ import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.sadim.Sadim;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -57,7 +56,6 @@ public class SadimTest {
         assertNotNull(param.get());
     }
 
-    @Test
     void test() throws FileNotFoundException {
 
         val jsonString = getJsonFromPath("src/main/resources/json/sadim09052020_1.json");

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Service
+@Service("sadimStreamApiParser")
 public class SadimStreamApiParser implements SadimJsonParser {
 
     @Override
@@ -30,67 +30,54 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
                 if ("PRIME_ID".equals(fieldname)) {
                     jParser.nextToken();
-                    // System.out.println("--- PRIME_ID: " + jParser.getText());
                     paramBuilder.primeId(jParser.getText());
                 }
                 if ("t12_min".equals(fieldname)) {
                     jParser.nextToken();
-                    //  System.out.println("--- t12_min: " + jParser.getText());
                     paramBuilder.t12Min(jParser.getDoubleValue());
                 }
                 if ("t12_max".equals(fieldname)) {
                     jParser.nextToken();
-                    //  System.out.println("--- t12_max: " + jParser.getText());
                     paramBuilder.t12Max(jParser.getDoubleValue());
                 }
                 if ("tcm_min".equals(fieldname)) {
                     jParser.nextToken();
-                    //   System.out.println("--- tcm_min: " + jParser.getText());
                     paramBuilder.tcmMin(jParser.getDoubleValue());
                 }
                 if ("tcm_max".equals(fieldname)) {
                     jParser.nextToken();
-                    //  System.out.println("--- tcm_max: " + jParser.getText());
                     paramBuilder.tcmMax(jParser.getDoubleValue());
                 }
                 if ("PBI".equals(fieldname)) {
                     jParser.nextToken();
-                    //   System.out.println("--- PBI: " + jParser.getText());
                     paramBuilder.pbi(jParser.getDoubleValue());
                 }
                 if ("ProfFact".equals(fieldname)) {
                     jParser.nextToken();
-                    //  System.out.println("--- ProfFact: " + jParser.getText());
                     paramBuilder.profFact(jParser.getDoubleValue());
                 }
                 if ("WedgeFact".equals(fieldname)) {
                     jParser.nextToken();
-                    //   System.out.println("--- WedgeFact: " + jParser.getText());
                     paramBuilder.wedgeFact(jParser.getDoubleValue());
                 }
                 if ("SQC_CRIT_MAX".equals(fieldname)) {
                     jParser.nextToken();
-                    //    System.out.println("--- SQC_CRIT_MAX: " + jParser.getText());
                     paramBuilder.sqcCritMax(jParser.getDoubleValue());
                 }
                 if ("PH_1SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    //   System.out.println("--- PH_1SGP: " + jParser.getText());
                     paramBuilder.ph1sgp(jParser.getDoubleValue());
                 }
                 if ("PH_12SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    //  System.out.println("--- PH_12SGP: " + jParser.getText());
                     paramBuilder.ph12sgp(jParser.getDoubleValue());
                 }
                 if ("PH_23SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    //  System.out.println("--- PH_23SGP: " + jParser.getText());
                     paramBuilder.ph23sgp(jParser.getDoubleValue());
                 }
                 if ("estimate".equals(fieldname)) {
                     jParser.nextToken();
-                    //    System.out.println("--- estimate: " + jParser.getText());
                     paramBuilder.estimate(jParser.getIntValue());
                 }
                 if ("lclThckng".equals(fieldname) && jParser.getCurrentToken() == JsonToken.START_OBJECT) {
