@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -49,6 +50,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "lclThckng"
 })
 @Generated("jsonschema2pojo")
+@ToString
 public class Strip {
 
     /**
@@ -85,6 +87,7 @@ public class Strip {
      */
     @JsonProperty("asis")
     private Asis asis;
+
     @JsonProperty("coil_no")
     private CoilNo coilNo;
     /**
@@ -109,8 +112,9 @@ public class Strip {
      *
      *
      */
-    @JsonProperty("rm312")
-    private Rm312 rm312;
+   // @JsonProperty("rm312")
+//    @JsonIgnore
+//    private Rm312 rm312;
     /**
      * Удельное натяжение полосы на моталке
      * <p>
@@ -305,6 +309,7 @@ public class Strip {
      */
     @JsonProperty("lclThckng")
     private LclThckng lclThckng;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -466,10 +471,10 @@ public class Strip {
      *
      *
      */
-    @JsonProperty("rm312")
-    public Rm312 getRm312() {
-        return rm312;
-    }
+//    @JsonProperty("rm312")
+//    public Rm312 getRm312() {
+//        return rm312;
+//    }
 
     /**
      * Данные от профилимера, установленного после чистовой группы стана
@@ -477,10 +482,10 @@ public class Strip {
      *
      *
      */
-    @JsonProperty("rm312")
-    public void setRm312(Rm312 rm312) {
-        this.rm312 = rm312;
-    }
+//    @JsonProperty("rm312")
+//    public void setRm312(Rm312 rm312) {
+//        this.rm312 = rm312;
+//    }
 
     /**
      * Удельное натяжение полосы на моталке

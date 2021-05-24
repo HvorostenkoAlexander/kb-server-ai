@@ -1,0 +1,23 @@
+{
+  "ts": "2021-05-18T16:29:51.0573372+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "49552",
+    "Id": "5455"
+  },
+  "data": {"specifications": [
+    {"specCode": 5, "specName": "Стандарт на сортамент", "specTypeCode": 1, "specValue": "СТО 05757665-008-2016", "specMeasure": ""},
+    {"specCode": 586, "specName": "Толщина проката", "specTypeCode": 1, "specValue": "0.35;0.50", "specMeasure": ""},
+    {"specCode": 587, "specName": "Ширина продукции", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 588, "specName": "Точность изготовления по толщине", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 53, "specName": "Предел текучести", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 230, "specName": "Допуск по толщине (-)", "specTypeCode": 1, "specValue": "0.03", "specMeasure": ""},
+    {"specCode": 229, "specName": "Допуск по толщине (+)", "specTypeCode": 1, "specValue": "0.03", "specMeasure": ""},
+    {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 589, "specName": "Допуск по толщине в процентах (-)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 590, "specName": "Допуск по толщине в процентах (+)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 432, "specName": "Цех обработки", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 416, "specName": "Значения толщины", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+    {"specCode": 491, "specName": "Класс прочности (по EN 10051)", "specTypeCode": 1, "specValue": "", "specMeasure": ""}]}}
