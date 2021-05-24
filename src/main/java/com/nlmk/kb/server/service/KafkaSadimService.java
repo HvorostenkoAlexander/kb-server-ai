@@ -29,7 +29,7 @@ public class KafkaSadimService {
     @KafkaListener(containerFactory = "kafkaListenerSadim",topics = {"${kafka.sadim.topic}"})
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord) {
 
-        log.info("SADIM offset: {}", consumerRecord.offset());
+        log.info("SADIM offset: {}, message key: {}", consumerRecord.offset(), consumerRecord.key());
 
         val attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
 

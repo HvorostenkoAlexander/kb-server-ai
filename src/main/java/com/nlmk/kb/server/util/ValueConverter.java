@@ -77,9 +77,15 @@ public class ValueConverter {
         DataField dataField = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
-                .thickness(Double.valueOf(recordData.getThickness()))
-                .width(Double.valueOf(recordData.getWidth()))
-                .weightNet(Double.valueOf(recordData.getWeightNet()))
+                .thickness(
+                        fromFloatToDouble(recordData.getThickness())
+                )
+                .width(
+                        fromFloatToDouble(recordData.getWidth())
+                )
+                .weightNet(
+                        fromFloatToDouble(recordData.getWeightNet())
+                )
                 .kceh(Long.valueOf(recordData.getKceh()))
                 .orderNum(Long.valueOf(recordData.getOrderNum()))
                 .orderPos(Long.valueOf(recordData.getOrderPos()))
@@ -91,10 +97,14 @@ public class ValueConverter {
             dataField.setHnum(recordData.getHnum().longValue());
         }
         if (recordData.getLength() != null) {
-            dataField.setLength(recordData.getLength().doubleValue());
+            dataField.setLength(
+                    fromFloatToDouble(recordData.getLength())
+            );
         }
         if (recordData.getBundleWeight() != null) {
-            dataField.setBundleWeight(recordData.getBundleWeight().doubleValue());
+            dataField.setBundleWeight(
+                    fromFloatToDouble(recordData.getBundleWeight())
+            );
         }
         dataField.setSpecifications(
                 recordData.getSpecifications().stream()
@@ -122,6 +132,10 @@ public class ValueConverter {
                         .collect(Collectors.toList())
         );
         return dataField;
+    }
+
+    private static Double fromFloatToDouble(Float f){
+        return Double.parseDouble(Float.toString(f.floatValue()));
     }
 
     private static Specs fromRequestRecordSpecifications(RecordSpecifications specifications) {
