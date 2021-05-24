@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -49,6 +50,7 @@ public class KafkaPdmService {
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )
+    @Timed(value="PDM_KafkaListener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord request) {
 
         log.debug("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",

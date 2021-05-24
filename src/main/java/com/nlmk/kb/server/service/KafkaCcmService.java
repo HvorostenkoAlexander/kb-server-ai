@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.entity.pam.Value;
 import com.nlmk.kb.server.util.ValueConverter;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -28,6 +29,7 @@ public class KafkaCcmService {
 //    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
 //            topics = {"${kafka.ccm.topicReq}"}
 //    )
+    @Timed(value="CCM_KafkaListener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.OFFSET) int offset,
                                   @Payload AttestationRequest request) {
 
