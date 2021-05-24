@@ -5,6 +5,7 @@ import com.nlmk.kb.server.entity.KafkaIntegralParamMessage;
 import com.nlmk.kb.server.entity.KafkaUnrecoverableParamMessage;
 import com.nlmk.kb.server.entity.UnrecoverableParam;
 import com.nlmk.kb.server.util.ParamConverter;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.sup.IntegralParameters;
@@ -38,6 +39,7 @@ public class KafkaSupService {
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
         topics = {"${kafka.sup.topicIp}"}
     )
+    @Timed(value="SUP_KafkaListener", percentiles = {0.99, 0.95})
     public void receiveMessageIp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
@@ -76,6 +78,7 @@ public class KafkaSupService {
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
         topics = {"${kafka.sup.topicUp}"}
     )
+    @Timed(value="SUP_KafkaListener", percentiles = {0.99, 0.95})
     public void receiveMessageUp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
