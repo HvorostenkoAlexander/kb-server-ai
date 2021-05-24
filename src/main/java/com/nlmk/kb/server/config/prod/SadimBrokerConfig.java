@@ -24,7 +24,7 @@ public class SadimBrokerConfig {
     private final SadimConsumerProperties consumerProperties;
 
     @Bean
-    public Map<String, Object> sadimConsumerConfigs(){
+    public Map<String, Object> sadimConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -41,12 +41,15 @@ public class SadimBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object > kafkaListenerSadim() {
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerSadim() {
 
         ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(sadimConsumerFactory());
-       // factory.setMessageConverter(new StringJsonMessageConverter());
+        factory.setErrorHandler(((thrownException, data) -> {
+            log.error("--- ERROR: " + thrownException.getMessage());
+            log.error("--- ERROR RECORD: " + data.toString());
+        }));
         factory.setConcurrency(1);
 
         return factory;
