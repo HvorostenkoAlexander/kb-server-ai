@@ -2,20 +2,18 @@ create table public.sadim_pre_attestation_param
 (
     id         bigserial not null,
     prime_id    varchar,
-    t12_min     double precision,
-    t12_max     double precision,
-    tcm_min     double precision,
-    tcm_max     double precision,
-    pbi        double precision,
-    prof_fact   double precision,
-    wedge_fact  double precision,
-    sqc_crit_max double precision,
-    ph1_sgp     double precision,
+    t12_min     float8,
+    t12_max     float8,
+    tcm_min     float8,
+    tcm_max     float8,
+    pbi        float8,
+    prof_fact   float8,
+    wedge_fact  float8,
+    sqc_crit_max float8,
+    ph1_sgp     float8,
     ph12_sgp    varchar,
-    ph23_sgp    double precision,
+    ph23_sgp    float8,
     estimate   int4,
-    lcl_thckng  double precision[],
-
     CONSTRAINT sadim_pre_attestation_param__id__pk PRIMARY KEY (id)
 );
 
@@ -33,4 +31,13 @@ COMMENT ON COLUMN public.sadim_pre_attestation_param.ph1_sgp IS E'Процент
 COMMENT ON COLUMN public.sadim_pre_attestation_param.ph12_sgp IS E'Процент длины полосы, на которой толщина входит в (1/2) допуска';
 COMMENT ON COLUMN public.sadim_pre_attestation_param.ph23_sgp IS E'Процент длины полосы, на которой толщина входит в (2/3) допуска';
 COMMENT ON COLUMN public.sadim_pre_attestation_param.estimate IS E'Оценка годности полосы';
-COMMENT ON COLUMN public.sadim_pre_attestation_param.lcl_thckng IS E'Высота местных утолщений по ширине полосы';
+
+create table pre_attestation_param_lcl_thckng
+(
+    pre_attestation_param_id int8 not null,
+    lcl_thckng float8
+);
+
+alter table pre_attestation_param_lcl_thckng
+    add constraint FKng1axrfcoc0n8hmaiubtw2xfe foreign key (pre_attestation_param_id)
+        references sadim_pre_attestation_param;

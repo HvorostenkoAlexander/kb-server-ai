@@ -1,15 +1,13 @@
 package com.nlmk.kb.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vladmihalcea.hibernate.type.array.ListArrayType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,10 +21,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "sadim_pre_attestation_param")
-@TypeDef(
-        name = "list-array",
-        typeClass = ListArrayType.class
-)
 public class PreAttestationParam {
 
     @Id
@@ -83,8 +77,7 @@ public class PreAttestationParam {
     private Double ph23sgp;// "Процент длины полосы, на которой толщина входит в (2/3) допуска"
 
     @JsonProperty("lclThckng")
-    @Type(type = "list-array")
-    @Column(name = "lcl_thckng", columnDefinition = "double precision[]")
+    @ElementCollection
     private List<Double> lclThckng;// "Высота местных утолщений по ширине полосы"
 
     @JsonProperty("estimate")
