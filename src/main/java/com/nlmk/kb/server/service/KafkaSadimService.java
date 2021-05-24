@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class KafkaSadimService {
-    private  final SadimJsonParser sadimJsonParser;
+    private final SadimJsonParser sadimJsonParser;
 
     public KafkaSadimService(@Qualifier("sadimStreamApiParser") SadimJsonParser sadimJsonParser) {
         this.sadimJsonParser = sadimJsonParser;
@@ -26,13 +28,15 @@ public class KafkaSadimService {
 //            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")
 //            ),
 //            })
-    @KafkaListener(containerFactory = "kafkaListenerSadim",topics = {"${kafka.sadim.topic}"})
-    public void receiveMessageReq(@Payload ConsumerRecord consumerRecord) {
+    @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
+    public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                                  @Payload ConsumerRecord consumerRecord
+    ) {
 
-        log.info("SADIM offset: {}, message key: {}", consumerRecord.offset(), consumerRecord.key());
+        log.info("SADIM offset: {}, message key: {}", consumerRecord.offset(), key);
 
         val attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
 
-        log.info("--- SADIM message with offset: {}; attestationParam:{}",consumerRecord.offset(),attestationParam.get());
+        log.info("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam.get());
     }
 }
