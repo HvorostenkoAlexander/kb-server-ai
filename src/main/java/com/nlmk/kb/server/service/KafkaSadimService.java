@@ -17,11 +17,16 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+
 public class KafkaSadimService {
     private  final SadimJsonParser sadimJsonParser;
+    private final PreAttestationParamService paramService;
 
-    public KafkaSadimService(@Qualifier("sadimStreamApiParser") SadimJsonParser sadimJsonParser) {
+    public KafkaSadimService(@Qualifier("sadimStreamApiParser")
+                                     SadimJsonParser sadimJsonParser,
+                             PreAttestationParamService paramService) {
         this.sadimJsonParser = sadimJsonParser;
+        this.paramService = paramService;
     }
 
     //    @KafkaListener(containerFactory = "kafkaListenerSadim",
@@ -34,8 +39,12 @@ public class KafkaSadimService {
 
         log.info("SADIM offset: {}", consumerRecord.offset());
 
-        val attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
-
+        Optional<PreAttestationParam> attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
         log.info("--- SADIM message with offset: {}; attestationParam:{}",consumerRecord.offset(),attestationParam.get());
+
+        if (attestationParam.isPresent()){
+            attestationParam = paramService.save(attestationParam.get());
+            log.info("--- SADIM param successfully saved. param.primeId:{} ",attestationParam.get().getPrimeId());
+        }
     }
 }

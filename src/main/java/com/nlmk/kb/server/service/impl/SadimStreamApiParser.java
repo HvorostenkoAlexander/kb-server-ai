@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("sadimStreamApiParser")
@@ -96,7 +97,7 @@ public class SadimStreamApiParser implements SadimJsonParser {
         }
     }
 
-    private Double[] getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
+    private List<Double> getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
         List<List<Double>> values = new ArrayList<>();
 
         while (!("lclThckng".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.END_OBJECT)) {
@@ -116,6 +117,6 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 }
             }
         }
-        return values.stream().map(value -> value.get(0)).toArray(Double[]::new);
+        return values.stream().map(value -> value.get(0)).collect(Collectors.toList());
     }
 }
