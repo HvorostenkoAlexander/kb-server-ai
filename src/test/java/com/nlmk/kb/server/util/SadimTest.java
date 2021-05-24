@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -141,10 +142,10 @@ public class SadimTest {
         }
         val attestationParam = paramBuilder.build();
         System.out.println("--- AttestationParam: " + attestationParam);
-        System.out.println("---- lclThckng: " + Arrays.toString(attestationParam.getLclThckng()));
+        //System.out.println("---- lclThckng: " + Arrays.toString(attestationParam.getLclThckng()));
     }
 
-    private Double[] getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
+    private List<Double> getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
         System.out.println("! checkLclThckng: " + jParser.currentName() + "; " + jParser.getText());
         List<List<Double>> values = new ArrayList<>();
 
@@ -166,7 +167,7 @@ public class SadimTest {
                 }
             }
         }
-        return values.stream().map(value -> value.get(0)).toArray(Double[]::new);
+        return values.stream().map(value -> value.get(0)).collect(Collectors.toList());
     }
 
     private String getJsonFromPath(String path) throws FileNotFoundException {
