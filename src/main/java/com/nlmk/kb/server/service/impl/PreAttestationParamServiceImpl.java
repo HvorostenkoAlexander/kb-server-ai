@@ -30,7 +30,7 @@ public class PreAttestationParamServiceImpl implements PreAttestationParamServic
     public List<PreAttestationParamDto> findByPrimeId(String primeId){
         return repository.findByPrimeId(primeId).stream()
                 .map(
-                        p->converter.fromParamToDto(p)
+                        param->converter.fromParamToDto(param)
                 ).collect(Collectors.toList());
     }
 }
