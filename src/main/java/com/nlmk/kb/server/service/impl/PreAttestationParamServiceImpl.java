@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -18,7 +19,11 @@ public class PreAttestationParamServiceImpl implements PreAttestationParamServic
 
     @Override
     public Optional<PreAttestationParam> save(PreAttestationParam preAttestationParam) {
-
         return Optional.of(repository.save(preAttestationParam));
+    }
+
+    @Override
+    public List<PreAttestationParam> findByPrimeId(String primeId){
+        return repository.findByPrimeId(primeId);
     }
 }
