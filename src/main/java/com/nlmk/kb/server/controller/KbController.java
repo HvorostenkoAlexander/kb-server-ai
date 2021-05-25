@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.controller;
 
+import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.service.PreAttestationParamService;
 import io.micrometer.core.annotation.Timed;
@@ -22,7 +23,7 @@ public class KbController {
     private final PreAttestationParamService service;
 
     @GetMapping("/sadim")
-    public ResponseEntity<List<PreAttestationParam>> sadim(@RequestParam(value = "primeId", required = true) String primeId) {
+    public ResponseEntity<List<PreAttestationParamDto>> sadim(@RequestParam(value = "primeId", required = true) String primeId) {
 
         val sadimData = service.findByPrimeId(primeId);
 
