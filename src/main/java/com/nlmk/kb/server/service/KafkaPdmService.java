@@ -50,7 +50,7 @@ public class KafkaPdmService {
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )
-    @Timed(value="PDM_KafkaListener", percentiles = {0.99, 0.95})
+    @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord request) {
 
         log.debug("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
