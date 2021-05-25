@@ -29,7 +29,7 @@ public class KafkaCcmService {
 //    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
 //            topics = {"${kafka.ccm.topicReq}"}
 //    )
-    @Timed(value="CCM_KafkaListener", percentiles = {0.99, 0.95})
+    @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.OFFSET) int offset,
                                   @Payload AttestationRequest request) {
 

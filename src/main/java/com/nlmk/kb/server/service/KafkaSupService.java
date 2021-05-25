@@ -39,7 +39,7 @@ public class KafkaSupService {
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
         topics = {"${kafka.sup.topicIp}"}
     )
-    @Timed(value="SUP_KafkaListener", percentiles = {0.99, 0.95})
+    @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageIp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
@@ -78,7 +78,7 @@ public class KafkaSupService {
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
         topics = {"${kafka.sup.topicUp}"}
     )
-    @Timed(value="SUP_KafkaListener", percentiles = {0.99, 0.95})
+    @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageUp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
