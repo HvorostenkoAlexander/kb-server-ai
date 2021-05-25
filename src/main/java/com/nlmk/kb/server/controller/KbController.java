@@ -1,7 +1,6 @@
 package com.nlmk.kb.server.controller;
 
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
-import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.service.PreAttestationParamService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @Slf4j
 @Timed(percentiles = {0.99, 0.95})
@@ -20,13 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KbController {
 
-    private final PreAttestationParamService service;
+    private final PreAttestationParamService paramService;
 
     @GetMapping("/sadim")
-    public ResponseEntity<List<PreAttestationParamDto>> sadim(@RequestParam(value = "primeId", required = true) String primeId) {
+    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
+            required = true) String primeId) {
 
-        val sadimData = service.findByPrimeId(primeId);
+        val paramDto = paramService.findByPrimeIdLatest(primeId);
 
-        return ResponseEntity.ok(sadimData);
+        return ResponseEntity.ok(paramDto);
     }
 }

@@ -10,4 +10,5 @@ public interface PreAttestationParamService {
 
     Optional<PreAttestationParam> save(PreAttestationParam preAttestationParam);
     List<PreAttestationParamDto> findByPrimeId(String primeId);
+    PreAttestationParamDto findByPrimeIdLatest(String primeId);
 }

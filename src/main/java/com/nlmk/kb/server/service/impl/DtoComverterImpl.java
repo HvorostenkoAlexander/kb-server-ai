@@ -6,6 +6,7 @@ import com.nlmk.kb.server.service.DtoConverter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Slf4j
 @Service
@@ -13,6 +14,8 @@ public class DtoComverterImpl implements DtoConverter {
 
     @Override
     public PreAttestationParamDto fromParamToDto(PreAttestationParam param) {
+        Assert.notNull(param,"При конвертации в PreAttestationParamDto param = null.");
+
         val paramDto = PreAttestationParamDto.builder()
                 .id(param.getId())
                 .primeId(param.getPrimeId())
