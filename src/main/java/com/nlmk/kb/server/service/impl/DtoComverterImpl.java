@@ -30,10 +30,10 @@ public class DtoComverterImpl implements DtoConverter {
                 .ph12sgp(param.getPh12sgp())
                 .ph23sgp(param.getPh23sgp())
                 .estimate(param.getEstimate())
-                .lclThckng(
-                        param.getLclThckng().toArray(new Double[0])
-                )
                 .build();
+        if (param.getLclThckng() !=null){
+            paramDto.setLclThckng(param.getLclThckng().toArray(new Double[0]));
+        }
         return paramDto;
     }
 }
