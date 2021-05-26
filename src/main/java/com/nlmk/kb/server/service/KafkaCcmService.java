@@ -33,7 +33,11 @@ public class KafkaCcmService {
 //            topics = {"${kafka.ccm.topicReq}"}
 //    )
     @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Header(KafkaHeaders.OFFSET) int offset,
+    public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+                                  @Header(KafkaHeaders.OFFSET) int offset,
+                                  @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
                                   @Payload AttestationRequest request) {
 
         log.info("--- receiveMessageReq from CCM AttestationRequest:" +
