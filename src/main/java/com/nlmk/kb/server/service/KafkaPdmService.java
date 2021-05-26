@@ -36,7 +36,7 @@ public class KafkaPdmService {
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.match-rabplan-num}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
-//                    @TopicPartition(topic = "${kafka.pdm.topic.pcm}", // todo до выяснения: что случилось с датой?
+//                    @TopicPartition(topic = "${kafka.pdm.topic.pcm}",
 //                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.asap-tol-links}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),

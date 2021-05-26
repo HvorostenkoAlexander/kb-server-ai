@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.pam.Value;
+import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.util.ValueConverter;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,19 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaCcmService {
 
     private final PamClientService pamClientService;
+    private final CommonConverter converter;
+    private final CcmMessageService messageService;
+    private final CcmMessageConverter messageConverter;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
             topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
@@ -29,17 +36,43 @@ public class KafkaCcmService {
 //    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
 //            topics = {"${kafka.ccm.topicReq}"}
 //    )
-    @Timed(value="CCM_KafkaListener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Header(KafkaHeaders.OFFSET) int offset,
+    @Timed(value = "CCM_KafkaListener", percentiles = {0.99, 0.95})
+    public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+                                  @Header(KafkaHeaders.OFFSET) int offset,
+                                  @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
                                   @Payload AttestationRequest request) {
 
-        log.debug("--- receiveMessageReq from CCM AttestationRequest: ts: {};" +
-                        " op: {}; pk.id: {}; data.primeId: {}",
-                request.getTs(), request.getOp(), request.getPk().getId(), request.getData().getPrimeId());
+        log.info("--- receiveMessageReq from CCM AttestationRequest:" +
+                        "partition: {}; " +
+                        "offset: {}; " +
+                        "key: {}; " +
+                        "timestamp: {}; " +
+                        "request.ts:{}; " +
+                        "request.op: {}; " +
+                        "request.pk.id: {}; " +
+                        "request.data.primeId: {} ",
+                partition, offset, key, timestamp,
+                request.getTs(),
+                request.getOp(),
+                request.getPk().getId(),
+                request.getData().getPrimeId());
+        //todo избавиться от большого числа параметров
+        val requestMessage = messageConverter.fromCcmAttestationRequest(
+                request,
+                topic,
+                key,
+                partition,
+                offset,
+                timestamp
+        );
 
-        val value = ValueConverter.fromKafkaAttestationRequest(request);
+        val savedRequest = messageService.save(requestMessage).orElseThrow(
+                () -> new RuntimeException("Не удалось сохранить сообщение partition: " + partition
+                        + "; offset: " + offset)
+        );
 
-        //todo убрать отправку данных в pam в другое место. тут должна быть только обработка сообщения.
-        pamClientService.postAttestationRequest(value);
+        val pamResult = pamClientService.postAttestationRequest(savedRequest.getRequest());
     }
 }

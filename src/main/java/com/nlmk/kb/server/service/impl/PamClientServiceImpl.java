@@ -29,7 +29,7 @@ public class PamClientServiceImpl implements PamClientService {
     }
 
     @Override
-    public void postAttestationRequest(AttestationRequest pamAttestationRequest) {
+    public Long postAttestationRequest(AttestationRequest pamAttestationRequest) {
 
         log.debug("--- request: " + pamAttestationRequest.getValue().getPk());
 
@@ -41,5 +41,6 @@ public class PamClientServiceImpl implements PamClientService {
                 new HttpEntity<>(pamAttestationRequest, headers),
                 Long.class);
         log.info("--- PAM-server response: "+response.getBody());
+        return response.getBody();
     }
 }
