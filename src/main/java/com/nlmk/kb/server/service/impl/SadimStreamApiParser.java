@@ -71,7 +71,7 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 }
                 if ("PH_12SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.ph12sgp(jParser.getDoubleValue());
+                    paramBuilder.ph12sgp(jParser.getText());
                 }
                 if ("PH_23SGP".equals(fieldname)) {
                     jParser.nextToken();

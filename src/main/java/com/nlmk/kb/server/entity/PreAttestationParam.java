@@ -70,7 +70,7 @@ public class PreAttestationParam {
 
     @JsonProperty("PH_12SGP")
     @Column(name ="ph12_sgp")
-    private Double ph12sgp;// "Процент длины полосы, на которой толщина входит в (1/2) допуска"
+    private String ph12sgp;// "Процент длины полосы, на которой толщина входит в (1/2) допуска"
 
     @JsonProperty("PH_23SGP")
     @Column(name ="ph23_sgp")

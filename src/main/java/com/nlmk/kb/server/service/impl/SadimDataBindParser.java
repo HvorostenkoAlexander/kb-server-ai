@@ -37,7 +37,7 @@ public class SadimDataBindParser implements SadimJsonParser {
                     .pbi(strip.getPbi())
                     .estimate(strip.getAsis().getEstimate())
                     .ph1sgp(strip.getPh1sgp())
-                    .ph12sgp(strip.getPh12sgp())
+                    .ph12sgp(Double.toHexString(strip.getPh12sgp()))
                     .ph23sgp(strip.getPh23sgp())
                     .profFact(strip.getProfFact())
                     .sqcCritMax(strip.getSqcCritMax())

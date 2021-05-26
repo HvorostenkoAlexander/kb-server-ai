@@ -28,7 +28,7 @@ public class DtoComverterImpl implements DtoConverter {
                 .wedgeFact(param.getWedgeFact())
                 .sqcCritMax(param.getSqcCritMax())
                 .ph1sgp(param.getPh1sgp())
-                .ph12sgp(param.getPh12sgp())
+                .ph12sgp(Double.parseDouble(param.getPh12sgp()))
                 .ph23sgp(param.getPh23sgp())
                 .estimate(param.getEstimate())
                 .build();
