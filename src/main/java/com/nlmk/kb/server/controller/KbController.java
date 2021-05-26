@@ -1,16 +1,23 @@
 package com.nlmk.kb.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.attestation.product.api.PreAttestationParamDto;
+import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.service.CcmMessageService;
+import com.nlmk.kb.server.service.PreAttestationParamService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
 
 @Slf4j
 @Timed(percentiles = {0.99, 0.95})
@@ -18,32 +25,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class KbController {
 
-    // @RequestParam(value = "tkNum", required = false) String tkNum
+    private final PreAttestationParamService paramService;
+    private final CcmMessageService messageSerivce;
 
     @GetMapping("/sadim")
-    public ResponseEntity<PreAttestationParam> sadimStub(@RequestParam(value = "primeId", required = true) String primeId) throws JsonProcessingException {
+    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
+            required = true) String primeId) {
 
-        val stubJson = "{\n" +
-                "\"primeId\": \"0\",\n" +
-                "\"t12_min\": 865,\n" +
-                "\"t12_max\": 905,\n" +
-                "\"tcm_min\": 550,\n" +
-                "\"tcm_max\": 590,\n" +
-                "\"PBI\": 100,\n" +
-                "\"ProfFact\": 6,\n" +
-                "\"WedgeFact\": -10,\n" +
-                "\"SQC_CRIT_MAX\": 0,\n" +
-                "\"PH_1SGP\": 100,\n" +
-                "\"PH_12SGP\": 98,\n" +
-                "\"PH_23SGP\": 99,\n" +
-                "\"lclThckng\": [],\n" +
-                "\"estimate\": 5\n" +
-                "}";
-        val sadimStub = new ObjectMapper()
-                .readValue(stubJson, PreAttestationParam.class);
+        val paramDto = paramService.findByPrimeIdLatest(primeId);
 
-        sadimStub.setPrimeId(primeId);
+        return ResponseEntity.ok(paramDto);
+    }
 
-        return ResponseEntity.ok(sadimStub);
+    @GetMapping("/attestation_request")
+    public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber", required = true) int page,
+                                                           @RequestParam(value = "pageSize", required = true) int size) {
+            return messageSerivce.findAll(PageRequest.of(page, size));
+    }
+
+    @GetMapping("/attestation_request/{primeId}")
+    public List<CcmAttestationRequestMessage> getByPrimeId(@PathVariable String primeId) {
+
+        return messageSerivce.findByPrimeId(primeId);
     }
 }

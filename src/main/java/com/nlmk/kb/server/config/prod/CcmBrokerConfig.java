@@ -68,7 +68,7 @@ public class CcmBrokerConfig {
         factory.setConsumerFactory(ccmConsumerFactory());
         factory.setErrorHandler(((thrownException, data) -> {
             log.error("--- ERROR: " + thrownException.getMessage());
-            log.error("--- ERROR RECORD: " + data.toString());//todo сохранять необработанное сообщение
+           // log.error("--- ERROR RECORD: " + data.toString());//todo сохранять необработанное сообщение
         }));
         factory.setConcurrency(1);
         return factory;

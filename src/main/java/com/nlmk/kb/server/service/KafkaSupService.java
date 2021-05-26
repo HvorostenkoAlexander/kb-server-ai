@@ -36,10 +36,10 @@ public class KafkaSupService {
     //            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicIp}",
     //            partitionOffsets =
     //            @PartitionOffset(partition = "0", initialOffset = "0")),})
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
-        topics = {"${kafka.sup.topicIp}"}
-    )
-    @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
+//    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryIp",
+//        topics = {"${kafka.sup.topicIp}"}
+//    )
+    @Timed(value="SUP_KafkaListener", percentiles = {0.99, 0.95})
     public void receiveMessageIp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
@@ -75,10 +75,10 @@ public class KafkaSupService {
 //            topicPartitions = {@TopicPartition(topic = "${kafka.sup.topicUp}",
 //                    partitionOffsets =
 //                    @PartitionOffset(partition = "0", initialOffset = "0")),})
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
-        topics = {"${kafka.sup.topicUp}"}
-    )
-    @Timed(value="kafka_listener", percentiles = {0.99, 0.95})
+//    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",
+//        topics = {"${kafka.sup.topicUp}"}
+//    )
+    @Timed(value="SUP_KafkaListener", percentiles = {0.99, 0.95})
     public void receiveMessageUp(@Headers MessageHeaders headers,
                                  @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
