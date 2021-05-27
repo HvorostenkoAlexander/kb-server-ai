@@ -2,7 +2,9 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,10 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class DtoComverterImpl implements DtoConverter {
+@RequiredArgsConstructor
+public class DtoConverterImpl implements DtoConverter {
+
+    private final CommonConverter converter;
 
     @Override
     public PreAttestationParamDto fromParamToDto(PreAttestationParam param) {
@@ -28,7 +33,7 @@ public class DtoComverterImpl implements DtoConverter {
                 .wedgeFact(param.getWedgeFact())
                 .sqcCritMax(param.getSqcCritMax())
                 .ph1sgp(param.getPh1sgp())
-                .ph12sgp(Double.parseDouble(param.getPh12sgp()))
+                .ph12sgp(converter.parsToDouble(param.getPh12sgp()))
                 .ph23sgp(param.getPh23sgp())
                 .estimate(param.getEstimate())
                 .build();

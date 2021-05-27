@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class PdmCommonConverterImpl implements CommonConverter {
+public class CommonConverterImpl implements CommonConverter {
 
     @Override
     public Date parseToDate(String stringDate){
@@ -102,5 +102,27 @@ public class PdmCommonConverterImpl implements CommonConverter {
         }
 
         return builder.build();
+    }
+
+    @Override
+    public Double parsToDouble(String s) {
+        Double d = null;
+        try {
+            d = Double.parseDouble(s);
+        } catch (NumberFormatException | NullPointerException e) {
+            log.debug("--- parsToDouble: " + e);
+        }
+        return d;
+    }
+
+    @Override
+    public Integer parsToInteger(String s) {
+        Integer i = null;
+        try {
+            i = Integer.parseInt(s);
+        } catch (NumberFormatException | NullPointerException e) {
+            log.debug("--- parsToInteger: " + e);
+        }
+        return i;
     }
 }

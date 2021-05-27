@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service("sadimStreamApiParser")
+@RequiredArgsConstructor
 public class SadimStreamApiParser implements SadimJsonParser {
+
+    private final CommonConverter converter;
 
     @Override
     public Optional<PreAttestationParam> getParam(String jsonString) {
@@ -35,39 +40,39 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 }
                 if ("t12_min".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.t12Min(jParser.getDoubleValue());
+                    paramBuilder.t12Min(converter.parsToDouble(jParser.getText()));
                 }
                 if ("t12_max".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.t12Max(jParser.getDoubleValue());
+                    paramBuilder.t12Max(converter.parsToDouble(jParser.getText()));
                 }
                 if ("tcm_min".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.tcmMin(jParser.getDoubleValue());
+                    paramBuilder.tcmMin(converter.parsToDouble(jParser.getText()));
                 }
                 if ("tcm_max".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.tcmMax(jParser.getDoubleValue());
+                    paramBuilder.tcmMax(converter.parsToDouble(jParser.getText()));
                 }
                 if ("PBI".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.pbi(jParser.getDoubleValue());
+                    paramBuilder.pbi(converter.parsToDouble(jParser.getText()));
                 }
                 if ("ProfFact".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.profFact(jParser.getDoubleValue());
+                    paramBuilder.profFact(converter.parsToDouble(jParser.getText()));
                 }
                 if ("WedgeFact".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.wedgeFact(jParser.getDoubleValue());
+                    paramBuilder.wedgeFact(converter.parsToDouble(jParser.getText()));
                 }
                 if ("SQC_CRIT_MAX".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.sqcCritMax(jParser.getDoubleValue());
+                    paramBuilder.sqcCritMax(converter.parsToDouble(jParser.getText()));
                 }
                 if ("PH_1SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.ph1sgp(jParser.getDoubleValue());
+                    paramBuilder.ph1sgp(converter.parsToDouble(jParser.getText()));
                 }
                 if ("PH_12SGP".equals(fieldname)) {
                     jParser.nextToken();
@@ -75,11 +80,11 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 }
                 if ("PH_23SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.ph23sgp(jParser.getDoubleValue());
+                    paramBuilder.ph23sgp(converter.parsToDouble(jParser.getText()));
                 }
                 if ("estimate".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.estimate(jParser.getIntValue());
+                    paramBuilder.estimate(converter.parsToInteger(jParser.getText()));
                 }
                 if ("lclThckng".equals(fieldname) && jParser.getCurrentToken() == JsonToken.START_OBJECT) {
                     paramBuilder.lclThckng(getArrayFromLclThckngSadim(jParser));
@@ -110,7 +115,7 @@ public class SadimStreamApiParser implements SadimJsonParser {
                     if (jParser.nextToken() == JsonToken.START_ARRAY) {
                         List<Double> onePare = new ArrayList<>();
                         while (jParser.nextToken() != JsonToken.END_ARRAY) {
-                            onePare.add(jParser.getDoubleValue());
+                            onePare.add(converter.parsToDouble(jParser.getText()));
                         }
                         values.add(onePare);
                     }
