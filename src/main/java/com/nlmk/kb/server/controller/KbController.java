@@ -20,6 +20,7 @@ import java.util.List;
 
 
 @Slf4j
+@CrossOrigin(origins = "*", methods = {RequestMethod.OPTIONS, RequestMethod.POST, RequestMethod.GET})
 @Timed(percentiles = {0.99, 0.95})
 @RestController
 @RequiredArgsConstructor
