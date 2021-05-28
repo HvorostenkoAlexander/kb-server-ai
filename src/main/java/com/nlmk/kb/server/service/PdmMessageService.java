@@ -7,14 +7,7 @@ import java.util.Optional;
 
 public interface PdmMessageService {
 
-    /**
-     * Сохранение сведений о сообщении из кафка в базу данных kb-server
-     *
-     * @param record(ConsumerRecord) поступивший из кафки
-     * @return Optional of PdmMessage(сохраненный объект в базе данных kb-server)
-     */
+    public Optional<PdmMessage> saveConsumerRecord(ConsumerRecord record);
 
-    public Optional<PdmMessage> save(ConsumerRecord record);
-
-    public Optional<PdmMessage> save(PdmMessage message);
+    public Optional<PdmMessage> savePdmMessage(PdmMessage message);
 }

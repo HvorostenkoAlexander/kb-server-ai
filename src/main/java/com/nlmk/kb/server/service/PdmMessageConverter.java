@@ -7,6 +7,7 @@ import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.ToleranceDto;
@@ -15,7 +16,7 @@ import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 
 public interface PdmMessageConverter {
 
-    public ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary);
+    ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary);
 
     PcmDto toPcmDto(PdmDictionary dictionary);
 
@@ -36,4 +37,6 @@ public interface PdmMessageConverter {
     WidthTkLimitDto toWidthTkLimitDto(PdmDictionary dictionary);
 
     LengthTkLimitDto toLengthTkLimitDto(PdmDictionary dictionary);
+
+    PhysMechPropertiesDto toPhysMechPropertiesDto(PdmDictionary dictionary);
 }

@@ -11,6 +11,7 @@ import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.sadim.Sadim;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -203,5 +204,25 @@ public class SadimTest {
         String stringTooLong = IOUtils.toString(fis);
 
         return stringTooLong;
+    }
+
+    @Test
+     void toDouble(){
+        String s="45,58";
+        Double d = null;
+//
+//        if (StringUtils.isAllBlank(stringValue)){
+//            d= null;
+//        }
+//        d= Double.parseDouble(stringValue);
+//
+
+        try {
+            d = Double.parseDouble(s);
+        } catch (NumberFormatException | NullPointerException e) {
+            log.debug("--- parsToDouble: " + e);
+        }
+
+        System.out.println("--- d: "+d);
     }
 }

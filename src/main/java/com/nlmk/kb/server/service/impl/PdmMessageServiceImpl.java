@@ -20,7 +20,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     private final PdmMessageRepository messageRepository;
 
     @Override
-    public Optional<PdmMessage> save(ConsumerRecord record) {
+    public Optional<PdmMessage> saveConsumerRecord(ConsumerRecord record) {
         if (record == null) {
             log.warn("ConsumerRecord is NULL");
             return Optional.empty();
@@ -39,7 +39,8 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         messageRepository.save(pdmMessege);
 
-        log.debug("--- PDM Successfully saved message: offset: {}; topic: {}, key:{};",
+        log.debug("--- Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
+                record.partition(),
                 record.offset(),
                 record.topic(),
                 record.key());
@@ -48,7 +49,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     @Override
-    public Optional<PdmMessage> save(PdmMessage message) {
+    public Optional<PdmMessage> savePdmMessage(PdmMessage message) {
         return Optional.of(messageRepository.save(message));
     }
 }

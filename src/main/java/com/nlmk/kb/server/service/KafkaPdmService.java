@@ -47,6 +47,8 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.tol-width}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.tol-length}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.asap-mech-propertiesh}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )
@@ -60,7 +62,7 @@ public class KafkaPdmService {
             request.key()
         );
 
-        Optional<PdmMessage> savedMessage = messageService.save(request);
+        Optional<PdmMessage> savedMessage = messageService.saveConsumerRecord(request);
 
         if (savedMessage.isPresent()) {
             val message = savedMessage.get();
@@ -68,7 +70,7 @@ public class KafkaPdmService {
 
             if (response.getStatusCode() == HttpStatus.ACCEPTED) {
                 message.setPosted(true);
-                messageService.save(message);
+                messageService.savePdmMessage(message);
             }
         }
     }
