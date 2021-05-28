@@ -49,6 +49,8 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.tol-length}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.asap-mech-propertiesh}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.tol-evenness}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
             }
     )

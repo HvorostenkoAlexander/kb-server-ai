@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
+import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
@@ -302,6 +303,31 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                 .build();
 
         return physMechPropertiesDto;
+    }
+
+    @Override
+    public EvennessTkLimitDto toEvennessTkLimitDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val evennessTkLimitDto = EvennessTkLimitDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
+                .prWidthGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.WHIDTH_PRODUCT.getValue())))
+                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+                .prEvenness(converter.getSpecValue(specs, SpecCode.EVENNESS.getValue()))
+                .prYield(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.YIELD_POINT.getValue())))
+                .prEvennessTolMax(converter.parsToDouble(
+                        converter.getSpecValue(specs, SpecCode.EVENNESS_TOLERANCE.getValue())
+                ))
+                .prEvennessTolPerc(converter.parsToDouble(
+                        converter.getSpecValue(specs, SpecCode.EVENNESS_TOLERANCE_PERCENT.getValue())
+                ))
+                .prTensileStrength(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TENSILE_STRENGTH.getValue())))
+                .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
+                .build();
+
+        return evennessTkLimitDto;
     }
 
     @Override
