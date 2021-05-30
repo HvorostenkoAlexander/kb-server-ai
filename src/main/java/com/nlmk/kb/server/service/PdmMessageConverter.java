@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalFormulaCEqTkDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
@@ -11,6 +12,7 @@ import com.nlmk.attestation.product.api.nsi.PcmDto;
 import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.attestation.product.api.nsi.ToleranceDto;
 import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
@@ -42,4 +44,8 @@ public interface PdmMessageConverter {
     PhysMechPropertiesDto toPhysMechPropertiesDto(PdmDictionary dictionary);
 
     EvennessTkLimitDto toEvennessTkLimitDto(PdmDictionary dictionary);
+
+    TkNumDto toTkNumDto(PdmDictionary dictionary);
+
+    ChemicalFormulaCEqTkDto toChemicalFormulaCEqTkDto(PdmDictionary dictionary);
 }

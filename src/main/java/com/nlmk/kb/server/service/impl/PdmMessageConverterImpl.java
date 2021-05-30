@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalFormulaCEqTkDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
@@ -11,6 +12,7 @@ import com.nlmk.attestation.product.api.nsi.PcmDto;
 import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.attestation.product.api.nsi.ToleranceDto;
 import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
@@ -328,6 +330,36 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                 .build();
 
         return evennessTkLimitDto;
+    }
+
+    @Override
+    public TkNumDto toTkNumDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val tkNumDto = TkNumDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
+                .tkPurp(converter.getSpecValue(specs, SpecCode.TARGET.getValue()))
+                .dateStart(converter.getSpecValue(specs, SpecCode.START_DATE.getValue()))
+                .dateFinish(converter.getSpecValue(specs, SpecCode.FINISH_DATE.getValue()))
+                .build();
+
+        return tkNumDto;
+    }
+
+    @Override
+    public ChemicalFormulaCEqTkDto toChemicalFormulaCEqTkDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val ceqDto = ChemicalFormulaCEqTkDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .number(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
+                .formula(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA.getValue()))
+                .pr_annotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
+                .build();
+        return ceqDto;
     }
 
     @Override

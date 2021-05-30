@@ -11,12 +11,14 @@ import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
 import nlmk.l3.pdm.SpAsapMechProperties;
 import nlmk.l3.pdm.SpAsapTolLinks;
+import nlmk.l3.pdm.SpCeq;
 import nlmk.l3.pdm.SpEquivalents;
 import nlmk.l3.pdm.SpKatSteelMarkGost4041;
 import nlmk.l3.pdm.SpMatchRabplanNum;
 import nlmk.l3.pdm.SpMatchTkNum;
 import nlmk.l3.pdm.SpMicrostructure;
 import nlmk.l3.pdm.SpPcm;
+import nlmk.l3.pdm.SpTkNum;
 import nlmk.l3.pdm.SpTolEvenness;
 import nlmk.l3.pdm.SpTolLength;
 import nlmk.l3.pdm.SpTolThick;
@@ -24,7 +26,6 @@ import nlmk.l3.pdm.SpTolWidth;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 //todo создать отдельный сервис, отказаться от хардкода, применить шаблон проектирвания для ухода от повторяющегося кода
-
 @Slf4j
 public class PdmConverter {
     private PdmConverter() {
@@ -132,12 +133,58 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-tk-num.0": {
+                val pdmDictionary = fromSpTkNum((SpTkNum) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
+            case "000-1.l3-pdm.cdc.sp-ceq.0": {
+                val pdmDictionary = fromSpCeq((SpCeq) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default: {
                 log.error("Not supported type of: {}", record);
                 throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
+    }
+
+    private static PdmDictionary fromSpCeq(SpCeq value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
+    }
+
+    private static PdmDictionary fromSpTkNum(SpTkNum value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
     }
 
     private static PdmDictionary fromSpTolEvenness(SpTolEvenness value) {

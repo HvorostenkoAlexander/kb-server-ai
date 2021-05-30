@@ -1,0 +1,15 @@
+{
+  "ts": "2021-05-26T09:58:55.622472+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "110313",
+    "Id": "1"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 584, "specName": "Номер формулы", "specTypeCode": 1, "specValue": "1.1", "specMeasure": ""},
+      {"specCode": 628, "specName": "Формула углеродного эквивалента", "specTypeCode": 1, "specValue": "C+Mn/6+(Cr+Ti+Mo+Nb+V)/5+(Ni+Cu)/15+15B", "specMeasure": ""},
+      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+    ]
+  }}
