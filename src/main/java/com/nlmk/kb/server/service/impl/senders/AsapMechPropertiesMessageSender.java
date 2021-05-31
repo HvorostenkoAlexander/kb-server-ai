@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
+import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -19,20 +19,19 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class EquivalentsMessageSender implements MessageSender {
+public class AsapMechPropertiesMessageSender implements MessageSender {
 
     private final String url_dictionary;
     private final String type;
     private final PdmMessageConverter pdmMessageConverter;
     private final NsiCommonSender commonSender;
 
-    public EquivalentsMessageSender(@Value("${nsi.url.equivalents}")String url_dictionary,
-                                    @Value("${kafka.pdm.topic.equivalents}") String topicName,
-                                    PdmMessageConverter pdmMessageConverter,
-                                    NsiCommonSender commonSender
-    ) {
+    public AsapMechPropertiesMessageSender(PdmMessageConverter pdmMessageConverter,
+                                  @Value("${nsi.url.asap-mech-properties}") String url_dictionary,
+                                  @Value("${kafka.pdm.topic.asap-mech-properties}") String type,
+                                  NsiCommonSender commonSender) {
         this.url_dictionary = url_dictionary;
-        this.type = topicName;
+        this.type = type;
         this.pdmMessageConverter = pdmMessageConverter;
         this.commonSender = commonSender;
     }
@@ -43,14 +42,14 @@ public class EquivalentsMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toChemicalEquivalentStdDto(message.getDictionary());
+        val sendingDto = pdmMessageConverter.toPhysMechPropertiesDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ChemicalEquivalentStdDto> request = new HttpEntity<>(sendingDto,headers);
+        HttpEntity<PhysMechPropertiesDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

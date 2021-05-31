@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.ToleranceDto;
+import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -19,19 +19,20 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class ToleranceMessageSender implements MessageSender {
+public class TkNumMessageSender implements MessageSender {
 
     private final String url_dictionary;
     private final String type;
     private final PdmMessageConverter pdmMessageConverter;
     private final NsiCommonSender commonSender;
 
-    public ToleranceMessageSender(PdmMessageConverter pdmMessageConverter,
-                            @Value("${nsi.url.tolerance}") String url_dictionary,
-                            @Value("${kafka.pdm.topic.asap-tol-links}") String type,
-                            NsiCommonSender commonSender) {
+    public TkNumMessageSender(@Value("${nsi.url.tk-num}")String url_dictionary,
+                                    @Value("${kafka.pdm.topic.tk-num}") String topicName,
+                                    PdmMessageConverter pdmMessageConverter,
+                                    NsiCommonSender commonSender
+    ) {
         this.url_dictionary = url_dictionary;
-        this.type = type;
+        this.type = topicName;
         this.pdmMessageConverter = pdmMessageConverter;
         this.commonSender = commonSender;
     }
@@ -42,20 +43,20 @@ public class ToleranceMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toToleranceDto(message.getDictionary());
+        val sendingDto = pdmMessageConverter.toTkNumDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ToleranceDto> request = new HttpEntity<>(sendingDto,headers);
+        HttpEntity<TkNumDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }
 
     @Override
     public String getType() {
-        return this.type;
+        return  this.type;
     }
 }

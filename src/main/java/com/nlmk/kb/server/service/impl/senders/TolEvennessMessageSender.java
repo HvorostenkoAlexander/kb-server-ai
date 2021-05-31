@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.MechanicalTkDto;
+import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -19,37 +19,38 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class MechPropertiesMessageSender implements MessageSender {
+public class TolEvennessMessageSender implements MessageSender {
+
     private final String url_dictionary;
     private final String type;
     private final PdmMessageConverter pdmMessageConverter;
     private final NsiCommonSender commonSender;
 
-    public MechPropertiesMessageSender(@Value("${nsi.url.mech-propertiese}") String url_dictionary,
-                                         @Value("${kafka.pdm.topic.mech-properties}") String topicName,
-                                         NsiCommonSender commonSender,
-                                         PdmMessageConverter pdmMessageConverter
+    public TolEvennessMessageSender(@Value("${nsi.url.tol-evenness}")String url_dictionary,
+                                    @Value("${kafka.pdm.topic.tol-evenness}") String topicName,
+                                    PdmMessageConverter pdmMessageConverter,
+                                    NsiCommonSender commonSender
     ) {
         this.url_dictionary = url_dictionary;
         this.type = topicName;
-        this.commonSender = commonSender;
         this.pdmMessageConverter = pdmMessageConverter;
+        this.commonSender = commonSender;
     }
 
     @Override
     public ResponseEntity<Long> send(PdmMessage message) {
-        Assert.notNull(message, () -> {
+        Assert.notNull(message,()-> {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toMechanicalTkDto(message.getDictionary());
+        val sendingDto = pdmMessageConverter.toEvennessTkLimitDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<MechanicalTkDto> request = new HttpEntity<>(sendingDto, headers);
+        HttpEntity<EvennessTkLimitDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

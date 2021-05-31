@@ -12,6 +12,7 @@ import nlmk.l3.pdm.SpAsapChemicalProperties;
 import nlmk.l3.pdm.SpAsapMechProperties;
 import nlmk.l3.pdm.SpAsapTolLinks;
 import nlmk.l3.pdm.SpCeq;
+import nlmk.l3.pdm.SpChemicalProperties;
 import nlmk.l3.pdm.SpEquivalents;
 import nlmk.l3.pdm.SpKatSteelMarkGost4041;
 import nlmk.l3.pdm.SpMatchRabplanNum;
@@ -155,12 +156,35 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-chemical-properties.0": {
+                val pdmDictionary = fromSpChemicalProperties((SpChemicalProperties) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default: {
                 log.error("Not supported type of: {}", record);
                 throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
+    }
+
+    private static PdmDictionary fromSpChemicalProperties(SpChemicalProperties value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
     }
 
     private static PdmDictionary fromSpMechProperties(SpMechProperties value) {

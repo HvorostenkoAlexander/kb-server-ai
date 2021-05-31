@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
+import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -19,16 +19,17 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class AsapChemicalPropMessageSender implements MessageSender {
+public class MicrostructureMessageSender implements MessageSender {
+
     private final String url_dictionary;
     private final String type;
     private final PdmMessageConverter pdmMessageConverter;
     private final NsiCommonSender commonSender;
 
-    public AsapChemicalPropMessageSender(@Value("${nsi.url.asap-chemical-propertiese}") String url_dictionary,
-                                         @Value("${kafka.pdm.topic.asap-chemical-properties}") String topicName,
-                                         NsiCommonSender commonSender,
-                                         PdmMessageConverter pdmMessageConverter
+    public MicrostructureMessageSender(@Value("${nsi.url.microstructure}")String url_dictionary,
+                                       @Value("${kafka.pdm.topic.microstructure}") String topicName,
+                                       NsiCommonSender commonSender,
+                                       PdmMessageConverter pdmMessageConverter
     ) {
         this.url_dictionary = url_dictionary;
         this.type = topicName;
@@ -38,18 +39,18 @@ public class AsapChemicalPropMessageSender implements MessageSender {
 
     @Override
     public ResponseEntity<Long> send(PdmMessage message) {
-        Assert.notNull(message, () -> {
+        Assert.notNull(message,()-> {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toChemicalStdLimitDto(message.getDictionary());
+        val sendingDto = pdmMessageConverter.toMicrostructureDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ChemicalStdLimitDto> request = new HttpEntity<>(sendingDto, headers);
+        HttpEntity<MicrostructureDto> request = new HttpEntity<>(sendingDto, headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

@@ -1,7 +1,6 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
-import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -18,22 +17,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+
 @Slf4j
 @Service
-public class TolWidthMessageSender implements MessageSender {
+public class MatchRpNumMessageSender implements MessageSender {
 
     private final String url_dictionary;
     private final String type;
     private final PdmMessageConverter pdmMessageConverter;
     private final NsiCommonSender commonSender;
 
-    public TolWidthMessageSender(@Value("${nsi.url.tol-width}")String url_dictionary,
-                                 @Value("${kafka.pdm.topic.tol-width}") String topicName,
-                                 PdmMessageConverter pdmMessageConverter,
-                                 NsiCommonSender commonSender
-    ) {
+    public MatchRpNumMessageSender(@Value("${nsi.url.match-rabplan-num}") String url_dictionary,
+                                   @Value("${kafka.pdm.topic.match-rabplan-num}") String type,
+                                   PdmMessageConverter pdmMessageConverter,
+                                   NsiCommonSender commonSender
+                                   ) {
         this.url_dictionary = url_dictionary;
-        this.type = topicName;
+        this.type = type;
         this.pdmMessageConverter = pdmMessageConverter;
         this.commonSender = commonSender;
     }
@@ -44,14 +44,14 @@ public class TolWidthMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toWidthTkLimitDto(message.getDictionary());
-
+        val sendingDto = pdmMessageConverter.toMatchRpDto(message.getDictionary());
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
+
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<WidthTkLimitDto> request = new HttpEntity<>(sendingDto,headers);
+        HttpEntity<MatchRpDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

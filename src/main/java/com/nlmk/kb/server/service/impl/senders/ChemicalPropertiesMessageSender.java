@@ -1,12 +1,15 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
+import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
 import com.nlmk.kb.server.service.PdmMessageConverter;
+import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,18 +19,17 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class PcmMessageSender implements MessageSender {
+public class ChemicalPropertiesMessageSender implements MessageSender {
 
     private final String url_dictionary;
     private final String type;
     private final PdmMessageConverter pdmMessageConverter;
     private final NsiCommonSender commonSender;
 
-    public PcmMessageSender(PdmMessageConverter pdmMessageConverter,
-                            @Value("${nsi.url.pcm}") String url_dictionary,
-                            @Value("${kafka.pdm.topic.pcm}") String type,
-                            NsiCommonSender commonSender) {
-
+    public ChemicalPropertiesMessageSender(PdmMessageConverter pdmMessageConverter,
+                                           @Value("${nsi.url.chemical-properties}") String url_dictionary,
+                                           @Value("${kafka.pdm.topic.chemical-properties}") String type,
+                                           NsiCommonSender commonSender) {
         this.url_dictionary = url_dictionary;
         this.type = type;
         this.pdmMessageConverter = pdmMessageConverter;
@@ -40,14 +42,14 @@ public class PcmMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toPcmDto(message.getDictionary());
+        val sendingDto = pdmMessageConverter.toChemicalTkLimitDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-        HttpHeaders header = new HttpHeaders();
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
+            headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<PcmDto> request = new HttpEntity<>(sendingDto,header);
+        HttpEntity<ChemicalTkLimitDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

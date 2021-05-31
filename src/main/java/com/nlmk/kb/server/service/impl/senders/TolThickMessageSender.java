@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.kb.server.config.KbConstants;

@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.impl;
+package com.nlmk.kb.server.service.impl.senders;
 
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.kb.server.config.KbConstants;

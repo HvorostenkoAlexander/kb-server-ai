@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalFormulaCEqTkDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
@@ -496,6 +497,87 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
                 .pr_annotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
         return mechanicalDto;
+    }
+
+    @Override
+    public ChemicalTkLimitDto toChemicalTkLimitDto(PdmDictionary dictionary) {
+        val specs = dictionary.getData().getSpecifications();
+
+        val chemicalDto = ChemicalTkLimitDto.builder()
+                .remote_id(dictionary.getPk().getId())
+                .ts(converter.parseToDate(dictionary.getTs()))
+                .prior(converter.parsToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
+                //.chemSrc(converter.getSpecValue(specs, SpecCode..getValue()))
+                .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
+                //.tkPurp(converter.getSpecValue(specs, SpecCode..getValue()))
+                .tkRoute(converter.getSpecValue(specs, SpecCode.ROUTE_TK.getValue()))
+                .prSteelMark(converter.getSpecValue(specs, SpecCode.MELTING_MARK.getValue()))
+                .prStandSteel(converter.getSpecValue(specs, SpecCode.MELTING_MARK_STANDART.getValue()))
+                .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
+                .prStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))
+
+                .prThickUncoat(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
+
+                .prDrow(converter.getSpecValue(specs, SpecCode.DROW.getValue()))
+
+                .c(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_C.getValue())))
+                .si(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_SI.getValue())))
+                .mn(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_MN.getValue())))
+                .s(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_S.getValue())))
+                .p(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_P.getValue())))
+                .al(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_AL.getValue())))
+                .cr(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_CR.getValue())))
+                .ni(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_NI.getValue())))
+                .cu(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_CU.getValue())))
+                .ti(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_TI.getValue())))
+                .n(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_N.getValue())))
+                .v(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_V.getValue())))
+                .nb(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_NB.getValue())))
+                .sn(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_SN.getValue())))
+                .mo(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_MO.getValue())))
+                .b(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_B.getValue())))
+                .as(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_AS.getValue())))
+                .ca(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_CA.getValue())))
+                .h(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_H.getValue())))
+                .sb(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_SB.getValue())))
+                .pb(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_PB.getValue())))
+                .siP(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.SI_P.getValue())))
+                .si25P(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.SI_25P.getValue())))
+                .crMo(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CrMo.getValue())))
+                .crNiCu(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CR_NI_CU.getValue())))
+                .crNiMoCu(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CrNiCuMo.getValue())))
+                .cuNiCrMoV(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CU_NI_CR_MO_V.getValue())))
+                .crNiCuMoSn(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CR_NI_CU_MO_SN.getValue())))
+                .mnSi(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MN_SI.getValue())))
+                .mnS(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MN_S.getValue())))
+                .vNbTi(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TiVNb.getValue())))
+                .niVTi(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.NI_V_TI.getValue())))
+                .p25SiAl(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.P25_SI_AL.getValue())))
+                .ti15S342N4C(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TI_15S_342N_4C.getValue())))
+                .ti15S343N4C(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TI_15S_343N_4C.getValue())))
+                .crNiCuSn(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CR_NI_CU_SN.getValue())))
+                .prGroupNorm(converter.getSpecValue(specs, SpecCode.NORM_GROUP.getValue()))
+                .ceqNum(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
+                .ceq(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT.getValue())))
+                .tkPoint(converter.getSpecValue(specs, SpecCode.TK_POINT.getValue()))
+                .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
+                .bi(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_BI.getValue())))
+                .co(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_CO.getValue())))
+                .fe(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_FE.getValue())))
+                .mg(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_MG.getValue())))
+                .o(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_O.getValue())))
+                .w(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_W.getValue())))
+                .zn(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_ZN.getValue())))
+                .zr(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_ZR.getValue())))
+                .crCuMo(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CR_CU_MO.getValue())))
+                .cuCrNiMoTi(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CU_CR_NI_MO_TI.getValue())))
+                .caS(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.CA_S.getValue())))
+                .alN(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.AL_N.getValue())))
+                .nbV(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.NB_V.getValue())))
+                .nAl(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.N_AL.getValue())))
+                .tiN(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TI_N.getValue())))
+                .build();
+        return chemicalDto;
     }
 
     @Override
