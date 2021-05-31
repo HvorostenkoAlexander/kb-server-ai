@@ -54,7 +54,7 @@ public class CommonConverterImpl implements CommonConverter {
         try {
             d = Double.parseDouble(s);
         } catch (NumberFormatException nfe) {
-            log.error("CommonConverterImpl::parsToDouble. Ошибка десериализации строки: {}, в double.",s);
+            log.error("CommonConverterImpl::parsToDouble. Ошибка десериализации строки: {}, в Double.",s);
             throw nfe;
         } catch (NullPointerException e) {
             //log.debug("--- parsToDouble: " + e);
@@ -67,8 +67,11 @@ public class CommonConverterImpl implements CommonConverter {
         Integer i = null;
         try {
             i = Integer.parseInt(s);
-        } catch (NumberFormatException | NullPointerException e) {
-            log.debug("--- parsToInteger: " + e);
+        } catch (NumberFormatException nfe) {
+            log.error("CommonConverterImpl::parsToInteger. Ошибка десериализации строки: {}, в Integer.",s);
+            throw nfe;
+        } catch (NullPointerException e) {
+            //log.debug("--- parsToInteger: " + e);
         }
         return i;
     }

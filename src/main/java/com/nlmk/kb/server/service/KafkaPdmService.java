@@ -55,8 +55,9 @@ public class KafkaPdmService {
                     @TopicPartition(topic = "${kafka.pdm.topic.tk-num}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.ceq}",
+                            partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
+                    @TopicPartition(topic = "${kafka.pdm.topic.mech-properties}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0"))
-
             }
     )
     @Timed(value="kafka_listener", percentiles = {0.99, 0.95})

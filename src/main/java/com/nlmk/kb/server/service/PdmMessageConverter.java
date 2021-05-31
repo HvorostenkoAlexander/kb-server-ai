@@ -7,6 +7,7 @@ import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MatchRpDto;
 import com.nlmk.attestation.product.api.nsi.MatchTkDto;
+import com.nlmk.attestation.product.api.nsi.MechanicalTkDto;
 import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
 import com.nlmk.attestation.product.api.nsi.PcmDto;
 import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
@@ -48,4 +49,6 @@ public interface PdmMessageConverter {
     TkNumDto toTkNumDto(PdmDictionary dictionary);
 
     ChemicalFormulaCEqTkDto toChemicalFormulaCEqTkDto(PdmDictionary dictionary);
+
+    MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary);
 }

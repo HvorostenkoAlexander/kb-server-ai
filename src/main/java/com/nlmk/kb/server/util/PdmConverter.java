@@ -16,6 +16,7 @@ import nlmk.l3.pdm.SpEquivalents;
 import nlmk.l3.pdm.SpKatSteelMarkGost4041;
 import nlmk.l3.pdm.SpMatchRabplanNum;
 import nlmk.l3.pdm.SpMatchTkNum;
+import nlmk.l3.pdm.SpMechProperties;
 import nlmk.l3.pdm.SpMicrostructure;
 import nlmk.l3.pdm.SpPcm;
 import nlmk.l3.pdm.SpTkNum;
@@ -147,12 +148,35 @@ public class PdmConverter {
                 message.setDictionary(pdmDictionary);
                 break;
             }
+            case "000-1.l3-pdm.cdc.sp-mech-properties.0": {
+                val pdmDictionary = fromSpMechProperties((SpMechProperties) record.value());
+                message.setOp(pdmDictionary.getOp());
+                message.setTs(pdmDictionary.getTs());
+                message.setDictionary(pdmDictionary);
+                break;
+            }
             default: {
                 log.error("Not supported type of: {}", record);
                 throw new IllegalArgumentException("Not supported type of: " + record);
             }
         }
         return message;
+    }
+
+    private static PdmDictionary fromSpMechProperties(SpMechProperties value) {
+        val pdmDictionaryBuilder = PdmDictionary.builder()
+                .op(value.getOp().name())
+                .pk(
+                        fromPk(value.getPk())
+                )
+                .data(
+                        fromData(value.getData())
+                );
+
+        if (value.getTs() != null) {
+            pdmDictionaryBuilder.ts(value.getTs().toString());
+        }
+        return pdmDictionaryBuilder.build();
     }
 
     private static PdmDictionary fromSpCeq(SpCeq value) {
