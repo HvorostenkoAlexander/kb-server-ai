@@ -5,7 +5,7 @@ import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
-import com.nlmk.kb.server.service.PdmMessageConverter;
+import com.nlmk.kb.server.service.PdmDtoConverter;
 import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -22,18 +22,18 @@ import org.springframework.util.Assert;
 public class CeqMessageSender implements MessageSender {
     private final String url_dictionary;
     private final String type;
-    private final PdmMessageConverter pdmMessageConverter;
+    private final PdmDtoConverter pdmDtoConverter;
     private final NsiCommonSender commonSender;
 
     public CeqMessageSender(@Value("${nsi.url.ceq}") String url_dictionary,
                             @Value("${kafka.pdm.topic.ceq}") String topicName,
                             NsiCommonSender commonSender,
-                            PdmMessageConverter pdmMessageConverter
+                            PdmDtoConverter pdmDtoConverter
     ) {
         this.url_dictionary = url_dictionary;
         this.type = topicName;
         this.commonSender = commonSender;
-        this.pdmMessageConverter = pdmMessageConverter;
+        this.pdmDtoConverter = pdmDtoConverter;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class CeqMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toChemicalFormulaCEqTkDto(message.getDictionary());
+        val sendingDto = pdmDtoConverter.toChemicalFormulaCEqTkDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));

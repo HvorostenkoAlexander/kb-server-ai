@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PdmMessageService {
 
-    public Optional<PdmMessage> saveConsumerRecord(ConsumerRecord record);
+    public Optional<PdmMessage> save(PdmMessage message);
 
-    public Optional<PdmMessage> savePdmMessage(PdmMessage message);
+    public Optional<PdmMessage> update(PdmMessage message);
 }

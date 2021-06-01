@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
+import com.nlmk.kb.server.service.PdmMessageConverter;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.util.PdmConverter;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Optional;
 
@@ -20,36 +22,33 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     private final PdmMessageRepository messageRepository;
 
     @Override
-    public Optional<PdmMessage> saveConsumerRecord(ConsumerRecord record) {
-        if (record == null) {
-            log.warn("ConsumerRecord is NULL");
-            return Optional.empty();
-        }
+    public Optional<PdmMessage> save(PdmMessage message) {
+        Assert.notNull(message,"PdmMessage for saving is null.");
 
         if (messageRepository.existsByTopicAndOffsetAndPartition(
-                record.topic(), record.offset(), record.partition())) {
+                message.getTopic(), message.getOffset(), message.getPartition())) {
             log.debug("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
-                    record.offset(), record.topic(), record.key());
+                    message.getOffset(), message.getTopic(), message.getKey());
 
             // return Optional.empty();//todo закомментированно с цель проверки работы алгоритмов передачи в nsi-server, как будет проверено ВЕРНУТЬ!
-            return Optional.of(messageRepository.findByTopicAndOffsetAndPartition(record.topic(), record.offset(), record.partition()));
+            return Optional.of(messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition()));
         }
 
-        val pdmMessege = PdmConverter.fromConsumerRecord(record);
-
-        messageRepository.save(pdmMessege);
+        messageRepository.save(message);
 
         log.debug("--- Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
-                record.partition(),
-                record.offset(),
-                record.topic(),
-                record.key());
+                message.getPartition(),
+                message.getOffset(),
+                message.getTopic(),
+                message.getKey());
 
-        return Optional.of(pdmMessege);
+        return Optional.of(message);
     }
 
     @Override
-    public Optional<PdmMessage> savePdmMessage(PdmMessage message) {
+    public Optional<PdmMessage> update(PdmMessage message) {
+        Assert.notNull(message,"PdmMessage for update is null.");
+
         return Optional.of(messageRepository.save(message));
     }
 }

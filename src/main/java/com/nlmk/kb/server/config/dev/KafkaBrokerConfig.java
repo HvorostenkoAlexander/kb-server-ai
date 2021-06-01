@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Configuration
+//@Configuration
 @RequiredArgsConstructor
 @Profile("dev")
 public class KafkaBrokerConfig {
     private final SupConsumerProperties supConsumerProperties;
 
-    @Bean
+  //  @Bean
     public Map<String, Object> consumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, supConsumerProperties.getKafkaServer());
@@ -41,7 +41,7 @@ public class KafkaBrokerConfig {
         return props;
     }
 
-    @Bean
+  //  @Bean
     public ConsumerFactory<String, IntegralParameters> consumerFactoryIp() {
 
         ErrorHandlingDeserializer<IntegralParameters> errorHandlingDeserializer
@@ -54,7 +54,7 @@ public class KafkaBrokerConfig {
         );
     }
 
-    @Bean
+  //  @Bean
     public ConcurrentKafkaListenerContainerFactory<String, IntegralParameters> kafkaListenerContainerFactoryIp() {
 
         ConcurrentKafkaListenerContainerFactory<String, IntegralParameters> factory =
@@ -77,7 +77,7 @@ public class KafkaBrokerConfig {
         return factory;
     }
 
-    @Bean
+  //  @Bean
     public ConsumerFactory<String, UnrecoverableParametersTrends> consumerFactoryUp() {
 
         ErrorHandlingDeserializer<UnrecoverableParametersTrends> errorHandlingDeserializer
@@ -90,7 +90,7 @@ public class KafkaBrokerConfig {
         );
     }
 
-    @Bean
+  //  @Bean
     public ConcurrentKafkaListenerContainerFactory<String, UnrecoverableParametersTrends> kafkaListenerContainerFactoryUp() {
 
         ConcurrentKafkaListenerContainerFactory<String, UnrecoverableParametersTrends> factory =

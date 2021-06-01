@@ -21,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class KafkaPdmService {
 
+    private final PdmMessageConverter messageConverter;
     private final PdmMessageService messageService;
     private final NsiClientService nsiClientService;
 
@@ -48,7 +49,7 @@ public class KafkaPdmService {
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.tol-length}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
-                    @TopicPartition(topic = "${kafka.pdm.topic.asap-mech-propertiesh}",
+                    @TopicPartition(topic = "${kafka.pdm.topic.asap-mech-properties}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
                     @TopicPartition(topic = "${kafka.pdm.topic.tol-evenness}",
                             partitionOffsets = @PartitionOffset(partition = "0", initialOffset = "0")),
@@ -72,15 +73,17 @@ public class KafkaPdmService {
             request.key()
         );
 
-        Optional<PdmMessage> savedMessage = messageService.saveConsumerRecord(request);
+        PdmMessage message = messageConverter.fromConsumerRecord(request);
+
+        Optional<PdmMessage> savedMessage = messageService.save(message);
 
         if (savedMessage.isPresent()) {
-            val message = savedMessage.get();
+            message = savedMessage.get();
             ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
 
             if (response.getStatusCode() == HttpStatus.ACCEPTED) {
                 message.setPosted(true);
-                messageService.savePdmMessage(message);
+                messageService.update(message);
             }
         }
     }

@@ -21,13 +21,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class KafkaSupService {
 
     private final KafkaIntegralParamMessageService integralParamMessageService;
     private final KafkaUnrecoverableParamMessageService unrecoverableParamMessageService;
-    private final IntegralParamService integralParamService; // todo убрать, используется только с целью проверки
 
     // внимание, при работе с продуктовым топиком, количество партиций будет > 1
     // сейчас при таких настройках сведения только из одной партиции (как в тестовом топике)
@@ -64,11 +63,6 @@ public class KafkaSupService {
             .build();
 
         integralParamMessageService.messageProcessing(receivedMessage);
-
-        if (ip.getData() != null && log.isDebugEnabled()) {
-            List<IntegralParam> integralParams = integralParamService.findByDataPrimeId(ip.getData().getPrimeID());
-            log.debug("--- integralParams with primeID: {} count:{}; values:{} ", ip.getData().getPrimeID(), integralParams.size(), integralParams);
-        }
     }
 
     //    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryUp",

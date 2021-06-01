@@ -2,13 +2,19 @@ package com.nlmk.kb.server.service.impl.senders;
 
 import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.kb.server.config.KbConstants;
+import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
-import com.nlmk.kb.server.service.PdmMessageConverter;
+import com.nlmk.kb.server.service.PdmDictionaryCreator;
+import com.nlmk.kb.server.service.PdmDtoConverter;
+import com.nlmk.kb.server.service.PdmMessageCreator;
 import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import nlmk.l3.pdm.SpAsapMechProperties;
+import nlmk.l3.pdm.SpMicrostructure;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -19,21 +25,23 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class AsapMechPropertiesMessageSender implements MessageSender {
+public class AsapMechPropertiesMessageSender implements MessageSender, PdmMessageCreator {
 
     private final String url_dictionary;
     private final String type;
-    private final PdmMessageConverter pdmMessageConverter;
+    private final PdmDtoConverter pdmDtoConverter;
     private final NsiCommonSender commonSender;
+    private final PdmDictionaryCreator pdmDictionaryCreator;
 
-    public AsapMechPropertiesMessageSender(PdmMessageConverter pdmMessageConverter,
-                                  @Value("${nsi.url.asap-mech-properties}") String url_dictionary,
-                                  @Value("${kafka.pdm.topic.asap-mech-properties}") String type,
-                                  NsiCommonSender commonSender) {
+    public AsapMechPropertiesMessageSender(PdmDtoConverter pdmDtoConverter,
+                                           @Value("${nsi.url.asap-mech-properties}") String url_dictionary,
+                                           @Value("${kafka.pdm.topic.asap-mech-properties}") String type,
+                                           NsiCommonSender commonSender, PdmDictionaryCreator pdmDictionaryCreator) {
         this.url_dictionary = url_dictionary;
         this.type = type;
-        this.pdmMessageConverter = pdmMessageConverter;
+        this.pdmDtoConverter = pdmDtoConverter;
         this.commonSender = commonSender;
+        this.pdmDictionaryCreator = pdmDictionaryCreator;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class AsapMechPropertiesMessageSender implements MessageSender {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmMessageConverter.toPhysMechPropertiesDto(message.getDictionary());
+        val sendingDto = pdmDtoConverter.toPhysMechPropertiesDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
@@ -57,5 +65,25 @@ public class AsapMechPropertiesMessageSender implements MessageSender {
     @Override
     public String getType() {
         return this.type;
+    }
+
+    @Override
+    public PdmMessage createPdmMessage(ConsumerRecord record) {
+        PdmMessage message = new PdmMessage();
+        message.setTopic(record.topic());
+        message.setKey((String) record.key());
+        message.setOffset(record.offset());
+        message.setPartition(record.partition());
+
+        SpAsapMechProperties pdmObject = (SpAsapMechProperties) record.value();
+
+        PdmDictionary dictionary = pdmDictionaryCreator.createPdmDictionary(
+                pdmObject.getTs(),pdmObject.getOp(),pdmObject.getPk(),pdmObject.getData()
+        );
+        message.setDictionary(dictionary);
+        message.setOp(dictionary.getOp());
+        message.setTs(dictionary.getTs());
+
+        return message;
     }
 }
