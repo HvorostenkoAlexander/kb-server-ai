@@ -533,7 +533,6 @@ public class PdmConverter {
         if (range.length == 1) {
             return LimitDto.builder()
                     .singleValue(Double.valueOf(leftDigit))
-                    .range(false)
                     .build();
         }
 
@@ -541,7 +540,7 @@ public class PdmConverter {
 
         final var right = range[1].replaceAll(",", ".");
         final var rightDigit = right.replaceAll("[()\\[\\]]", "");
-        var builder = LimitDto.builder().range(true);
+        var builder = LimitDto.builder();
 
         if (left.contains("*")) {
             // диапазон открытый слева

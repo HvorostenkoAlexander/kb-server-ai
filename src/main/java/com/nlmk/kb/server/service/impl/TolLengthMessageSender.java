@@ -46,11 +46,7 @@ public class TolLengthMessageSender implements MessageSender {
 
         val sendingDto = pdmMessageConverter.toLengthTkLimitDto(message.getDictionary());
 
-        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-        HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
-        if (authHeaderValue != null) {
-            headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
-        }
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
         HttpEntity<LengthTkLimitDto> request = new HttpEntity<>(sendingDto,headers);
         ResponseEntity<Long> responseEntity = commonSender.exchange(request,url_dictionary, message.getOp());
 
