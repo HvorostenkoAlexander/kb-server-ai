@@ -5,6 +5,8 @@ import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PreAttestationParamService;
 import io.micrometer.core.annotation.Timed;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -32,6 +34,7 @@ public class KbController {
     private final CcmMessageService messageSerivce;
 
     @GetMapping("/sadim")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
             required = true) String primeId) {
 
@@ -41,12 +44,14 @@ public class KbController {
     }
 
     @GetMapping("/attestation_request")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber", required = true) int page,
                                                            @RequestParam(value = "pageSize", required = true) int size) {
             return messageSerivce.findAll(PageRequest.of(page, size));
     }
 
     @GetMapping("/attestation_request/{primeId}")
+    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
     public List<CcmAttestationRequestMessage> getByPrimeId(@PathVariable String primeId) {
 
         return messageSerivce.findByPrimeId(primeId);
