@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.ChemicalFormulaCEqTkDto;
+import com.nlmk.attestation.product.api.nsi.CEqDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
@@ -49,14 +49,14 @@ public class CeqMessageSender implements MessageSender, PdmMessageCreator {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmDtoConverter.toChemicalFormulaCEqTkDto(message.getDictionary());
+        val sendingDto = pdmDtoConverter.toCEqDto(message.getDictionary());
 
         val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(authHeaderValue, MDC.get(KbConstants.KAFKA_ID));
         if (authHeaderValue != null) {
             headers.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
         }
-        HttpEntity<ChemicalFormulaCEqTkDto> request = new HttpEntity<>(sendingDto, headers);
+        HttpEntity<CEqDto> request = new HttpEntity<>(sendingDto, headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }

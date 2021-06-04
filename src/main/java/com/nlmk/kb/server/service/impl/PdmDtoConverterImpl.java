@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.impl;
 
+import com.nlmk.attestation.product.api.nsi.CEqDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
-import com.nlmk.attestation.product.api.nsi.ChemicalFormulaCEqTkDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
@@ -351,15 +351,15 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
     }
 
     @Override
-    public ChemicalFormulaCEqTkDto toChemicalFormulaCEqTkDto(PdmDictionary dictionary) {
+    public CEqDto toCEqDto(PdmDictionary dictionary) {
         val specs = dictionary.getData().getSpecifications();
 
-        val ceqDto = ChemicalFormulaCEqTkDto.builder()
+        val ceqDto = CEqDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(converter.parseToDate(dictionary.getTs()))
-                .number(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
-                .formula(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA.getValue()))
-                .pr_annotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
+                .ceqNum(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
+                .ceqFormula(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA.getValue()))
+                .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
         return ceqDto;
     }
