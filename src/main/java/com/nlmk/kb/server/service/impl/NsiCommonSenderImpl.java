@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.kb.server.service.NsiCommonSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,9 +17,9 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
     private final RestTemplate restTemplate;
     private final String URL_NSI_DICTIONARY;
 
-    public NsiCommonSenderImpl(RestTemplateBuilder restTemplateBuilder,
+    public NsiCommonSenderImpl(RestTemplate restTemplate,
                                @Value("${nsi.url.dict}") String URL_NSI_DICTIONARY) {
-        this.restTemplate = restTemplateBuilder.build();
+        this.restTemplate = restTemplate;
         this.URL_NSI_DICTIONARY = URL_NSI_DICTIONARY;
     }
 
