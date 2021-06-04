@@ -9,6 +9,7 @@ import javax.persistence.Table;
 /**
  * интегральные параметры еденицы продукции
  */
+@Deprecated
 @Data
 @Entity
 @Table(name = "integral_parameters")

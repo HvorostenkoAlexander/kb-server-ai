@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Deprecated
 @Slf4j
 @Service
 @RequiredArgsConstructor

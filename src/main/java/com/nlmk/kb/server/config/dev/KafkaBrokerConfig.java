@@ -21,6 +21,7 @@ import org.springframework.util.backoff.FixedBackOff;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 @Slf4j
 //@Configuration
 @RequiredArgsConstructor

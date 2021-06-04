@@ -27,7 +27,9 @@ import nlmk.l3.pdm.SpTolThick;
 import nlmk.l3.pdm.SpTolWidth;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-//todo создать отдельный сервис, отказаться от хардкода, применить шаблон проектирвания для ухода от повторяющегося кода
+
+@Deprecated
+//готово: создать отдельный сервис, отказаться от хардкода, применить шаблон проектирвания для ухода от повторяющегося кода
 @Slf4j
 public class PdmConverter {
     private PdmConverter() {
@@ -42,7 +44,7 @@ public class PdmConverter {
         message.setOffset(record.offset());
         message.setPartition(record.partition());
 
-        //todo избавиться от лишнего кода!!!, убрать хардкод
+        // избавиться от лишнего кода!!!, убрать хардкод
         switch (topic) {
             case "000-1.l3-pdm.cdc.sp-microstructure.0": {
                 val pdmDictionary = fromSpMicrostructure((SpMicrostructure) record.value());

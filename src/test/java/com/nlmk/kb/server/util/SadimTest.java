@@ -56,8 +56,8 @@ public class SadimTest {
     void SadimStreamApiParserTest() throws FileNotFoundException {
 
      //   SadimJsonParser parser = new SadimStreamApiParser();
-       // val jsonString = getJsonFromPath("src/main/resources/json/sadim09052020_1.json");
-        val jsonString = getJsonFromPath("src/main/resources/json/sadimError.json");
+        val jsonString = getJsonFromPath("src/main/resources/json/sadim09052020_1.json");
+       // val jsonString = getJsonFromPath("src/main/resources/json/sadimError.json");
         val param = parser.getParam(jsonString);
 
         log.info("--- param: " + param);
@@ -204,25 +204,5 @@ public class SadimTest {
         String stringTooLong = IOUtils.toString(fis);
 
         return stringTooLong;
-    }
-
-    @Test
-     void toDouble(){
-        String s="45,58";
-        Double d = null;
-//
-//        if (StringUtils.isAllBlank(stringValue)){
-//            d= null;
-//        }
-//        d= Double.parseDouble(stringValue);
-//
-
-        try {
-            d = Double.parseDouble(s);
-        } catch (NumberFormatException | NullPointerException e) {
-            log.debug("--- parsToDouble: " + e);
-        }
-
-        System.out.println("--- d: "+d);
     }
 }

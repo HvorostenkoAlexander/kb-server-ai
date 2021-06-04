@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
+@Deprecated
 @Data
 @MappedSuperclass
 public class BaseParam {

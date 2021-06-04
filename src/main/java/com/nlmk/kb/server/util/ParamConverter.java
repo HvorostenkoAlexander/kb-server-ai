@@ -8,8 +8,10 @@ import nlmk.l3.sup.IntegralParameters;
 import nlmk.l3.sup.RecordData;
 import nlmk.l3.sup.RecordSpecifications;
 import nlmk.l3.sup.UnrecoverableParametersTrends;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.util.Assert;
 
+@Deprecated
 public class ParamConverter {
     private ParamConverter() {
         throw new RuntimeException("ParamConverter is utility class, only for create parameters entities.");
