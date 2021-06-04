@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.impl.senders;
 
 import com.nlmk.attestation.product.api.nsi.PcmDto;
+import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.MessageSender;
@@ -8,11 +9,13 @@ import com.nlmk.kb.server.service.NsiCommonSender;
 import com.nlmk.kb.server.service.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.PdmDtoConverter;
 import com.nlmk.kb.server.service.PdmMessageCreator;
+import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.pdm.SpMicrostructure;
 import nlmk.l3.pdm.SpPcm;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -50,12 +53,8 @@ public class PcmMessageSender implements MessageSender, PdmMessageCreator {
 
         val sendingDto = pdmDtoConverter.toPcmDto(message.getDictionary());
 
-        val authHeaderValue = "Authorization: Bearer XYZ";//todo правильно получить authHeaderValue
-        HttpHeaders header = new HttpHeaders();
-        if (authHeaderValue != null) {
-            header.add(HttpHeaders.AUTHORIZATION, authHeaderValue);
-        }
-        HttpEntity<PcmDto> request = new HttpEntity<>(sendingDto,header);
+        HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
+        HttpEntity<PcmDto> request = new HttpEntity<>(sendingDto,headers);
 
         return commonSender.exchange(request,url_dictionary, message.getOp());
     }
