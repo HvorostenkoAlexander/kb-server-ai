@@ -5,6 +5,7 @@ import com.nlmk.kb.server.entity.pdm.Spec;
 import com.nlmk.kb.server.service.CommonConverter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -51,13 +52,13 @@ public class CommonConverterImpl implements CommonConverter {
     @Override
     public Double parsToDouble(String s) {
         Double d = null;
-        try {
-            d = Double.parseDouble(s);
-        } catch (NumberFormatException nfe) {
-            log.error("CommonConverterImpl::parsToDouble. Ошибка десериализации строки: {}, в Double.",s);
-            throw nfe;
-        } catch (NullPointerException e) {
-            //log.debug("--- parsToDouble: " + e);
+        if (!(StringUtils.isBlank(s) || "null".equals(s))) {
+            try {
+                d = Double.parseDouble(s);
+            } catch (NumberFormatException nfe) {
+                log.error("CommonConverterImpl::parsToDouble. Ошибка десериализации строки: {}, в Double.", s);
+                throw nfe;
+            }
         }
         return d;
     }
@@ -65,13 +66,13 @@ public class CommonConverterImpl implements CommonConverter {
     @Override
     public Integer parsToInteger(String s) {
         Integer i = null;
-        try {
-            i = Integer.parseInt(s);
-        } catch (NumberFormatException nfe) {
-            log.error("CommonConverterImpl::parsToInteger. Ошибка десериализации строки: {}, в Integer.",s);
-            throw nfe;
-        } catch (NullPointerException e) {
-            //log.debug("--- parsToInteger: " + e);
+        if (!(StringUtils.isBlank(s) || "null".equals(s))) {
+            try {
+                i = Integer.parseInt(s);
+            } catch (NumberFormatException nfe) {
+                log.error("CommonConverterImpl::parsToInteger. Ошибка десериализации строки: {}, в Integer.", s);
+                throw nfe;
+            }
         }
         return i;
     }
