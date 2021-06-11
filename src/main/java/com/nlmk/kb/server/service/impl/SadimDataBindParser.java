@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.sadim.Sadim;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -37,7 +37,7 @@ public class SadimDataBindParser implements SadimJsonParser {
                     .pbi(strip.getPbi())
                     .estimate(strip.getAsis().getEstimate())
                     .ph1sgp(strip.getPh1sgp())
-                    .ph12sgp(Double.toHexString(strip.getPh12sgp()))
+                    .ph12sgp(Double.toHexString(strip.getPh12sgp()))//?
                     .ph23sgp(strip.getPh23sgp())
                     .profFact(strip.getProfFact())
                     .sqcCritMax(strip.getSqcCritMax())
@@ -51,10 +51,9 @@ public class SadimDataBindParser implements SadimJsonParser {
                     strip.getLclThckng().getValues().stream().map(
                             d -> d.get(0)
                     ).collect(Collectors.toList())
-            //        ).toArray(Double[]::new)
             );
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Не удалось обработать json от SADIM: " + e.getMessage());
+            throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + e.getMessage());
         }
         val param = paramBuilder.build();
 

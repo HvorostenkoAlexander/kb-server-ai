@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.repository.SadimMessageRepository;
-import com.nlmk.kb.server.service.PreAttestationParamService;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import com.nlmk.kb.server.service.SadimMessageService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     public SadimMessage saveMessage(ConsumerRecord consumerRecord) {
 
         Optional<PreAttestationParam> attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
-        log.info("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam.get());
+        log.debug("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam.get());
 
         val sadimMessage = SadimMessage.builder()
                 .key(consumerRecord.key().toString())

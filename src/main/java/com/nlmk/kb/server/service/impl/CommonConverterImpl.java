@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.nsi.LimitDto;
 import com.nlmk.kb.server.entity.pdm.Spec;
+import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.CommonConverter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -24,7 +25,7 @@ public class CommonConverterImpl implements CommonConverter {
             return format.parse(stringDate);
         } catch (ParseException e) {
             log.error("Ошибка парсинга ts: {}", stringDate);
-            throw new RuntimeException("Ошибка парсинга ts: " + stringDate + "; " + e);
+            throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; " + e);
         }
     }
 
@@ -35,11 +36,7 @@ public class CommonConverterImpl implements CommonConverter {
         }
 
         val spec = specs.stream().filter((s) -> s.getSpecCode() == code).findFirst();
-        if (spec.isPresent()) {
-            return spec.get().getSpecValue();
-        } else {
-            return null;
-        }
+        return spec.map(Spec::getSpecValue).orElse(null);
     }
 
     @Override

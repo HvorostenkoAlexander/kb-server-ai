@@ -27,7 +27,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Deprecated
 public class ValueConverter {
     private ValueConverter() {
         throw new RuntimeException("ValueConverter is utility class, only for create attestation request value.");
@@ -248,7 +247,7 @@ public class ValueConverter {
             mechanicalData.setMechFormat(recordMechData.getMechFormat().toString());
         }
         if (recordMechData.getMechValue() != null) {
-            mechanicalData.setMechFormat(recordMechData.getMechValue().toString());
+            mechanicalData.setMechValue(recordMechData.getMechValue().toString());
         }
         if (recordMechData.getMechMeasure() != null) {
             mechanicalData.setMechMeasure(recordMechData.getMechMeasure().toString());

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.RequiredArgsConstructor;
@@ -90,8 +91,8 @@ public class SadimStreamApiParser implements SadimJsonParser {
                     paramBuilder.lclThckng(getArrayFromLclThckngSadim(jParser));
                 }
             }
-        } catch (IOException ioe) {
-            throw new RuntimeException("Не удалось обработать json от SADIM: " + ioe.getMessage());
+        } catch (IOException | NumberFormatException ioe) {
+            throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + ioe.getMessage());
         }
         val param = paramBuilder.build();
 

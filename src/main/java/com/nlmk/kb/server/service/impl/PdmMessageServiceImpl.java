@@ -2,13 +2,9 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
-import com.nlmk.kb.server.service.PdmMessageConverter;
 import com.nlmk.kb.server.service.PdmMessageService;
-import com.nlmk.kb.server.util.PdmConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -30,7 +26,6 @@ public class PdmMessageServiceImpl implements PdmMessageService {
             log.debug("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
                     message.getOffset(), message.getTopic(), message.getKey());
 
-            // return Optional.empty();//todo закомментированно с цель проверки работы алгоритмов передачи в nsi-server, как будет проверено ВЕРНУТЬ!
             return Optional.of(messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition()));
         }
 
