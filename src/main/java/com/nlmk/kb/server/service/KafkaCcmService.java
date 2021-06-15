@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.PartitionOffset;
 import org.springframework.kafka.annotation.TopicPartition;
@@ -15,6 +16,8 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Slf4j
 @Service
@@ -60,7 +63,7 @@ public class KafkaCcmService {
                 request.getPk().getId(),
                 request.getData().getPrimeId());
 
-        try {
+        try { // todo сохранять сведения об ошибках в отдельной сущности
             val requestMessage = messageConverter.fromCcmAttestationRequest(
                     request,
                     topic,
@@ -76,6 +79,12 @@ public class KafkaCcmService {
             );
 
             val pamResult = pamClientService.postAttestationRequest(savedRequest.getRequest());
+
+            if (pamResult != null) {
+                savedRequest.setStatus("recived");
+                savedRequest.setKafkaTs(new Date());
+            }
+
             ack.acknowledge();
         } catch (DateTimeParseException ddpe) {
             ack.acknowledge();

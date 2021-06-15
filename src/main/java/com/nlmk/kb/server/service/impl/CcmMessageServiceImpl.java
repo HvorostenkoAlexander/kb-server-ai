@@ -26,7 +26,18 @@ public class CcmMessageServiceImpl implements CcmMessageService {
             log.info("--- the message with offset: {}; partition: {} is already present in the database. message key: {} ",
                     ccmMessage.getOffset(),ccmMessage.getPartition(),ccmMessage.getKey());
 
-            return messageRepository.findCcmAttestationRequestMessageByOffsetAndPartition(ccmMessage.getOffset(),ccmMessage.getPartition());
+            List<CcmAttestationRequestMessage> storedRequests = messageRepository.findCcmAttestationRequestMessageByOffsetAndPartition(ccmMessage.getOffset(),ccmMessage.getPartition());
+            if (storedRequests.size()>1){
+                log.warn("В базе данных kb-server больше одного запроса на аттестацию  с характеристиками topic: {}," +
+                                " partition: {}," +
+                                " offset: {}",
+                        ccmMessage.getTopic(),
+                        ccmMessage.getPartition(),
+                        ccmMessage.getOffset()
+                );
+            }
+
+            return Optional.of(storedRequests.get(0));
         }
 
         ccmMessage = messageRepository.save(ccmMessage);

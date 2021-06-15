@@ -72,6 +72,12 @@ public class KafkaPdmService {
                     message.setPosted(true);
                     message.setKbReceiptTs(new Date());
                     messageService.update(message);
+                } else {
+                    message.setPosted(false);
+                    message.setKbReceiptTs(new Date());
+                    message.setNote(response.getStatusCode().toString());
+                    messageService.update(message);
+                    //todo нужно создать отдельную сущность для сохранения сведений об ошибках
                 }
             }
             ack.acknowledge();
