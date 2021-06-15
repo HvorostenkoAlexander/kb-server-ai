@@ -28,7 +28,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
             List<CcmAttestationRequestMessage> storedRequests = messageRepository.findCcmAttestationRequestMessageByOffsetAndPartition(ccmMessage.getOffset(),ccmMessage.getPartition());
             if (storedRequests.size()>1){
-                log.warn("В базе данных kb-server больше одного запроса на аттестацию  с характеристиками topic: {}," +
+                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками topic: {}," +
                                 " partition: {}," +
                                 " offset: {}",
                         ccmMessage.getTopic(),

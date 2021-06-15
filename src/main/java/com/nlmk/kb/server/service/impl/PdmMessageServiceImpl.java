@@ -31,7 +31,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
             List<PdmMessage> storedMessages = messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition());
 
             if (storedMessages.size() > 1) {
-                log.warn("В базе данных kb-server больше одного сообщения с характеристиками topic: {}," +
+                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками topic: {}," +
                         " partition: {}," +
                         " offset: {}",
                         message.getTopic(),
