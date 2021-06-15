@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -19,14 +21,25 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> save(PdmMessage message) {
-        Assert.notNull(message,"PdmMessage for saving is null.");
+        Assert.notNull(message, "PdmMessage for saving is null.");
 
         if (messageRepository.existsByTopicAndOffsetAndPartition(
                 message.getTopic(), message.getOffset(), message.getPartition())) {
             log.debug("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
                     message.getOffset(), message.getTopic(), message.getKey());
 
-            return Optional.of(messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition()));
+            List<PdmMessage> storedMessages = messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition());
+
+            if (storedMessages.size() > 1) {
+                log.warn("В базе данных kb-server больше одного сообщения с характеристиками topic: {}," +
+                        " partition: {}," +
+                        " offset: {}",
+                        message.getTopic(),
+                        message.getPartition(),
+                        message.getOffset()
+                );
+            }
+            return Optional.of(storedMessages.get(0));
         }
 
         messageRepository.save(message);
@@ -42,7 +55,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> update(PdmMessage message) {
-        Assert.notNull(message,"PdmMessage for update is null.");
+        Assert.notNull(message, "PdmMessage for update is null.");
 
         return Optional.of(messageRepository.save(message));
     }
