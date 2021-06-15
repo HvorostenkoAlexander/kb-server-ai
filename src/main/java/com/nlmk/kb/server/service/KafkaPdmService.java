@@ -14,6 +14,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -69,6 +70,7 @@ public class KafkaPdmService {
 
                 if (response.getStatusCode() == HttpStatus.ACCEPTED) {
                     message.setPosted(true);
+                    message.setKbReceiptTs(new Date());
                     messageService.update(message);
                 }
             }
