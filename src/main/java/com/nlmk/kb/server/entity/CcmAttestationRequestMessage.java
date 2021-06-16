@@ -10,10 +10,13 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Data
 @Entity
-@Table(name = "ccm_message")
+@Table(name = "ccm_message",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"topic", "partition","msg_offset"})
+})
 @ToString(callSuper = true)
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class CcmAttestationRequestMessage extends BaseKafkaMessage{

@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.Date;
 
 /**
@@ -18,7 +19,9 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "pdm_message")
+@Table(name = "pdm_message",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"topic", "partition","msg_offset"})
+})
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class PdmMessage {
 
