@@ -14,12 +14,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @Entity
-@Table(name = "sadim_message")
+@Table(name = "sadim_message", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"partition","msg_offset"})
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class SadimMessage {
