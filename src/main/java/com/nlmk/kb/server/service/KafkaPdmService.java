@@ -43,7 +43,7 @@ public class KafkaPdmService {
                     "${kafka.pdm.topic.tol-length}",
                     "${kafka.pdm.topic.asap-mech-properties}",
                     "${kafka.pdm.topic.tol-evenness}",
-                    "${kafka.pdm.topic.tk-num}",
+               //     "${kafka.pdm.topic.tk-num}",
                     "${kafka.pdm.topic.ceq}",
                     "${kafka.pdm.topic.mech-properties}",
                     "${kafka.pdm.topic.chemical-properties}"
