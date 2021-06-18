@@ -10,6 +10,6 @@
     "specifications": [
       {"specCode": 222, "specName": "Номер ТК", "specTypeCode": 1, "specValue": "РП-76", "specMeasure": ""},
       {"specCode": 353, "specName": "Назначение", "specTypeCode": 1, "specValue": "ОТМЕНЕН Производство холоднокатаного проката марки SPRC340 по HKMC GMG 05.2008 для Хендэ ХайскоРус,Hyundai-KiaMotors", "specMeasure": ""},
-      {"specCode": 630, "specName": "Дата начала", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 631, "specName": "Дата окончания", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
+      {"specCode": 630, "specName": "Дата начала", "specTypeCode": 1, "specValue": "2000-05-26T09:58:15.6117006+03:00", "specMeasure": ""},
+      {"specCode": 631, "specName": "Дата окончания", "specTypeCode": 1, "specValue": "2022-05-26T09:58:15.6117006+03:00", "specMeasure": ""}
     ]}}
