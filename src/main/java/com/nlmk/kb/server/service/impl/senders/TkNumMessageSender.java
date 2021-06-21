@@ -46,23 +46,21 @@ public class TkNumMessageSender implements MessageSender, PdmMessageCreator {
 
     @Override
     public ResponseEntity<Long> send(PdmMessage message) {
-        Assert.notNull(message,()-> {
+        Assert.notNull(message, () -> {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
         val sendingDto = pdmDtoConverter.toTkNumDto(message.getDictionary());
 
-        log.info("---TkNumDto from PDM: {}",sendingDto);
-
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
-        HttpEntity<TkNumDto> request = new HttpEntity<>(sendingDto,headers);
+        HttpEntity<TkNumDto> request = new HttpEntity<>(sendingDto, headers);
 
-        return commonSender.exchange(request,url_dictionary, message.getOp());
+        return commonSender.exchange(request, url_dictionary, message.getOp());
     }
 
     @Override
     public String getType() {
-        return  this.type;
+        return this.type;
     }
 
     @Override
@@ -76,7 +74,7 @@ public class TkNumMessageSender implements MessageSender, PdmMessageCreator {
         SpTkNum pdmObject = (SpTkNum) record.value();
 
         PdmDictionary dictionary = pdmDictionaryCreator.createPdmDictionary(
-                pdmObject.getTs(),pdmObject.getOp(),pdmObject.getPk(),pdmObject.getData()
+                pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
         message.setDictionary(dictionary);
         message.setOp(dictionary.getOp());
