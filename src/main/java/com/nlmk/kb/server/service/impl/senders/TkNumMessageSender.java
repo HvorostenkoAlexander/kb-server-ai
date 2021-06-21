@@ -52,6 +52,8 @@ public class TkNumMessageSender implements MessageSender, PdmMessageCreator {
 
         val sendingDto = pdmDtoConverter.toTkNumDto(message.getDictionary());
 
+        log.info("---TkNumDto from PDM: {}",sendingDto);
+
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
         HttpEntity<TkNumDto> request = new HttpEntity<>(sendingDto,headers);
 
