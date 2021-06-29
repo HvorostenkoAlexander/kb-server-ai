@@ -10,9 +10,9 @@ public class RestTemplateUtils {
         return prepareHeaders(UUID.randomUUID().toString());
     }
     
-    public static HttpHeaders prepareHeaders(String reuestId) {
+    public static HttpHeaders prepareHeaders(String requestId) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Request-ID", "kb-" + (reuestId != null ? reuestId : UUID.randomUUID().toString()));
+        headers.add("X-Request-ID", "kb-" + (requestId != null ? requestId : UUID.randomUUID().toString()));
         return headers;
     }
 }
