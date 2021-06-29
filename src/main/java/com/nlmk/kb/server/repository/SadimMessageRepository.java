@@ -8,4 +8,5 @@ import java.util.List;
 public interface SadimMessageRepository extends JpaRepository<SadimMessage,Long> {
 
   public List<SadimMessage> findSadimMessagesByParam_PrimeIdOrderByTs(String primeId);
+  public List<SadimMessage> findSadimMessagesByParam_PrimeId(String primeId);
 }
