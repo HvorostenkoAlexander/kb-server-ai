@@ -34,24 +34,27 @@ public class KbController {
     private final CcmMessageService messageSerivce;
 
     @GetMapping("/sadim")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
             required = true) String primeId) {
 
+        log.info("--- request PreAttestationParamDto for primeId: {}", primeId);
+
         val paramDto = paramService.findByPrimeIdLatest(primeId);
 
+        log.info("--- RESULT paramDto from kb: {}",paramDto);
         return ResponseEntity.ok(paramDto);
     }
 
     @GetMapping("/attestation_request")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber", required = true) int page,
                                                            @RequestParam(value = "pageSize", required = true) int size) {
-            return messageSerivce.findAll(PageRequest.of(page, size));
+        return messageSerivce.findAll(PageRequest.of(page, size));
     }
 
     @GetMapping("/attestation_request/{primeId}")
-    @Operation(security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public List<CcmAttestationRequestMessage> getByPrimeId(@PathVariable String primeId) {
 
         return messageSerivce.findByPrimeId(primeId);

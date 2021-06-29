@@ -41,7 +41,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                 .ts(LocalDateTime.now())
                 .build();
 
-        if (attestationParam.isPresent()){
+        if (attestationParam.isPresent()) {
             sadimMessage.setParam(attestationParam.get());
         }
 
@@ -52,6 +52,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     public List<SadimMessage> findByParamPrimeId(String primeId) {
 
         List<SadimMessage> messages = sadimMessageRepository.findSadimMessagesByParam_PrimeIdOrderByTs(primeId);
+        log.info("messages size by primeId: {}", messages.size());
 
         return messages;
     }
