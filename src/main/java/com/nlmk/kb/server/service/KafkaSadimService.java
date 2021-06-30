@@ -27,7 +27,7 @@ public class KafkaSadimService {
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
                                   Acknowledgment ack) {
 
-        log.info("--- SADIM message with offset: {};", consumerRecord.offset());
+        log.debug("--- SADIM message with offset: {};", consumerRecord.offset());
 
         try {
 
