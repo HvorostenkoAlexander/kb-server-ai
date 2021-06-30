@@ -51,12 +51,14 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     @Override
     public List<SadimMessage> findByParamPrimeId(String primeId) {
 
-        List<SadimMessage> messages = sadimMessageRepository.findSadimMessagesByParam_PrimeIdOrderByTs(primeId);
+        List<SadimMessage> messages = sadimMessageRepository.findSadimMessagesByParam_PrimeIdOrderByTsDesc(primeId);
         log.info("messages size by primeId: {}", messages.size());
 
-        List<SadimMessage> messagesCheck = sadimMessageRepository.findSadimMessagesByParam_PrimeIdOrderByTs("0001020210630010959757133");
+        List<SadimMessage> messagesCheck = sadimMessageRepository.findSadimMessagesByParam_PrimeIdOrderByTsDesc("0001020210630010959757133");
         log.info("messagesCheck size by primeId (0001020210630010959757133): {}", messagesCheck.size());
         messagesCheck.forEach(m->log.info("--- SadimMessage with primeId (0001020210630010959757133): {}",m));
+        log.info("--- message(0): {}",messages.get(0));
+
         return messages;
     }
 }
