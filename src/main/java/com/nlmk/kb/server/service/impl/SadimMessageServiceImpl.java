@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.entity.SadimMessage;
+import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.repository.SadimMessageRepository;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import com.nlmk.kb.server.service.SadimMessageService;
@@ -32,20 +33,21 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     public SadimMessage saveMessage(ConsumerRecord consumerRecord) {
 
         Optional<PreAttestationParam> attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
-        log.debug("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam.get());
-
-        val sadimMessage = SadimMessage.builder()
-                .key(consumerRecord.key().toString())
-                .partition(consumerRecord.partition())
-                .offset(consumerRecord.offset())
-                .ts(LocalDateTime.now())
-                .build();
 
         if (attestationParam.isPresent()) {
-            sadimMessage.setParam(attestationParam.get());
-        }
+            log.debug("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam.get());
 
-        return sadimMessageRepository.save(sadimMessage);
+            val sadimMessage = SadimMessage.builder()
+                    .key(consumerRecord.key().toString())
+                    .partition(consumerRecord.partition())
+                    .offset(consumerRecord.offset())
+                    .ts(LocalDateTime.now())
+                    .param(attestationParam.get())
+                    .build();
+            return sadimMessageRepository.save(sadimMessage);
+        } else {
+            throw new SadimJsonProcessingException("Не удалось получить параметры из сообщения от SADIM.");
+        }
     }
 
     @Override

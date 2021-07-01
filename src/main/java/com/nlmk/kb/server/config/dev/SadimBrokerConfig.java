@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class SadimBrokerConfig {
     private final SadimConsumerProperties consumerProperties;
 
     @Bean
-    public Map<String, Object> sadimConsumerConfigs(){
+    public Map<String, Object> sadimConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -36,18 +38,36 @@ public class SadimBrokerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Object> sadimConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(sadimConsumerConfigs());
+    public ConsumerFactory<String, String> sadimConsumerFactory() {
+        StringDeserializer keyDeserializer = new StringDeserializer();
+        keyDeserializer.configure(sadimConsumerConfigs(), true);
+
+        StringDeserializer valueDeserializer = new StringDeserializer();
+        valueDeserializer.configure(sadimConsumerConfigs(), false);
+
+        ErrorHandlingDeserializer<String> errorHandlingValueDeserializer
+                = new ErrorHandlingDeserializer<String>(valueDeserializer);
+
+        return new DefaultKafkaConsumerFactory<>(sadimConsumerConfigs(),
+                keyDeserializer,
+                errorHandlingValueDeserializer
+        );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object > kafkaListenerSadim() {
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerSadim() {
 
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(sadimConsumerFactory());
-        // factory.setMessageConverter(new StringJsonMessageConverter());
-        factory.setConcurrency(1);
+        factory.setErrorHandler(((thrownException, data) -> {
+            log.error("--- ERROR: " + thrownException.getMessage());
+            if (data != null) {
+                log.error("--- ERROR RECORD: " + data.toString());
+            }
+        }));
+        //factory.setConcurrency(1);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
         return factory;
     }

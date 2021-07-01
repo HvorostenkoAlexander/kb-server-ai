@@ -13,6 +13,8 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,6 @@ public class KafkaSadimService {
         log.debug("--- SADIM message with offset: {};", consumerRecord.offset());
 
         try {
-
             val sadimMessage = messageService.saveMessage(consumerRecord);
             log.info("--- saved SADIM massage: {}", sadimMessage);
             ack.acknowledge();
@@ -42,6 +43,7 @@ public class KafkaSadimService {
             ack.acknowledge();
             throw new DateTimeParseException("переброс: " + ddpe);
         } catch (Exception e) {
+            Arrays.stream(e.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
             ack.nack(sleepTime);
             throw new RuntimeException("переброс: " + e);
         }
