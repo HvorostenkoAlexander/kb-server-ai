@@ -42,7 +42,7 @@ public class KbController {
 
         val paramDto = paramService.findByPrimeIdLatest(primeId);
 
-        log.info("--- RESULT paramDto from kb: {}",paramDto);
+        log.info("--- RESULT paramDto from kb: {}", paramDto);
         return ResponseEntity.ok(paramDto);
     }
 
@@ -59,4 +59,5 @@ public class KbController {
 
         return messageSerivce.findByPrimeId(primeId);
     }
+
 }
