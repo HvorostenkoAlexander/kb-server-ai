@@ -27,12 +27,12 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
     public ResponseEntity<Long> exchange(HttpEntity<?> request,
                                          final String url_dictionary,
                                          final String operation
-    ){
-        ResponseEntity<Long> response=new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
+    ) {
+        ResponseEntity<Long> response = new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
 
         switch (operation) {
-            case "I":{
-                log.debug("--- post to NSI: "+request);
+            case "I": {
+                log.debug("--- post to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
@@ -40,8 +40,8 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                                 Long.class);
                 break;
             }
-            case "U":{
-                log.debug("--- put to NSI: "+request);
+            case "U": {
+                log.debug("--- put to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.PUT,
@@ -49,17 +49,18 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                                 Long.class);
                 break;
             }
-            case "D" :{
-                log.debug("--- delete from NSI: "+request);
+            case "D": {
+                log.info("--- delete from NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.DELETE,
                                 request,
                                 Long.class);
+                log.info("response from NSI: " + response);
                 break;
             }
-            default:{
-                throw new IllegalArgumentException("not supported operation: "+operation);
+            default: {
+                throw new IllegalArgumentException("not supported operation: " + operation);
             }
         }
         return response;
