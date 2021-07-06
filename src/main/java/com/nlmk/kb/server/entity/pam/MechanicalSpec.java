@@ -13,27 +13,44 @@ import java.util.List;
 @NoArgsConstructor
 public class MechanicalSpec {
 
-    private Integer testArrayId;//Идентификатор испытательного массива
-    private Integer hnum;//Номер испытуемой горячекатаной партии
-    private Integer protId;//ИД протокола
-    private Integer protNum;//Номер протокола
-    private Integer sampleId;//ИД пробы
-    private String probeName;//Наименование вида пробы
-    private Integer probeCode;//Код вида пробы
-    private Integer sampleNum;//Номер пробы (образца)
+    // 1.4.15.1, Идентификатор испытательного массива
+    private Integer testArrayId;
+    // 1.4.15.2, Номер испытуемой горячекатаной партии
+    private Integer hnum;
+    // 1.4.15.3, ИД протокола
+    private Integer protId;
+    // 1.4.15.4, Номер протокола
+    private Integer protNum;
+    // 1.4.15.5, ИД пробы
+    private Integer sampleId;
+    // 1.4.15.6, Наименование вида пробы
+    private String probeName;
+    // 1.4.15.7, Код вида пробы
+    private Integer probeCode;
+    //1.4.15.8, Номер пробы (образца)
+    private Integer sampleNum;
 
-    /**
-     * Признак испытаний
-     * (1 - первичные,
-     *  2 - повторные,
-     *  3 - первич с другой маркой,
-     *  4 - повторн с другой маркой,
-     *  5 - стат. расчет,
-     *  6 - первич с третьей маркой)
+    /*
+     * 1.4.15.9, Признак испытаний:
+     * 1 - первичные;
+     * 2 - повторные (2- образца);
+     * 5 - стат. расчет;
+     * 8 - контрольные «середина»;
+     * 9 - контрольные «голова».
+     *
+     * Приоритет:
+     * Повторные/Контрольные «середина»/контрольные «голова».
+     * Первичное.
+     * Стат. расчет.
      */
     private Integer signAnalysis;
-    private String formationListId;//ИД формировочной карточки
-    private Integer formationListNum;//Номер формировочной карточки
-    private List<MechanicalData> mechData;//Характеристики и результаты мех испытаний
+
+    // 1.4.15.10, ИД формировочной карточки
+    private String formationListId;
+    // 1.4.15.11, Номер формировочной карточки
+    private Integer formationListNum;
+    // 1.4.15.12, Характеристики и результаты мех испытаний
+    private List<MechanicalData> mechData;
+
 
 }
