@@ -44,7 +44,7 @@ public class CommonConverterTest {
         Date date = cct.parseToDate(stringDate);
         assertNotNull(date);
 
-        System.out.println("date: "+date);
+        System.out.println("date : "+date);
     }
 
     @Test
