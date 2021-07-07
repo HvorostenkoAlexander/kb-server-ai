@@ -20,12 +20,33 @@ public class CommonConverterImpl implements CommonConverter {
 
     @Override
     public Date parseToDate(String stringDate) {
-        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+        Date dateMs = parseToDateWithMs(stringDate);
+        Date dateNoMs = parseToDateNoMs(stringDate);
+
+        if (dateMs != null) {
+            return dateMs;
+        } else if (dateNoMs != null) {
+            return dateNoMs;
+        } else {
+            throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; ");
+        }
+    }
+
+    private Date parseToDateNoMs(String stringDate) {
+        return parse(stringDate,"yyyy-MM-dd'T'HH:mm:ssX");
+    }
+
+    private Date parseToDateWithMs(String stringDate) {
+        return parse(stringDate,"yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    }
+
+    private Date parse(String stringDate, String stringFormat){
+        val format = new SimpleDateFormat(stringFormat);
         try {
             return format.parse(stringDate);
         } catch (ParseException e) {
-            log.error("Ошибка парсинга ts: {}", stringDate);
-            throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; " + e);
+            return null;
         }
     }
 

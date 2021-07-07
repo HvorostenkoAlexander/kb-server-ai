@@ -1,15 +1,16 @@
 package com.nlmk.kb.server.util;
 
+import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.impl.CommonConverterImpl;
-import lombok.val;
 import org.junit.jupiter.api.Test;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CommonConverterTest {
 
@@ -37,16 +38,24 @@ public class CommonConverterTest {
         assertNull(i);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"2021-07-01T10:14:36+03:00", "2021-07-02T22:10:42.749-03:00"})
+    void testParseToDate(String stringDate){
+        Date date = cct.parseToDate(stringDate);
+        assertNotNull(date);
+
+        System.out.println("date: "+date);
+    }
+
     @Test
-    void testDate() throws ParseException {
-        String stringDate = "2021-07-01T10:14:36+03:00";
+    void testParseToDateBad(){
+        String stringDate = "2021-07-01T10:14:36";
 
-       // Date date = cct.parseToDate(stringDate);
-      //  Дата и время передачи в формате UTC YYYY-MM-DD"T"HH24:MI:SS.FF3±hh:mm
-        //"yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
+                () -> cct.parseToDate(stringDate)
+        );
+        assertNotNull(ex);
 
-        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-        val date = format.parse(stringDate);
-        System.out.println("--- date: "+date);
+        System.out.println("ex: "+ex);
     }
 }
