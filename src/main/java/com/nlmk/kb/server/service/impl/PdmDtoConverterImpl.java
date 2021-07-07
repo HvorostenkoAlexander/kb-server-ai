@@ -706,19 +706,19 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         MatchTkDto matchTkDto = MatchTkDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                //.ts()// todo после решения вопроса по передачи даты и времени заменить
+                .ts(converter.parseToDate(dictionary.getTs()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 .tkNumSap(converter.getSpecValue(specs, SpecCode.TK_SAP_NUMBER.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
 
-        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
-        try {
-            matchTkDto.setTs(format.parse(dictionary.getTs()));
-        } catch (ParseException e) {
-            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
-            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
-        }
+//        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
+//        try {
+//            matchTkDto.setTs(format.parse(dictionary.getTs()));
+//        } catch (ParseException e) {
+//            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
+//            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
+//        }
 
         log.debug("--- PDM MatchTkDto: {} ", matchTkDto);
 
@@ -735,18 +735,18 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         MatchRpDto matchTkDto = MatchRpDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                // .ts() todo после решения вопроса по передачи даты и времени заменить
+                .ts(converter.parseToDate(dictionary.getTs()))
                 .rpNumSap(converter.getSpecValue(specs, SpecCode.RP_SAP_NUMBER.getValue()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.RP_NUMBER_VERSION_ROUTE.getValue()))
                 .build();
 
-        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
-        try {
-            matchTkDto.setTs(format.parse(dictionary.getTs()));
-        } catch (ParseException e) {
-            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
-            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
-        }
+//        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
+//        try {
+//            matchTkDto.setTs(format.parse(dictionary.getTs()));
+//        } catch (ParseException e) {
+//            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
+//            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
+//        }
 
         log.debug("--- PDM MatchRpDto: {} ", matchTkDto);
         return matchTkDto;
