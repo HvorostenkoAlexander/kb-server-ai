@@ -52,7 +52,7 @@ public class KafkaPdmService {
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord request, Acknowledgment ack) {
 
-        log.debug("--- PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
+        log.debug("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),
                 request.offset(),
@@ -68,9 +68,12 @@ public class KafkaPdmService {
                 message = savedMessage.get();
                 ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
 
-                if (response.getStatusCode() == HttpStatus.ACCEPTED) {
+                if (response.getStatusCode() == HttpStatus.ACCEPTED ||
+                        response.getStatusCode() == HttpStatus.NOT_FOUND ||
+                        response.getStatusCode() == HttpStatus.OK) {
                     message.setPosted(true);
                     message.setKbReceiptTs(new Date());
+                    message.setNote(response.getStatusCode().toString());
                     messageService.update(message);
                 } else {
                     message.setPosted(false);

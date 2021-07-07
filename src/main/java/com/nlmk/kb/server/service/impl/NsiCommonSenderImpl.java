@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -32,7 +33,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
 
         switch (operation) {
             case "I": {
-                log.debug("--- post to NSI: " + request);
+                log.debug("post to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
@@ -41,7 +42,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                 break;
             }
             case "U": {
-                log.debug("--- put to NSI: " + request);
+                log.debug("put to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.PUT,
@@ -50,13 +51,23 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                 break;
             }
             case "D": {
-                log.info("--- delete from NSI: " + request);
-                response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
-                                HttpMethod.DELETE,
-                                request,
-                                Long.class);
-                log.info("response from NSI: " + response);
+                log.info("delete from NSI: " + request);
+                try {
+                    response = restTemplate
+                            .exchange(URL_NSI_DICTIONARY + url_dictionary,
+                                    HttpMethod.DELETE,
+                                    request,
+                                    Long.class);
+                    log.debug("response from NSI: [{}], request: [{}]", response, request);
+                } catch (HttpClientErrorException hcee) {
+                    if (hcee.getRawStatusCode() == 404) {
+                        response = new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
+                        log.info("response from NSI: [{}], request: [{}]", response, request);
+
+                        return response;
+                    }
+                    throw hcee;
+                }
                 break;
             }
             default: {
