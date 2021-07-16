@@ -51,12 +51,15 @@ public class PdmBrokerConfig {
         KafkaAvroDeserializer valueDeserializer = new KafkaAvroDeserializer();
         valueDeserializer.configure(props, false);
 
+        ErrorHandlingDeserializer<Object> errorHandlingKeyDeserializer
+                = new ErrorHandlingDeserializer<>(keyDeserializer);
+
         ErrorHandlingDeserializer<Object> errorHandlingValueDeserializer
                 = new ErrorHandlingDeserializer<>(valueDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(
                 props,
-                keyDeserializer,
+                errorHandlingKeyDeserializer,
                 errorHandlingValueDeserializer
         );
       //  return new DefaultKafkaConsumerFactory<>(props,keyDeserializer,valueDeserializer);
