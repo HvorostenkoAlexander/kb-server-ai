@@ -38,12 +38,12 @@ public class PdmBrokerConfig {
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
-        props.put("security.protocol", "SSL");
-        props.put("ssl.truststore.location", "kafkaSsl/client.truststore.jks");
-        props.put("ssl.truststore.password", "assagai");
-        props.put("ssl.keystore.password", "assagai");
-        props.put("ssl.keystore.location", "kafkaSsl/client.keystore.jks");
-        props.put("ssl.endpoint.identification.algorithm", "");
+//        props.put("security.protocol", "SSL");
+//        props.put("ssl.truststore.location", "kafkaSsl/client.truststore.jks");
+//        props.put("ssl.truststore.password", "assagai");
+//        props.put("ssl.keystore.password", "assagai");
+//        props.put("ssl.keystore.location", "kafkaSsl/client.keystore.jks");
+//        props.put("ssl.endpoint.identification.algorithm", "");
 
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
         keyDeserializer.configure(props, true);
