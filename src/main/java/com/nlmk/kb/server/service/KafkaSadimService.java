@@ -33,7 +33,7 @@ public class KafkaSadimService {
 
         try {
             val sadimMessage = messageService.saveMessage(consumerRecord);
-            log.info("--- saved SADIM massage: {}", sadimMessage);
+            log.debug("--- saved SADIM massage: {}", sadimMessage);
             ack.acknowledge();
 
         } catch (SadimJsonProcessingException sjpe) {

@@ -52,7 +52,7 @@ public class KafkaPdmService {
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord request, Acknowledgment ack) {
 
-        log.debug("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
+        log.info("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),
                 request.offset(),
