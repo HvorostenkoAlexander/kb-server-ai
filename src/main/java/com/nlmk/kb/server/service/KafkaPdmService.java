@@ -30,23 +30,24 @@ public class KafkaPdmService {
     private final NsiClientService nsiClientService;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
-            topics = {"${kafka.pdm.topic.microstructure}",
-                    "${kafka.pdm.topic.asap-chemical-properties}",
-                    "${kafka.pdm.topic.equivalents}",
-                    "${kafka.pdm.topic.match-tk-num}",
-                    "${kafka.pdm.topic.match-rabplan-num}",
-                    "${kafka.pdm.topic.pcm}",
-                    "${kafka.pdm.topic.asap-tol-links}",
-                    "${kafka.pdm.topic.tol-thick}",
-                    "${kafka.pdm.topic.kat-steel-4041}",
-                    "${kafka.pdm.topic.tol-width}",
-                    "${kafka.pdm.topic.tol-length}",
-                    "${kafka.pdm.topic.asap-mech-properties}",
-                    "${kafka.pdm.topic.tol-evenness}",
-                    "${kafka.pdm.topic.tk-num}",
-                    "${kafka.pdm.topic.ceq}",
-                    "${kafka.pdm.topic.mech-properties}",
-                    "${kafka.pdm.topic.chemical-properties}"
+            topics = {
+                    "${kafka.pdm.topic.microstructure}",
+//                    "${kafka.pdm.topic.asap-chemical-properties}",
+//                    "${kafka.pdm.topic.equivalents}",
+//                    "${kafka.pdm.topic.match-tk-num}",
+//                    "${kafka.pdm.topic.match-rabplan-num}",
+//                    "${kafka.pdm.topic.pcm}",
+//                    "${kafka.pdm.topic.asap-tol-links}",
+//                    "${kafka.pdm.topic.tol-thick}",
+//                    "${kafka.pdm.topic.kat-steel-4041}",
+//                    "${kafka.pdm.topic.tol-width}",
+//                    "${kafka.pdm.topic.tol-length}",
+//                    "${kafka.pdm.topic.asap-mech-properties}",
+//                    "${kafka.pdm.topic.tol-evenness}",
+//                    "${kafka.pdm.topic.tk-num}",
+//                    "${kafka.pdm.topic.ceq}",
+//                    "${kafka.pdm.topic.mech-properties}",
+//                    "${kafka.pdm.topic.chemical-properties}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

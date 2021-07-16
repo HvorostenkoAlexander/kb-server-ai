@@ -41,7 +41,6 @@ public class PdmBrokerConfig {
         props.put("security.protocol", "SSL");
         props.put("ssl.truststore.location", "kafkaSsl/client.truststore.jks");
         props.put("ssl.truststore.password", "assagai");
-     //  props.put("ssl.key.password", keyStorePassword);
         props.put("ssl.keystore.password", "assagai");
         props.put("ssl.keystore.location", "kafkaSsl/client.keystore.jks");
         props.put("ssl.endpoint.identification.algorithm", "");
