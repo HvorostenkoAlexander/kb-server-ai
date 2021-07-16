@@ -31,7 +31,7 @@ public class KafkaPdmService {
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topics = {
-                    "${kafka.pdm.topic.microstructure}",
+     //               "${kafka.pdm.topic.microstructure}",
 //                    "${kafka.pdm.topic.asap-chemical-properties}",
 //                    "${kafka.pdm.topic.equivalents}",
 //                    "${kafka.pdm.topic.match-tk-num}",

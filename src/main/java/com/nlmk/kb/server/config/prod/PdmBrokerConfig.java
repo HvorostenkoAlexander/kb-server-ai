@@ -54,12 +54,12 @@ public class PdmBrokerConfig {
         ErrorHandlingDeserializer<Object> errorHandlingValueDeserializer
                 = new ErrorHandlingDeserializer<>(valueDeserializer);
 
-//        return new DefaultKafkaConsumerFactory<>(
-//                props,
-//                keyDeserializer,
-//                errorHandlingValueDeserializer
-//        );
-        return new DefaultKafkaConsumerFactory<>(props,keyDeserializer,valueDeserializer);
+        return new DefaultKafkaConsumerFactory<>(
+                props,
+                keyDeserializer,
+                errorHandlingValueDeserializer
+        );
+      //  return new DefaultKafkaConsumerFactory<>(props,keyDeserializer,valueDeserializer);
     }
 
     @Bean
