@@ -44,6 +44,7 @@ public class PdmBrokerConfig {
      //  props.put("ssl.key.password", keyStorePassword);
         props.put("ssl.keystore.password", "assagai");
         props.put("ssl.keystore.location", "kafkaSsl/client.keystore.jks");
+        props.put("ssl.endpoint.identification.algorithm", "");
 
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
         keyDeserializer.configure(props, true);
