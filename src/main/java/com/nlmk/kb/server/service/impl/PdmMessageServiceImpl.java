@@ -25,15 +25,23 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         if (messageRepository.existsByTopicAndOffsetAndPartition(
                 message.getTopic(), message.getOffset(), message.getPartition())) {
-            log.debug("--- the message with offset: {} from topic: {} is already present in the database. message key: {} ",
-                    message.getOffset(), message.getTopic(), message.getKey());
+            log.info("--- the message from " +
+                            "topic: [{}], " +
+                            "partition: [{}], " +
+                            "offset: [{}] is already present in the database. " +
+                            "message key: {} ",
+                    message.getTopic(),
+                    message.getPartition(),
+                    message.getOffset(),
+                    message.getKey());
 
             List<PdmMessage> storedMessages = messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition());
 
             if (storedMessages.size() > 1) {
-                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками topic: {}," +
-                        " partition: {}," +
-                        " offset: {}",
+                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками" +
+                                " topic: {}," +
+                                " partition: {}," +
+                                " offset: {}",
                         message.getTopic(),
                         message.getPartition(),
                         message.getOffset()

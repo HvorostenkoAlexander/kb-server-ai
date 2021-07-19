@@ -62,7 +62,6 @@ public class PdmBrokerConfig {
                 errorHandlingKeyDeserializer,
                 errorHandlingValueDeserializer
         );
-      //  return new DefaultKafkaConsumerFactory<>(props,keyDeserializer,valueDeserializer);
     }
 
     @Bean

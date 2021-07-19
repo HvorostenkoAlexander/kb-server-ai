@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.PartitionOffset;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -30,8 +32,16 @@ public class KafkaPdmService {
     private final NsiClientService nsiClientService;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
-            topics = {
-                    "${kafka.pdm.topic.microstructure}",
+            topicPartitions = {@TopicPartition(topic = "${kafka.pdm.topic.microstructure}",
+                    partitionOffsets = {
+                            @PartitionOffset(partition = "0", initialOffset = "0"),
+                            @PartitionOffset(partition = "1", initialOffset = "0"),
+                    }),
+            })
+
+//    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
+//            topics = {
+//                    "${kafka.pdm.topic.microstructure}",
 //                    "${kafka.pdm.topic.asap-chemical-properties}",
 //                    "${kafka.pdm.topic.equivalents}",
 //                    "${kafka.pdm.topic.match-tk-num}",
@@ -48,8 +58,8 @@ public class KafkaPdmService {
 //                    "${kafka.pdm.topic.ceq}",
 //                    "${kafka.pdm.topic.mech-properties}",
 //                    "${kafka.pdm.topic.chemical-properties}"
-            }
-    )
+//            }
+//    )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord request, Acknowledgment ack) {
 
