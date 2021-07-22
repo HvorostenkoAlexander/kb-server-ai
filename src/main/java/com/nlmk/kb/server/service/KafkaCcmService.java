@@ -63,7 +63,7 @@ public class KafkaCcmService {
                 request.getPk().getId(),
                 request.getData().getPrimeId());
 
-        try { // todo сохранять сведения об ошибках в отдельной сущности
+        try {
             val requestMessage = messageConverter.fromCcmAttestationRequest(
                     request,
                     topic,
