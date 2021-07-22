@@ -14,6 +14,7 @@ import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.l3.ccm.pgp.RecordChemical;
 import nlmk.l3.ccm.pgp.RecordData;
+import nlmk.l3.ccm.pgp.RecordListValues;
 import nlmk.l3.ccm.pgp.RecordMechData;
 import nlmk.l3.ccm.pgp.RecordMechanical;
 import nlmk.l3.ccm.pgp.RecordMetallographic;
@@ -48,10 +49,6 @@ public class ValueConverter {
         value.setOp(request.getOp().toString());
 
         if (request.getPk() != null) {
-//            if (request.getPk().getId()!=null) {//todo уточнить по значению id
-//                val reqId = Long.valueOf(request.getPk().getId().toString());
-//                attRequest.setId(reqId);
-//            }
             value.setPk(fromRequestPk(request.getPk()));
         }
         if (request.getData() != null) {
@@ -134,7 +131,7 @@ public class ValueConverter {
         return dataField;
     }
 
-    private static Double fromFloatToDouble(Float f){
+    private static Double fromFloatToDouble(Float f) {
         return Double.parseDouble(Float.toString(f.floatValue()));
     }
 
@@ -162,6 +159,8 @@ public class ValueConverter {
                 .attrCode(recordOrderReq.getAttrCode())
                 .attrName(recordOrderReq.getAttrName().toString())
                 .attrTypeCode(recordOrderReq.getAttrTypeCode())
+                //todo подключить как решится вопрос о размещении com.nlmk.kb.server.entity.pam.AttestationRequest
+                //       .attrTypeValue(recordOrderReq.getAttrTypeValue())
                 .build();
 
         if (recordOrderReq.getAttrValue() != null) {
@@ -175,6 +174,16 @@ public class ValueConverter {
         if (recordOrderReq.getAttrMeasure() != null) {
             orderRequest.setAttrMeasure(recordOrderReq.getAttrMeasure().toString());
         }
+
+        //todo подключить как решится вопрос о размещении com.nlmk.kb.server.entity.pam.AttestationRequest
+//        if (recordOrderReq.getListValues() != null) {
+//            orderRequest.setRecordListValue(
+//                    recordOrderReq.getListValues().stream()
+//                            .filter(r -> r != null)
+//                            .map(r -> r.getValue().toString())
+//                            .collect(Collectors.toList())
+//            );
+//        }
         return orderRequest;
     }
 
@@ -298,19 +307,19 @@ public class ValueConverter {
         return mtlSpec;
     }
 
-    private static MetallographicData fromRecordMetgrapData(RecordMetgrapData recordMetgrapData){
+    private static MetallographicData fromRecordMetgrapData(RecordMetgrapData recordMetgrapData) {
         MetallographicData mtlData = MetallographicData.builder()
                 .metgrapCode(recordMetgrapData.getMetgrapCode())
                 .metgrapName(recordMetgrapData.getMetgrapName().toString())
                 .metgrapTypeCode(Integer.toString(recordMetgrapData.getMetgrapTypeCode()))
                 .build();
-        if (recordMetgrapData.getMetgrapFormat()!=null){
+        if (recordMetgrapData.getMetgrapFormat() != null) {
             mtlData.setMetgrapFormat(recordMetgrapData.getMetgrapFormat().toString());
         }
-        if (recordMetgrapData.getMetgrapValue()!=null){
+        if (recordMetgrapData.getMetgrapValue() != null) {
             mtlData.setMetgrapValue(recordMetgrapData.getMetgrapValue().toString());
         }
-        if (recordMetgrapData.getMetgrapMeasure()!=null){
+        if (recordMetgrapData.getMetgrapMeasure() != null) {
             mtlData.setMetgrapMeasure(recordMetgrapData.getMetgrapMeasure().toString());
         }
         return mtlData;

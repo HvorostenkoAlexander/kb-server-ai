@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 6055487648862097708L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"RecordOrderReq\",\"namespace\":\"nlmk.l3.ccm.pgp\",\"fields\":[{\"name\":\"attrCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"attrName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"attrValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"attrTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"attrFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"attrMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}");
+  private static final long serialVersionUID = 2075207393465165571L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"RecordOrderReq\",\"namespace\":\"nlmk.l3.ccm.pgp\",\"fields\":[{\"name\":\"attrCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"attrName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"attrValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"attrTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"attrTypeValue\",\"type\":\"int\",\"doc\":\"Тип значения (1 - простое, 2 - перечисленное)\"},{\"name\":\"attrFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"attrMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null},{\"name\":\"listValues\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordListValues\",\"fields\":[{\"name\":\"value\",\"type\":\"string\",\"doc\":\"Значение из списка\"}]}}],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -79,10 +79,13 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
    private java.lang.CharSequence attrValue;
   /** Тип данных (1 - строка, 2 - число, 3 - дата) */
    private int attrTypeCode;
+  /** Тип значения (1 - простое, 2 - перечисленное) */
+   private int attrTypeValue;
   /** Формат передачи характеристики */
    private java.lang.CharSequence attrFormat;
   /** Единица измерения характеристики */
    private java.lang.CharSequence attrMeasure;
+   private java.util.List<nlmk.l3.ccm.pgp.RecordListValues> listValues;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -97,16 +100,20 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
    * @param attrName Наименование характеристики
    * @param attrValue Значение характеристики
    * @param attrTypeCode Тип данных (1 - строка, 2 - число, 3 - дата)
+   * @param attrTypeValue Тип значения (1 - простое, 2 - перечисленное)
    * @param attrFormat Формат передачи характеристики
    * @param attrMeasure Единица измерения характеристики
+   * @param listValues The new value for listValues
    */
-  public RecordOrderReq(java.lang.Integer attrCode, java.lang.CharSequence attrName, java.lang.CharSequence attrValue, java.lang.Integer attrTypeCode, java.lang.CharSequence attrFormat, java.lang.CharSequence attrMeasure) {
+  public RecordOrderReq(java.lang.Integer attrCode, java.lang.CharSequence attrName, java.lang.CharSequence attrValue, java.lang.Integer attrTypeCode, java.lang.Integer attrTypeValue, java.lang.CharSequence attrFormat, java.lang.CharSequence attrMeasure, java.util.List<nlmk.l3.ccm.pgp.RecordListValues> listValues) {
     this.attrCode = attrCode;
     this.attrName = attrName;
     this.attrValue = attrValue;
     this.attrTypeCode = attrTypeCode;
+    this.attrTypeValue = attrTypeValue;
     this.attrFormat = attrFormat;
     this.attrMeasure = attrMeasure;
+    this.listValues = listValues;
   }
 
   public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
@@ -118,8 +125,10 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
     case 1: return attrName;
     case 2: return attrValue;
     case 3: return attrTypeCode;
-    case 4: return attrFormat;
-    case 5: return attrMeasure;
+    case 4: return attrTypeValue;
+    case 5: return attrFormat;
+    case 6: return attrMeasure;
+    case 7: return listValues;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -132,8 +141,10 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
     case 1: attrName = (java.lang.CharSequence)value$; break;
     case 2: attrValue = (java.lang.CharSequence)value$; break;
     case 3: attrTypeCode = (java.lang.Integer)value$; break;
-    case 4: attrFormat = (java.lang.CharSequence)value$; break;
-    case 5: attrMeasure = (java.lang.CharSequence)value$; break;
+    case 4: attrTypeValue = (java.lang.Integer)value$; break;
+    case 5: attrFormat = (java.lang.CharSequence)value$; break;
+    case 6: attrMeasure = (java.lang.CharSequence)value$; break;
+    case 7: listValues = (java.util.List<nlmk.l3.ccm.pgp.RecordListValues>)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -211,6 +222,24 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
   }
 
   /**
+   * Gets the value of the 'attrTypeValue' field.
+   * @return Тип значения (1 - простое, 2 - перечисленное)
+   */
+  public int getAttrTypeValue() {
+    return attrTypeValue;
+  }
+
+
+  /**
+   * Sets the value of the 'attrTypeValue' field.
+   * Тип значения (1 - простое, 2 - перечисленное)
+   * @param value the value to set.
+   */
+  public void setAttrTypeValue(int value) {
+    this.attrTypeValue = value;
+  }
+
+  /**
    * Gets the value of the 'attrFormat' field.
    * @return Формат передачи характеристики
    */
@@ -244,6 +273,23 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
    */
   public void setAttrMeasure(java.lang.CharSequence value) {
     this.attrMeasure = value;
+  }
+
+  /**
+   * Gets the value of the 'listValues' field.
+   * @return The value of the 'listValues' field.
+   */
+  public java.util.List<nlmk.l3.ccm.pgp.RecordListValues> getListValues() {
+    return listValues;
+  }
+
+
+  /**
+   * Sets the value of the 'listValues' field.
+   * @param value the value to set.
+   */
+  public void setListValues(java.util.List<nlmk.l3.ccm.pgp.RecordListValues> value) {
+    this.listValues = value;
   }
 
   /**
@@ -295,10 +341,13 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
     private java.lang.CharSequence attrValue;
     /** Тип данных (1 - строка, 2 - число, 3 - дата) */
     private int attrTypeCode;
+    /** Тип значения (1 - простое, 2 - перечисленное) */
+    private int attrTypeValue;
     /** Формат передачи характеристики */
     private java.lang.CharSequence attrFormat;
     /** Единица измерения характеристики */
     private java.lang.CharSequence attrMeasure;
+    private java.util.List<nlmk.l3.ccm.pgp.RecordListValues> listValues;
 
     /** Creates a new Builder */
     private Builder() {
@@ -327,13 +376,21 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
         this.attrTypeCode = data().deepCopy(fields()[3].schema(), other.attrTypeCode);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
-      if (isValidValue(fields()[4], other.attrFormat)) {
-        this.attrFormat = data().deepCopy(fields()[4].schema(), other.attrFormat);
+      if (isValidValue(fields()[4], other.attrTypeValue)) {
+        this.attrTypeValue = data().deepCopy(fields()[4].schema(), other.attrTypeValue);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
       }
-      if (isValidValue(fields()[5], other.attrMeasure)) {
-        this.attrMeasure = data().deepCopy(fields()[5].schema(), other.attrMeasure);
+      if (isValidValue(fields()[5], other.attrFormat)) {
+        this.attrFormat = data().deepCopy(fields()[5].schema(), other.attrFormat);
         fieldSetFlags()[5] = other.fieldSetFlags()[5];
+      }
+      if (isValidValue(fields()[6], other.attrMeasure)) {
+        this.attrMeasure = data().deepCopy(fields()[6].schema(), other.attrMeasure);
+        fieldSetFlags()[6] = other.fieldSetFlags()[6];
+      }
+      if (isValidValue(fields()[7], other.listValues)) {
+        this.listValues = data().deepCopy(fields()[7].schema(), other.listValues);
+        fieldSetFlags()[7] = other.fieldSetFlags()[7];
       }
     }
 
@@ -359,13 +416,21 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
         this.attrTypeCode = data().deepCopy(fields()[3].schema(), other.attrTypeCode);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.attrFormat)) {
-        this.attrFormat = data().deepCopy(fields()[4].schema(), other.attrFormat);
+      if (isValidValue(fields()[4], other.attrTypeValue)) {
+        this.attrTypeValue = data().deepCopy(fields()[4].schema(), other.attrTypeValue);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.attrMeasure)) {
-        this.attrMeasure = data().deepCopy(fields()[5].schema(), other.attrMeasure);
+      if (isValidValue(fields()[5], other.attrFormat)) {
+        this.attrFormat = data().deepCopy(fields()[5].schema(), other.attrFormat);
         fieldSetFlags()[5] = true;
+      }
+      if (isValidValue(fields()[6], other.attrMeasure)) {
+        this.attrMeasure = data().deepCopy(fields()[6].schema(), other.attrMeasure);
+        fieldSetFlags()[6] = true;
+      }
+      if (isValidValue(fields()[7], other.listValues)) {
+        this.listValues = data().deepCopy(fields()[7].schema(), other.listValues);
+        fieldSetFlags()[7] = true;
       }
     }
 
@@ -544,6 +609,49 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
     }
 
     /**
+      * Gets the value of the 'attrTypeValue' field.
+      * Тип значения (1 - простое, 2 - перечисленное)
+      * @return The value.
+      */
+    public int getAttrTypeValue() {
+      return attrTypeValue;
+    }
+
+
+    /**
+      * Sets the value of the 'attrTypeValue' field.
+      * Тип значения (1 - простое, 2 - перечисленное)
+      * @param value The value of 'attrTypeValue'.
+      * @return This builder.
+      */
+    public nlmk.l3.ccm.pgp.RecordOrderReq.Builder setAttrTypeValue(int value) {
+      validate(fields()[4], value);
+      this.attrTypeValue = value;
+      fieldSetFlags()[4] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'attrTypeValue' field has been set.
+      * Тип значения (1 - простое, 2 - перечисленное)
+      * @return True if the 'attrTypeValue' field has been set, false otherwise.
+      */
+    public boolean hasAttrTypeValue() {
+      return fieldSetFlags()[4];
+    }
+
+
+    /**
+      * Clears the value of the 'attrTypeValue' field.
+      * Тип значения (1 - простое, 2 - перечисленное)
+      * @return This builder.
+      */
+    public nlmk.l3.ccm.pgp.RecordOrderReq.Builder clearAttrTypeValue() {
+      fieldSetFlags()[4] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'attrFormat' field.
       * Формат передачи характеристики
       * @return The value.
@@ -560,9 +668,9 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
       * @return This builder.
       */
     public nlmk.l3.ccm.pgp.RecordOrderReq.Builder setAttrFormat(java.lang.CharSequence value) {
-      validate(fields()[4], value);
+      validate(fields()[5], value);
       this.attrFormat = value;
-      fieldSetFlags()[4] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -572,7 +680,7 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
       * @return True if the 'attrFormat' field has been set, false otherwise.
       */
     public boolean hasAttrFormat() {
-      return fieldSetFlags()[4];
+      return fieldSetFlags()[5];
     }
 
 
@@ -583,7 +691,7 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
       */
     public nlmk.l3.ccm.pgp.RecordOrderReq.Builder clearAttrFormat() {
       attrFormat = null;
-      fieldSetFlags()[4] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -604,9 +712,9 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
       * @return This builder.
       */
     public nlmk.l3.ccm.pgp.RecordOrderReq.Builder setAttrMeasure(java.lang.CharSequence value) {
-      validate(fields()[5], value);
+      validate(fields()[6], value);
       this.attrMeasure = value;
-      fieldSetFlags()[5] = true;
+      fieldSetFlags()[6] = true;
       return this;
     }
 
@@ -616,7 +724,7 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
       * @return True if the 'attrMeasure' field has been set, false otherwise.
       */
     public boolean hasAttrMeasure() {
-      return fieldSetFlags()[5];
+      return fieldSetFlags()[6];
     }
 
 
@@ -627,7 +735,47 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
       */
     public nlmk.l3.ccm.pgp.RecordOrderReq.Builder clearAttrMeasure() {
       attrMeasure = null;
-      fieldSetFlags()[5] = false;
+      fieldSetFlags()[6] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'listValues' field.
+      * @return The value.
+      */
+    public java.util.List<nlmk.l3.ccm.pgp.RecordListValues> getListValues() {
+      return listValues;
+    }
+
+
+    /**
+      * Sets the value of the 'listValues' field.
+      * @param value The value of 'listValues'.
+      * @return This builder.
+      */
+    public nlmk.l3.ccm.pgp.RecordOrderReq.Builder setListValues(java.util.List<nlmk.l3.ccm.pgp.RecordListValues> value) {
+      validate(fields()[7], value);
+      this.listValues = value;
+      fieldSetFlags()[7] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'listValues' field has been set.
+      * @return True if the 'listValues' field has been set, false otherwise.
+      */
+    public boolean hasListValues() {
+      return fieldSetFlags()[7];
+    }
+
+
+    /**
+      * Clears the value of the 'listValues' field.
+      * @return This builder.
+      */
+    public nlmk.l3.ccm.pgp.RecordOrderReq.Builder clearListValues() {
+      listValues = null;
+      fieldSetFlags()[7] = false;
       return this;
     }
 
@@ -640,8 +788,10 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
         record.attrName = fieldSetFlags()[1] ? this.attrName : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.attrValue = fieldSetFlags()[2] ? this.attrValue : (java.lang.CharSequence) defaultValue(fields()[2]);
         record.attrTypeCode = fieldSetFlags()[3] ? this.attrTypeCode : (java.lang.Integer) defaultValue(fields()[3]);
-        record.attrFormat = fieldSetFlags()[4] ? this.attrFormat : (java.lang.CharSequence) defaultValue(fields()[4]);
-        record.attrMeasure = fieldSetFlags()[5] ? this.attrMeasure : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.attrTypeValue = fieldSetFlags()[4] ? this.attrTypeValue : (java.lang.Integer) defaultValue(fields()[4]);
+        record.attrFormat = fieldSetFlags()[5] ? this.attrFormat : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.attrMeasure = fieldSetFlags()[6] ? this.attrMeasure : (java.lang.CharSequence) defaultValue(fields()[6]);
+        record.listValues = fieldSetFlags()[7] ? this.listValues : (java.util.List<nlmk.l3.ccm.pgp.RecordListValues>) defaultValue(fields()[7]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -688,6 +838,8 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
 
     out.writeInt(this.attrTypeCode);
 
+    out.writeInt(this.attrTypeValue);
+
     if (this.attrFormat == null) {
       out.writeIndex(0);
       out.writeNull();
@@ -702,6 +854,25 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
     } else {
       out.writeIndex(1);
       out.writeString(this.attrMeasure);
+    }
+
+    if (this.listValues == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      long size0 = this.listValues.size();
+      out.writeArrayStart();
+      out.setItemCount(size0);
+      long actualSize0 = 0;
+      for (nlmk.l3.ccm.pgp.RecordListValues e0: this.listValues) {
+        actualSize0++;
+        out.startItem();
+        e0.customEncode(out);
+      }
+      out.writeArrayEnd();
+      if (actualSize0 != size0)
+        throw new java.util.ConcurrentModificationException("Array-size written was " + size0 + ", but element count was " + actualSize0 + ".");
     }
 
   }
@@ -724,6 +895,8 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
 
       this.attrTypeCode = in.readInt();
 
+      this.attrTypeValue = in.readInt();
+
       if (in.readIndex() != 1) {
         in.readNull();
         this.attrFormat = null;
@@ -738,8 +911,31 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
         this.attrMeasure = in.readString(this.attrMeasure instanceof Utf8 ? (Utf8)this.attrMeasure : null);
       }
 
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.listValues = null;
+      } else {
+        long size0 = in.readArrayStart();
+        java.util.List<nlmk.l3.ccm.pgp.RecordListValues> a0 = this.listValues;
+        if (a0 == null) {
+          a0 = new SpecificData.Array<nlmk.l3.ccm.pgp.RecordListValues>((int)size0, SCHEMA$.getField("listValues").schema().getTypes().get(1));
+          this.listValues = a0;
+        } else a0.clear();
+        SpecificData.Array<nlmk.l3.ccm.pgp.RecordListValues> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<nlmk.l3.ccm.pgp.RecordListValues>)a0 : null);
+        for ( ; 0 < size0; size0 = in.arrayNext()) {
+          for ( ; size0 != 0; size0--) {
+            nlmk.l3.ccm.pgp.RecordListValues e0 = (ga0 != null ? ga0.peek() : null);
+            if (e0 == null) {
+              e0 = new nlmk.l3.ccm.pgp.RecordListValues();
+            }
+            e0.customDecode(in);
+            a0.add(e0);
+          }
+        }
+      }
+
     } else {
-      for (int i = 0; i < 6; i++) {
+      for (int i = 0; i < 8; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.attrCode = in.readInt();
@@ -763,6 +959,10 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
           break;
 
         case 4:
+          this.attrTypeValue = in.readInt();
+          break;
+
+        case 5:
           if (in.readIndex() != 1) {
             in.readNull();
             this.attrFormat = null;
@@ -771,12 +971,37 @@ public class RecordOrderReq extends org.apache.avro.specific.SpecificRecordBase 
           }
           break;
 
-        case 5:
+        case 6:
           if (in.readIndex() != 1) {
             in.readNull();
             this.attrMeasure = null;
           } else {
             this.attrMeasure = in.readString(this.attrMeasure instanceof Utf8 ? (Utf8)this.attrMeasure : null);
+          }
+          break;
+
+        case 7:
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.listValues = null;
+          } else {
+            long size0 = in.readArrayStart();
+            java.util.List<nlmk.l3.ccm.pgp.RecordListValues> a0 = this.listValues;
+            if (a0 == null) {
+              a0 = new SpecificData.Array<nlmk.l3.ccm.pgp.RecordListValues>((int)size0, SCHEMA$.getField("listValues").schema().getTypes().get(1));
+              this.listValues = a0;
+            } else a0.clear();
+            SpecificData.Array<nlmk.l3.ccm.pgp.RecordListValues> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<nlmk.l3.ccm.pgp.RecordListValues>)a0 : null);
+            for ( ; 0 < size0; size0 = in.arrayNext()) {
+              for ( ; size0 != 0; size0--) {
+                nlmk.l3.ccm.pgp.RecordListValues e0 = (ga0 != null ? ga0.peek() : null);
+                if (e0 == null) {
+                  e0 = new nlmk.l3.ccm.pgp.RecordListValues();
+                }
+                e0.customDecode(in);
+                a0.add(e0);
+              }
+            }
           }
           break;
 
