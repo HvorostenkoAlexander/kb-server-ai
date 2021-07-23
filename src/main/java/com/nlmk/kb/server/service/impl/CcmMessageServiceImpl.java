@@ -36,8 +36,9 @@ public class CcmMessageServiceImpl implements CcmMessageService {
                         ccmMessage.getOffset()
                 );
             }
-
-            return Optional.of(storedRequests.get(0));
+            ccmMessage.setId(storedRequests.get(0).getId());
+            //return Optional.of(storedRequests.get(0));
+            return Optional.of(ccmMessage);
         }
 
         ccmMessage = messageRepository.save(ccmMessage);
