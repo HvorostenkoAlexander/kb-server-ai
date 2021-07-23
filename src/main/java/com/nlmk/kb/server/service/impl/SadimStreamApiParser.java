@@ -27,13 +27,18 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
     @Override
     public Optional<PreAttestationParam> getParam(String jsonString) {
-
+        String sadimDate=null;
         val paramBuilder = PreAttestationParam.builder();
 
         try (JsonParser jParser = new JsonFactory().createParser(jsonString);) {
 
             while (jParser.nextToken() != null) {
                 String fieldname = jParser.getCurrentName();
+
+                if ("time_rolling".equals(fieldname)){
+                    jParser.nextToken();
+                    sadimDate = jParser.getText();
+                }
 
                 if ("PRIME_ID".equals(fieldname)) {
                     jParser.nextToken();
@@ -95,6 +100,10 @@ public class SadimStreamApiParser implements SadimJsonParser {
             throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + ioe.getMessage());
         }
         val param = paramBuilder.build();
+
+        if (sadimDate!=null) {
+            log.info("Сведения SADIM с primeId: [{}] от: [{}]",param.getPrimeId(), sadimDate);
+        }
 
         if (param.getPrimeId() != null) {
             return Optional.of(param);
