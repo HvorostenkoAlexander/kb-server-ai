@@ -17,9 +17,9 @@ public class OrderRequest {
     private String attrName;//Наименование характеристики
     private String attrValue;//Значение характеристики
     private Integer attrTypeCode;//Тип данных (1 - строка, 2 - число, 3 - дата)
- //   private Integer attrTypeValue; // Тип значения (1 - простое, 2 - перечисленное)
+    private Integer attrTypeValue; // 1.4.13.5 Тип значения (1 – простое, 2 – перечислимое)
     private String attrFormat;//Формат передачи характеристики
     private String attrMeasure;//единица измерения
- //   private List<String> recordListValue;//Список значений параметра
+    private List<String> listValues;// 1.4.13.8 Список значений параметра
 
 }

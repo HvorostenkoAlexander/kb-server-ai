@@ -159,8 +159,7 @@ public class ValueConverter {
                 .attrCode(recordOrderReq.getAttrCode())
                 .attrName(recordOrderReq.getAttrName().toString())
                 .attrTypeCode(recordOrderReq.getAttrTypeCode())
-                //todo подключить как решится вопрос о размещении com.nlmk.kb.server.entity.pam.AttestationRequest
-                //       .attrTypeValue(recordOrderReq.getAttrTypeValue())
+                .attrTypeValue(recordOrderReq.getAttrTypeValue())
                 .build();
 
         if (recordOrderReq.getAttrValue() != null) {
@@ -175,15 +174,14 @@ public class ValueConverter {
             orderRequest.setAttrMeasure(recordOrderReq.getAttrMeasure().toString());
         }
 
-        //todo подключить как решится вопрос о размещении com.nlmk.kb.server.entity.pam.AttestationRequest
-//        if (recordOrderReq.getListValues() != null) {
-//            orderRequest.setRecordListValue(
-//                    recordOrderReq.getListValues().stream()
-//                            .filter(r -> r != null)
-//                            .map(r -> r.getValue().toString())
-//                            .collect(Collectors.toList())
-//            );
-//        }
+        if (recordOrderReq.getListValues() != null) {
+            orderRequest.setListValues(
+                    recordOrderReq.getListValues().stream()
+                            .filter(r -> r != null)
+                            .map(r -> r.getValue().toString())
+                            .collect(Collectors.toList())
+            );
+        }
         return orderRequest;
     }
 
