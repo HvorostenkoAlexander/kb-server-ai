@@ -36,8 +36,8 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
     public DictionaryConfigDto findById(Long id) {
         return repository.findById(id).map(converter::toDictionaryConfigDto).orElseThrow(
                 () -> new IllegalArgumentException(
-                        String.format("Не найден объект с id: [%s]", id
-                        ))
+                        String.format("Не найден объект с id: [%s]", id)
+                )
         );
     }
 
@@ -49,8 +49,8 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
                                       @Valid DictionaryConfigDto dto) {
         if (!repository.existsById(id)) {
             throw new IllegalArgumentException(
-                    String.format("Не найден объект с id: [%s]", id
-                    ));
+                    String.format("Не найден объект с id: [%s]", id)
+            );
         }
 
         val toSave = converter.toDictionaryConfig(dto);
@@ -64,7 +64,9 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException erdae) {
             log.error(erdae.getMessage());
-            throw new IllegalArgumentException("Не найден объект с id: " + id);
+            throw new IllegalArgumentException(
+                    String.format("Не найден объект с id: [%s]", id)
+            );
         }
     }
 }

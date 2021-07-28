@@ -14,7 +14,7 @@ public interface DictionaryConfigService {
     DictionaryConfigDto findById(Long id);
 
     DictionaryConfigDto update(Long id,
-                               @NotNull @Valid DictionaryConfigDto dto);
+                               @Valid DictionaryConfigDto dto);
 
     void deleteById(long id);
 }

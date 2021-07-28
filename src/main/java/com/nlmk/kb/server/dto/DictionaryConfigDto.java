@@ -17,12 +17,16 @@ import java.util.List;
 public class DictionaryConfigDto {
 
     private Long id;
-    @NotBlank
+
+    @NotBlank(message = "поле не должно быть пустым")
     private String topic;// имя топика;
-    @NotEmpty
+
+    @NotEmpty(message = "поле не должно быть пустым")
     private Integer[] codes;// перечень характеристик(кодов);
-    @NotBlank
+
+    @NotBlank(message = "поле не должно быть пустым")
     private String nsiPath;// точка куда скидывать данные;
-    @NotNull
+
+    @NotNull(message = "поле не должно быть null")
     private Boolean enabled; //активность.
 }

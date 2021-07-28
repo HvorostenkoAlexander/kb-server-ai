@@ -13,8 +13,10 @@ COMMENT ON COLUMN public.dictionary_config.is_enabled IS E'Активность 
 
 create table dictionary_config_codes
 (
-    dictionary_config_id bigserial NOT NULL,
-    codes                integer   NOT NULL
+    id  bigserial NOT NULL,
+    dictionary_config_id bigint NOT NULL,
+    codes                integer   NOT NULL,
+    CONSTRAINT dictionary_config_codes__id__pk PRIMARY KEY (id)
 );
 
 alter table dictionary_config_codes
