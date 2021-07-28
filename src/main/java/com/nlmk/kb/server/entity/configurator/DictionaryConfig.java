@@ -32,7 +32,7 @@ public class DictionaryConfig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "topic")
+    @Column(unique = true, nullable = false, name = "topic")
     private String topic;// имя топика;
 
     @ElementCollection(fetch = FetchType.EAGER)

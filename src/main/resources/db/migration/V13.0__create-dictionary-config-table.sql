@@ -11,6 +11,9 @@ COMMENT ON COLUMN public.dictionary_config.topic IS E'Топик';
 COMMENT ON COLUMN public.dictionary_config.nsi_path IS E'Rest-point nsi-server';
 COMMENT ON COLUMN public.dictionary_config.is_enabled IS E'Активность (вкл/выкл)';
 
+alter table public.dictionary_config
+    add constraint UK_topic unique (topic);
+
 create table dictionary_config_codes
 (
     id  bigserial NOT NULL,

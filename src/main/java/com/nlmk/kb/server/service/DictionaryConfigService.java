@@ -13,6 +13,8 @@ public interface DictionaryConfigService {
 
     DictionaryConfigDto findById(Long id);
 
+    DictionaryConfigDto findByTopic(String topic);
+
     DictionaryConfigDto update(Long id,
                                @Valid DictionaryConfigDto dto);
 
