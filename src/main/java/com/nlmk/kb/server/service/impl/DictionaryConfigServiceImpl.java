@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -41,6 +42,18 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
         );
     }
 
+    @Override
+    public DictionaryConfigDto findByTopic(String topic) {
+        Assert.notNull(topic, "topicName не должно быть null");
+
+        val entity = repository.findByTopic(topic).orElseThrow(
+                () -> new IllegalArgumentException(
+                        String.format("Не найден объект с topic: [%s]", topic)
+                )
+        );
+        return converter.toDictionaryConfigDto(entity);
+    }
+
     //todo совместно решить какой тип  @Transactional использовать.
     // org.springframework.transaction.annotation.Transactional vs javax.transaction.Transactional
     @Override
@@ -60,6 +73,10 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
 
     @Override
     public void deleteById(long id) {
+
+        val entity = repository.findById(id);
+        log.info("--- entity: "+entity);
+
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException erdae) {

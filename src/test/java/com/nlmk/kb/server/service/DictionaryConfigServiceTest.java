@@ -5,10 +5,13 @@ import com.nlmk.kb.server.entity.configurator.DictionaryConfig;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,13 +36,19 @@ public class DictionaryConfigServiceTest {
     @BeforeEach
     void setUp() {
         validEntity = DictionaryConfig.builder()
-
-                .topic("topic")
+                .topic(RandomStringUtils.randomAlphabetic(12))
                 .nsiPath("/dict/path")
-                .codes(List.of(101))
+                .codes(List.of(101, 202, 203))
                 .enabled(true)
                 .build();
         repository.save(validEntity);
+        log.info("START validEntity:{}", validEntity);
+    }
+
+    @AfterEach
+    void tearDown() {
+        repository.deleteById(validEntity.getId());
+        log.info("FINISH");
     }
 
     @Test
@@ -75,8 +84,6 @@ public class DictionaryConfigServiceTest {
                 .codes(new Integer[]{101, 202, 303, 404})
                 .build();
         val actualDto = service.update(validEntity.getId(), dto);
-
-        log.info("---actualDto: [{}]", actualDto);
 
         assertNotNull(actualDto);
         assertEquals(validEntity.getId(), actualDto.getId());
@@ -122,14 +129,22 @@ public class DictionaryConfigServiceTest {
 
     @Test
     void deleteByIdTestOk() {
-        service.deleteById(validEntity.getId());
+        val entity = DictionaryConfig.builder()
+                .topic(RandomStringUtils.randomAlphabetic(12))
+                .nsiPath("/dict/path")
+                .codes(List.of(101))
+                .enabled(true)
+                .build();
+        repository.save(entity);
+
+        service.deleteById(entity.getId());
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.findById(validEntity.getId())
+                () -> service.findById(entity.getId())
         );
 
         assertNotNull(iae);
-        assertEquals("Не найден объект с id: [" + validEntity.getId() + "]", iae.getMessage());
+        assertEquals("Не найден объект с id: [" + entity.getId() + "]", iae.getMessage());
     }
 
     @Test
@@ -140,5 +155,52 @@ public class DictionaryConfigServiceTest {
 
         assertNotNull(iae);
         assertEquals("Не найден объект с id: [" + Long.MAX_VALUE + "]", iae.getMessage());
+    }
+
+    @Test
+    void findByTopicNameOk() {
+        val dto = service.findByTopic(validEntity.getTopic());
+
+        assertNotNull(dto);
+        assertEquals(dto.getId(), validEntity.getId());
+        assertEquals(dto.getTopic(), validEntity.getTopic());
+        assertEquals(dto.getNsiPath(), validEntity.getNsiPath());
+        assertEquals(dto.getEnabled(), validEntity.getEnabled());
+        assertTrue(Arrays.equals(dto.getCodes(), validEntity.getCodes().toArray()));
+    }
+
+    @Test
+    void findByTopicNameNotFound() {
+        val topicName = RandomStringUtils.randomAlphabetic(12);
+
+        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+                () -> service.findByTopic(topicName)
+        );
+        assertNotNull(iae);
+        assertEquals("Не найден объект с topic: [" + topicName + "]", iae.getMessage());
+    }
+
+    @Test
+    void uniqueTopicNameTest(){
+        val entity = DictionaryConfig.builder()
+                .topic("newTopicName")
+                .nsiPath("newNsiPath")
+                .enabled(true)
+                .codes(List.of(444,445,446))
+                .build();
+        repository.save(entity);
+
+        val nonUniqueTopicDto = DictionaryConfigDto.builder()
+                .topic(validEntity.getTopic())
+                .nsiPath(entity.getNsiPath())
+                .enabled(true)
+                .codes(entity.getCodes().toArray(new Integer[0]))
+                .build();
+
+        DataIntegrityViolationException dive = assertThrows(DataIntegrityViolationException.class,
+                () -> service.update(entity.getId(),nonUniqueTopicDto)
+        );
+
+        assertNotNull(dive);
     }
 }
