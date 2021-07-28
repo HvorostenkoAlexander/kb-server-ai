@@ -20,7 +20,9 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
     private final Map<String, PdmMessageCreator> creators;
 
     public PdmMessageConverterImpl(List<PdmMessageCreator> allCreators) {
-        this.creators = allCreators.stream().collect(toMap(PdmMessageCreator::getType, Function.identity()));
+        this.creators = allCreators.stream().collect(
+                toMap(PdmMessageCreator::getType, Function.identity())
+        );
     }
 
     @Override
