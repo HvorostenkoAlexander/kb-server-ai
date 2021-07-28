@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
+import com.nlmk.kb.server.dto.DictionaryConfigDto;
 import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.kb.server.entity.configurator.DictionaryConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,28 +23,61 @@ public class DtoConverterImpl implements DtoConverter {
     private final CommonConverter converter;
 
     @Override
-    public PreAttestationParamDto fromParamToDto(PreAttestationParam param) {
-        Assert.notNull(param,"При конвертации в PreAttestationParamDto param = null.");
+    public PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity) {
+        Assert.notNull(entity,"При конвертации в PreAttestationParamDto param = null.");
 
         val paramDto = PreAttestationParamDto.builder()
-                .id(param.getId())
-                .primeId(param.getPrimeId())
-                .t12Min(param.getT12Min())
-                .t12Max(param.getT12Max())
-                .tcmMin(param.getTcmMin())
-                .tcmMax(param.getTcmMax())
-                .pbi(param.getPbi())
-                .profFact(param.getProfFact())
-                .wedgeFact(param.getWedgeFact())
-                .sqcCritMax(param.getSqcCritMax())
-                .ph1sgp(param.getPh1sgp())
-                .ph12sgp(converter.parsToDouble(param.getPh12sgp()))
-                .ph23sgp(param.getPh23sgp())
-                .estimate(param.getEstimate())
+                .id(entity.getId())
+                .primeId(entity.getPrimeId())
+                .t12Min(entity.getT12Min())
+                .t12Max(entity.getT12Max())
+                .tcmMin(entity.getTcmMin())
+                .tcmMax(entity.getTcmMax())
+                .pbi(entity.getPbi())
+                .profFact(entity.getProfFact())
+                .wedgeFact(entity.getWedgeFact())
+                .sqcCritMax(entity.getSqcCritMax())
+                .ph1sgp(entity.getPh1sgp())
+                .ph12sgp(converter.parsToDouble(entity.getPh12sgp()))
+                .ph23sgp(entity.getPh23sgp())
+                .estimate(entity.getEstimate())
                 .build();
-        if (param.getLclThckng() !=null){
-            paramDto.setLclThckng(param.getLclThckng().toArray(new Double[0]));
+        if (entity.getLclThckng() !=null){
+            paramDto.setLclThckng(entity.getLclThckng().toArray(new Double[0]));
         }
         return paramDto;
+    }
+
+    @Override
+    public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto) {
+        Assert.notNull(dto,"DictionaryConfigDto не должно быть null");
+
+        val entity = DictionaryConfig.builder()
+                .id(dto.getId())
+                .topic(dto.getTopic())
+                .nsiPath(dto.getNsiPath())
+                .enabled(dto.getEnabled())
+                .build();
+        if (dto.getCodes()!=null){
+            entity.setCodes(
+                    Arrays.stream(dto.getCodes()).collect(Collectors.toList())
+            );
+        }
+        return entity;
+    }
+
+    @Override
+    public DictionaryConfigDto toDictionaryConfigDto(DictionaryConfig entity) {
+        Assert.notNull(entity,"DictionaryConfig не должно быть null");
+        val dto = DictionaryConfigDto.builder()
+                .id(entity.getId())
+                .enabled(entity.getEnabled())
+                .nsiPath(entity.getNsiPath())
+                .topic(entity.getTopic())
+                .build();
+        if (entity.getCodes()!=null){
+            dto.setCodes(entity.getCodes().toArray(new Integer[0]));
+        }
+        return dto;
     }
 }

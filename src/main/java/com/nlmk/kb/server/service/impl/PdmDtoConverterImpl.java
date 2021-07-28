@@ -712,14 +712,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
 
-//        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
-//        try {
-//            matchTkDto.setTs(format.parse(dictionary.getTs()));
-//        } catch (ParseException e) {
-//            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
-//            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
-//        }
-
         log.debug("--- PDM MatchTkDto: {} ", matchTkDto);
 
         return matchTkDto;
@@ -739,14 +731,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .rpNumSap(converter.getSpecValue(specs, SpecCode.RP_SAP_NUMBER.getValue()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.RP_NUMBER_VERSION_ROUTE.getValue()))
                 .build();
-
-//        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
-//        try {
-//            matchTkDto.setTs(format.parse(dictionary.getTs()));
-//        } catch (ParseException e) {
-//            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
-//            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
-//        }
 
         log.debug("--- PDM MatchRpDto: {} ", matchTkDto);
         return matchTkDto;

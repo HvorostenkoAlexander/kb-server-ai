@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.entity.pdm;
+package com.nlmk.kb.server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

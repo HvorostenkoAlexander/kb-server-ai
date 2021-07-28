@@ -5,7 +5,7 @@ import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.Pk;
 import com.nlmk.kb.server.entity.pdm.Data;
 import com.nlmk.kb.server.entity.pdm.Spec;
-import com.nlmk.kb.server.entity.pdm.SpecDto;
+import com.nlmk.kb.server.dto.SpecDto;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;

@@ -33,7 +33,7 @@ public class PreAttestationParamServiceImpl implements PreAttestationParamServic
     public List<PreAttestationParamDto> findByPrimeId(String primeId){
         return repository.findByPrimeId(primeId).stream()
                 .map(
-                        param->converter.fromParamToDto(param)
+                        param->converter.toPreAttestationParamDto(param)
                 ).collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class PreAttestationParamServiceImpl implements PreAttestationParamServic
         val messages = sadimMessageService.findByParamPrimeId(primeId);
 
         if (!messages.isEmpty()){
-            return converter.fromParamToDto(
+            return converter.toPreAttestationParamDto(
                     messages.get(0).getParam()
             );
         } else {
