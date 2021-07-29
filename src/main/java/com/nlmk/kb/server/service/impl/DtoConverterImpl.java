@@ -2,8 +2,10 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.DictionaryConfigDto;
+import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.entity.configurator.DictionaryConfig;
+import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +79,27 @@ public class DtoConverterImpl implements DtoConverter {
                 .build();
         if (entity.getCodes()!=null){
             dto.setCodes(entity.getCodes().toArray(new Integer[0]));
+        }
+        return dto;
+    }
+
+    public PdmMessageDto toPdmMessageDto(PdmMessage entity){
+        val dto = PdmMessageDto.builder()
+                .id(entity.getId())
+                .topic(entity.getTopic())
+                .partition(entity.getPartition())
+                .offset(entity.getOffset())
+                .ts(entity.getTs())
+                .key(entity.getKey())
+                .op(entity.getOp())
+                .isPosted(entity.isPosted())
+                .build();
+
+        if (entity.getDictionary()!=null){
+            dto.setDictionary(entity.getDictionary().toString());
+        }
+        if (entity.getKbReceiptTs()!=null){
+            dto.setKbReceiptTs(entity.getKbReceiptTs().toString());
         }
         return dto;
     }

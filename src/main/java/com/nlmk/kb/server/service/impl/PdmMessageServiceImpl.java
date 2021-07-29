@@ -1,10 +1,14 @@
 package com.nlmk.kb.server.service.impl;
 
+import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
+import com.nlmk.kb.server.service.DtoConverter;
 import com.nlmk.kb.server.service.PdmMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -17,14 +21,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PdmMessageServiceImpl implements PdmMessageService {
 
-    private final PdmMessageRepository messageRepository;
+    private final PdmMessageRepository repository;
+    private final DtoConverter dtoConverter;
 
     @Override
     @Transactional
     public Optional<PdmMessage> save(PdmMessage message) {
         Assert.notNull(message, "PdmMessage for saving is null.");
 
-        if (messageRepository.existsByTopicAndOffsetAndPartition(
+        if (repository.existsByTopicAndOffsetAndPartition(
                 message.getTopic(), message.getOffset(), message.getPartition())) {
             log.info("The message from " +
                             "topic: [{}], " +
@@ -36,7 +41,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
                     message.getOffset(),
                     message.getKey());
 
-            List<PdmMessage> storedMessages = messageRepository.findByTopicAndOffsetAndPartition(
+            List<PdmMessage> storedMessages = repository.findByTopicAndOffsetAndPartition(
                     message.getTopic(),
                     message.getOffset(),
                     message.getPartition()
@@ -55,7 +60,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
             return Optional.of(storedMessages.get(0));
         }
 
-        messageRepository.save(message);
+        repository.save(message);
 
         log.info("Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
                 message.getPartition(),
@@ -70,6 +75,14 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     public Optional<PdmMessage> update(PdmMessage message) {
         Assert.notNull(message, "PdmMessage for update is null.");
 
-        return Optional.of(messageRepository.save(message));
+        return Optional.of(repository.save(message));
+    }
+
+    @Override
+    public Page<PdmMessageDto> getMessages(String topic, Boolean isPosted, PageRequest of) {
+        Assert.notNull(topic, "Название топика не должно быть null");
+        Assert.notNull(of, "PageRequest не должен быть null");
+
+        return repository.getMessages(topic, isPosted,of).map(dtoConverter::toPdmMessageDto);
     }
 }

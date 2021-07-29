@@ -90,7 +90,9 @@ public class PdmConverterTest {
                         SpMicrostructure.class
                 );
 
-        PdmDictionary pdmDictionary = PdmConverter.fromSpMicrostructure(micro);
+        PdmDictionary pdmDictionary = pdmDictionaryCreator.createPdmDictionary(
+                micro.getTs(),micro.getOp(),micro.getPk(),micro.getData()
+        );
 
         assertNotNull(pdmDictionary);
     }
@@ -104,8 +106,9 @@ public class PdmConverterTest {
                         SpAsapChemicalProperties.class
                 );
 
-        PdmDictionary pdmDictionary = PdmConverter.fromSpAsapChemicalProperties(chP);
-
+        PdmDictionary pdmDictionary = pdmDictionaryCreator.createPdmDictionary(
+                chP.getTs(),chP.getOp(),chP.getPk(),chP.getData()
+        );
         assertNotNull(pdmDictionary);
     }
 

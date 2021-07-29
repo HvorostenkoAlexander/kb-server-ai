@@ -1,11 +1,15 @@
 package com.nlmk.kb.server.dto;
 
+import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -21,14 +25,8 @@ public class PdmMessageDto {
     private String key;
     private String ts;
     private String op;
-    private String pk_Id;
-    private String pk_systemCode;
-    private String pk_directoryId;
-    @Builder.Default
-    private List<SpecDto> specifications = new ArrayList<>();
-
-    public void addSpec(SpecDto spec) {
-        if (spec != null)
-            this.getSpecifications().add(spec);
-    }
+    private boolean isPosted;
+    private String dictionary;
+    private String kbReceiptTs;
+    private String note;
 }

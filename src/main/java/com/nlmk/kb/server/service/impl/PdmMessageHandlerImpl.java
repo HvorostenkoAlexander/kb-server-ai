@@ -42,10 +42,10 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
         if (savedMessage.isPresent()) {
             message = savedMessage.get();
 
-            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
-            setStatusMessage(message, response.getStatusCode());
-
-            messageService.update(message);
+//            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
+//            setStatusMessage(message, response.getStatusCode());
+//
+//            messageService.update(message);
             return true;
         } else {
             throw new RuntimeException(

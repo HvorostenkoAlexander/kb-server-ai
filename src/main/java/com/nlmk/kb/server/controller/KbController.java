@@ -1,8 +1,11 @@
 package com.nlmk.kb.server.controller;
 
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
+import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.repository.PdmMessageRepository;
 import com.nlmk.kb.server.service.CcmMessageService;
+import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.service.PreAttestationParamService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +34,9 @@ import java.util.List;
 public class KbController {
 
     private final PreAttestationParamService paramService;
-    private final CcmMessageService messageSerivce;
+    private final CcmMessageService ccmMessageService;
+    private final PdmMessageService pdmMessageService;
+    private final PdmMessageRepository pdmMessageRepository;
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -50,14 +55,24 @@ public class KbController {
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber", required = true) int page,
                                                            @RequestParam(value = "pageSize", required = true) int size) {
-        return messageSerivce.findAll(PageRequest.of(page, size));
+        return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
     @GetMapping("/attestation_request/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public List<CcmAttestationRequestMessage> getByPrimeId(@PathVariable String primeId) {
 
-        return messageSerivce.findByPrimeId(primeId);
+        return ccmMessageService.findByPrimeId(primeId);
     }
 
+    @GetMapping("/pdm_messages")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public Page<PdmMessageDto> getTopicMessages(@RequestParam(value = "pageNumber", defaultValue = "0") int page,
+                                                @RequestParam(value = "pageSize",defaultValue = "20") int size,
+                                                @RequestParam(value = "topic") String topic,
+                                                @RequestParam(value = "posted", required = false) Boolean isPosted) {
+        log.info("kb, getTopicMessages: topic: [{}], posted: [{}]", topic, isPosted);
+
+        return pdmMessageService.getMessages(topic, isPosted, PageRequest.of(page, size));
+    }
 }
