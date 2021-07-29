@@ -55,6 +55,7 @@ public class DictionaryConfigController {
     }
 
     @PutMapping("/configuration/{id}")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public DictionaryConfigDto updateDictionaryConfigDto(@PathVariable Long id,
                                                          @RequestBody @Valid DictionaryConfigDto dto) {
         log.info("kb, updateDictionaryConfigDto, by id [{}], [{}]", id, dto);
