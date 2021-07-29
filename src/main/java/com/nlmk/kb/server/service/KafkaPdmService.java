@@ -1,21 +1,16 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.service.impl.PdmMessageHandlerImpl;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,9 +20,7 @@ public class KafkaPdmService {
     @Value("${kafka.ack.nack.sleep-time}")
     private long sleepTime;
 
-    private final PdmMessageConverter messageConverter;
-    private final PdmMessageService messageService;
-    private final NsiClientService nsiClientService;
+    private final PdmMessageHandlerImpl pdmMessageHandler;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topics = {
@@ -61,30 +54,11 @@ public class KafkaPdmService {
         );
 
         try {
-            PdmMessage message = messageConverter.fromConsumerRecord(request);
-
-            Optional<PdmMessage> savedMessage = messageService.save(message);
-
-            if (savedMessage.isPresent()) {
-                message = savedMessage.get();
-                ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
-
-                if (response.getStatusCode() == HttpStatus.ACCEPTED ||
-                        response.getStatusCode() == HttpStatus.NOT_FOUND ||
-                        response.getStatusCode() == HttpStatus.OK) {
-                    message.setPosted(true);
-                    message.setKbReceiptTs(new Date());
-                    message.setNote(response.getStatusCode().toString());
-                    messageService.update(message);
-                } else {
-                    message.setPosted(false);
-                    message.setKbReceiptTs(new Date());
-                    message.setNote(response.getStatusCode().toString());
-                    messageService.update(message);
-                    //todo нужно создать отдельную сущность для сохранения сведений об ошибках
-                }
+            if (pdmMessageHandler.handleConsumerRecord(request)) {
+                ack.acknowledge();
+            } else {
+                ack.nack(sleepTime);
             }
-            ack.acknowledge();
         } catch (DateTimeParseException ddpe) {
             ack.acknowledge();
             throw new DateTimeParseException("переброс: " + ddpe);

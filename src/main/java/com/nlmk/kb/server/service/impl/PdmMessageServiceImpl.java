@@ -6,8 +6,8 @@ import com.nlmk.kb.server.service.PdmMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +20,13 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     private final PdmMessageRepository messageRepository;
 
     @Override
+    @Transactional
     public Optional<PdmMessage> save(PdmMessage message) {
         Assert.notNull(message, "PdmMessage for saving is null.");
 
         if (messageRepository.existsByTopicAndOffsetAndPartition(
                 message.getTopic(), message.getOffset(), message.getPartition())) {
-            log.debug("--- the message from " +
+            log.info("The message from " +
                             "topic: [{}], " +
                             "partition: [{}], " +
                             "offset: [{}] is already present in the database. " +
@@ -35,10 +36,14 @@ public class PdmMessageServiceImpl implements PdmMessageService {
                     message.getOffset(),
                     message.getKey());
 
-            List<PdmMessage> storedMessages = messageRepository.findByTopicAndOffsetAndPartition(message.getTopic(), message.getOffset(), message.getPartition());
+            List<PdmMessage> storedMessages = messageRepository.findByTopicAndOffsetAndPartition(
+                    message.getTopic(),
+                    message.getOffset(),
+                    message.getPartition()
+            );
 
             if (storedMessages.size() > 1) {
-                log.warn("--- ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками" +
+                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками" +
                                 " topic: {}," +
                                 " partition: {}," +
                                 " offset: {}",
@@ -52,7 +57,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         messageRepository.save(message);
 
-        log.debug("--- Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
+        log.info("Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
                 message.getPartition(),
                 message.getOffset(),
                 message.getTopic(),

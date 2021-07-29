@@ -19,4 +19,6 @@ public interface DictionaryConfigService {
                                @Valid DictionaryConfigDto dto);
 
     void deleteById(long id);
+
+    String getDictionaryUrlByTopic(String topic);
 }
