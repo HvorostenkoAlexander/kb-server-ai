@@ -13,8 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -81,12 +85,57 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     @Override
     public Page<PdmMessageDto> getMessages(String topic,
                                            Boolean isPosted,
-                                           String startDate,
-                                           String endDate,
+                                           Date startDate,
+                                           Date endDate,
                                            PageRequest of) {
         Assert.notNull(topic, "Название топика не должно быть null");
         Assert.notNull(of, "PageRequest не должен быть null");
 
-        return repository.getMessages(topic, isPosted,of).map(dtoConverter::toPdmMessageDto);
+        return repository.getMessages(
+                topic,
+                isPosted,
+                toStringByPattern(startDate, "yyyy-MM-dd"),
+                toStringByPattern(endDate, "yyyy-MM-dd"),
+                of
+        ).map(dtoConverter::toPdmMessageDto);
+    }
+
+    @Override
+    public List<PdmMessageDto> getMessagesByOffset(String topic, Integer partition, Long offset) {
+        Assert.notNull(topic, "topic не должен быть null");
+        Assert.notNull(topic, "partition не должен быть null");
+        Assert.notNull(topic, "offset не должен быть null");
+
+        return repository.findByTopicAndOffsetAndPartition(topic, offset, partition)
+                .stream().map(dtoConverter::toPdmMessageDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public PdmMessageDto getMessageById(Long id) {
+        Assert.notNull(id, "id не должен быть null");
+
+        return repository.findById(id).map(dtoConverter::toPdmMessageDto).orElseThrow(
+                () -> new IllegalArgumentException(
+                        String.format("Не найден объект с id: [%s]", id)
+                )
+        );
+    }
+
+    @Override
+    public Long deleteMessageById(Long id) {
+        Assert.notNull(id, "id не должен быть null");
+        repository.deleteById(id);
+
+        return id;
+    }
+
+    private String toStringByPattern(Date date, String pattern) {
+        if (date == null) {
+            return null;
+        }
+        DateFormat df = new SimpleDateFormat(pattern);
+        String s = df.format(date);
+        log.info("--- date :" + s);
+        return s;
     }
 }

@@ -3,7 +3,6 @@ package com.nlmk.kb.server.controller;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
-import com.nlmk.kb.server.repository.PdmMessageRepository;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.service.PreAttestationParamService;
@@ -15,14 +14,17 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -64,19 +66,53 @@ public class KbController {
         return ccmMessageService.findByPrimeId(primeId);
     }
 
-    @GetMapping("/pdm_messages")
+    @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public Page<PdmMessageDto> getTopicMessages(@RequestParam(value = "pageNumber", defaultValue = "0") int page,
-                                                @RequestParam(value = "pageSize", defaultValue = "20") int size,
-                                                @RequestParam(value = "topic") String topic,
-                                                @RequestParam(value = "posted", required = false) Boolean isPosted,
-                                                @RequestParam(value = "startDate", required = false,
-                                                        defaultValue = "1970-01-01") String startDate,
-                                                @RequestParam(value = "endDate", required = false,
-                                                        defaultValue = "2200-01-01") String endDate) {
-        log.info("kb, getTopicMessages: topic: [{}], posted: [{}], startDate: [{}], endDate: [{}]",
+    public Page<PdmMessageDto> getPdmTopicMessages(
+            @RequestParam(value = "pageNumber", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "20") int size,
+            @RequestParam(value = "topic") String topic,
+            @RequestParam(value = "posted", required = false) Boolean isPosted,
+            @RequestParam(value = "dstart", required = false, defaultValue = "1970-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "dend", required = false, defaultValue = "2200-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+
+        log.info("kb, getPdmTopicMessages: topic: [{}], posted: [{}], startDate: [{}], endDate: [{}]",
                 topic, isPosted, startDate, endDate);
 
-        return pdmMessageService.getMessages(topic, isPosted, startDate ,endDate , PageRequest.of(page, size));
+        return pdmMessageService.getMessages(topic,
+                isPosted,
+                startDate,
+                endDate,
+                PageRequest.of(page, size)
+        );
+    }
+
+    @GetMapping("/pdm_message/by_topic")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public List<PdmMessageDto> getPdmTopicMessagesByOffset(@RequestParam(value = "topic") String topic,
+                                                         @RequestParam(value = "partition") Integer partition,
+                                                         @RequestParam(value = "offset") Long offset){
+        log.info("kb, getPdmTopicMessagesByOffset: topic: [{}], partition: [{}], offset: [{}]",
+                topic, partition, offset);
+
+        return pdmMessageService.getMessagesByOffset(topic,partition,offset);
+    }
+
+    @GetMapping("/pdm_message/{id}")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public PdmMessageDto getPdmMessageById(@PathVariable Long id){
+        log.info("kb, getPdmMessageById: id: [{}]",id);
+
+        return pdmMessageService.getMessageById(id);
+    }
+
+    @DeleteMapping("/pdm_message/{id}")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public Long deletePdmMessageById(@PathVariable Long id){
+        log.info("kb, deletePdmMessageById: id: [{}]",id);
+
+        return pdmMessageService.deleteMessageById(id);
     }
 }
