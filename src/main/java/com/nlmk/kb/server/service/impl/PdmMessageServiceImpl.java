@@ -79,7 +79,11 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     @Override
-    public Page<PdmMessageDto> getMessages(String topic, Boolean isPosted, PageRequest of) {
+    public Page<PdmMessageDto> getMessages(String topic,
+                                           Boolean isPosted,
+                                           String startDate,
+                                           String endDate,
+                                           PageRequest of) {
         Assert.notNull(topic, "Название топика не должно быть null");
         Assert.notNull(of, "PageRequest не должен быть null");
 

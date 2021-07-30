@@ -24,7 +24,7 @@ public class NsiClientServiceImpl implements NsiClientService {
     }
 
     @Override
-    public ResponseEntity<Long> sendPdmDictionary(PdmMessage message) {
+    public ResponseEntity<Long> sendPdmMessage(PdmMessage message) {
 
         MessageSender sender = senders.get(message.getTopic());
 

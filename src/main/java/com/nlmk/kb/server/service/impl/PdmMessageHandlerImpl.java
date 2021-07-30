@@ -36,16 +36,10 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
         }
 
         PdmMessage message = messageConverter.fromConsumerRecord(record);
-
         Optional<PdmMessage> savedMessage = messageService.save(message);
 
         if (savedMessage.isPresent()) {
-            message = savedMessage.get();
-
-//            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
-//            setStatusMessage(message, response.getStatusCode());
-//
-//            messageService.update(message);
+         //   sendToNsi(savedMessage.get());
             return true;
         } else {
             throw new RuntimeException(
@@ -70,5 +64,12 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
             message.setKbReceiptTs(new Date());
             message.setNote(status.toString());
         }
+    }
+
+    private void sendToNsi(PdmMessage message) {
+        ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
+        setStatusMessage(message, response.getStatusCode());
+
+        messageService.update(message);
     }
 }

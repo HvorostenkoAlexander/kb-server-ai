@@ -10,5 +10,5 @@ public interface NsiClientService {
      * @param message из БД kb-server
      */
 
-    public ResponseEntity<Long> sendPdmDictionary(PdmMessage message);
+    public ResponseEntity<Long> sendPdmMessage(PdmMessage message);
 }

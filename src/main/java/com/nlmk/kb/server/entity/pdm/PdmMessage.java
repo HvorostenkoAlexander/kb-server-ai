@@ -50,8 +50,8 @@ public class PdmMessage {
             nullable = false)
     private String key;
 
-    @Column(nullable = false)
-    private String ts;
+    @Column(name = "ts_timestamp", nullable = false)
+    private Date ts;
 
     @Column(nullable = false)
     private String op;

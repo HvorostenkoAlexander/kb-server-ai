@@ -51,7 +51,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                // .ts(parseToDate(dictionary.getTs())) //todo заменить как решиться вопрос с датой в топиках на стророне НЛМК
+                .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
                 .prStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))
                 .c(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_C.getValue())))
@@ -85,13 +85,13 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
 
-        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
-        try {
-            chemicalStdLimitDto.setTs(format.parse(dictionary.getTs()));
-        } catch (ParseException e) {
-            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
-            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
-        }
+//        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
+//        try {
+//            chemicalStdLimitDto.setTs(format.parse(dictionary.getTs()));
+//        } catch (ParseException e) {
+//            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
+//            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
+//        }
 
         log.debug("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
 
@@ -107,7 +107,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val katSteel4041Dto = SteelCategoryG4041Dto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
                 .prThickUncoata(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .category(converter.getSpecValue(specs, SpecCode.CATEGORY_GOST_4041.getValue()))
@@ -124,7 +124,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val thicknessTkLimitDto = ThicknessTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .routeShop(converter.getSpecValue(specs, SpecCode.ROUTE_SHOP.getValue()))
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
@@ -152,7 +152,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val widthTkLimitDto = WidthTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
                 .prStandSteel(converter.getSpecValue(specs, SpecCode.MARK_STANDARD.getValue()))
@@ -185,7 +185,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val lengthTkLimitDto = LengthTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
                 .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.LENGTH_PRODUCT.getValue())))
@@ -212,7 +212,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val physMechPropertiesDto = PhysMechPropertiesDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .pr_category(converter.getSpecValue(specs, SpecCode.CATEGORY_OF_MARK.getValue()))
                 .pr_prod_mark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
                 .pr_stand_mark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))
@@ -340,7 +340,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val evennessTkLimitDto = EvennessTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
                 .prWidthGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.WHIDTH_PRODUCT.getValue())))
                 .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
@@ -368,7 +368,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val tkNumDto = TkNumDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 .tkPurp(converter.getSpecValue(specs, SpecCode.TARGET.getValue()))
                 .dateStart(this.getDocDate(specs, SpecCode.START_DATE.getValue()))
@@ -396,7 +396,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val ceqDto = CEqDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .ceqNum(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
                 .ceqFormula(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
@@ -413,7 +413,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val mechanicalDto = MechanicalTkDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 //.tk_group(converter.getSpecValue(specs, SpecCode..getValue()))
                 .tk_num(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 //.tk_purp(converter.getSpecValue(specs, SpecCode..getValue()))
@@ -551,7 +551,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val chemicalDto = ChemicalTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .prior(converter.parsToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
                 //.chemSrc(converter.getSpecValue(specs, SpecCode..getValue()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
@@ -635,7 +635,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val microstructureDto = MicrostructureDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 .tkRoute(converter.getSpecValue(specs, SpecCode.ROUTE_TK.getValue()))
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
@@ -674,7 +674,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         ChemicalEquivalentStdDto chemicalEquivalentStdDto = ChemicalEquivalentStdDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
                 .prStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))
                 .prThickUncoat(converter.stringToLimit(
@@ -706,7 +706,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         MatchTkDto matchTkDto = MatchTkDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 .tkNumSap(converter.getSpecValue(specs, SpecCode.TK_SAP_NUMBER.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
@@ -727,7 +727,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         MatchRpDto matchTkDto = MatchRpDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .rpNumSap(converter.getSpecValue(specs, SpecCode.RP_SAP_NUMBER.getValue()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.RP_NUMBER_VERSION_ROUTE.getValue()))
                 .build();
@@ -746,7 +746,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val pcmDto = PcmDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .pcmNum(converter.getSpecValue(specs, SpecCode.CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER.getValue()))
                 .pcmFormula(converter.getSpecValue(specs, SpecCode.CRACK_RESISTANCE_FORMULA.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
@@ -766,7 +766,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val toleranceDto = ToleranceDto.builder()
                 .remote_id(dictionary.getPk().getId())
-                .ts(converter.parseToDate(dictionary.getTs()))
+                .ts(dictionary.getTs())
                 .prStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))
                 .useStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD_ADDITIONAL.getValue()))
                 .standTolThick(converter.getSpecValue(specs, SpecCode.THICKNESS_TOLERANCE_STANDART.getValue()))

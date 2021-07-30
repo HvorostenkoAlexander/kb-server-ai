@@ -36,7 +36,6 @@ public class KbController {
     private final PreAttestationParamService paramService;
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
-    private final PdmMessageRepository pdmMessageRepository;
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -68,11 +67,16 @@ public class KbController {
     @GetMapping("/pdm_messages")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public Page<PdmMessageDto> getTopicMessages(@RequestParam(value = "pageNumber", defaultValue = "0") int page,
-                                                @RequestParam(value = "pageSize",defaultValue = "20") int size,
+                                                @RequestParam(value = "pageSize", defaultValue = "20") int size,
                                                 @RequestParam(value = "topic") String topic,
-                                                @RequestParam(value = "posted", required = false) Boolean isPosted) {
-        log.info("kb, getTopicMessages: topic: [{}], posted: [{}]", topic, isPosted);
+                                                @RequestParam(value = "posted", required = false) Boolean isPosted,
+                                                @RequestParam(value = "startDate", required = false,
+                                                        defaultValue = "1970-01-01") String startDate,
+                                                @RequestParam(value = "endDate", required = false,
+                                                        defaultValue = "2200-01-01") String endDate) {
+        log.info("kb, getTopicMessages: topic: [{}], posted: [{}], startDate: [{}], endDate: [{}]",
+                topic, isPosted, startDate, endDate);
 
-        return pdmMessageService.getMessages(topic, isPosted, PageRequest.of(page, size));
+        return pdmMessageService.getMessages(topic, isPosted, startDate ,endDate , PageRequest.of(page, size));
     }
 }

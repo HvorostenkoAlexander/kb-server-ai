@@ -20,7 +20,7 @@ public class KafkaPdmService {
     @Value("${kafka.ack.nack.sleep-time}")
     private long sleepTime;
 
-    private final PdmMessageHandlerImpl pdmMessageHandler;
+    private final PdmMessageHandler pdmMessageHandler;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topics = {

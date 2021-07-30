@@ -2,7 +2,9 @@ package com.nlmk.kb.server.service.impl.creators;
 
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.Spec;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.PdmDictionaryCreator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import nlmk.l3.pdm.Data;
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PdmDictionaryCreatorImpl implements PdmDictionaryCreator {
+
+    private final CommonConverter commonConverter;
 
     @Override
     public PdmDictionary createPdmDictionary(CharSequence ts,
@@ -28,7 +33,9 @@ public class PdmDictionaryCreatorImpl implements PdmDictionaryCreator {
                         fromData(data)
                 );
         if (ts != null) {
-            pdmDictionaryBuilder.ts(ts.toString());
+            pdmDictionaryBuilder.ts(
+                    commonConverter.parseToDate(ts.toString())
+            );
         }
         return pdmDictionaryBuilder.build();
     }

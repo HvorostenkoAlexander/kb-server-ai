@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Builder
 @lombok.Data
@@ -14,8 +15,8 @@ public class PdmDictionary implements Serializable {
 
     private static final long serialVersionUID = -5120760425855505772L;
 
-    private String ts;
+    private Date ts;
     private String op;
     private Pk pk;
-    private Data data;
+    private com.nlmk.kb.server.entity.pdm.Data data;
 }

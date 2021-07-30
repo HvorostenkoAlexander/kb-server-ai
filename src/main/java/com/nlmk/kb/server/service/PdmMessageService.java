@@ -12,5 +12,9 @@ public interface PdmMessageService {
 
     public Optional<PdmMessage> update(PdmMessage message);
 
-    Page<PdmMessageDto> getMessages(String topic, Boolean isPosted, PageRequest of);
+    Page<PdmMessageDto> getMessages(String topic,
+                                    Boolean isPosted,
+                                    String startDate,
+                                    String endDate,
+                                    PageRequest of);
 }

@@ -26,7 +26,7 @@ public class DtoConverterImpl implements DtoConverter {
 
     @Override
     public PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity) {
-        Assert.notNull(entity,"При конвертации в PreAttestationParamDto param = null.");
+        Assert.notNull(entity, "При конвертации в PreAttestationParamDto param = null.");
 
         val paramDto = PreAttestationParamDto.builder()
                 .id(entity.getId())
@@ -44,7 +44,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .ph23sgp(entity.getPh23sgp())
                 .estimate(entity.getEstimate())
                 .build();
-        if (entity.getLclThckng() !=null){
+        if (entity.getLclThckng() != null) {
             paramDto.setLclThckng(entity.getLclThckng().toArray(new Double[0]));
         }
         return paramDto;
@@ -52,7 +52,7 @@ public class DtoConverterImpl implements DtoConverter {
 
     @Override
     public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto) {
-        Assert.notNull(dto,"DictionaryConfigDto не должно быть null");
+        Assert.notNull(dto, "DictionaryConfigDto не должно быть null");
 
         val entity = DictionaryConfig.builder()
                 .id(dto.getId())
@@ -60,7 +60,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .nsiPath(dto.getNsiPath())
                 .enabled(dto.getEnabled())
                 .build();
-        if (dto.getCodes()!=null){
+        if (dto.getCodes() != null) {
             entity.setCodes(
                     Arrays.stream(dto.getCodes()).collect(Collectors.toList())
             );
@@ -70,35 +70,37 @@ public class DtoConverterImpl implements DtoConverter {
 
     @Override
     public DictionaryConfigDto toDictionaryConfigDto(DictionaryConfig entity) {
-        Assert.notNull(entity,"DictionaryConfig не должно быть null");
+        Assert.notNull(entity, "DictionaryConfig не должно быть null");
         val dto = DictionaryConfigDto.builder()
                 .id(entity.getId())
                 .enabled(entity.getEnabled())
                 .nsiPath(entity.getNsiPath())
                 .topic(entity.getTopic())
                 .build();
-        if (entity.getCodes()!=null){
+        if (entity.getCodes() != null) {
             dto.setCodes(entity.getCodes().toArray(new Integer[0]));
         }
         return dto;
     }
 
-    public PdmMessageDto toPdmMessageDto(PdmMessage entity){
+    public PdmMessageDto toPdmMessageDto(PdmMessage entity) {
         val dto = PdmMessageDto.builder()
                 .id(entity.getId())
                 .topic(entity.getTopic())
                 .partition(entity.getPartition())
                 .offset(entity.getOffset())
-                .ts(entity.getTs())
                 .key(entity.getKey())
                 .op(entity.getOp())
                 .isPosted(entity.isPosted())
                 .build();
 
-        if (entity.getDictionary()!=null){
+        if (entity.getTs() != null) {
+            dto.setTs(entity.getTs().toString());
+        }
+        if (entity.getDictionary() != null) {
             dto.setDictionary(entity.getDictionary().toString());
         }
-        if (entity.getKbReceiptTs()!=null){
+        if (entity.getKbReceiptTs() != null) {
             dto.setKbReceiptTs(entity.getKbReceiptTs().toString());
         }
         return dto;
