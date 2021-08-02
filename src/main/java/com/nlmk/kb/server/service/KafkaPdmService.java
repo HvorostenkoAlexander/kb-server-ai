@@ -26,7 +26,7 @@ public class KafkaPdmService {
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topics = {
-//                    "${kafka.pdm.topic.microstructure}",
+                    "${kafka.pdm.topic.microstructure}",
                     "${kafka.pdm.topic.asap-chemical-properties}",
                     "${kafka.pdm.topic.equivalents}",
                     "${kafka.pdm.topic.match-tk-num}",
@@ -47,19 +47,6 @@ public class KafkaPdmService {
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord request, Acknowledgment ack) {
-        messageHendler(request, ack);
-    }
-
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
-            topicPartitions = {
-                    @TopicPartition(topic = "${kafka.pdm.topic.microstructure}",
-                            partitionOffsets = @PartitionOffset(partition = "0,1", initialOffset = "0"))})
-    @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessage1(@Payload ConsumerRecord request, Acknowledgment ack) {
-        messageHendler(request, ack);
-    }
-
-    private void messageHendler(@Payload ConsumerRecord request, Acknowledgment ack) {
         log.info("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),
