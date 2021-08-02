@@ -48,26 +48,22 @@ public class MicrostructureMessageSender extends BaseSender implements MessageSe
     }
 
     @Override
-    public String getType() {
-        return super.getType();
-    }
-
-    @Override
     public PdmMessage createPdmMessage(ConsumerRecord record) {
-        val message = new PdmMessage();
-        message.setTopic(record.topic());
-        message.setKey((String) record.key());
-        message.setOffset(record.offset());
-        message.setPartition(record.partition());
-
         val pdmObject = (SpMicrostructure) record.value();
 
         val dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
-        message.setDictionary(dictionary);
-        message.setOp(dictionary.getOp());
-        message.setTs(dictionary.getTs());
+
+        val message = PdmMessage.builder()
+                .topic(record.topic())
+                .key((String) record.key())
+                .offset(record.offset())
+                .partition(record.partition())
+                .dictionary(dictionary)
+                .op(dictionary.getOp())
+                .ts(dictionary.getTs())
+                .build();
 
         return message;
     }

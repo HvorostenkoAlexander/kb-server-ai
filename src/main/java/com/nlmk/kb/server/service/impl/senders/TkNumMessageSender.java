@@ -1,9 +1,8 @@
 package com.nlmk.kb.server.service.impl.senders;
 
-import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.config.KbConstants;
-import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
+import com.nlmk.kb.server.service.DictionaryConfigService;
 import com.nlmk.kb.server.service.MessageSender;
 import com.nlmk.kb.server.service.NsiCommonSender;
 import com.nlmk.kb.server.service.PdmDictionaryCreator;
@@ -17,31 +16,20 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class TkNumMessageSender implements MessageSender, PdmMessageCreator {
+public class TkNumMessageSender extends BaseSender implements MessageSender, PdmMessageCreator {
 
-    private final String url_dictionary;
-    private final String type;
-    private final PdmDtoConverter pdmDtoConverter;
-    private final NsiCommonSender commonSender;
-    private final PdmDictionaryCreator pdmDictionaryCreator;
-
-    public TkNumMessageSender(@Value("${nsi.url.tk-num}") String url_dictionary,
-                              @Value("${kafka.pdm.topic.tk-num}") String topicName,
-                              PdmDtoConverter pdmDtoConverter,
+    public TkNumMessageSender(@Value("${kafka.pdm.topic.tk-num}") String type,
                               NsiCommonSender commonSender,
-                              PdmDictionaryCreator pdmDictionaryCreator) {
-        this.url_dictionary = url_dictionary;
-        this.type = topicName;
-        this.pdmDtoConverter = pdmDtoConverter;
-        this.commonSender = commonSender;
-        this.pdmDictionaryCreator = pdmDictionaryCreator;
+                              PdmDtoConverter pdmDtoConverter,
+                              PdmDictionaryCreator pdmDictionaryCreator,
+                              DictionaryConfigService dictionaryConfigService) {
+        super(type, pdmDtoConverter, commonSender, pdmDictionaryCreator, dictionaryConfigService);
     }
 
     @Override
@@ -50,35 +38,32 @@ public class TkNumMessageSender implements MessageSender, PdmMessageCreator {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = pdmDtoConverter.toTkNumDto(message.getDictionary());
+        val sendingDto = super.getPdmDtoConverter().toTkNumDto(message.getDictionary());
 
-        HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
-        HttpEntity<TkNumDto> request = new HttpEntity<>(sendingDto, headers);
+        val headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
+        val request = new HttpEntity<>(sendingDto, headers);
+        val nsiUrl = getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic());
 
-        return commonSender.exchange(request, url_dictionary, message.getOp());
-    }
-
-    @Override
-    public String getType() {
-        return this.type;
+        return super.getCommonSender().exchange(request, nsiUrl, message.getOp());
     }
 
     @Override
     public PdmMessage createPdmMessage(ConsumerRecord record) {
-        PdmMessage message = new PdmMessage();
-        message.setTopic(record.topic());
-        message.setKey((String) record.key());
-        message.setOffset(record.offset());
-        message.setPartition(record.partition());
-
         SpTkNum pdmObject = (SpTkNum) record.value();
 
-        PdmDictionary dictionary = pdmDictionaryCreator.createPdmDictionary(
+        val dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
-        message.setDictionary(dictionary);
-        message.setOp(dictionary.getOp());
-        message.setTs(dictionary.getTs());
+
+        val message = PdmMessage.builder()
+                .topic(record.topic())
+                .key((String) record.key())
+                .offset(record.offset())
+                .partition(record.partition())
+                .dictionary(dictionary)
+                .op(dictionary.getOp())
+                .ts(dictionary.getTs())
+                .build();
 
         return message;
     }
