@@ -28,7 +28,7 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
 
     @Override
     public boolean handleConsumerRecord(final ConsumerRecord record) {
-        log.debug("handleConsumerRecord: [{}]", record);
+        log.info("handleConsumerRecord: [{}]", record);
 
         if (isTopicDisabled(record.topic())) {
             log.warn("handleConsumerRecord: topic: [{}] is DISABLED", record.topic());
@@ -42,10 +42,10 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
         if (savedMessage.isPresent()) {
             message = savedMessage.get();
 
-//            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
-//            setStatusMessage(message, response.getStatusCode());
-//
-//            messageService.update(message);
+            ResponseEntity<Long> response = nsiClientService.sendPdmDictionary(message);
+            setStatusMessage(message, response.getStatusCode());
+
+            messageService.update(message);
             return true;
         } else {
             throw new RuntimeException(
