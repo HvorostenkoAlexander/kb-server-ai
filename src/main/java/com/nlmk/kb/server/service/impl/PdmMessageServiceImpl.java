@@ -82,6 +82,8 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> update(PdmMessage message) {
+        log.info("update PdmMessage: [{}]",message);
+
         Assert.notNull(message, "PdmMessage for update is null.");
 
         return Optional.of(repository.save(message));
@@ -161,11 +163,13 @@ public class PdmMessageServiceImpl implements PdmMessageService {
         }
         DateFormat df = new SimpleDateFormat(pattern);
         String s = df.format(date);
-        log.info("--- date :" + s);
+        log.debug("toStringByPattern; date :" + s);
         return s;
     }
 
     private void setStatusMessage(PdmMessage message, HttpStatus status) {
+        log.info("setStatusMessage; PdmMessage:[{}], HttpStatus: [{}]",message, status.toString());
+
         if (status == HttpStatus.ACCEPTED ||
                 status == HttpStatus.NOT_FOUND ||
                 status == HttpStatus.OK) {
