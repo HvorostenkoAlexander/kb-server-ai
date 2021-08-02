@@ -29,11 +29,11 @@ public class KafkaSadimService {
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
                                   Acknowledgment ack) {
 
-        log.info("SADIM message with offset: {};", consumerRecord.offset());
+        log.debug("SADIM message with offset: {};", consumerRecord.offset());
 
         try {
             val sadimMessage = messageService.saveMessage(consumerRecord);
-            log.info("saved SADIM massage: {}", sadimMessage);
+            log.debug("saved SADIM massage: {}", sadimMessage);
             ack.acknowledge();
 
         } catch (SadimJsonProcessingException sjpe) {
