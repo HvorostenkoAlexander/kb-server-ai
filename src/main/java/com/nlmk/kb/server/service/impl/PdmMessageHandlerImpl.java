@@ -9,11 +9,8 @@ import com.nlmk.kb.server.service.PdmMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -39,7 +36,7 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
         Optional<PdmMessage> savedMessage = messageService.save(message);
 
         if (savedMessage.isPresent()) {
-         //   sendToNsi(savedMessage.get());
+            messageService.sendToNsi(savedMessage.get());
             return true;
         } else {
             throw new RuntimeException(
@@ -50,26 +47,5 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
 
     private boolean isTopicDisabled(String topic) {
         return !dictionaryService.findByTopic(topic).getEnabled();
-    }
-
-    private void setStatusMessage(PdmMessage message, HttpStatus status) {
-        if (status == HttpStatus.ACCEPTED ||
-                status == HttpStatus.NOT_FOUND ||
-                status == HttpStatus.OK) {
-            message.setPosted(true);
-            message.setKbReceiptTs(new Date());
-            message.setNote(status.toString());
-        } else {
-            message.setPosted(false);
-            message.setKbReceiptTs(new Date());
-            message.setNote(status.toString());
-        }
-    }
-
-    private void sendToNsi(PdmMessage message) {
-        ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
-        setStatusMessage(message, response.getStatusCode());
-
-        messageService.update(message);
     }
 }

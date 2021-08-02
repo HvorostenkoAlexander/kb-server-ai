@@ -23,14 +23,23 @@ public class CommonConverterImpl implements CommonConverter {
 
         Date dateMs = parseToDateWithMs(stringDate);
         Date dateNoMs = parseToDateNoMs(stringDate);
+        Date dateNoTimeZone = parseToDateNoTimeZone(stringDate);
 
         if (dateMs != null) {
             return dateMs;
         } else if (dateNoMs != null) {
             return dateNoMs;
-        } else {
+        } else if (dateNoTimeZone !=null){
+            return dateNoTimeZone;
+        }
+        else {
             throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; ");
         }
+    }
+
+    //todo когда решится проблема по передачи сведений о дате с time zone убрать
+    private Date parseToDateNoTimeZone(String stringDate) {
+        return parse(stringDate,"yyyy-MM-dd'T'HH:mm:ss");
     }
 
     private Date parseToDateNoMs(String stringDate) {

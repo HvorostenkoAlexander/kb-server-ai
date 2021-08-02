@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,6 +107,15 @@ public class KbController {
         log.info("kb, getPdmMessageById: id: [{}]",id);
 
         return pdmMessageService.getMessageById(id);
+    }
+
+    @PostMapping("/pdm_message/{id}/send")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public ResponseEntity<Long> resendingPdmMessageById(@PathVariable Long id){
+        log.info("kb, resendingPdmMessageById: id: [{}]",id);
+
+        val responseFromNsi = pdmMessageService.resendingToNsi(id);
+        return new ResponseEntity<>(id,responseFromNsi.getStatusCode());
     }
 
     @DeleteMapping("/pdm_message/{id}")

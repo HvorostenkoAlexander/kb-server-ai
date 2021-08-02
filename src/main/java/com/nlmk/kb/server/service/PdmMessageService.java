@@ -4,6 +4,7 @@ import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
 import java.util.List;
@@ -26,4 +27,8 @@ public interface PdmMessageService {
     PdmMessageDto getMessageById(Long id);
 
     Long deleteMessageById(Long id);
+
+    ResponseEntity<Long> sendToNsi(PdmMessage pdmMessage);
+
+    ResponseEntity<Long> resendingToNsi(Long id);
 }
