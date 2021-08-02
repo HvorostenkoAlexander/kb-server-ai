@@ -153,7 +153,9 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     public ResponseEntity<Long> sendToNsi(PdmMessage message){
         ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
         setStatusMessage(message, response.getStatusCode());
-        update(message);
+        val updated = update(message);
+
+        log.info("UPDATED message: [{}]",updated.get());
         return response;
     }
 
