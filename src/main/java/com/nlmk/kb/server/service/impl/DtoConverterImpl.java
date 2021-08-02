@@ -92,6 +92,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .key(entity.getKey())
                 .op(entity.getOp())
                 .isPosted(entity.isPosted())
+                .note(entity.getNote())
                 .build();
 
         if (entity.getTs() != null) {
