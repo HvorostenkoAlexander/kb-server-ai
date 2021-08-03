@@ -11,6 +11,7 @@ import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,12 +22,12 @@ import java.util.Optional;
 public class SadimMessageServiceImpl implements SadimMessageService {
 
     private final SadimJsonParser sadimJsonParser;
-    private final SadimMessageRepository sadimMessageRepository;
+    private final SadimMessageRepository repository;
 
     public SadimMessageServiceImpl(@Qualifier("sadimStreamApiParser") SadimJsonParser sadimJsonParser,
-                                   SadimMessageRepository sadimMessageRepository) {
+                                   SadimMessageRepository repository) {
         this.sadimJsonParser = sadimJsonParser;
-        this.sadimMessageRepository = sadimMessageRepository;
+        this.repository = repository;
     }
 
     @Override
@@ -44,7 +45,18 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                     .ts(LocalDateTime.now())
                     .param(attestationParam.get())
                     .build();
-            return sadimMessageRepository.save(sadimMessage);
+            val sadimFromBase = findByPartitionAndOffset(
+                    consumerRecord.partition(),
+                    consumerRecord.offset()
+            );
+
+            if (sadimFromBase.isPresent()){
+                log.info("the message with offset: [{}]; partition: [{}] is already present in the database." +
+                                " Loading data from base..."
+                        ,consumerRecord.offset(),consumerRecord.partition());
+                return sadimFromBase.get();
+            }
+            return repository.save(sadimMessage);
         } else {
             throw new SadimJsonProcessingException("Не удалось получить параметры из сообщения от SADIM.");
         }
@@ -53,9 +65,17 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     @Override
     public List<SadimMessage> findByParamPrimeId(String primeId) {
 
-        List<SadimMessage> messages = sadimMessageRepository.findSadimMessagesByParam_PrimeIdOrderByTsDesc(primeId);
+        List<SadimMessage> messages = repository.findSadimMessagesByParam_PrimeIdOrderByTsDesc(primeId);
         log.info("messages size by primeId: {}", messages.size());
 
         return messages;
+    }
+
+    @Override
+    public Optional<SadimMessage> findByPartitionAndOffset(Integer partition, Long offset) {
+        Assert.notNull(partition, "partition must not be null");
+        Assert.notNull(offset, "offset must not be null");
+
+        return repository.findFirstByPartitionAndOffset(partition, offset);
     }
 }
