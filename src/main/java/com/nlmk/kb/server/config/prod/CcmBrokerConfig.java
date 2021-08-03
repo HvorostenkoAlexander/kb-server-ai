@@ -37,6 +37,13 @@ public class CcmBrokerConfig {
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
+        props.put("security.protocol", "SSL");
+        props.put("ssl.truststore.location", "kafkaSsl/client.truststore.jks");
+        props.put("ssl.truststore.password", "assagai");
+        props.put("ssl.keystore.password", "assagai");
+        props.put("ssl.keystore.location", "kafkaSsl/client.keystore.jks");
+        props.put("ssl.endpoint.identification.algorithm", "");
+
         return props;
     }
 
@@ -49,12 +56,15 @@ public class CcmBrokerConfig {
         KafkaAvroDeserializer valueDeserializer = new KafkaAvroDeserializer();
         valueDeserializer.configure(ccmConsumerConfigs(), false);
 
+        ErrorHandlingDeserializer<Object> errorHandlingKeyDeserializer
+                = new ErrorHandlingDeserializer<>(keyDeserializer);
+
         ErrorHandlingDeserializer<Object> errorHandlingValueDeserializer
                 = new ErrorHandlingDeserializer<>(valueDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(
                 ccmConsumerConfigs(),
-                keyDeserializer,
+                errorHandlingKeyDeserializer,
                 errorHandlingValueDeserializer
         );
     }

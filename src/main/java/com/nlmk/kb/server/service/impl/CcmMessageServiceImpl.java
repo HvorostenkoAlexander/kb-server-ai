@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,15 +22,25 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     private final CcmMessageRepository messageRepository;
 
     @Override
+    @Transactional
     public Optional<CcmAttestationRequestMessage> save(CcmAttestationRequestMessage ccmMessage) {
 
-        if (messageRepository.existsByOffsetAndPartition(ccmMessage.getOffset(),ccmMessage.getPartition())){
-            log.info("--- the message with offset: {}; partition: {} is already present in the database. message key: {} ",
-                    ccmMessage.getOffset(),ccmMessage.getPartition(),ccmMessage.getKey());
+        if (messageRepository.existsByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+                ccmMessage.getPartition(),
+                ccmMessage.getOffset())
+        ) {
+            log.info("the message with topic: [{}]; partition: {}; offset: {} is already present in the database. ",
+                    ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
 
-            List<CcmAttestationRequestMessage> storedRequests = messageRepository.findCcmAttestationRequestMessageByOffsetAndPartition(ccmMessage.getOffset(),ccmMessage.getPartition());
-            if (storedRequests.size()>1){
-                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками topic: {}," +
+            List<CcmAttestationRequestMessage> storedRequests = messageRepository
+                    .findByTopicAndPartitionAndOffset(
+                            ccmMessage.getTopic(),
+                            ccmMessage.getPartition(),
+                            ccmMessage.getOffset()
+                    );
+            if (storedRequests.size() > 1) {
+                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками" +
+                                " topic: {}," +
                                 " partition: {}," +
                                 " offset: {}",
                         ccmMessage.getTopic(),
@@ -37,13 +49,11 @@ public class CcmMessageServiceImpl implements CcmMessageService {
                 );
             }
 
-            ccmMessage.setId(storedRequests.get(0).getId());
-            //return Optional.of(storedRequests.get(0));
-            return Optional.of(ccmMessage);
+            return Optional.of(storedRequests.get(0));
         }
 
-        ccmMessage = messageRepository.save(ccmMessage);
-        log.info("--- Successfully saved ccmMessage with attestation request.primeId: {}",ccmMessage.getPrimeId());
+        messageRepository.save(ccmMessage);
+        log.info("--- Successfully saved ccmMessage with attestation request.primeId: {}", ccmMessage.getPrimeId());
 
         return Optional.ofNullable(ccmMessage);
     }
@@ -55,6 +65,13 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
     @Override
     public List<CcmAttestationRequestMessage> findByPrimeId(String primeId) {
-        return messageRepository.findCcmAttestationRequestMessageByPrimeId(primeId);
+        return messageRepository.findByPrimeId(primeId);
+    }
+
+    @Override
+    public CcmAttestationRequestMessage update(CcmAttestationRequestMessage ccmMessage) {
+        Assert.notNull(ccmMessage,"ccmMessage must not be null");
+
+        return messageRepository.save(ccmMessage);
     }
 }

@@ -51,7 +51,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
             );
 
             if (sadimFromBase.isPresent()){
-                log.info("the message with offset: [{}]; partition: [{}] is already present in the database." +
+                log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
                                 " Loading data from base..."
                         ,consumerRecord.offset(),consumerRecord.partition());
                 return sadimFromBase.get();

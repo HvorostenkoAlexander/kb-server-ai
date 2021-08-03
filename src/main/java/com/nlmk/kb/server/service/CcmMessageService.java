@@ -14,4 +14,6 @@ public interface CcmMessageService {
     Page<CcmAttestationRequestMessage> findAll(PageRequest of);
 
     List<CcmAttestationRequestMessage> findByPrimeId(String primeId);
+
+    CcmAttestationRequestMessage update(CcmAttestationRequestMessage ccmMessage);
 }
