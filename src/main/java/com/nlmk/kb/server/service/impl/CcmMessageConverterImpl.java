@@ -29,7 +29,7 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
                                                                   int offset,
                                                                   String timestamp) {
 
-        val value = ValueConverter.fromKafkaAttestationRequest(ccmAttestationRequest);
+        val value = ValueConverter.toPamAttestationRequest(ccmAttestationRequest);
 
         val requestMessage = new CcmAttestationRequestMessage();
         requestMessage.setPartition(partition);

@@ -14,7 +14,6 @@ import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.l3.ccm.pgp.RecordChemical;
 import nlmk.l3.ccm.pgp.RecordData;
-import nlmk.l3.ccm.pgp.RecordListValues;
 import nlmk.l3.ccm.pgp.RecordMechData;
 import nlmk.l3.ccm.pgp.RecordMechanical;
 import nlmk.l3.ccm.pgp.RecordMetallographic;
@@ -33,7 +32,7 @@ public class ValueConverter {
         throw new RuntimeException("ValueConverter is utility class, only for create attestation request value.");
     }
 
-    public static com.nlmk.kb.server.entity.pam.AttestationRequest fromKafkaAttestationRequest(AttestationRequest request) {
+    public static com.nlmk.kb.server.entity.pam.AttestationRequest toPamAttestationRequest(AttestationRequest request) {
 
         val value = new Value();
 
@@ -41,7 +40,6 @@ public class ValueConverter {
                 .value(value)
                 .build();
 
-        //DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         LocalDateTime ldt = LocalDateTime.parse(request.getTs(), DateTimeFormatter.ISO_DATE_TIME);
         Date date = java.sql.Timestamp.valueOf(ldt);
 
@@ -49,16 +47,16 @@ public class ValueConverter {
         value.setOp(request.getOp().toString());
 
         if (request.getPk() != null) {
-            value.setPk(fromRequestPk(request.getPk()));
+            value.setPk(toPamPk(request.getPk()));
         }
         if (request.getData() != null) {
-            value.setData(fromRequestRecordData(request.getData()));
+            value.setData(toPamDataField(request.getData()));
         }
 
         return attRequest;
     }
 
-    private static Pk fromRequestPk(RecordPk recordPk) {
+    private static Pk toPamPk(RecordPk recordPk) {
         Pk pk = new Pk();
         if (recordPk.getId() != null) {
             pk.setId(recordPk.getId().toString());
@@ -69,73 +67,77 @@ public class ValueConverter {
         return pk;
     }
 
-    private static DataField fromRequestRecordData(RecordData recordData) {
+    private static DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        DataField dataField = DataField.builder()
+        val dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
                 .thickness(
-                        fromFloatToDouble(recordData.getThickness())
+                        toDouble(recordData.getThickness())
                 )
                 .width(
-                        fromFloatToDouble(recordData.getWidth())
+                        toDouble(recordData.getWidth())
                 )
                 .weightNet(
-                        fromFloatToDouble(recordData.getWeightNet())
+                        toDouble(recordData.getWeightNet())
                 )
-                .kceh(Long.valueOf(recordData.getKceh()))
-                .orderNum(Long.valueOf(recordData.getOrderNum()))
-                .orderPos(Long.valueOf(recordData.getOrderPos()))
-                .build();
+                .kceh(Long.valueOf(recordData.getKceh()));
+
+        if (recordData.getOrderNum() != null) {
+            dataFieldBuilder.orderNum(Long.valueOf(recordData.getOrderNum().intValue()));
+        }
+        if (recordData.getOrderPos() != null) {
+            dataFieldBuilder.orderPos(Long.valueOf(recordData.getOrderPos().intValue()));
+        }
         if (recordData.getNplv() != null) {
-            dataField.setNplv(recordData.getNplv().longValue());
+            dataFieldBuilder.nplv(recordData.getNplv().longValue());
         }
         if (recordData.getHnum() != null) {
-            dataField.setHnum(recordData.getHnum().longValue());
+            dataFieldBuilder.hnum(recordData.getHnum().longValue());
         }
         if (recordData.getLength() != null) {
-            dataField.setLength(
-                    fromFloatToDouble(recordData.getLength())
+            dataFieldBuilder.length(
+                    toDouble(recordData.getLength())
             );
         }
         if (recordData.getBundleWeight() != null) {
-            dataField.setBundleWeight(
-                    fromFloatToDouble(recordData.getBundleWeight())
+            dataFieldBuilder.bundleWeight(
+                    toDouble(recordData.getBundleWeight())
             );
         }
-        dataField.setSpecifications(
+        dataFieldBuilder.specifications(
                 recordData.getSpecifications().stream()
-                        .map(s -> fromRequestRecordSpecifications(s))
+                        .map(s -> toPamSpecs(s))
                         .collect(Collectors.toList())
         );
-        dataField.setOrderReq(
+        dataFieldBuilder.orderReq(
                 recordData.getOrderReq().stream()
-                        .map(o -> fromRecordOrderRequest(o))
+                        .map(o -> toPamOrderRequest(o))
                         .collect(Collectors.toList())
         );
-        dataField.setChemical(
+        dataFieldBuilder.chemical(
                 recordData.getChemical().stream()
-                        .map(ch -> fromRecordChemical(ch))
+                        .map(ch -> toPamChemicalSpec(ch))
                         .collect(Collectors.toList())
         );
-        dataField.setMechanical(
+        dataFieldBuilder.mechanical(
                 recordData.getMechanical().stream()
-                        .map(mech -> fromRecordMechanical(mech))
+                        .map(mech -> toPamMechanicalSpec(mech))
                         .collect(Collectors.toList())
         );
-        dataField.setMetallographic(
+        dataFieldBuilder.metallographic(
                 recordData.getMetallographic().stream()
-                        .map(mtl -> fromRecordMetallographic(mtl))
+                        .map(mtl -> toPamMetallographicSpec(mtl))
                         .collect(Collectors.toList())
         );
-        return dataField;
+        return dataFieldBuilder.build();
     }
 
-    private static Double fromFloatToDouble(Float f) {
+    private static Double toDouble(Float f) {
         return Double.parseDouble(Float.toString(f.floatValue()));
     }
 
-    private static Specs fromRequestRecordSpecifications(RecordSpecifications specifications) {
+    private static Specs toPamSpecs(RecordSpecifications specifications) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
         Specs specs = Specs.builder()
                 .specCode(specifications.getSpecCode())
@@ -154,7 +156,7 @@ public class ValueConverter {
         return specs;
     }
 
-    private static OrderRequest fromRecordOrderRequest(RecordOrderReq recordOrderReq) {
+    private static OrderRequest toPamOrderRequest(RecordOrderReq recordOrderReq) {
         OrderRequest orderRequest = OrderRequest.builder()
                 .attrCode(recordOrderReq.getAttrCode())
                 .attrName(recordOrderReq.getAttrName().toString())
@@ -185,7 +187,7 @@ public class ValueConverter {
         return orderRequest;
     }
 
-    private static ChemicalSpec fromRecordChemical(RecordChemical recordChemical) {
+    private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
         ChemicalSpec chemicalSpec = ChemicalSpec.builder()
                 .chemCode(recordChemical.getChemCode())
                 .chemName(recordChemical.getChemName().toString())
@@ -199,7 +201,7 @@ public class ValueConverter {
         return chemicalSpec;
     }
 
-    private static MechanicalSpec fromRecordMechanical(RecordMechanical recordMechanical) {
+    private static MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
         MechanicalSpec mechanicalSpec = MechanicalSpec.builder()
                 .build();
         if (recordMechanical.getTestArrayId() != null) {
@@ -237,13 +239,13 @@ public class ValueConverter {
         }
         mechanicalSpec.setMechData(
                 recordMechanical.getMechData().stream()
-                        .map(md -> fromRecordMechData(md))
+                        .map(md -> toPamMechanicalData(md))
                         .collect(Collectors.toList())
         );
         return mechanicalSpec;
     }
 
-    private static MechanicalData fromRecordMechData(RecordMechData recordMechData) {
+    private static MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
         MechanicalData mechanicalData = MechanicalData.builder()
                 .mechCode(recordMechData.getMechCode())
                 .mechName(recordMechData.getMechName().toString())
@@ -262,7 +264,7 @@ public class ValueConverter {
         return mechanicalData;
     }
 
-    private static MetallographicSpec fromRecordMetallographic(RecordMetallographic recordMetallographic) {
+    private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
         MetallographicSpec mtlSpec = MetallographicSpec.builder().build();
 
         if (recordMetallographic.getTestArrayId() != null) {
@@ -298,14 +300,14 @@ public class ValueConverter {
 
         mtlSpec.setMetgrapData(
                 recordMetallographic.getMetgrapData().stream()
-                        .map(md -> fromRecordMetgrapData(md))
+                        .map(md -> toPamMetallographicData(md))
                         .collect(Collectors.toList())
         );
 
         return mtlSpec;
     }
 
-    private static MetallographicData fromRecordMetgrapData(RecordMetgrapData recordMetgrapData) {
+    private static MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
         MetallographicData mtlData = MetallographicData.builder()
                 .metgrapCode(recordMetgrapData.getMetgrapCode())
                 .metgrapName(recordMetgrapData.getMetgrapName().toString())

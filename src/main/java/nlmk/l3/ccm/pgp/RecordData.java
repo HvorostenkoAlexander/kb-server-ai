@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class RecordData extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 7226326911142893994L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"RecordData\",\"namespace\":\"nlmk.l3.ccm.pgp\",\"fields\":[{\"name\":\"primeId\",\"type\":\"string\",\"doc\":\"Идентификатор ЕМ на стане\"},{\"name\":\"nplv\",\"type\":[\"null\",\"int\"],\"doc\":\"№ плавки\",\"default\":null},{\"name\":\"hnum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер ГК партии\",\"default\":null},{\"name\":\"roll\",\"type\":\"string\",\"doc\":\"Номер рулона/пачки\"},{\"name\":\"length\",\"type\":[\"null\",\"float\"],\"doc\":\"Длина\",\"default\":null},{\"name\":\"thickness\",\"type\":\"float\",\"doc\":\"Толщина\"},{\"name\":\"width\",\"type\":\"float\",\"doc\":\"Ширина\"},{\"name\":\"weightNet\",\"type\":\"float\",\"doc\":\"Масса единицы продукции\"},{\"name\":\"bundleWeight\",\"type\":[\"null\",\"float\"],\"doc\":\"Масса связки\",\"default\":null},{\"name\":\"kceh\",\"type\":\"int\",\"doc\":\"Номер цеха\"},{\"name\":\"orderNum\",\"type\":\"int\",\"doc\":\"Номер заказа\"},{\"name\":\"orderPos\",\"type\":\"int\",\"doc\":\"Номер позиции заказа\"},{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordSpecifications\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"specName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"specValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"specTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"specFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"specMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}}},{\"name\":\"orderReq\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordOrderReq\",\"fields\":[{\"name\":\"attrCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"attrName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"attrValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"attrTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"attrTypeValue\",\"type\":\"int\",\"doc\":\"Тип значения (1 - простое, 2 - перечисленное)\"},{\"name\":\"attrFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"attrMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null},{\"name\":\"listValues\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordListValues\",\"fields\":[{\"name\":\"value\",\"type\":\"string\",\"doc\":\"Значение из списка\"}]}}],\"default\":null}]}}],\"default\":null},{\"name\":\"chemical\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordChemical\",\"fields\":[{\"name\":\"chemCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"chemName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"chemValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"chemFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null}]}}],\"default\":null},{\"name\":\"mechanical\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMechanical\",\"fields\":[{\"name\":\"testArrayId\",\"type\":[\"null\",\"int\"],\"doc\":\"Идентификатор испытательного массива\",\"default\":null},{\"name\":\"hnum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер испытуемой горячекатаной партии\",\"default\":null},{\"name\":\"protId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД протокола\",\"default\":null},{\"name\":\"protNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер протокола\",\"default\":null},{\"name\":\"sampleId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД пробы\",\"default\":null},{\"name\":\"probeName\",\"type\":[\"null\",\"string\"],\"doc\":\"Наименование вида пробы\",\"default\":null},{\"name\":\"probeCode\",\"type\":[\"null\",\"int\"],\"doc\":\"Код вида пробы\",\"default\":null},{\"name\":\"sampleNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер пробы (образца)\",\"default\":null},{\"name\":\"signAnalysis\",\"type\":[\"null\",\"int\"],\"doc\":\"Признак испытаний\",\"default\":null},{\"name\":\"formationListId\",\"type\":[\"null\",\"string\"],\"doc\":\"ИД формировочной карточки\",\"default\":null},{\"name\":\"formationListNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер формировочной карточки\",\"default\":null},{\"name\":\"mechData\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMechData\",\"fields\":[{\"name\":\"mechCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"mechName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"mechFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"mechValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"mechTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"mechMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}}}]}}],\"default\":null},{\"name\":\"metallographic\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMetallographic\",\"fields\":[{\"name\":\"testArrayId\",\"type\":[\"null\",\"int\"],\"doc\":\"Идентификатор испытательного массива\",\"default\":null},{\"name\":\"hnum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер испытуемой горячекатаной партии\",\"default\":null},{\"name\":\"protId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД протокола\",\"default\":null},{\"name\":\"protNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер протокола\",\"default\":null},{\"name\":\"sampleId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД пробы\",\"default\":null},{\"name\":\"probeName\",\"type\":[\"null\",\"string\"],\"doc\":\"Наименование вида пробы\",\"default\":null},{\"name\":\"probeCode\",\"type\":[\"null\",\"int\"],\"doc\":\"Код вида пробы\",\"default\":null},{\"name\":\"sampleNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер пробы (образца)\",\"default\":null},{\"name\":\"signAnalysis\",\"type\":[\"null\",\"int\"],\"doc\":\"Признак испытаний\",\"default\":null},{\"name\":\"formationListId\",\"type\":[\"null\",\"string\"],\"doc\":\"ИД формировочной карточки\",\"default\":null},{\"name\":\"formationListNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер формировочной карточки\",\"default\":null},{\"name\":\"metgrapData\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMetgrapData\",\"fields\":[{\"name\":\"metgrapCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"metgrapName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"metgrapFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"metgrapValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"metgrapTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"metgrapMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}}}]}}],\"default\":null}]}");
+  private static final long serialVersionUID = -8732290457299804794L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"RecordData\",\"namespace\":\"nlmk.l3.ccm.pgp\",\"fields\":[{\"name\":\"primeId\",\"type\":\"string\",\"doc\":\"Идентификатор ЕМ на стане\"},{\"name\":\"nplv\",\"type\":[\"null\",\"int\"],\"doc\":\"№ плавки\",\"default\":null},{\"name\":\"hnum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер ГК партии\",\"default\":null},{\"name\":\"roll\",\"type\":\"string\",\"doc\":\"Номер рулона/пачки\"},{\"name\":\"length\",\"type\":[\"null\",\"float\"],\"doc\":\"Длина\",\"default\":null},{\"name\":\"thickness\",\"type\":\"float\",\"doc\":\"Толщина\"},{\"name\":\"width\",\"type\":\"float\",\"doc\":\"Ширина\"},{\"name\":\"weightNet\",\"type\":\"float\",\"doc\":\"Масса единицы продукции\"},{\"name\":\"bundleWeight\",\"type\":[\"null\",\"float\"],\"doc\":\"Масса связки\",\"default\":null},{\"name\":\"kceh\",\"type\":\"int\",\"doc\":\"Номер цеха\"},{\"name\":\"orderNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер заказа\",\"default\":null},{\"name\":\"orderPos\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер позиции заказа\",\"default\":null},{\"name\":\"specifications\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordSpecifications\",\"fields\":[{\"name\":\"specCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"specName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"specValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"specTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"specFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"specMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}}},{\"name\":\"orderReq\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordOrderReq\",\"fields\":[{\"name\":\"attrCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"attrName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"attrValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"attrTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"attrTypeValue\",\"type\":\"int\",\"doc\":\"Тип значения (1 - простое, 2 - перечисленное)\"},{\"name\":\"attrFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"attrMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null},{\"name\":\"listValues\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordListValues\",\"fields\":[{\"name\":\"value\",\"type\":\"string\",\"doc\":\"Значение из списка\"}]}}],\"default\":null}]}}],\"default\":null},{\"name\":\"chemical\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordChemical\",\"fields\":[{\"name\":\"chemCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"chemName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"chemValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"chemFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null}]}}],\"default\":null},{\"name\":\"mechanical\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMechanical\",\"fields\":[{\"name\":\"testArrayId\",\"type\":[\"null\",\"int\"],\"doc\":\"Идентификатор испытательного массива\",\"default\":null},{\"name\":\"hnum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер испытуемой горячекатаной партии\",\"default\":null},{\"name\":\"protId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД протокола\",\"default\":null},{\"name\":\"protNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер протокола\",\"default\":null},{\"name\":\"sampleId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД пробы\",\"default\":null},{\"name\":\"probeName\",\"type\":[\"null\",\"string\"],\"doc\":\"Наименование вида пробы\",\"default\":null},{\"name\":\"probeCode\",\"type\":[\"null\",\"int\"],\"doc\":\"Код вида пробы\",\"default\":null},{\"name\":\"sampleNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер пробы (образца)\",\"default\":null},{\"name\":\"signAnalysis\",\"type\":[\"null\",\"int\"],\"doc\":\"Признак испытаний\",\"default\":null},{\"name\":\"formationListId\",\"type\":[\"null\",\"string\"],\"doc\":\"ИД формировочной карточки\",\"default\":null},{\"name\":\"formationListNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер формировочной карточки\",\"default\":null},{\"name\":\"mechData\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMechData\",\"fields\":[{\"name\":\"mechCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"mechName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"mechFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"mechValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"mechTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"mechMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}}}]}}],\"default\":null},{\"name\":\"metallographic\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMetallographic\",\"fields\":[{\"name\":\"testArrayId\",\"type\":[\"null\",\"int\"],\"doc\":\"Идентификатор испытательного массива\",\"default\":null},{\"name\":\"hnum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер испытуемой горячекатаной партии\",\"default\":null},{\"name\":\"protId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД протокола\",\"default\":null},{\"name\":\"protNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер протокола\",\"default\":null},{\"name\":\"sampleId\",\"type\":[\"null\",\"int\"],\"doc\":\"ИД пробы\",\"default\":null},{\"name\":\"probeName\",\"type\":[\"null\",\"string\"],\"doc\":\"Наименование вида пробы\",\"default\":null},{\"name\":\"probeCode\",\"type\":[\"null\",\"int\"],\"doc\":\"Код вида пробы\",\"default\":null},{\"name\":\"sampleNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер пробы (образца)\",\"default\":null},{\"name\":\"signAnalysis\",\"type\":[\"null\",\"int\"],\"doc\":\"Признак испытаний\",\"default\":null},{\"name\":\"formationListId\",\"type\":[\"null\",\"string\"],\"doc\":\"ИД формировочной карточки\",\"default\":null},{\"name\":\"formationListNum\",\"type\":[\"null\",\"int\"],\"doc\":\"Номер формировочной карточки\",\"default\":null},{\"name\":\"metgrapData\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordMetgrapData\",\"fields\":[{\"name\":\"metgrapCode\",\"type\":\"int\",\"doc\":\"Код характеристики\"},{\"name\":\"metgrapName\",\"type\":\"string\",\"doc\":\"Наименование характеристики\"},{\"name\":\"metgrapFormat\",\"type\":[\"null\",\"string\"],\"doc\":\"Формат передачи характеристики\",\"default\":null},{\"name\":\"metgrapValue\",\"type\":[\"null\",\"string\"],\"doc\":\"Значение характеристики\",\"default\":null},{\"name\":\"metgrapTypeCode\",\"type\":\"int\",\"doc\":\"Тип данных (1 - строка, 2 - число, 3 - дата)\"},{\"name\":\"metgrapMeasure\",\"type\":[\"null\",\"string\"],\"doc\":\"Единица измерения характеристики\",\"default\":null}]}}}]}}],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -92,9 +92,9 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
   /** Номер цеха */
    private int kceh;
   /** Номер заказа */
-   private int orderNum;
+   private java.lang.Integer orderNum;
   /** Номер позиции заказа */
-   private int orderPos;
+   private java.lang.Integer orderPos;
    private java.util.List<nlmk.l3.ccm.pgp.RecordSpecifications> specifications;
    private java.util.List<nlmk.l3.ccm.pgp.RecordOrderReq> orderReq;
    private java.util.List<nlmk.l3.ccm.pgp.RecordChemical> chemical;
@@ -383,7 +383,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
    * Gets the value of the 'orderNum' field.
    * @return Номер заказа
    */
-  public int getOrderNum() {
+  public java.lang.Integer getOrderNum() {
     return orderNum;
   }
 
@@ -393,7 +393,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
    * Номер заказа
    * @param value the value to set.
    */
-  public void setOrderNum(int value) {
+  public void setOrderNum(java.lang.Integer value) {
     this.orderNum = value;
   }
 
@@ -401,7 +401,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
    * Gets the value of the 'orderPos' field.
    * @return Номер позиции заказа
    */
-  public int getOrderPos() {
+  public java.lang.Integer getOrderPos() {
     return orderPos;
   }
 
@@ -411,7 +411,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
    * Номер позиции заказа
    * @param value the value to set.
    */
-  public void setOrderPos(int value) {
+  public void setOrderPos(java.lang.Integer value) {
     this.orderPos = value;
   }
 
@@ -562,9 +562,9 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
     /** Номер цеха */
     private int kceh;
     /** Номер заказа */
-    private int orderNum;
+    private java.lang.Integer orderNum;
     /** Номер позиции заказа */
-    private int orderPos;
+    private java.lang.Integer orderPos;
     private java.util.List<nlmk.l3.ccm.pgp.RecordSpecifications> specifications;
     private java.util.List<nlmk.l3.ccm.pgp.RecordOrderReq> orderReq;
     private java.util.List<nlmk.l3.ccm.pgp.RecordChemical> chemical;
@@ -1169,7 +1169,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
       * Номер заказа
       * @return The value.
       */
-    public int getOrderNum() {
+    public java.lang.Integer getOrderNum() {
       return orderNum;
     }
 
@@ -1180,7 +1180,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'orderNum'.
       * @return This builder.
       */
-    public nlmk.l3.ccm.pgp.RecordData.Builder setOrderNum(int value) {
+    public nlmk.l3.ccm.pgp.RecordData.Builder setOrderNum(java.lang.Integer value) {
       validate(fields()[10], value);
       this.orderNum = value;
       fieldSetFlags()[10] = true;
@@ -1203,6 +1203,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
       * @return This builder.
       */
     public nlmk.l3.ccm.pgp.RecordData.Builder clearOrderNum() {
+      orderNum = null;
       fieldSetFlags()[10] = false;
       return this;
     }
@@ -1212,7 +1213,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
       * Номер позиции заказа
       * @return The value.
       */
-    public int getOrderPos() {
+    public java.lang.Integer getOrderPos() {
       return orderPos;
     }
 
@@ -1223,7 +1224,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'orderPos'.
       * @return This builder.
       */
-    public nlmk.l3.ccm.pgp.RecordData.Builder setOrderPos(int value) {
+    public nlmk.l3.ccm.pgp.RecordData.Builder setOrderPos(java.lang.Integer value) {
       validate(fields()[11], value);
       this.orderPos = value;
       fieldSetFlags()[11] = true;
@@ -1246,6 +1247,7 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
       * @return This builder.
       */
     public nlmk.l3.ccm.pgp.RecordData.Builder clearOrderPos() {
+      orderPos = null;
       fieldSetFlags()[11] = false;
       return this;
     }
@@ -1548,9 +1550,21 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
 
     out.writeInt(this.kceh);
 
-    out.writeInt(this.orderNum);
+    if (this.orderNum == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeInt(this.orderNum);
+    }
 
-    out.writeInt(this.orderPos);
+    if (this.orderPos == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeInt(this.orderPos);
+    }
 
     long size0 = this.specifications.size();
     out.writeArrayStart();
@@ -1688,9 +1702,19 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
 
       this.kceh = in.readInt();
 
-      this.orderNum = in.readInt();
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.orderNum = null;
+      } else {
+        this.orderNum = in.readInt();
+      }
 
-      this.orderPos = in.readInt();
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.orderPos = null;
+      } else {
+        this.orderPos = in.readInt();
+      }
 
       long size0 = in.readArrayStart();
       java.util.List<nlmk.l3.ccm.pgp.RecordSpecifications> a0 = this.specifications;
@@ -1866,11 +1890,21 @@ public class RecordData extends org.apache.avro.specific.SpecificRecordBase impl
           break;
 
         case 10:
-          this.orderNum = in.readInt();
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.orderNum = null;
+          } else {
+            this.orderNum = in.readInt();
+          }
           break;
 
         case 11:
-          this.orderPos = in.readInt();
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.orderPos = null;
+          } else {
+            this.orderPos = in.readInt();
+          }
           break;
 
         case 12:

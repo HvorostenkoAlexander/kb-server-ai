@@ -82,7 +82,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> update(PdmMessage message) {
-        log.info("update PdmMessage: [{}]",message);
+        log.info("update PdmMessage: [{}]", message);
 
         Assert.notNull(message, "PdmMessage for update is null.");
 
@@ -137,7 +137,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     @Override
-    public ResponseEntity<Long> resendingToNsi(Long id){
+    public ResponseEntity<Long> resendingToNsi(Long id) {
         Assert.notNull(id, "id не должен быть null");
 
         val message = repository.findById(id).orElseThrow(
@@ -150,17 +150,17 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     @Override
-    public ResponseEntity<Long> sendToNsi(PdmMessage message){
+    public ResponseEntity<Long> sendToNsi(PdmMessage message) {
         ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
         setStatusMessage(message, response.getStatusCode());
         val updated = update(message);
 
-        log.info("UPDATED message: [{}]",updated.get());
+        log.info("UPDATED message: [{}]", updated.get());
         return response;
     }
 
     private String toStringByPattern(Date date, String pattern) {
-        if (date == null) {
+        if (date == null || pattern == null) {
             return null;
         }
         DateFormat df = new SimpleDateFormat(pattern);
@@ -170,7 +170,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     private void setStatusMessage(PdmMessage message, HttpStatus status) {
-        log.info("setStatusMessage; PdmMessage:[{}], HttpStatus: [{}]",message, status.toString());
+        log.info("setStatusMessage; PdmMessage:[{}], HttpStatus: [{}]", message, status.toString());
 
         if (status == HttpStatus.ACCEPTED ||
                 status == HttpStatus.NOT_FOUND ||
