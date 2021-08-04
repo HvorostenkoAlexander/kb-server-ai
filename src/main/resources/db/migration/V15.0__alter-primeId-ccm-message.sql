@@ -1,0 +1,1 @@
+ALTER TABLE public.ccm_message ALTER COLUMN prime_id DROP NOT NULL;

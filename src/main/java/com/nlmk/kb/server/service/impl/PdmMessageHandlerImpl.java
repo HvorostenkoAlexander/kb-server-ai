@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.DictionaryConfigService;
-import com.nlmk.kb.server.service.NsiClientService;
 import com.nlmk.kb.server.service.PdmMessageConverter;
 import com.nlmk.kb.server.service.PdmMessageHandler;
 import com.nlmk.kb.server.service.PdmMessageService;
@@ -21,7 +20,6 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
     private final DictionaryConfigService dictionaryService;
     private final PdmMessageConverter messageConverter;
     private final PdmMessageService messageService;
-    private final NsiClientService nsiClientService;
 
     @Override
     public boolean handleConsumerRecord(final ConsumerRecord record) {

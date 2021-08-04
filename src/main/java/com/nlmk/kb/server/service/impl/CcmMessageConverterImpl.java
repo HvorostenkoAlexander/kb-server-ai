@@ -40,9 +40,10 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
         requestMessage.setKbReceiptTs(
                 Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
         );
-        requestMessage.setPrimeId(value.getValue().getData().getPrimeId());
         requestMessage.setRequest(value);
-
+        if (value.getValue().getData() != null) {
+            requestMessage.setPrimeId(value.getValue().getData().getPrimeId());
+        }
         return requestMessage;
     }
 }

@@ -4,13 +4,9 @@ import com.nlmk.kb.server.exception.DateTimeParseException;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.PartitionOffset;
-import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -50,16 +46,14 @@ public class KafkaCcmService {
                         "timestamp: {}; " +
                         "request.ts:{}; " +
                         "request.op: {}; " +
-                        "request.pk.id: {}; " +
-                        "request.data.primeId: {} ",
+                        "request.pk.id: {}; ",
                 partition, offset, key, timestamp,
                 request.getTs(),
                 request.getOp(),
-                request.getPk().getId(),
-                request.getData().getPrimeId());
+                request.getPk().getId());
 
         try {
-            val requestMessage = messageConverter.fromCcmAttestationRequest(
+            final var requestMessage = messageConverter.fromCcmAttestationRequest(
                     request,
                     topic,
                     key,
@@ -68,19 +62,22 @@ public class KafkaCcmService {
                     timestamp
             );
 
-            val savedRequest = messageService.save(requestMessage).orElseThrow(
+            final var savedRequest = messageService.save(requestMessage).orElseThrow(
                     () -> new RuntimeException("Не удалось сохранить сообщение partition: " + partition
                             + "; offset: " + offset)
             );
 
-            val pamResult = pamClientService.postAttestationRequest(savedRequest.getRequest());
+            if (request.getData() != null) {
+                final var pamResult = pamClientService.postAttestationRequest(savedRequest.getRequest());
 
-            if (pamResult != null) {
-                savedRequest.setStatus("recived");
-                savedRequest.setKafkaTs(new Date());
-                messageService.update(savedRequest);
+                if (pamResult != null) {
+                    savedRequest.setStatus("recived");
+                    savedRequest.setKafkaTs(new Date());
+                    messageService.update(savedRequest);
+                }
+            } else {
+                log.warn("В поступившем запросе на аттестацию нет данных.");
             }
-
             ack.acknowledge();
         } catch (DateTimeParseException ddpe) {
             ack.acknowledge();
