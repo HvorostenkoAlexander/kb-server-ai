@@ -33,7 +33,7 @@ import javax.validation.Valid;
         RequestMethod.DELETE})
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/dict", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class DictionaryConfigController {
 
     private final DictionaryConfigService configService;
