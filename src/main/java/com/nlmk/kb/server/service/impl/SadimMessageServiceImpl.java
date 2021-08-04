@@ -11,6 +11,7 @@ import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
@@ -31,35 +32,35 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     }
 
     @Override
+    @Transactional
     public SadimMessage saveMessage(ConsumerRecord consumerRecord) {
 
-        Optional<PreAttestationParam> attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString());
+        val attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString())
+                .orElseThrow(
+                        () -> new SadimJsonProcessingException("Не удалось получить параметры из сообщения от SADIM.")
+                );
 
-        if (attestationParam.isPresent()) {
-            log.debug("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam.get());
+        log.debug("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam);
 
-            val sadimMessage = SadimMessage.builder()
-                    .key(consumerRecord.key().toString())
-                    .partition(consumerRecord.partition())
-                    .offset(consumerRecord.offset())
-                    .ts(LocalDateTime.now())
-                    .param(attestationParam.get())
-                    .build();
-            val sadimFromBase = findByPartitionAndOffset(
-                    consumerRecord.partition(),
-                    consumerRecord.offset()
-            );
+        val sadimMessage = SadimMessage.builder()
+                .key(consumerRecord.key().toString())
+                .partition(consumerRecord.partition())
+                .offset(consumerRecord.offset())
+                .ts(LocalDateTime.now())
+                .param(attestationParam)
+                .build();
+        val sadimFromBase = findByPartitionAndOffset(
+                consumerRecord.partition(),
+                consumerRecord.offset()
+        );
 
-            if (sadimFromBase.isPresent()){
-                log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
-                                " Loading data from base..."
-                        ,consumerRecord.offset(),consumerRecord.partition());
-                return sadimFromBase.get();
-            }
-            return repository.save(sadimMessage);
-        } else {
-            throw new SadimJsonProcessingException("Не удалось получить параметры из сообщения от SADIM.");
+        if (sadimFromBase.isPresent()) {
+            log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
+                            " Loading data from base..."
+                    , consumerRecord.offset(), consumerRecord.partition());
+            return sadimFromBase.get();
         }
+        return repository.save(sadimMessage);
     }
 
     @Override
