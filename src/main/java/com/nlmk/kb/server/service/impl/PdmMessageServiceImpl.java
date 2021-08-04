@@ -40,7 +40,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         if (repository.existsByTopicAndOffsetAndPartition(
                 message.getTopic(), message.getOffset(), message.getPartition())) {
-            log.info("The message from " +
+            log.warn("The message from " +
                             "topic: [{}], " +
                             "partition: [{}], " +
                             "offset: [{}] is already present in the database. " +
@@ -71,7 +71,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         repository.save(message);
 
-        log.info("Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
+        log.debug("Successfully saved message from PDM:partition:{}; offset: {}; topic: {}, key:{};",
                 message.getPartition(),
                 message.getOffset(),
                 message.getTopic(),
@@ -82,7 +82,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> update(PdmMessage message) {
-        log.info("update PdmMessage: [{}]", message);
+        log.debug("update PdmMessage: [{}]",message);
 
         Assert.notNull(message, "PdmMessage for update is null.");
 
@@ -155,7 +155,6 @@ public class PdmMessageServiceImpl implements PdmMessageService {
         setStatusMessage(message, response.getStatusCode());
         val updated = update(message);
 
-        log.info("UPDATED message: [{}]", updated.get());
         return response;
     }
 

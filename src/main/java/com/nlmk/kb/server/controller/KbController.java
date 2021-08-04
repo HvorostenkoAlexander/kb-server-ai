@@ -45,11 +45,11 @@ public class KbController {
     public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
             required = true) String primeId) {
 
-        log.info("--- request PreAttestationParamDto for primeId: {}", primeId);
+        log.info("request PreAttestationParamDto for primeId: {}", primeId);
 
         val paramDto = paramService.findByPrimeIdLatest(primeId);
 
-        log.info("--- RESULT paramDto from kb: {}", paramDto);
+        log.info("RESULT paramDto from kb: {}", paramDto);
         return ResponseEntity.ok(paramDto);
     }
 

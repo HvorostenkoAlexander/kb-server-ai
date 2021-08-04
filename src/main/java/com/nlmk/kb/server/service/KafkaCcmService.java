@@ -28,17 +28,12 @@ public class KafkaCcmService {
     private long sleepTime;
 
     private final PamClientService pamClientService;
-    private final CommonConverter converter;
     private final CcmMessageService messageService;
     private final CcmMessageConverter messageConverter;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
-            topicPartitions = {@TopicPartition(topic = "${kafka.ccm.topicReq}",
-                    partitionOffsets =
-                    @PartitionOffset(partition = "0", initialOffset = "0")),})
-//    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
-//            topics = {"${kafka.ccm.topicReq}"}
-//    )
+            topics = {"${kafka.ccm.topicReq}"}
+    )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                   @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
@@ -48,7 +43,7 @@ public class KafkaCcmService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("--- receiveMessageReq from CCM AttestationRequest:" +
+        log.info("CCM AttestationRequest:" +
                         "partition: {}; " +
                         "offset: {}; " +
                         "key: {}; " +
@@ -83,6 +78,7 @@ public class KafkaCcmService {
             if (pamResult != null) {
                 savedRequest.setStatus("recived");
                 savedRequest.setKafkaTs(new Date());
+                messageService.update(savedRequest);
             }
 
             ack.acknowledge();

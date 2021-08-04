@@ -29,7 +29,7 @@ public class KafkaSadimService {
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
                                   Acknowledgment ack) {
 
-        log.debug("SADIM message with offset: {};", consumerRecord.offset());
+        log.debug("SADIM message with partition: [{}]; offset: [{}];", consumerRecord.partition(), consumerRecord.offset());
 
         try {
             val sadimMessage = messageService.saveMessage(consumerRecord);
@@ -43,7 +43,6 @@ public class KafkaSadimService {
             ack.acknowledge();
             throw new DateTimeParseException("переброс: " + ddpe);
         } catch (Exception e) {
-            Arrays.stream(e.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
             ack.nack(sleepTime);
             throw new RuntimeException("переброс: " + e);
         }

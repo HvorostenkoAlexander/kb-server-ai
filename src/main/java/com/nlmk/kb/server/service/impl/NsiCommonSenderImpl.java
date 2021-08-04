@@ -39,6 +39,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                                 HttpMethod.POST,
                                 request,
                                 Long.class);
+                log.info("operation: [{}]; response from NSI: [{}], request: [{}]", operation, response, request);
                 break;
             }
             case "U": {
@@ -48,6 +49,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                                 HttpMethod.PUT,
                                 request,
                                 Long.class);
+                log.info("operation: [{}]; response from NSI: [{}], request: [{}]", operation, response, request);
                 break;
             }
             case "D": {
@@ -58,11 +60,11 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                                     HttpMethod.DELETE,
                                     request,
                                     Long.class);
-                    log.debug("response from NSI: [{}], request: [{}]", response, request);
+                    log.info("operation: [{}]; response from NSI: [{}], request: [{}]", operation, response, request);
                 } catch (HttpClientErrorException hcee) {
                     if (hcee.getRawStatusCode() == 404) {
                         response = new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
-                        log.info("response from NSI: [{}], request: [{}]", response, request);
+                        log.warn("response from NSI: [{}], request: [{}]", response, request);
 
                         return response;
                     }

@@ -10,17 +10,32 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("kafka.ccm")
 public class CcmConsumerProperties {
     private final String kafkaServer;
-    private final String kafkaGroupId;//todo при работе с множдественными потребителями перейти на пользовательские настройки свойств (kafka.consumer.group-id)
+    private final String kafkaGroupId;
     private final String topicReq;
     private final String schemaRegistryUrl;
+    private final boolean isProductionTopic;
+    private final String sslTruststorePassword;
+    private final String sslKeystorePassword;
+    private final String sslTruststorePath;
+    private final String sslKeystorePath;
 
     public CcmConsumerProperties(@Value("${kafka.ccm.bootstrap-servers}") String kafkaServer,
                                  @Value("${kafka.ccm.consumer.group-id}")String kafkaGroupId,
                                  @Value("${kafka.ccm.topicReq}") String topicReq,
-                                 @Value("${kafka.schema.registry.url}") String schemaRegistryUrl) {
+                                 @Value("${kafka.ccm.schema.registry.url}") String schemaRegistryUrl,
+                                 @Value("${kafka.ccm.is-prod}") boolean isProductionTopic,
+                                 @Value("${kafka.sslTruststorePassword}") String sslTruststorePassword,
+                                 @Value("${kafka.sslKeystorePassword}") String sslKeystorePassword,
+                                 @Value("${kafka.client.truststore-path}") String sslTruststorePath,
+                                 @Value("${kafka.client.keystore-path}") String sslKeystorePath) {
         this.kafkaServer = kafkaServer;
         this.kafkaGroupId = kafkaGroupId;
         this.topicReq = topicReq;
         this.schemaRegistryUrl = schemaRegistryUrl;
+        this.isProductionTopic = isProductionTopic;
+        this.sslKeystorePassword = sslKeystorePassword;
+        this.sslTruststorePassword = sslTruststorePassword;
+        this.sslTruststorePath = sslTruststorePath;
+        this.sslKeystorePath = sslKeystorePath;
     }
 }
