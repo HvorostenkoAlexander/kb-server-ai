@@ -110,26 +110,34 @@ public class ValueConverter {
                         .map(s -> toPamSpecs(s))
                         .collect(Collectors.toList())
         );
-        dataFieldBuilder.orderReq(
-                recordData.getOrderReq().stream()
-                        .map(o -> toPamOrderRequest(o))
-                        .collect(Collectors.toList())
-        );
-        dataFieldBuilder.chemical(
-                recordData.getChemical().stream()
-                        .map(ch -> toPamChemicalSpec(ch))
-                        .collect(Collectors.toList())
-        );
-        dataFieldBuilder.mechanical(
-                recordData.getMechanical().stream()
-                        .map(mech -> toPamMechanicalSpec(mech))
-                        .collect(Collectors.toList())
-        );
-        dataFieldBuilder.metallographic(
-                recordData.getMetallographic().stream()
-                        .map(mtl -> toPamMetallographicSpec(mtl))
-                        .collect(Collectors.toList())
-        );
+        if (recordData.getOrderReq() != null) {
+            dataFieldBuilder.orderReq(
+                    recordData.getOrderReq().stream()
+                            .map(o -> toPamOrderRequest(o))
+                            .collect(Collectors.toList())
+            );
+        }
+        if (recordData.getChemical() != null) {
+            dataFieldBuilder.chemical(
+                    recordData.getChemical().stream()
+                            .map(ch -> toPamChemicalSpec(ch))
+                            .collect(Collectors.toList())
+            );
+        }
+        if (recordData.getMechanical() != null) {
+            dataFieldBuilder.mechanical(
+                    recordData.getMechanical().stream()
+                            .map(mech -> toPamMechanicalSpec(mech))
+                            .collect(Collectors.toList())
+            );
+        }
+        if (recordData.getMetallographic() != null) {
+            dataFieldBuilder.metallographic(
+                    recordData.getMetallographic().stream()
+                            .map(mtl -> toPamMetallographicSpec(mtl))
+                            .collect(Collectors.toList())
+            );
+        }
         return dataFieldBuilder.build();
     }
 
