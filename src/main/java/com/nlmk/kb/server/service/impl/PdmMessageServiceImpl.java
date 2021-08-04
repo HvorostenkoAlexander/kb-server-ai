@@ -169,7 +169,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     private void setStatusMessage(PdmMessage message, HttpStatus status) {
-        log.info("setStatusMessage; PdmMessage:[{}], HttpStatus: [{}]", message, status.toString());
+        log.debug("setStatusMessage; HttpStatus: [{}], PdmMessage:[{}]", status.toString(),message);
 
         if (status == HttpStatus.ACCEPTED ||
                 status == HttpStatus.NOT_FOUND ||
