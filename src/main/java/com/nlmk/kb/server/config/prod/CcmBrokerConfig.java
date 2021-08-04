@@ -46,6 +46,8 @@ public class CcmBrokerConfig {
             props.put("ssl.keystore.password", consumerProperties.getSslKeystorePassword());
             props.put("ssl.keystore.location", consumerProperties.getSslKeystorePath());
             props.put("ssl.endpoint.identification.algorithm", "");
+        } else {
+            log.warn("Внимание! Подключаются настройки для тестового топика ССМ");
         }
 
         return props;
