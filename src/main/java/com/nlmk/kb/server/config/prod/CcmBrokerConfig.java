@@ -37,12 +37,16 @@ public class CcmBrokerConfig {
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
-        props.put("security.protocol", "SSL");
-        props.put("ssl.truststore.location", "kafkaSsl/client.truststore.jks");
-        props.put("ssl.truststore.password", "assagai");
-        props.put("ssl.keystore.password", "assagai");
-        props.put("ssl.keystore.location", "kafkaSsl/client.keystore.jks");
-        props.put("ssl.endpoint.identification.algorithm", "");
+        if (consumerProperties.isProductionTopic()) {
+            log.warn("Внимание! Подключаются настройки для продуктового топика ССМ");
+
+            props.put("security.protocol", "SSL");
+            props.put("ssl.truststore.location", consumerProperties.getSslTruststorePath());
+            props.put("ssl.truststore.password", consumerProperties.getSslTruststorePassword());
+            props.put("ssl.keystore.password", consumerProperties.getSslKeystorePassword());
+            props.put("ssl.keystore.location", consumerProperties.getSslKeystorePath());
+            props.put("ssl.endpoint.identification.algorithm", "");
+        }
 
         return props;
     }
