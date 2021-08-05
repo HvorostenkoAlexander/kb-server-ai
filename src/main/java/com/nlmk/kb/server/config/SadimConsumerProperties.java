@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 public class SadimConsumerProperties extends ConsumerProperties {
 
     public SadimConsumerProperties(@Value("${kafka.sadim.bootstrap-servers}")String kafkaServer,
-                                 @Value("${kafka.sadim.group-id}")String kafkaGroupId,
-                                 @Value("${kafka.schema.registry.url}") String schemaRegistryUrl) {
-        super(kafkaServer, kafkaGroupId, schemaRegistryUrl);
+                                 @Value("${kafka.sadim.group-id}")String kafkaGroupId) {
+        super(kafkaServer, kafkaGroupId, null);
     }
 }
