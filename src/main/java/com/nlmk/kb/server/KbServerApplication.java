@@ -1,10 +1,7 @@
 package com.nlmk.kb.server;
 
-import com.nlmk.kb.server.config.SupConsumerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.StandardEnvironment;
 import org.springframework.kafka.annotation.EnableKafka;
 
 @EnableKafka
