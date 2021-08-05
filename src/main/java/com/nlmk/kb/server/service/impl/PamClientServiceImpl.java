@@ -30,14 +30,14 @@ public class PamClientServiceImpl implements PamClientService {
     @Override
     public Long postAttestationRequest(AttestationRequest pamAttestationRequest) {
 
-        log.debug("--- request: " + pamAttestationRequest.getValue().getPk());
+        log.debug("request: " + pamAttestationRequest.getValue().getPk());
 
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
 
         ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
                 new HttpEntity<>(pamAttestationRequest, headers),
                 Long.class);
-        log.info("--- PAM-server response: "+response.getBody());
+        log.info("PAM-server response: "+response.getBody());
         return response.getBody();
     }
 }

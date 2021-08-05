@@ -40,7 +40,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                         () -> new SadimJsonProcessingException("Не удалось получить параметры из сообщения от SADIM.")
                 );
 
-        log.debug("--- SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam);
+        log.debug("SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam);
 
         val sadimMessage = SadimMessage.builder()
                 .key(consumerRecord.key().toString())

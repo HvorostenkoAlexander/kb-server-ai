@@ -72,13 +72,12 @@ public class PdmBrokerConfig {
 
         factory.setConsumerFactory(pdmConsumerFactory());
         factory.setErrorHandler(((thrownException, data) -> {
-            log.error("--- ERROR: " +thrownException.getClass()+"; "+ thrownException.getMessage());
+            log.error("ERROR: " +thrownException.getClass()+"; "+ thrownException.getMessage());
             if (data!=null) {
-                log.error("--- ERROR RECORD: " + data.toString());
+                log.error("ERROR RECORD: " + data.toString());
             }
         }));
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        //factory.setConcurrency(1);
         return factory;
     }
 }

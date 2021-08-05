@@ -47,7 +47,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         val specs = dictionary.getData().getSpecifications();
 
-        log.debug("--- PDM DICTIONARY: {} ", dictionary);
+        log.debug("PDM DICTIONARY: {} ", dictionary);
 
         val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())

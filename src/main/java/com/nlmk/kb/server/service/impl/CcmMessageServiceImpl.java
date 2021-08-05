@@ -39,7 +39,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
                             ccmMessage.getOffset()
                     );
             if (storedRequests.size() > 1) {
-                log.info("--- ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками" +
+                log.info("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками" +
                                 " topic: {}," +
                                 " partition: {}," +
                                 " offset: {}",
@@ -53,7 +53,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
         }
 
         messageRepository.save(ccmMessage);
-        log.info("--- Successfully saved ccmMessage with attestation request.primeId: {}", ccmMessage.getPrimeId());
+        log.info("Successfully saved ccmMessage with attestation request.primeId: {}", ccmMessage.getPrimeId());
 
         return Optional.ofNullable(ccmMessage);
     }

@@ -61,9 +61,9 @@ public class SadimBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(sadimConsumerFactory());
         factory.setErrorHandler(((thrownException, data) -> {
-            log.error("--- ERROR: " + thrownException.getMessage());
+            log.error("ERROR: " + thrownException.getMessage());
             if (data != null) {
-                log.error("--- ERROR RECORD: " + data.toString());
+                log.error("ERROR RECORD: " + data.toString());
             }
         }));
         //factory.setConcurrency(1);
