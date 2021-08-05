@@ -68,7 +68,6 @@ public class SadimBrokerConfig {
             }
         }));
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-        //factory.setConcurrency(1);
 
         return factory;
     }
