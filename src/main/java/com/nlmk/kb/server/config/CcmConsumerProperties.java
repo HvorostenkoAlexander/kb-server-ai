@@ -11,7 +11,7 @@ public class CcmConsumerProperties {
     private final String kafkaGroupId;
     private final String topicReq;
     private final String schemaRegistryUrl;
-    private final boolean isProductionTopic;
+    private final boolean sslEnabled;
     private final String sslTruststorePassword;
     private final String sslKeystorePassword;
     private final String sslTruststorePath;
@@ -21,7 +21,7 @@ public class CcmConsumerProperties {
                                  @Value("${kafka.ccm.consumer.group-id}")String kafkaGroupId,
                                  @Value("${kafka.ccm.topicReq}") String topicReq,
                                  @Value("${kafka.ccm.schema.registry.url}") String schemaRegistryUrl,
-                                 @Value("${kafka.ccm.is-prod}") boolean isProductionTopic,
+                                 @Value("${kafka.ccm.ssl-enabled}") boolean sslEnabled,
                                  @Value("${kafka.sslTruststorePassword}") String sslTruststorePassword,
                                  @Value("${kafka.sslKeystorePassword}") String sslKeystorePassword,
                                  @Value("${kafka.client.truststore-path}") String sslTruststorePath,
@@ -30,7 +30,7 @@ public class CcmConsumerProperties {
         this.kafkaGroupId = kafkaGroupId;
         this.topicReq = topicReq;
         this.schemaRegistryUrl = schemaRegistryUrl;
-        this.isProductionTopic = isProductionTopic;
+        this.sslEnabled = sslEnabled;
         this.sslKeystorePassword = sslKeystorePassword;
         this.sslTruststorePassword = sslTruststorePassword;
         this.sslTruststorePath = sslTruststorePath;

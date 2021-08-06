@@ -37,7 +37,7 @@ public class CcmBrokerConfig {
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
-        if (consumerProperties.isProductionTopic()) {
+        if (consumerProperties.isSslEnabled()) {
             log.warn("Внимание! Подключаются настройки для продуктового топика ССМ");
 
             props.put("security.protocol", "SSL");
