@@ -54,17 +54,18 @@ public class SadimMessageServiceImpl implements SadimMessageService {
 
         if (sadimFromBase.isPresent()) {
             //todo включено обновление сведений из топика САДИМ
-//            log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
-//                            " Loading data from base..."
-//                    , consumerRecord.offset(), consumerRecord.partition());
-//            return sadimFromBase.get();
+            log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
+                            " Loading data from base..."
+                    , consumerRecord.offset(), consumerRecord.partition());
 
-            sadimMessage.setId(sadimFromBase.get().getId());
-            log.info("UPDATE sadim message with offset: [{}];" +
-                    " partition: [{}]," +
-                    " PreAttestaionpParam: [{}];",
-                    consumerRecord.offset(), consumerRecord.partition(),
-                    sadimMessage.getParam());
+            if (sadimMessage.getParam() != null) {
+                updateMessageInBase(
+                        sadimFromBase.get(),
+                        sadimMessage.getParam().getLotNo(),
+                        sadimMessage.getParam().getMeltNo()
+                );
+            }
+            return sadimFromBase.get();
         }
         return repository.save(sadimMessage);
     }
@@ -84,5 +85,20 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         Assert.notNull(offset, "offset must not be null");
 
         return repository.findFirstByPartitionAndOffset(partition, offset);
+    }
+
+    private void updateMessageInBase(SadimMessage sadimFromBase, Integer lotNo, Integer meltNo) {
+        final var preAttestationParam = sadimFromBase.getParam();
+
+        if (preAttestationParam != null) {
+            preAttestationParam.setLotNo(lotNo);
+            preAttestationParam.setMeltNo(meltNo);
+
+            log.info("UPDATE sadim message with offset: [{}];" +
+                            " partition: [{}]," +
+                            " PreAttestaionpParam: [{}];",
+                    sadimFromBase.getOffset(), sadimFromBase.getParam(),
+                    sadimFromBase.getParam());
+        }
     }
 }
