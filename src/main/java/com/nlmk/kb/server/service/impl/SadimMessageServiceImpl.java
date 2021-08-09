@@ -97,7 +97,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
             log.info("UPDATE sadim message with offset: [{}];" +
                             " partition: [{}]," +
                             " PreAttestaionpParam: [{}];",
-                    sadimFromBase.getOffset(), sadimFromBase.getParam(),
+                    sadimFromBase.getOffset(), sadimFromBase.getPartition(),
                     sadimFromBase.getParam());
         }
     }
