@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.PartitionOffset;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,11 @@ public class KafkaSadimService {
     private long sleepTime;
     private final SadimMessageService messageService;
 
-    @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
+    //   @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
+    @KafkaListener(containerFactory = "kafkaListenerSadim",
+                        topicPartitions = {@TopicPartition(topic = "${kafka.sadim.topic}",
+                        partitionOffsets =
+                        @PartitionOffset(partition = "0", initialOffset = "0"))})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
                                   Acknowledgment ack) {
@@ -30,7 +36,8 @@ public class KafkaSadimService {
 
         try {
             final var sadimMessage = messageService.saveMessage(consumerRecord);
-            log.info("saved SADIM massage: {}", sadimMessage);
+            log.debug("saved SADIM massage: {}", sadimMessage);
+
             ack.acknowledge();
 
         } catch (SadimJsonProcessingException sjpe) {
