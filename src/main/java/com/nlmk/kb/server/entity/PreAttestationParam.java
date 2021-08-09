@@ -83,4 +83,12 @@ public class PreAttestationParam {
     @JsonProperty("estimate")
     @Column(name ="estimate")
     private Integer estimate;// "Оценка годности полосы"
+
+    @JsonProperty("lot_no")
+    @Column(name ="lot_no")
+    private Integer lotNo;// Номер горячекатаной партии
+
+    @JsonProperty("melt_no")
+    @Column(name ="melt_no")
+    private Integer meltNo; // Номер плавки
 }

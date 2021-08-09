@@ -6,7 +6,6 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.util.ValueConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +28,9 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
                                                                   int offset,
                                                                   String timestamp) {
 
-        val value = ValueConverter.toPamAttestationRequest(ccmAttestationRequest);
+        final var value = ValueConverter.toPamAttestationRequest(ccmAttestationRequest);
 
-        val requestMessage = new CcmAttestationRequestMessage();
+        final var requestMessage = new CcmAttestationRequestMessage();
         requestMessage.setPartition(partition);
         requestMessage.setOffset(offset);
         requestMessage.setKey(key);

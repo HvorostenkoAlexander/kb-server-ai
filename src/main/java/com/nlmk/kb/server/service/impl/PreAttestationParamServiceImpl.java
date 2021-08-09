@@ -8,7 +8,6 @@ import com.nlmk.kb.server.service.PreAttestationParamService;
 import com.nlmk.kb.server.service.SadimMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,23 +29,23 @@ public class PreAttestationParamServiceImpl implements PreAttestationParamServic
     }
 
     @Override
-    public List<PreAttestationParamDto> findByPrimeId(String primeId){
+    public List<PreAttestationParamDto> findByPrimeId(String primeId) {
         return repository.findByPrimeId(primeId).stream()
                 .map(
-                        param->converter.toPreAttestationParamDto(param)
+                        param -> converter.toPreAttestationParamDto(param)
                 ).collect(Collectors.toList());
     }
 
     @Override
     public PreAttestationParamDto findByPrimeIdLatest(String primeId) {
-        val messages = sadimMessageService.findByParamPrimeId(primeId);
+        final var messages = sadimMessageService.findByParamPrimeId(primeId);
 
-        if (!messages.isEmpty()){
+        if (!messages.isEmpty()) {
             return converter.toPreAttestationParamDto(
                     messages.get(0).getParam()
             );
         } else {
-            throw new IllegalArgumentException("В базе kb-server не найден объект с primeId: "+primeId);
+            throw new IllegalArgumentException("В базе kb-server не найден объект с primeId: " + primeId);
         }
     }
 }

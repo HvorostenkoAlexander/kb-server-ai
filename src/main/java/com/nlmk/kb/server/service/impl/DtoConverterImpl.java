@@ -10,7 +10,6 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -28,7 +27,7 @@ public class DtoConverterImpl implements DtoConverter {
     public PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity) {
         Assert.notNull(entity, "При конвертации в PreAttestationParamDto param = null.");
 
-        val paramDto = PreAttestationParamDto.builder()
+        final var paramDto = PreAttestationParamDto.builder()
                 .id(entity.getId())
                 .primeId(entity.getPrimeId())
                 .t12Min(entity.getT12Min())
@@ -43,6 +42,8 @@ public class DtoConverterImpl implements DtoConverter {
                 .ph12sgp(converter.parsToDouble(entity.getPh12sgp()))
                 .ph23sgp(entity.getPh23sgp())
                 .estimate(entity.getEstimate())
+                .lotNo(entity.getLotNo())
+                .meltNo(entity.getMeltNo())
                 .build();
         if (entity.getLclThckng() != null) {
             paramDto.setLclThckng(entity.getLclThckng().toArray(new Double[0]));
@@ -54,7 +55,7 @@ public class DtoConverterImpl implements DtoConverter {
     public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto) {
         Assert.notNull(dto, "DictionaryConfigDto не должно быть null");
 
-        val entity = DictionaryConfig.builder()
+        final var entity = DictionaryConfig.builder()
                 .id(dto.getId())
                 .topic(dto.getTopic())
                 .nsiPath(dto.getNsiPath())
@@ -71,7 +72,7 @@ public class DtoConverterImpl implements DtoConverter {
     @Override
     public DictionaryConfigDto toDictionaryConfigDto(DictionaryConfig entity) {
         Assert.notNull(entity, "DictionaryConfig не должно быть null");
-        val dto = DictionaryConfigDto.builder()
+        final var dto = DictionaryConfigDto.builder()
                 .id(entity.getId())
                 .enabled(entity.getEnabled())
                 .nsiPath(entity.getNsiPath())
@@ -84,7 +85,7 @@ public class DtoConverterImpl implements DtoConverter {
     }
 
     public PdmMessageDto toPdmMessageDto(PdmMessage entity) {
-        val dto = PdmMessageDto.builder()
+        final var dto = PdmMessageDto.builder()
                 .id(entity.getId())
                 .topic(entity.getTopic())
                 .partition(entity.getPartition())

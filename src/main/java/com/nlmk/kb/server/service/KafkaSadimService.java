@@ -5,15 +5,12 @@ import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 
 @Slf4j
 @Service
@@ -32,8 +29,8 @@ public class KafkaSadimService {
         log.debug("SADIM message with partition: [{}]; offset: [{}];", consumerRecord.partition(), consumerRecord.offset());
 
         try {
-            val sadimMessage = messageService.saveMessage(consumerRecord);
-            log.debug("saved SADIM massage: {}", sadimMessage);
+            final var sadimMessage = messageService.saveMessage(consumerRecord);
+            log.info("saved SADIM massage: {}", sadimMessage);
             ack.acknowledge();
 
         } catch (SadimJsonProcessingException sjpe) {

@@ -7,7 +7,6 @@ import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nlmk.sadim.Sadim;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class SadimDataBindParser implements SadimJsonParser {
     public Optional<PreAttestationParam> getParam(String jsonString) {
 
         Sadim sadim = null;
-        val paramBuilder = PreAttestationParam.builder();
+        final var paramBuilder = PreAttestationParam.builder();
 
         try {
             sadim = new ObjectMapper()
@@ -30,7 +29,7 @@ public class SadimDataBindParser implements SadimJsonParser {
                     .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                     .readValue(jsonString, Sadim.class);
 
-            val strip = sadim.getStrips().get(0);
+            final var strip = sadim.getStrips().get(0);
 
             paramBuilder
                     .primeId(strip.getPrimeId())
@@ -45,7 +44,9 @@ public class SadimDataBindParser implements SadimJsonParser {
                     .t12Min(strip.getT12Min())
                     .tcmMax(strip.getTcmMax())
                     .tcmMin(strip.getTcmMin())
-                    .wedgeFact(strip.getWedgeFact());
+                    .wedgeFact(strip.getWedgeFact())
+                    .lotNo(sadim.getLotNo())
+                    .meltNo(sadim.getMeltNo());
 
             paramBuilder.lclThckng(
                     strip.getLclThckng().getValues().stream().map(
@@ -55,7 +56,7 @@ public class SadimDataBindParser implements SadimJsonParser {
         } catch (JsonProcessingException e) {
             throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + e.getMessage());
         }
-        val param = paramBuilder.build();
+        final var param = paramBuilder.build();
 
         if (param.getPrimeId() != null) {
             return Optional.of(param);

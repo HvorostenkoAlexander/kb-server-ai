@@ -6,7 +6,6 @@ import com.nlmk.kb.server.service.DictionaryConfigService;
 import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,7 +52,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
             );
         }
 
-        val toSave = converter.toDictionaryConfig(dto);
+        final var toSave = converter.toDictionaryConfig(dto);
         toSave.setId(id);
         return converter.toDictionaryConfigDto(repository.save(toSave));
     }
@@ -74,7 +73,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
     public DictionaryConfigDto findByTopic(String topic) {
         Assert.notNull(topic, "topicName не должно быть null");
 
-        val entity = repository.findByTopic(topic).orElseThrow(
+        final var entity = repository.findByTopic(topic).orElseThrow(
                 () -> new IllegalArgumentException(
                         String.format("Не найден объект с topic: [%s]", topic)
                 )
@@ -85,7 +84,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
     @Override
     public String getDictionaryUrlByTopic(String topic) {
 
-        val entity = findByTopic(topic);
+        final var entity = findByTopic(topic);
 
         if (entity.getNsiPath() == null) {
             log.error("dictionaryUrl of DictionaryConfigDto is null, dto:[{}]",entity);

@@ -6,7 +6,6 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.PdmDictionaryCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nlmk.l3.pdm.Data;
 import nlmk.l3.pdm.Pk;
 import nlmk.l3.pdm.opEnum;
@@ -24,7 +23,7 @@ public class PdmDictionaryCreatorImpl implements PdmDictionaryCreator {
                                              opEnum op,
                                              Pk pk,
                                              Data data) {
-        val pdmDictionaryBuilder = PdmDictionary.builder()
+        final var pdmDictionaryBuilder = PdmDictionary.builder()
                 .op(op.name())
                 .pk(
                         fromPk(pk)
@@ -41,7 +40,7 @@ public class PdmDictionaryCreatorImpl implements PdmDictionaryCreator {
     }
 
     private com.nlmk.kb.server.entity.pdm.Pk fromPk(nlmk.l3.pdm.Pk pdmPk) {
-        val pkBuilder = com.nlmk.kb.server.entity.pdm.Pk.builder();
+        final var pkBuilder = com.nlmk.kb.server.entity.pdm.Pk.builder();
         if (pdmPk.getId() != null) {
             pkBuilder.Id(pdmPk.getId().toString());
         }
@@ -65,7 +64,7 @@ public class PdmDictionaryCreatorImpl implements PdmDictionaryCreator {
     }
 
     private Spec fromSpec(nlmk.l3.pdm.Spec pdmSpec) {
-        val specBuilder = Spec.builder()
+        final var specBuilder = Spec.builder()
                 .specCode(pdmSpec.getSpecCode())
                 .specTypeCode(pdmSpec.getSpecTypeCode());
 
