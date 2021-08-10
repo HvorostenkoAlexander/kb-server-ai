@@ -41,8 +41,7 @@ public class KbController {
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
-            required = true) String primeId) {
+    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId") String primeId) {
 
         log.info("request PreAttestationParamDto for primeId: {}", primeId);
 

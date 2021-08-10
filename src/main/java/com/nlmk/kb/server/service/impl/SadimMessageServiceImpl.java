@@ -53,18 +53,10 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         );
 
         if (sadimFromBase.isPresent()) {
-            //todo включено обновление сведений из топика САДИМ
-            log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
+            log.warn("the message with offset: [{}]; partition: [{}] is already present in the database." +
                             " Loading data from base..."
                     , consumerRecord.offset(), consumerRecord.partition());
 
-            if (sadimMessage.getParam() != null) {
-                updateMessageInBase(
-                        sadimFromBase.get(),
-                        sadimMessage.getParam().getLotNo(),
-                        sadimMessage.getParam().getMeltNo()
-                );
-            }
             return sadimFromBase.get();
         }
         return repository.save(sadimMessage);

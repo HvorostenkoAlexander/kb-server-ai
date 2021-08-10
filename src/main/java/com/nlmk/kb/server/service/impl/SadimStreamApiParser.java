@@ -110,7 +110,7 @@ public class SadimStreamApiParser implements SadimJsonParser {
         final var param = paramBuilder.build();
 
         if (sadimDate != null) {
-            log.info("Сведения SADIM с primeId: [{}] от: [{}]", param.getPrimeId(), sadimDate);
+            log.debug("Сведения SADIM с primeId: [{}] от: [{}]", param.getPrimeId(), sadimDate);
         }
 
         if (param.getPrimeId() != null) {
