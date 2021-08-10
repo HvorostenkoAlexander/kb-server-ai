@@ -23,11 +23,7 @@ public class KafkaSadimService {
     private long sleepTime;
     private final SadimMessageService messageService;
 
-    //   @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
-    @KafkaListener(containerFactory = "kafkaListenerSadim",
-                        topicPartitions = {@TopicPartition(topic = "${kafka.sadim.topic}",
-                        partitionOffsets =
-                        @PartitionOffset(partition = "0", initialOffset = "0"))})
+    @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
                                   Acknowledgment ack) {
