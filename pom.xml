@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>kb-server</name>
     <description>Module for read/write information from NLMK kafka topics</description>
     <properties>
@@ -198,9 +198,9 @@
         </repository>
 
         <repository>
-            <id>nlmk-apcs-snapshots</id>
+            <id>nlmk-apcs-central</id>
             <name>Хранилище артефактов maven APCS</name>
-            <url>${env.ATTESTATION_MAVEN_REPO_PATH}</url>
+            <url>${nlmk.repo.central}</url>
             <releases>
                 <enabled>true</enabled>
             </releases>

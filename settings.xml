@@ -1,12 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:SchemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
-            <id>nlmk-apcs-snapshots</id>
+            <id>nlmk-apcs-central</id>
             <username>${env.ATTESTATION_MAVEN_REPO_USER_RW}</username>
             <password>${env.ATTESTATION_MAVEN_REPO_PASS_RW}</password>
         </server>
     </servers>
+    <profiles>
+        <profile>
+            <properties>
+                <nlmk.repo.central>${env.ATTESTATION_MAVEN_REPO_PATH}</nlmk.repo.central>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>nlmk-apcs-central</id>
+                    <name>Хранилище артефактов maven APCS</name>
+                    <url>${nlmk.repo.central}</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <id>artifactory</id>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>artifactory</activeProfile>
+    </activeProfiles>
 </settings>
