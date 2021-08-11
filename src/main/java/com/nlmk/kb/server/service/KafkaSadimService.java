@@ -32,7 +32,8 @@ public class KafkaSadimService {
 
         try {
             final var sadimMessage = messageService.saveMessage(consumerRecord);
-            log.debug("saved SADIM massage: {}", sadimMessage);
+            log.info("saved SADIM massage partition: [{}], offset: [{}]; param: [{}]",
+                    sadimMessage.getPartition(), sadimMessage.getOffset(), sadimMessage.getParam());
 
             ack.acknowledge();
 
