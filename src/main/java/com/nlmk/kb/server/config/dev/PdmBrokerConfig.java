@@ -16,7 +16,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -24,13 +24,9 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.PdmDtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Slf4j
@@ -45,11 +41,11 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
         log.debug("PDM DICTIONARY: {} ", dictionary);
 
-        val chemicalStdLimitDto = ChemicalStdLimitDto.builder()
+        final var chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
@@ -85,14 +81,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
 
-//        val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS");
-//        try {
-//            chemicalStdLimitDto.setTs(format.parse(dictionary.getTs()));
-//        } catch (ParseException e) {
-//            log.error("Ошибка парсинга ts: {}", dictionary.getTs());
-//            throw new RuntimeException("Ошибка парсинга ts: " + dictionary.getTs() + "; " + e);
-//        }
-
         log.debug("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
 
         return chemicalStdLimitDto;
@@ -103,9 +91,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val katSteel4041Dto = SteelCategoryG4041Dto.builder()
+        final var katSteel4041Dto = SteelCategoryG4041Dto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
@@ -120,9 +108,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val thicknessTkLimitDto = ThicknessTkLimitDto.builder()
+        final var thicknessTkLimitDto = ThicknessTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .routeShop(converter.getSpecValue(specs, SpecCode.ROUTE_SHOP.getValue()))
@@ -132,7 +120,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .thickValues(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue()))
                 .rollingThickAccuracy(converter.getSpecValue(specs, SpecCode.MANUFACTURING_PRECISION_BY_THICKNESS.getValue()))
                 .prYield(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.YIELD_POINT.getValue())))
-                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, 586)))
+                .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_PRODUCTS.getValue())))
                 .prWidthGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.WHIDTH_PRODUCT.getValue())))
                 .prThickTolMin(converter.getSpecValue(specs, SpecCode.THICKNESS_TOLERANCE_MIN.getValue()))
                 .prThickTolMax(converter.getSpecValue(specs, SpecCode.THICKNESS_TOLERANCE_MAX.getValue()))
@@ -148,9 +136,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val widthTkLimitDto = WidthTkLimitDto.builder()
+        final var widthTkLimitDto = WidthTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
@@ -171,7 +159,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prWidthTolPerc(converter.getSpecValue(specs, SpecCode.WHIDTH_TOLERANCE_PERCENT.getValue()))
                 .build();
 
-        val widthTolMinStr = converter.getSpecValue(specs, SpecCode.WIDTH_TOLERANCE_MIN.getValue());
+        final var widthTolMinStr = converter.getSpecValue(specs, SpecCode.WIDTH_TOLERANCE_MIN.getValue());
 
         return widthTkLimitDto;
     }
@@ -181,9 +169,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val lengthTkLimitDto = LengthTkLimitDto.builder()
+        final var lengthTkLimitDto = LengthTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
@@ -208,9 +196,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val physMechPropertiesDto = PhysMechPropertiesDto.builder()
+        final var physMechPropertiesDto = PhysMechPropertiesDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .pr_category(converter.getSpecValue(specs, SpecCode.CATEGORY_OF_MARK.getValue()))
@@ -336,9 +324,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val evennessTkLimitDto = EvennessTkLimitDto.builder()
+        final var evennessTkLimitDto = EvennessTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
@@ -364,9 +352,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val tkNumDto = TkNumDto.builder()
+        final var tkNumDto = TkNumDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
@@ -392,9 +380,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val ceqDto = CEqDto.builder()
+        final var ceqDto = CEqDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .ceqNum(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
@@ -409,14 +397,12 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val mechanicalDto = MechanicalTkDto.builder()
+        final var mechanicalDto = MechanicalTkDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
-                //.tk_group(converter.getSpecValue(specs, SpecCode..getValue()))
                 .tk_num(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
-                //.tk_purp(converter.getSpecValue(specs, SpecCode..getValue()))
                 ._prior(converter.parsToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
                 .tk_route(converter.getSpecValue(specs, SpecCode.ROUTE_TK.getValue()))
                 .pr_category(converter.getSpecValue(specs, SpecCode.CATEGORY_OF_MARK.getValue()))
@@ -547,15 +533,13 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val chemicalDto = ChemicalTkLimitDto.builder()
+        final var chemicalDto = ChemicalTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prior(converter.parsToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
-                //.chemSrc(converter.getSpecValue(specs, SpecCode..getValue()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
-                //.tkPurp(converter.getSpecValue(specs, SpecCode..getValue()))
                 .tkRoute(converter.getSpecValue(specs, SpecCode.ROUTE_TK.getValue()))
                 .prSteelMark(converter.getSpecValue(specs, SpecCode.MELTING_MARK.getValue()))
                 .prStandSteel(converter.getSpecValue(specs, SpecCode.MELTING_MARK_STANDART.getValue()))
@@ -631,9 +615,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
-        val microstructureDto = MicrostructureDto.builder()
+        final var microstructureDto = MicrostructureDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
@@ -668,7 +652,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
 
         log.debug("--- toChemicalEquivalentStdDto PDM DICTIONARY: {} ", dictionary);
 
@@ -701,7 +685,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toMatchTkDto PDM DICTIONARY: {} ", dictionary);
 
         MatchTkDto matchTkDto = MatchTkDto.builder()
@@ -722,7 +706,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toMatchRpDto PDM DICTIONARY: {} ", dictionary);
 
         MatchRpDto matchTkDto = MatchRpDto.builder()
@@ -741,10 +725,10 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toPcmDto PDM DICTIONARY: {} ", dictionary);
 
-        val pcmDto = PcmDto.builder()
+        final var pcmDto = PcmDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .pcmNum(converter.getSpecValue(specs, SpecCode.CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER.getValue()))
@@ -761,10 +745,10 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary,"dictionary не должен быть null.");
         Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
 
-        val specs = dictionary.getData().getSpecifications();
+        final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toleranceDto PDM DICTIONARY: {} ", dictionary);
 
-        val toleranceDto = ToleranceDto.builder()
+        final var toleranceDto = ToleranceDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))

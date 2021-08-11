@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -77,10 +78,18 @@ public class PreAttestationParam {
     private Double ph23sgp;// "Процент длины полосы, на которой толщина входит в (2/3) допуска"
 
     @JsonProperty("lclThckng")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Double> lclThckng;// "Высота местных утолщений по ширине полосы"
 
     @JsonProperty("estimate")
     @Column(name ="estimate")
     private Integer estimate;// "Оценка годности полосы"
+
+    @JsonProperty("lot_no")
+    @Column(name ="lot_no")
+    private Integer lotNo;// Номер горячекатаной партии
+
+    @JsonProperty("melt_no")
+    @Column(name ="melt_no")
+    private Integer meltNo; // Номер плавки
 }

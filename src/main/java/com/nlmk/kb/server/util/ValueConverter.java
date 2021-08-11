@@ -10,7 +10,6 @@ import com.nlmk.kb.server.entity.pam.OrderRequest;
 import com.nlmk.kb.server.entity.pam.Pk;
 import com.nlmk.kb.server.entity.pam.Specs;
 import com.nlmk.kb.server.entity.pam.Value;
-import lombok.val;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.l3.ccm.pgp.RecordChemical;
 import nlmk.l3.ccm.pgp.RecordData;
@@ -34,9 +33,9 @@ public class ValueConverter {
 
     public static com.nlmk.kb.server.entity.pam.AttestationRequest toPamAttestationRequest(AttestationRequest request) {
 
-        val value = new Value();
+        final var value = new Value();
 
-        val attRequest = com.nlmk.kb.server.entity.pam.AttestationRequest.builder()
+        final var attRequest = com.nlmk.kb.server.entity.pam.AttestationRequest.builder()
                 .value(value)
                 .build();
 
@@ -69,7 +68,7 @@ public class ValueConverter {
 
     private static DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        val dataFieldBuilder = DataField.builder()
+        final var dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
                 .thickness(

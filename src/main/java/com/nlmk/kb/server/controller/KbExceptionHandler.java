@@ -1,7 +1,6 @@
 package com.nlmk.kb.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,7 +26,7 @@ public class KbExceptionHandler {
     public ResponseEntity<Map<String, String>> handleArgumentException(MethodArgumentNotValidException ex) {
         log.error("handleArgumentException: {}", ex.getMessage());
 
-        val errMap = ex.getBindingResult().getFieldErrors().stream().collect(
+        final var errMap = ex.getBindingResult().getFieldErrors().stream().collect(
                 Collectors.toMap(
                         FieldError::getField,
                         FieldError::getDefaultMessage

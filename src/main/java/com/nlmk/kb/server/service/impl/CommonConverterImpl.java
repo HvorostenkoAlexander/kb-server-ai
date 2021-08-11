@@ -5,7 +5,6 @@ import com.nlmk.kb.server.entity.pdm.Spec;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.CommonConverter;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +50,7 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     private Date parse(String stringDate, String stringFormat){
-        val format = new SimpleDateFormat(stringFormat);
+        final var format = new SimpleDateFormat(stringFormat);
         try {
             return format.parse(stringDate);
         } catch (ParseException e) {
@@ -65,7 +64,7 @@ public class CommonConverterImpl implements CommonConverter {
             return null;
         }
 
-        val spec = specs.stream().filter((s) -> s.getSpecCode() == code).findFirst();
+        final var spec = specs.stream().filter((s) -> s.getSpecCode() == code).findFirst();
         return spec.map(Spec::getSpecValue).orElse(null);
     }
 

@@ -9,7 +9,6 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,15 +26,16 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
     @Override
     public Optional<PreAttestationParam> getParam(String jsonString) {
-        String sadimDate=null;
-        val paramBuilder = PreAttestationParam.builder();
+        String sadimDate = null;
+        final var paramBuilder = PreAttestationParam.builder();
 
-        try (JsonParser jParser = new JsonFactory().createParser(jsonString);) {
-
+        try (
+                JsonParser jParser = new JsonFactory().createParser(jsonString)
+        ) {
             while (jParser.nextToken() != null) {
                 String fieldname = jParser.getCurrentName();
 
-                if ("time_rolling".equals(fieldname)){
+                if ("time_rolling".equals(fieldname)) {
                     jParser.nextToken();
                     sadimDate = jParser.getText();
                 }
@@ -95,14 +95,22 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 if ("lclThckng".equals(fieldname) && jParser.getCurrentToken() == JsonToken.START_OBJECT) {
                     paramBuilder.lclThckng(getArrayFromLclThckngSadim(jParser));
                 }
+                if ("lot_no".equals(fieldname)) {
+                    jParser.nextToken();
+                    paramBuilder.lotNo(converter.parsToInteger(jParser.getText()));
+                }
+                if ("melt_no".equals(fieldname)) {
+                    jParser.nextToken();
+                    paramBuilder.meltNo(converter.parsToInteger(jParser.getText()));
+                }
             }
         } catch (IOException | NumberFormatException ioe) {
             throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + ioe.getMessage());
         }
-        val param = paramBuilder.build();
+        final var param = paramBuilder.build();
 
-        if (sadimDate!=null) {
-            log.debug("Сведения SADIM с primeId: [{}] от: [{}]",param.getPrimeId(), sadimDate);
+        if (sadimDate != null) {
+            log.debug("Сведения SADIM с primeId: [{}] от: [{}]", param.getPrimeId(), sadimDate);
         }
 
         if (param.getPrimeId() != null) {

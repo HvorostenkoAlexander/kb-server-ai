@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,12 +41,11 @@ public class KbController {
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId",
-            required = true) String primeId) {
+    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId") String primeId) {
 
         log.info("request PreAttestationParamDto for primeId: {}", primeId);
 
-        val paramDto = paramService.findByPrimeIdLatest(primeId);
+        final var paramDto = paramService.findByPrimeIdLatest(primeId);
 
         log.info("RESULT paramDto from kb: {}", paramDto);
         return ResponseEntity.ok(paramDto);
@@ -114,7 +112,7 @@ public class KbController {
     public ResponseEntity<Long> resendingPdmMessageById(@PathVariable Long id){
         log.info("kb, resendingPdmMessageById: id: [{}]",id);
 
-        val responseFromNsi = pdmMessageService.resendingToNsi(id);
+        final var responseFromNsi = pdmMessageService.resendingToNsi(id);
         return new ResponseEntity<>(id,responseFromNsi.getStatusCode());
     }
 

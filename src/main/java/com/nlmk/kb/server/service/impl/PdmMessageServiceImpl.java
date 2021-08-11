@@ -8,7 +8,6 @@ import com.nlmk.kb.server.service.NsiClientService;
 import com.nlmk.kb.server.service.PdmMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -140,7 +139,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     public ResponseEntity<Long> resendingToNsi(Long id) {
         Assert.notNull(id, "id не должен быть null");
 
-        val message = repository.findById(id).orElseThrow(
+        final var message = repository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException(
                         String.format("Не найден объект с id: [%s]", id)
                 )
@@ -153,7 +152,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     public ResponseEntity<Long> sendToNsi(PdmMessage message) {
         ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
         setStatusMessage(message, response.getStatusCode());
-        val updated = update(message);
+        final var updated = update(message);
 
         return response;
     }

@@ -10,7 +10,6 @@ import com.nlmk.kb.server.service.PdmDtoConverter;
 import com.nlmk.kb.server.service.PdmMessageCreator;
 import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.MDC;
@@ -38,24 +37,24 @@ public class AsapChemicalPropMessageSender extends BaseSender implements Message
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        val sendingDto = super.getPdmDtoConverter().toChemicalStdLimitDto(message.getDictionary());
+        final var sendingDto = super.getPdmDtoConverter().toChemicalStdLimitDto(message.getDictionary());
 
-        val headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
-        val request = new HttpEntity<>(sendingDto, headers);
-        val nsiUrl = getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic());
+        final var headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
+        final var request = new HttpEntity<>(sendingDto, headers);
+        final var nsiUrl = getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic());
 
         return super.getCommonSender().exchange(request, nsiUrl, message.getOp());
     }
 
     @Override
     public PdmMessage createPdmMessage(ConsumerRecord record) {
-        val pdmObject = (SpAsapChemicalProperties) record.value();
+        final var pdmObject = (SpAsapChemicalProperties) record.value();
 
-        val dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
+        final var dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
 
-        val message = PdmMessage.builder()
+        final var message = PdmMessage.builder()
                 .topic(record.topic())
                 .key((String) record.key())
                 .offset(record.offset())

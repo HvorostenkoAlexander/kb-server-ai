@@ -1,13 +1,11 @@
 package com.nlmk.kb.server.service.impl;
 
-import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.repository.SadimMessageRepository;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import com.nlmk.kb.server.service.SadimMessageService;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -35,29 +33,30 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     @Transactional
     public SadimMessage saveMessage(ConsumerRecord consumerRecord) {
 
-        val attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString())
+        final var attestationParam = sadimJsonParser.getParam(consumerRecord.value().toString())
                 .orElseThrow(
                         () -> new SadimJsonProcessingException("Не удалось получить параметры из сообщения от SADIM.")
                 );
 
         log.debug("SADIM message with offset: {}; attestationParam:{}", consumerRecord.offset(), attestationParam);
 
-        val sadimMessage = SadimMessage.builder()
+        final var sadimMessage = SadimMessage.builder()
                 .key(consumerRecord.key().toString())
                 .partition(consumerRecord.partition())
                 .offset(consumerRecord.offset())
                 .ts(LocalDateTime.now())
                 .param(attestationParam)
                 .build();
-        val sadimFromBase = findByPartitionAndOffset(
+        final var sadimFromBase = findByPartitionAndOffset(
                 consumerRecord.partition(),
                 consumerRecord.offset()
         );
 
         if (sadimFromBase.isPresent()) {
-            log.debug("the message with offset: [{}]; partition: [{}] is already present in the database." +
+            log.warn("the message with offset: [{}]; partition: [{}] is already present in the database." +
                             " Loading data from base..."
                     , consumerRecord.offset(), consumerRecord.partition());
+
             return sadimFromBase.get();
         }
         return repository.save(sadimMessage);
@@ -78,5 +77,20 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         Assert.notNull(offset, "offset must not be null");
 
         return repository.findFirstByPartitionAndOffset(partition, offset);
+    }
+
+    private void updateMessageInBase(SadimMessage sadimFromBase, Integer lotNo, Integer meltNo) {
+        final var preAttestationParam = sadimFromBase.getParam();
+
+        if (preAttestationParam != null) {
+            preAttestationParam.setLotNo(lotNo);
+            preAttestationParam.setMeltNo(meltNo);
+
+            log.info("UPDATE sadim message with offset: [{}];" +
+                            " partition: [{}]," +
+                            " PreAttestaionpParam: [{}];",
+                    sadimFromBase.getOffset(), sadimFromBase.getPartition(),
+                    sadimFromBase.getParam());
+        }
     }
 }

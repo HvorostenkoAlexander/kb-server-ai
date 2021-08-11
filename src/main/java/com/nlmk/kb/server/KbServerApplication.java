@@ -17,7 +17,6 @@ public class KbServerApplication {
         ConfigurableEnvironment environment = new StandardEnvironment();
         environment.setActiveProfiles("prod");
         application.setEnvironment(environment);
-
         application.run(args);
     }
 
