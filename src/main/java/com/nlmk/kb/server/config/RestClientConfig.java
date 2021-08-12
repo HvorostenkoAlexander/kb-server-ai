@@ -16,9 +16,10 @@ public class RestClientConfig {
 
     /**
      * RestTemplate, который авторизуется в keycloak и делает запрос с соотвествующим токеном.
-     * @param serverUrl адрес сервера keycloak
-     * @param realm реалм
-     * @param clientId клиент
+     *
+     * @param serverUrl    адрес сервера keycloak
+     * @param realm        реалм
+     * @param clientId     клиент
      * @param clientSecret секрет клиента
      * @return сконфигурированный rest template
      */

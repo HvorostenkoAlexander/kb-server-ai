@@ -18,7 +18,7 @@ public class CcmConsumerProperties {
     private final String sslKeystorePath;
 
     public CcmConsumerProperties(@Value("${kafka.ccm.bootstrap-servers}") String kafkaServer,
-                                 @Value("${kafka.ccm.consumer.group-id}")String kafkaGroupId,
+                                 @Value("${kafka.ccm.consumer.group-id}") String kafkaGroupId,
                                  @Value("${kafka.ccm.topicReq}") String topicReq,
                                  @Value("${kafka.ccm.schema.registry.url}") String schemaRegistryUrl,
                                  @Value("${kafka.ccm.ssl-enabled}") boolean sslEnabled,

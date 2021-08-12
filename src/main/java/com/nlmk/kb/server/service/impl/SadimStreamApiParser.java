@@ -9,6 +9,7 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,6 +27,12 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
     @Override
     public Optional<PreAttestationParam> getParam(String jsonString) {
+
+        if (StringUtils.isBlank(jsonString)){
+            log.warn("jsonString is blank.");
+            return Optional.empty();
+        }
+
         String sadimDate = null;
         final var paramBuilder = PreAttestationParam.builder();
 

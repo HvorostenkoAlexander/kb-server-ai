@@ -70,7 +70,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
     @Override
     public CcmAttestationRequestMessage update(CcmAttestationRequestMessage ccmMessage) {
-        Assert.notNull(ccmMessage,"ccmMessage must not be null");
+        Assert.notNull(ccmMessage, "ccmMessage must not be null");
 
         return messageRepository.save(ccmMessage);
     }

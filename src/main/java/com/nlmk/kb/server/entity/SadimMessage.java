@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "sadim_message", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"partition","msg_offset"})
+        @UniqueConstraint(columnNames = {"partition", "msg_offset"})
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,7 +49,7 @@ public class SadimMessage {
     @Column(name = "status")
     private String status;
 
-    @Column(name="note")
+    @Column(name = "note")
     private String note;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)

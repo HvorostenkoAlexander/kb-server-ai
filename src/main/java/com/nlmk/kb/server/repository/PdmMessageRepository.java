@@ -24,8 +24,8 @@ public interface PdmMessageRepository extends JpaRepository<PdmMessage, Long> {
                     " AND (date(ts_timestamp)) <= date(CAST(?4 AS timestamp with time zone))))"
     )
     public Page<PdmMessage> getMessages(String topic,
-                                 Boolean isPosted,
-                                 String startDate,
-                                 String endDate,
-                                 PageRequest of);
+                                        Boolean isPosted,
+                                        String startDate,
+                                        String endDate,
+                                        PageRequest of);
 }

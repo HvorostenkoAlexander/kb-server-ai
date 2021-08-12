@@ -87,7 +87,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
         final var entity = findByTopic(topic);
 
         if (entity.getNsiPath() == null) {
-            log.error("dictionaryUrl of DictionaryConfigDto is null, dto:[{}]",entity);
+            log.error("dictionaryUrl of DictionaryConfigDto is null, dto:[{}]", entity);
 
             throw new IllegalArgumentException(
                     String.format("dictionaryUrl of DictionaryConfigDto is null, dto:[%s]", entity)

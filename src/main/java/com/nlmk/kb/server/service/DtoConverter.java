@@ -10,7 +10,10 @@ import com.nlmk.kb.server.entity.pdm.PdmMessage;
 public interface DtoConverter {
 
     public PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity);
+
     public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto);
+
     public DictionaryConfigDto toDictionaryConfigDto(DictionaryConfig entity);
+
     public PdmMessageDto toPdmMessageDto(PdmMessage entity);
 }

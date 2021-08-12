@@ -35,7 +35,7 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
             T result = null;
 
             if (data != null) {
-               // log.info("data='{}'", DatatypeConverter.printHexBinary(data));
+                // log.info("data='{}'", DatatypeConverter.printHexBinary(data));
 
                 DatumReader<GenericRecord> datumReader =
                         new SpecificDatumReader<>(targetType.getDeclaredConstructor().newInstance().getSchema());
@@ -43,16 +43,16 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
                 Decoder decoder = DecoderFactory.get().binaryDecoder(data, null);
 
                 result = (T) datumReader.read(null, decoder);
-              //  log.info("deserialized data='{}'", result);
+                //  log.info("deserialized data='{}'", result);
             }
             return result;
         } catch (Exception ex) {
 
-          //  Arrays.stream(ex.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
+            //  Arrays.stream(ex.getStackTrace()).forEach(el -> log.error("--- stackTrace: " + el));
 
             throw new SerializationException(
-                  //  "Can't deserialize data '" + Arrays.toString(data) + "' from topic '" + topic + "'", ex);
-                    "Can't deserialize data '" + "' from topic '" + topic + "'"+"exception: "+ex.toString(), ex);
+                    //  "Can't deserialize data '" + Arrays.toString(data) + "' from topic '" + topic + "'", ex);
+                    "Can't deserialize data '" + "' from topic '" + topic + "'" + "exception: " + ex.toString(), ex);
         }
     }
 }

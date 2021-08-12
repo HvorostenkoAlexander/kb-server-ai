@@ -28,28 +28,27 @@ public class CommonConverterImpl implements CommonConverter {
             return dateMs;
         } else if (dateNoMs != null) {
             return dateNoMs;
-        } else if (dateNoTimeZone !=null){
+        } else if (dateNoTimeZone != null) {
             return dateNoTimeZone;
-        }
-        else {
+        } else {
             throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; ");
         }
     }
 
     //todo когда решится проблема по передачи сведений о дате с time zone убрать
     private Date parseToDateNoTimeZone(String stringDate) {
-        return parse(stringDate,"yyyy-MM-dd'T'HH:mm:ss");
+        return parse(stringDate, "yyyy-MM-dd'T'HH:mm:ss");
     }
 
     private Date parseToDateNoMs(String stringDate) {
-        return parse(stringDate,"yyyy-MM-dd'T'HH:mm:ssX");
+        return parse(stringDate, "yyyy-MM-dd'T'HH:mm:ssX");
     }
 
     private Date parseToDateWithMs(String stringDate) {
-        return parse(stringDate,"yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        return parse(stringDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
     }
 
-    private Date parse(String stringDate, String stringFormat){
+    private Date parse(String stringDate, String stringFormat) {
         final var format = new SimpleDateFormat(stringFormat);
         try {
             return format.parse(stringDate);

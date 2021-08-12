@@ -81,7 +81,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> update(PdmMessage message) {
-        log.debug("update PdmMessage: [{}]",message);
+        log.debug("update PdmMessage: [{}]", message);
 
         Assert.notNull(message, "PdmMessage for update is null.");
 
@@ -168,7 +168,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     private void setStatusMessage(PdmMessage message, HttpStatus status) {
-        log.debug("setStatusMessage; HttpStatus: [{}], PdmMessage:[{}]", status.toString(),message);
+        log.debug("setStatusMessage; HttpStatus: [{}], PdmMessage:[{}]", status.toString(), message);
 
         if (status == HttpStatus.ACCEPTED ||
                 status == HttpStatus.NOT_FOUND ||

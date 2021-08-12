@@ -91,35 +91,35 @@ public class KbController {
     @GetMapping("/pdm_message/by_topic")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public List<PdmMessageDto> getPdmTopicMessagesByOffset(@RequestParam(value = "topic") String topic,
-                                                         @RequestParam(value = "partition") Integer partition,
-                                                         @RequestParam(value = "offset") Long offset){
+                                                           @RequestParam(value = "partition") Integer partition,
+                                                           @RequestParam(value = "offset") Long offset) {
         log.info("kb, getPdmTopicMessagesByOffset: topic: [{}], partition: [{}], offset: [{}]",
                 topic, partition, offset);
 
-        return pdmMessageService.getMessagesByOffset(topic,partition,offset);
+        return pdmMessageService.getMessagesByOffset(topic, partition, offset);
     }
 
     @GetMapping("/pdm_message/{id}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public PdmMessageDto getPdmMessageById(@PathVariable Long id){
-        log.info("kb, getPdmMessageById: id: [{}]",id);
+    public PdmMessageDto getPdmMessageById(@PathVariable Long id) {
+        log.info("kb, getPdmMessageById: id: [{}]", id);
 
         return pdmMessageService.getMessageById(id);
     }
 
     @PostMapping("/pdm_message/{id}/send")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<Long> resendingPdmMessageById(@PathVariable Long id){
-        log.info("kb, resendingPdmMessageById: id: [{}]",id);
+    public ResponseEntity<Long> resendingPdmMessageById(@PathVariable Long id) {
+        log.info("kb, resendingPdmMessageById: id: [{}]", id);
 
         final var responseFromNsi = pdmMessageService.resendingToNsi(id);
-        return new ResponseEntity<>(id,responseFromNsi.getStatusCode());
+        return new ResponseEntity<>(id, responseFromNsi.getStatusCode());
     }
 
     @DeleteMapping("/pdm_message/{id}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public Long deletePdmMessageById(@PathVariable Long id){
-        log.info("kb, deletePdmMessageById: id: [{}]",id);
+    public Long deletePdmMessageById(@PathVariable Long id) {
+        log.info("kb, deletePdmMessageById: id: [{}]", id);
 
         return pdmMessageService.deleteMessageById(id);
     }

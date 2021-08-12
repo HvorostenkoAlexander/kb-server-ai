@@ -25,8 +25,8 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "pdm_message",uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"topic", "partition","msg_offset"})
+@Table(name = "pdm_message", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
 })
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class PdmMessage {
@@ -58,7 +58,7 @@ public class PdmMessage {
 
     @Column(name = "is_posted",
             nullable = false)
-    private boolean isPosted=false;
+    private boolean isPosted = false;
 
     @Type(type = "json")
     @Column(columnDefinition = "json")

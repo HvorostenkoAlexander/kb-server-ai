@@ -29,7 +29,7 @@ public class RecSpec {
     private Integer specTypeCode;// тип данных (1-string, 2-number, 3-date)
 
     @Column(nullable = false)
-    private String  specTypeName;// нименование типа данных
+    private String specTypeName;// нименование типа данных
 
     @Column(nullable = true)
     private Float specValue;// значение характеристики

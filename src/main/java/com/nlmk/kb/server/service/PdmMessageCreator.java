@@ -6,5 +6,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public interface PdmMessageCreator {
 
     public String getType();
+
     PdmMessage createPdmMessage(ConsumerRecord record);
 }

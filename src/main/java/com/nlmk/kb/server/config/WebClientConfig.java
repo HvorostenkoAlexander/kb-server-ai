@@ -12,13 +12,13 @@ public class WebClientConfig {
 
     @Bean(name = "keycloakClient")
     public WebClient keycloakClient(
-        @Value("${keycloak.auth-server-url}") String authServerUrl
+            @Value("${keycloak.auth-server-url}") String authServerUrl
     ) {
 
         return WebClient
-            .builder()
-            .baseUrl(authServerUrl)
-            .defaultHeaders(headers -> headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-            .build();
+                .builder()
+                .baseUrl(authServerUrl)
+                .defaultHeaders(headers -> headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                .build();
     }
 }

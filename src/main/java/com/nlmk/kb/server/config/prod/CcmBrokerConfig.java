@@ -84,7 +84,7 @@ public class CcmBrokerConfig {
         factory.setConsumerFactory(ccmConsumerFactory());
         factory.setErrorHandler(((thrownException, data) -> {
             log.error("ERROR: " + thrownException.getMessage());
-            if (data!=null) {
+            if (data != null) {
                 log.error("ERROR RECORD: " + data.toString());
             }
         }));

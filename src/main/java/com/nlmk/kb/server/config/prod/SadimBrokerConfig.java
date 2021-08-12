@@ -46,13 +46,13 @@ public class SadimBrokerConfig {
         StringDeserializer valueDeserializer = new StringDeserializer();
         valueDeserializer.configure(sadimConsumerConfigs(), false);
 
-        ErrorHandlingDeserializer<String > errorHandlingValueDeserializer
+        ErrorHandlingDeserializer<String> errorHandlingValueDeserializer
                 = new ErrorHandlingDeserializer<String>(valueDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(sadimConsumerConfigs(),
                 keyDeserializer,
                 errorHandlingValueDeserializer
-                );
+        );
     }
 
     @Bean
@@ -63,7 +63,7 @@ public class SadimBrokerConfig {
         factory.setConsumerFactory(sadimConsumerFactory());
         factory.setErrorHandler(((thrownException, data) -> {
             log.error("ERROR: " + thrownException.getMessage());
-            if (data!=null) {
+            if (data != null) {
                 log.error("ERROR RECORD: " + data.toString());
             }
         }));

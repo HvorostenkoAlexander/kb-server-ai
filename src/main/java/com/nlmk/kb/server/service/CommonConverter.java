@@ -9,9 +9,13 @@ import java.util.List;
 public interface CommonConverter {
 
     public Date parseToDate(String stringDate);
+
     public String getSpecValue(List<Spec> specs, int code);
+
     public LimitDto stringToLimit(String value);
+
     public Double parsToDouble(String s);
+
     public Integer parsToInteger(String s);
 
-    }
+}
