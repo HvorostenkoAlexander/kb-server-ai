@@ -66,7 +66,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     public List<SadimMessage> findByParamPrimeId(String primeId) {
 
         List<SadimMessage> messages = repository.findSadimMessagesByParam_PrimeIdOrderByTsDesc(primeId);
-        log.info("messages size by primeId: {}", messages.size());
+        log.warn("messages size by primeId: {}", messages.size());
 
         return messages;
     }
