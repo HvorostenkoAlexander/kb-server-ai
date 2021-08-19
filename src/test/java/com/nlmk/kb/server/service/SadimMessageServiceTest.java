@@ -63,7 +63,6 @@ public class SadimMessageServiceTest {
                 .build();
 
         repository.save(validMessage);
-        System.out.println("validMessage: " + validMessage);
     }
 
     @AfterEach

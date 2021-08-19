@@ -105,7 +105,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         return batchFind(List.of(pkId, primeId), meltNo, lotNo)
                 .orElseThrow(() -> {
                     var exceptionString = String.format("В базе данных kb-server на обнаружены данные с параметрами:" +
-                                    " pkId: [{}]; primeId: [{}]; nplv(meltNo): [{}]; hnum(lotNo): [{}]",
+                                    " pkId:[%s]; primeId:[%s]; nplv(meltNo):[%s]; hnum(lotNo):[%s]",
                             pkId, primeId, meltNo, lotNo);
                     throw new IllegalArgumentException(exceptionString);
                 });
@@ -113,7 +113,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
 
     private void validateParam(String pkId, String primeId) {
         if (StringUtils.isBlank(pkId) || StringUtils.isBlank(primeId)) {
-            var exceptionString = String.format("Некорректные данные для запроса: pkId:[{}], primeId[{}]",
+            var exceptionString = String.format("Некорректные данные для запроса: pkId:[%s], primeId:[%s]",
                     pkId, primeId);
             throw new IllegalArgumentException(exceptionString);
         }
