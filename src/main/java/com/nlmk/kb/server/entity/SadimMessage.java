@@ -44,7 +44,7 @@ public class SadimMessage {
     private String key;
 
     @Column(nullable = false)
-    private LocalDateTime ts;
+    private LocalDateTime ts;// дата, время записи в БД kb-server
 
     @Column(name = "status")
     private String status;

@@ -10,5 +10,7 @@ public interface SadimMessageRepository extends JpaRepository<SadimMessage, Long
 
     public List<SadimMessage> findSadimMessagesByParam_PrimeIdOrderByTsDesc(String primeId);
 
+    public List<SadimMessage> findSadimMessagesByParam_MeltNoAndParam_LotNoOrderByTsDesc(Integer meltNo, Integer lotNo);
+
     public Optional<SadimMessage> findFirstByPartitionAndOffset(Integer partition, Long offset);
 }

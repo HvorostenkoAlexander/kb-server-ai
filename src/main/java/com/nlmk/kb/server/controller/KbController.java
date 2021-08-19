@@ -5,7 +5,7 @@ import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PdmMessageService;
-import com.nlmk.kb.server.service.PreAttestationParamService;
+import com.nlmk.kb.server.service.SadimMessageService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -35,20 +35,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KbController {
 
-    private final PreAttestationParamService paramService;
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
+    private final SadimMessageService sadimMessageService;
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<PreAttestationParamDto> sadim(@RequestParam(value = "primeId") String primeId) {
+    public PreAttestationParamDto getPreAttestationParam(@RequestParam(value = "pkId") String pkId,
+                                                         @RequestParam(value = "primeId") String primeId,
+                                                         @RequestParam(value = "nplv", required = false) Integer meltNo,
+                                                         @RequestParam(value = "hnum", required = false) Integer lotNo) {
 
-        log.info("request PreAttestationParamDto for primeId: {}", primeId);
+        log.info("request PreAttestationParamDto for pkId: [{}]; primeId: [{}]; nplv(meltNo): [{}]; hnum(lotNo): [{}]",
+                pkId, primeId, meltNo, lotNo);
 
-        final var paramDto = paramService.findByPrimeIdLatest(primeId);
+        final var paramDto = sadimMessageService.findByAttesstationParam(pkId, primeId, meltNo, lotNo);
 
         log.info("RESULT paramDto from kb: {}", paramDto);
-        return ResponseEntity.ok(paramDto);
+        return paramDto;
     }
 
     @GetMapping("/attestation_request")
