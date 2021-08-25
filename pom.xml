@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.0.10-SNAPSHOT</version>
+    <version>1.0.11-SNAPSHOT</version>
     <name>kb-server</name>
     <description>Module for read/write information from NLMK kafka topics</description>
     <properties>
@@ -22,7 +22,7 @@
         <logback-encoder.version>1.0.0.RC1</logback-encoder.version>
         <logback-classic.version>1.2.3</logback-classic.version>
         <keycloak.version>12.0.2</keycloak.version>
-        <product-api.version>1.0.6-SNAPSHOT</product-api.version>
+        <product-api.version>1.0.9-SNAPSHOT</product-api.version>
         <springdoc.version>1.5.8</springdoc.version>
     </properties>
 
