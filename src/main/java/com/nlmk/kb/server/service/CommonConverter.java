@@ -18,4 +18,5 @@ public interface CommonConverter {
 
     public Integer parsToInteger(String s);
 
+    public List<Double> parsToDoubles(String s);
 }

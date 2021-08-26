@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,8 @@ public class SadimDataBindParser implements SadimJsonParser {
                     strip.getLclThckng().getValues().stream().map(
                             d -> d.get(0)
                     ).collect(Collectors.toList())
+                            .stream().map(Objects::toString)
+                            .collect(Collectors.joining(";"))
             );
         } catch (JsonProcessingException e) {
             throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + e.getMessage());

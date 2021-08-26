@@ -46,7 +46,11 @@ public class DtoConverterImpl implements DtoConverter {
                 .meltNo(entity.getMeltNo())
                 .build();
         if (entity.getLclThckng() != null) {
-            paramDto.setLclThckng(entity.getLclThckng().toArray(new Double[0]));
+            paramDto.setLclThckng(
+                    converter.parsToDoubles(
+                            entity.getLclThckng()
+                    ).toArray(new Double[0])
+            );
         }
         return paramDto;
     }

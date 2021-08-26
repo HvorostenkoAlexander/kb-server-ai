@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -101,4 +103,22 @@ public class CommonConverterImpl implements CommonConverter {
         }
         return i;
     }
+
+    @Override
+    public List<Double> parsToDoubles(String s) {
+        if (s == null || s.isEmpty() || s.isBlank()) {
+            return List.of();
+        }
+
+        return Arrays.stream(s.split(";"))
+                .map(str->parsToDouble(str))
+                .collect(Collectors.toList());
+    }
+
+//    public String parsToLclThckng(List<Double> strS){
+//        if (strS == null) {
+//            return null;
+//        }
+//        return strS.stream().collect(Collectors.joining(";"));
+//    }
 }

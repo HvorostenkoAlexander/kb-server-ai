@@ -78,8 +78,8 @@ public class PreAttestationParam {
     private Double ph23sgp;// "Процент длины полосы, на которой толщина входит в (2/3) допуска"
 
     @JsonProperty("lclThckng")
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Double> lclThckng;// "Высота местных утолщений по ширине полосы"
+    @Column(name = "lclthckng")
+    private String lclThckng;// "Высота местных утолщений по ширине полосы"
 
     @JsonProperty("estimate")
     @Column(name = "estimate")
