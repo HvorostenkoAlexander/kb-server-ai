@@ -3,6 +3,8 @@ package com.nlmk.kb.server.controller;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.SadimMessage;
+import com.nlmk.kb.server.repository.SadimMessageRepository;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.service.SadimMessageService;
@@ -37,6 +39,7 @@ public class KbController {
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
     private final SadimMessageService sadimMessageService;
+    private final SadimMessageRepository sadimMessageRepository;
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -80,6 +83,15 @@ public class KbController {
                 endDate,
                 PageRequest.of(page, size)
         );
+    }
+
+    @GetMapping("/sadim_message")
+    public List<SadimMessage> getSadimMessageByPrimeId(
+            @RequestParam(value = "primeId", required = false) String primeId,
+            @RequestParam(value = "meltNo", required = false) Integer meltNo,
+            @RequestParam(value = "lotNo", required = false) Integer lotNo
+    ){
+        return sadimMessageRepository.findByParams(primeId,meltNo);
     }
 
     @GetMapping("/attestation_request")

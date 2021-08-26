@@ -126,27 +126,12 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                 primeId, meltNo, lotNo, startDate, endDate, of);
 
  //       https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/
-
-//        select
-//        p.id,
-//                p.prime_id,
-//                p.melt_no,
-//                p.lot_no,
-//                p.t12_min,
-//                p.t12_max,
-//                p.tcm_min,
-//                p.tcm_max,
-//                p.pbi,
-//                p.prof_fact,
-//                p.wedge_fact,
-//                p.sqc_crit_max,
-//                p.ph1_sgp,
-//                p.ph12_sgp,
-//                p.ph23_sgp,
-//                p.estimate,
-//                m.ts
-//        from public.sadim_pre_attestation_param p, public.sadim_message m
-//        where p.melt_no = '2111357' and ts > '2021-07-12 10:17:51.221657' and m.param_id = p.id;
+//
+//        select p.id, p.prime_id, p.melt_no, p.lot_no, p.t12_min, p.t12_max, p.tcm_min, p.tcm_max,
+//                p.pbi, p.prof_fact, p.wedge_fact, p.sqc_crit_max, p.ph1_sgp, p.ph12_sgp, p.ph23_sgp,
+//                p.estimate, m.ts from public.sadim_pre_attestation_param p
+//        inner join public.sadim_message m on m.param_id = p.id
+//        where p.melt_no = '2111357' and m.ts > '2021-08-23'
 
         return null;
     }
