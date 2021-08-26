@@ -11,11 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,6 +114,43 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                 });
     }
 
+    @Override
+    public Page<PreAttestationParamDto> findPreAttestationByParam(String primeId,
+                                                                  Integer meltNo,
+                                                                  Integer lotNo,
+                                                                  Date startDate,
+                                                                  Date endDate,
+                                                                  PageRequest of) {
+        log.debug("kb, findPreAttestationByParam: primeId:[{}], meltNo:[{}]" +
+                        " lotNo:[{}], dstart:[{}], dend:[{}], pageRequest:[{}]",
+                primeId, meltNo, lotNo, startDate, endDate, of);
+
+ //       https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/
+
+//        select
+//        p.id,
+//                p.prime_id,
+//                p.melt_no,
+//                p.lot_no,
+//                p.t12_min,
+//                p.t12_max,
+//                p.tcm_min,
+//                p.tcm_max,
+//                p.pbi,
+//                p.prof_fact,
+//                p.wedge_fact,
+//                p.sqc_crit_max,
+//                p.ph1_sgp,
+//                p.ph12_sgp,
+//                p.ph23_sgp,
+//                p.estimate,
+//                m.ts
+//        from public.sadim_pre_attestation_param p, public.sadim_message m
+//        where p.melt_no = '2111357' and ts > '2021-07-12 10:17:51.221657' and m.param_id = p.id;
+
+        return null;
+    }
+
     private void validateParam(String pkId, String primeId) {
         if (StringUtils.isBlank(pkId) || StringUtils.isBlank(primeId)) {
             var exceptionString = String.format("Некорректные данные для запроса: pkId:[%s], primeId:[%s]",
@@ -176,4 +216,6 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                     sadimFromBase.getParam());
         }
     }
+
+
 }

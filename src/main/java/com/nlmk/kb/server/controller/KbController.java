@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 import java.util.List;
 
-
 @Slf4j
 @CrossOrigin(origins = "*", methods = {RequestMethod.OPTIONS, RequestMethod.POST, RequestMethod.GET})
 @Timed(percentiles = {0.99, 0.95})
@@ -53,6 +52,34 @@ public class KbController {
 
         log.info("RESULT paramDto from kb: {}", paramDto);
         return paramDto;
+    }
+
+    @GetMapping("/sadim/data")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public Page<PreAttestationParamDto> getPreAttestationByParam(
+            @RequestParam(value = "pageNumber", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "20") int size,
+            @RequestParam(value = "primeId", required = false) String primeId,
+            @RequestParam(value = "meltNo", required = false) Integer meltNo,
+            @RequestParam(value = "lotNo", required = false) Integer lotNo,
+            @RequestParam(value = "dstart", required = false, defaultValue = "1970-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "dend", required = false, defaultValue = "2200-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate
+    ) {
+        log.info("kb, getPreAttestationByParam: pageNumber:[{}], pageSize:[{}], primeId:[{}], meltNo:[{}]" +
+                        " lotNo:[{}], dstart:[{}], dend:[{}]",
+                page, size, primeId, meltNo, lotNo, startDate, endDate);
+
+
+        return sadimMessageService.findPreAttestationByParam(
+                primeId,
+                meltNo,
+                lotNo,
+                startDate,
+                endDate,
+                PageRequest.of(page, size)
+        );
     }
 
     @GetMapping("/attestation_request")
