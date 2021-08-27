@@ -28,11 +28,11 @@ public class KafkaSadimService {
     public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
                                   Acknowledgment ack) {
 
-        log.info("SADIM message with partition: [{}]; offset: [{}];", consumerRecord.partition(), consumerRecord.offset());
+        log.debug("SADIM message with partition: [{}]; offset: [{}];", consumerRecord.partition(), consumerRecord.offset());
 
         try {
             final var sadimMessage = messageService.saveMessage(consumerRecord);
-            log.info("saved SADIM massage. Partition: [{}]; offset: [{}]; param: [{}];",
+            log.debug("saved SADIM massage. Partition: [{}]; offset: [{}]; param: [{}];",
                     sadimMessage.getPartition(), sadimMessage.getOffset(), sadimMessage.getParam());
 
             ack.acknowledge();
