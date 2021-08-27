@@ -18,10 +18,10 @@ public interface SadimMessageService {
                                                    Integer meltNo,
                                                    Integer lotNo);
 
-    Page<PreAttestationParamDto> findPreAttestationByParam(String primeId,
-                                                           Integer meltNo,
-                                                           Integer lotNo,
-                                                           Date startDate,
-                                                           Date endDate,
-                                                           PageRequest of);
+    Page<SadimMessage> findPreAttestationByParam(String primeId,
+                                                 Integer meltNo,
+                                                 Integer lotNo,
+                                                 Date startDate,
+                                                 Date endDate,
+                                                 PageRequest of);
 }

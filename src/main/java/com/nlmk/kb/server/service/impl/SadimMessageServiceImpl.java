@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.repository.SadimMessageRepository;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import com.nlmk.kb.server.service.SadimMessageService;
@@ -28,14 +29,17 @@ public class SadimMessageServiceImpl implements SadimMessageService {
 
     private final SadimJsonParser sadimJsonParser;
     private final SadimMessageRepository repository;
-    private final DtoConverter converter;
+    private final DtoConverter dtoConverter;
+    private final CommonConverter commonConverter;
 
     public SadimMessageServiceImpl(@Qualifier("sadimStreamApiParser") SadimJsonParser sadimJsonParser,
                                    SadimMessageRepository repository,
-                                   DtoConverter converter) {
+                                   DtoConverter dtoConverter,
+                                   CommonConverter commonConverter) {
         this.sadimJsonParser = sadimJsonParser;
         this.repository = repository;
-        this.converter = converter;
+        this.dtoConverter = dtoConverter;
+        this.commonConverter = commonConverter;
     }
 
     @Override
@@ -115,25 +119,31 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     }
 
     @Override
-    public Page<PreAttestationParamDto> findPreAttestationByParam(String primeId,
-                                                                  Integer meltNo,
-                                                                  Integer lotNo,
-                                                                  Date startDate,
-                                                                  Date endDate,
-                                                                  PageRequest of) {
-        log.debug("kb, findPreAttestationByParam: primeId:[{}], meltNo:[{}]" +
-                        " lotNo:[{}], dstart:[{}], dend:[{}], pageRequest:[{}]",
-                primeId, meltNo, lotNo, startDate, endDate, of);
+    public Page<SadimMessage> findPreAttestationByParam(String primeId,
+                                                        Integer meltNo,
+                                                        Integer lotNo,
+                                                        Date startDate,
+                                                        Date endDate,
+                                                        PageRequest of) {
+        Assert.notNull(startDate,"Дата не может быть null.");
+        Assert.notNull(endDate,"Дата не может быть null.");
+        Assert.notNull(of,"PageRequest не может быть null.");
 
- //       https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/
-//
-//        select p.id, p.prime_id, p.melt_no, p.lot_no, p.t12_min, p.t12_max, p.tcm_min, p.tcm_max,
-//                p.pbi, p.prof_fact, p.wedge_fact, p.sqc_crit_max, p.ph1_sgp, p.ph12_sgp, p.ph23_sgp,
-//                p.estimate, m.ts from public.sadim_pre_attestation_param p
-//        inner join public.sadim_message m on m.param_id = p.id
-//        where p.melt_no = '2111357' and m.ts > '2021-08-23'
+        Page<SadimMessage> sadimMessages ;
 
-        return null;
+        final var dstart = commonConverter.parseToStringByDatePattern(startDate, "yyyy-MM-dd");
+        final var dend = commonConverter.parseToStringByDatePattern(endDate, "yyyy-MM-dd");
+
+        if (primeId == null && meltNo == null && lotNo == null) {
+            sadimMessages = repository.findByDates(dstart, dend, of);
+        } else {
+            if (StringUtils.isBlank(primeId)) primeId = "";
+            if (meltNo == null) meltNo = 0;
+            if (lotNo == null) lotNo = 0;
+
+            sadimMessages = repository.findByParams(dstart, dend, primeId, meltNo, lotNo, of);
+        }
+        return sadimMessages;
     }
 
     private void validateParam(String pkId, String primeId) {
@@ -166,7 +176,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         if (messages.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(converter.toPreAttestationParamDto(
+        return Optional.of(dtoConverter.toPreAttestationParamDto(
                 messages.get(0).getParam()
         ));
     }
@@ -182,7 +192,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
             return Optional.empty();
         }
 
-        return Optional.of(converter.toPreAttestationParamDto(
+        return Optional.of(dtoConverter.toPreAttestationParamDto(
                 messages.get(0).getParam()
         ));
     }
