@@ -33,7 +33,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
 
         switch (operation) {
             case "I": {
-                log.debug("post to NSI: " + request);
+                log.info("post to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.POST,
@@ -43,7 +43,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                 break;
             }
             case "U": {
-                log.debug("put to NSI: " + request);
+                log.info("put to NSI: " + request);
                 response = restTemplate
                         .exchange(URL_NSI_DICTIONARY + url_dictionary,
                                 HttpMethod.PUT,
