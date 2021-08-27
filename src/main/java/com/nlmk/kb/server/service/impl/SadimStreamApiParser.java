@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -100,7 +101,7 @@ public class SadimStreamApiParser implements SadimJsonParser {
                     paramBuilder.estimate(converter.parsToInteger(jParser.getText()));
                 }
                 if ("lclThckng".equals(fieldname) && jParser.getCurrentToken() == JsonToken.START_OBJECT) {
-                    paramBuilder.lclThckng(getArrayFromLclThckngSadim(jParser));
+                    paramBuilder.lclThckng(getStringFromLclThckngSadim(jParser));
                 }
                 if ("lot_no".equals(fieldname)) {
                     jParser.nextToken();
@@ -127,6 +128,12 @@ public class SadimStreamApiParser implements SadimJsonParser {
         }
     }
 
+    private String getStringFromLclThckngSadim(JsonParser jParser) throws IOException {
+        List<Double> lclThckng = getArrayFromLclThckngSadim(jParser);
+
+        return lclThckng.stream().map(Objects::toString).collect(Collectors.joining(";"));
+    }
+
     private List<Double> getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
         List<List<Double>> values = new ArrayList<>();
 
@@ -136,6 +143,9 @@ public class SadimStreamApiParser implements SadimJsonParser {
             if ("values".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.START_ARRAY) {
 
                 while (!("values".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.END_ARRAY)) {
+
+                    // хотя далее формируем String c разделителем ';' parsToDouble позволяет
+                    // проверить корректность данных на этапе чтения json
 
                     if (jParser.nextToken() == JsonToken.START_ARRAY) {
                         List<Double> onePare = new ArrayList<>();
