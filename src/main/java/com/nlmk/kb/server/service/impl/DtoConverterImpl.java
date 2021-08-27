@@ -39,7 +39,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .wedgeFact(entity.getWedgeFact())
                 .sqcCritMax(entity.getSqcCritMax())
                 .ph1sgp(entity.getPh1sgp())
-                .ph12sgp(converter.parsToDouble(entity.getPh12sgp()))
+                .ph12sgp(converter.parseToDouble(entity.getPh12sgp()))
                 .ph23sgp(entity.getPh23sgp())
                 .estimate(entity.getEstimate())
                 .lotNo(entity.getLotNo())
@@ -47,7 +47,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .build();
         if (entity.getLclThckng() != null) {
             paramDto.setLclThckng(
-                    converter.parsToDoubles(
+                    converter.parseToDoubles(
                             entity.getLclThckng()
                     ).toArray(new Double[0])
             );

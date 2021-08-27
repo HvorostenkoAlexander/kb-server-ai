@@ -26,9 +26,12 @@ public interface SadimMessageRepository extends JpaRepository<SadimMessage, Long
     @Query(nativeQuery = true,
             value = "SELECT * FROM sadim_message m" +
                     " INNER JOIN sadim_pre_attestation_param p on p.id = m.param_id"+
-                    " WHERE ?1 IS NULL OR ?1 = p.prime_id " +
+                    " WHERE " +
+                    "(date(m.ts)) >= date(CAST(?3 AS timestamp with time zone))"+
+                    " AND "+
+                    "?1 IS NULL OR CAST(?1 AS CHARACTER VARYING) = p.prime_id " +
                     "AND " +
                     " ?2 IS NULL OR CAST(?2 AS CHARACTER VARYING) = CAST(p.melt_no AS CHARACTER VARYING)"
                     )
-    List<SadimMessage> findByParams(String primeId, Integer meltNo);
+    List<SadimMessage> findByParams(String primeId, Integer meltNo, String startDate);
 }

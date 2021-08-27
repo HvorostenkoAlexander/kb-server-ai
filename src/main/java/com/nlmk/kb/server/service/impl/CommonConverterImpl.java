@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -77,7 +78,7 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     @Override
-    public Double parsToDouble(String s) {
+    public Double parseToDouble(String s) {
         Double d = null;
         if (!(StringUtils.isBlank(s) || "null".equals(s))) {
             try {
@@ -91,7 +92,7 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     @Override
-    public Integer parsToInteger(String s) {
+    public Integer parseToInteger(String s) {
         Integer i = null;
         if (!(StringUtils.isBlank(s) || "null".equals(s))) {
             try {
@@ -105,20 +106,29 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     @Override
-    public List<Double> parsToDoubles(String s) {
+    public List<Double> parseToDoubles(String s) {
         if (s == null || s.isEmpty() || s.isBlank()) {
             return List.of();
         }
 
         return Arrays.stream(s.split(";"))
-                .map(str->parsToDouble(str))
+                .map(str-> parseToDouble(str))
                 .collect(Collectors.toList());
     }
 
-//    public String parsToLclThckng(List<Double> strS){
-//        if (strS == null) {
-//            return null;
-//        }
-//        return strS.stream().collect(Collectors.joining(";"));
-//    }
+    @Override
+    public String parseToStringByDatePattern(Date date, String pattern) {
+        if (date == null || pattern == null) {
+            return null;
+        }
+        try {
+            DateFormat df = new SimpleDateFormat(pattern);
+            String s = df.format(date);
+            log.debug("toStringByPattern; date :" + s);
+            return s;
+        } catch (NullPointerException | IllegalArgumentException ex) {
+            log.warn("Неверный шаблон для формата даты: [{}]",pattern);
+            return null;
+        }
+    }
 }

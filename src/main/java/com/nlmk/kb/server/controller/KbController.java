@@ -6,6 +6,7 @@ import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.repository.SadimMessageRepository;
 import com.nlmk.kb.server.service.CcmMessageService;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.service.SadimMessageService;
 import io.micrometer.core.annotation.Timed;
@@ -39,7 +40,10 @@ public class KbController {
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
     private final SadimMessageService sadimMessageService;
+
+    //temporary
     private final SadimMessageRepository sadimMessageRepository;
+    private final CommonConverter converter;
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -89,9 +93,12 @@ public class KbController {
     public List<SadimMessage> getSadimMessageByPrimeId(
             @RequestParam(value = "primeId", required = false) String primeId,
             @RequestParam(value = "meltNo", required = false) Integer meltNo,
-            @RequestParam(value = "lotNo", required = false) Integer lotNo
+            @RequestParam(value = "lotNo", required = false) Integer lotNo,
+            @RequestParam(value = "dstart", required = false, defaultValue = "1970-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate
     ){
-        return sadimMessageRepository.findByParams(primeId,meltNo);
+        final var dstart = converter.parseToStringByDatePattern(startDate,"yyyy-MM-dd");
+        return sadimMessageRepository.findByParams(primeId,meltNo,dstart);
     }
 
     @GetMapping("/attestation_request")
