@@ -116,7 +116,6 @@ public class DtoConverterImpl implements DtoConverter {
     @Override
     public PreAttestationParamDto toPreAttestationParamDto(Tuple t) {
         Assert.notNull(t, "tuple is null.");
-
         return PreAttestationParamDto.builder()
                 .id(Long.valueOf(converter.getByTupleAlias(t, "id")))
                 .primeId(converter.getByTupleAlias(t, "prime_id"))
@@ -146,8 +145,8 @@ public class DtoConverterImpl implements DtoConverter {
                         converter.getByTupleAlias(t, "estimate")))
                 .lclThckng(
                         converter.parseToDoubles(
-                                t.get("lclthckng", String.class)
-                        ).toArray(new Double[0])
+                                converter.getByTupleAlias(t, "lclthckng"))
+                        .stream().toArray(Double[]::new)
                 )
                 .lotNo(converter.parseToInteger(
                         converter.getByTupleAlias(t, "lot_no")))
