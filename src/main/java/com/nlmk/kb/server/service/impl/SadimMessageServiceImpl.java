@@ -1,9 +1,12 @@
 package com.nlmk.kb.server.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.repository.SadimMessageRepository;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import com.nlmk.kb.server.service.SadimMessageService;
@@ -11,11 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import javax.persistence.Tuple;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,14 +32,19 @@ public class SadimMessageServiceImpl implements SadimMessageService {
 
     private final SadimJsonParser sadimJsonParser;
     private final SadimMessageRepository repository;
-    private final DtoConverter converter;
+    private final DtoConverter dtoConverter;
+    private final CommonConverter commonConverter;
+    private final ObjectMapper objectMapper;
 
     public SadimMessageServiceImpl(@Qualifier("sadimStreamApiParser") SadimJsonParser sadimJsonParser,
                                    SadimMessageRepository repository,
-                                   DtoConverter converter) {
+                                   DtoConverter dtoConverter,
+                                   CommonConverter commonConverter, ObjectMapper objectMapper) {
         this.sadimJsonParser = sadimJsonParser;
         this.repository = repository;
-        this.converter = converter;
+        this.dtoConverter = dtoConverter;
+        this.commonConverter = commonConverter;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -111,6 +123,34 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                 });
     }
 
+    @Override
+    public Page<ObjectNode> findPageByParam(String primeId,
+                                            Integer meltNo,
+                                            Integer lotNo,
+                                            Date startDate,
+                                            Date endDate,
+                                            PageRequest of) {
+        Assert.notNull(startDate, "Дата не может быть null.");
+        Assert.notNull(endDate, "Дата не может быть null.");
+        Assert.notNull(of, "PageRequest не может быть null.");
+
+        Page<Tuple> tuples;
+
+        final var dstart = commonConverter.parseToStringByDatePattern(startDate, "yyyy-MM-dd");
+        final var dend = commonConverter.parseToStringByDatePattern(endDate, "yyyy-MM-dd");
+
+        if (primeId == null && meltNo == null && lotNo == null) {
+            tuples = repository.findPreAttestationTuplesByDates(dstart, dend, of);
+        } else {
+            if (StringUtils.isBlank(primeId)) primeId = "";
+            if (meltNo == null) meltNo = 0;
+            if (lotNo == null) lotNo = 0;
+
+            tuples = repository.findPreAttestationTuplesByParam(dstart, dend, primeId, meltNo, lotNo, of);
+        }
+        return tuples.map(this::toJsonNode);
+    }
+
     private void validateParam(String pkId, String primeId) {
         if (StringUtils.isBlank(pkId) || StringUtils.isBlank(primeId)) {
             var exceptionString = String.format("Некорректные данные для запроса: pkId:[%s], primeId:[%s]",
@@ -141,7 +181,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         if (messages.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(converter.toPreAttestationParamDto(
+        return Optional.of(dtoConverter.toPreAttestationParamDto(
                 messages.get(0).getParam()
         ));
     }
@@ -157,9 +197,18 @@ public class SadimMessageServiceImpl implements SadimMessageService {
             return Optional.empty();
         }
 
-        return Optional.of(converter.toPreAttestationParamDto(
+        return Optional.of(dtoConverter.toPreAttestationParamDto(
                 messages.get(0).getParam()
         ));
+    }
+
+    private ObjectNode toJsonNode(Tuple t) {
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("ts", commonConverter.getByTupleAlias(t, "ts"));
+        node.putPOJO("preAttestationParamDto", dtoConverter.toPreAttestationParamDto(t));
+
+        return node;
     }
 
     private void updateMessageInBase(SadimMessage sadimFromBase, Integer lotNo, Integer meltNo) {
@@ -176,4 +225,6 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                     sadimFromBase.getParam());
         }
     }
+
+
 }

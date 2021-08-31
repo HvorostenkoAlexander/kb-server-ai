@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
-
 
 @Slf4j
 @CrossOrigin(origins = "*", methods = {RequestMethod.OPTIONS, RequestMethod.POST, RequestMethod.GET})
@@ -53,6 +54,36 @@ public class KbController {
 
         log.info("RESULT paramDto from kb: {}", paramDto);
         return paramDto;
+    }
+
+    @GetMapping("/sadim/data")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public Page<ObjectNode> getPreAttestationByParam(
+            @RequestParam(value = "pageNumber", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "20") int size,
+            @RequestParam(value = "primeId", required = false) String primeId,
+            @RequestParam(value = "meltNo", required = false) Integer meltNo,
+            @RequestParam(value = "lotNo", required = false) Integer lotNo,
+            @RequestParam(value = "dstart", required = false, defaultValue = "1970-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "dend", required = false, defaultValue = "2200-01-01")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestParam(value = "sortTsAsc", required = false) Boolean sortTs
+    ) {
+        log.info("kb, getPreAttestationByParam: pageNumber:[{}], pageSize:[{}], primeId:[{}], meltNo:[{}]" +
+                        " lotNo:[{}], dstart:[{}], dend:[{}], sortTs:[{}]",
+                page, size, primeId, meltNo, lotNo, startDate, endDate, sortTs);
+
+        final var pageRequest = buildPageRequest(page, size, sortTs);
+
+        return sadimMessageService.findPageByParam(
+                primeId,
+                meltNo,
+                lotNo,
+                startDate,
+                endDate,
+                pageRequest
+        );
     }
 
     @GetMapping("/attestation_request")
@@ -126,5 +157,19 @@ public class KbController {
         log.info("kb, deletePdmMessageById: id: [{}]", id);
 
         return pdmMessageService.deleteMessageById(id);
+    }
+
+    private PageRequest buildPageRequest(int page, int size, Boolean sortTs) {
+        PageRequest pageRequest;
+        if (sortTs != null) {
+            if (sortTs.booleanValue()) {
+                pageRequest = PageRequest.of(page, size, Sort.by("ts").ascending());
+            } else {
+                pageRequest = PageRequest.of(page, size, Sort.by("ts").descending());
+            }
+        } else {
+            pageRequest = PageRequest.of(page, size);
+        }
+        return pageRequest;
     }
 }
