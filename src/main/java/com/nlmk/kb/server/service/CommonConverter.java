@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.attestation.product.api.nsi.LimitDto;
 import com.nlmk.kb.server.entity.pdm.Spec;
 
+import javax.persistence.Tuple;
 import java.util.Date;
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface CommonConverter {
     public List<Double> parseToDoubles(String s);
 
     String parseToStringByDatePattern(Date date, String pattern);
+
+    String getByTupleAlias(Tuple t, String alias);
 }

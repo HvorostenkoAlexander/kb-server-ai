@@ -1,9 +1,9 @@
 package com.nlmk.kb.server.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
-import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.service.SadimMessageService;
@@ -58,7 +58,7 @@ public class KbController {
 
     @GetMapping("/sadim/data")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public Page<SadimMessage> getPreAttestationByParam(
+    public Page<ObjectNode> getPreAttestationByParam(
             @RequestParam(value = "pageNumber", defaultValue = "0") int page,
             @RequestParam(value = "pageSize", defaultValue = "20") int size,
             @RequestParam(value = "primeId", required = false) String primeId,
@@ -68,15 +68,15 @@ public class KbController {
             @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
             @RequestParam(value = "dend", required = false, defaultValue = "2200-01-01")
             @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
-            @RequestParam(value = "sortTs", required = false) Boolean sortTs
+            @RequestParam(value = "sortTsAsc", required = false) Boolean sortTs
     ) {
         log.info("kb, getPreAttestationByParam: pageNumber:[{}], pageSize:[{}], primeId:[{}], meltNo:[{}]" +
                         " lotNo:[{}], dstart:[{}], dend:[{}], sortTs:[{}]",
                 page, size, primeId, meltNo, lotNo, startDate, endDate, sortTs);
 
-        final var pageRequest = buildPageRequest(page,size,sortTs);
+        final var pageRequest = buildPageRequest(page, size, sortTs);
 
-        return sadimMessageService.findPreAttestationByParam(
+        return sadimMessageService.findPageByParam(
                 primeId,
                 meltNo,
                 lotNo,

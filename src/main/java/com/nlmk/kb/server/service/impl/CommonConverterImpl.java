@@ -6,8 +6,10 @@ import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.CommonConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Tuple;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +40,6 @@ public class CommonConverterImpl implements CommonConverter {
         }
     }
 
-    //todo когда решится проблема по передачи сведений о дате с time zone убрать
     private Date parseToDateNoTimeZone(String stringDate) {
         return parse(stringDate, "yyyy-MM-dd'T'HH:mm:ss");
     }
@@ -112,7 +113,7 @@ public class CommonConverterImpl implements CommonConverter {
         }
 
         return Arrays.stream(s.split(";"))
-                .map(str-> parseToDouble(str))
+                .map(str -> parseToDouble(str))
                 .collect(Collectors.toList());
     }
 
@@ -127,8 +128,30 @@ public class CommonConverterImpl implements CommonConverter {
             log.debug("toStringByPattern; date :" + s);
             return s;
         } catch (NullPointerException | IllegalArgumentException ex) {
-            log.warn("Неверный шаблон для формата даты: [{}]",pattern);
+            log.warn("Неверный шаблон для формата даты: [{}]", pattern);
             return null;
         }
+    }
+
+    @Nullable
+    @Override
+    public String getByTupleAlias(Tuple t, String alias) {
+        String result = null;
+
+        if (t == null || alias == null) {
+            return result;
+        }
+
+        try {
+            Object o = t.get(alias);
+            if (o != null) {
+                result = o.toString();
+            }
+        } catch (IllegalArgumentException iae) {
+            log.error(iae.getMessage());
+            log.warn("Не удалось получить данные: tuple:[{}]; alias:[{}]", t, alias);
+            throw new IllegalArgumentException(iae);
+        }
+        return result;
     }
 }

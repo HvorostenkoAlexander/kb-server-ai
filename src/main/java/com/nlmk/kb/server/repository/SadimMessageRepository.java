@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.persistence.Tuple;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +19,13 @@ public interface SadimMessageRepository extends JpaRepository<SadimMessage, Long
     public Optional<SadimMessage> findFirstByPartitionAndOffset(Integer partition, Long offset);
 
     @Query(nativeQuery = true,
-            value = "SELECT * FROM sadim_message m" +
+            value = "SELECT m.ts, p.id, p.prime_id, p.t12_min, p.t12_max, p.tcm_min, p.tcm_max," +
+                    "p.pbi, p.prof_fact, p.wedge_fact, p.sqc_crit_max, p.ph1_sgp, p.ph12_sgp," +
+                    "p.ph23_sgp, p.estimate, p.lclthckng, p.lot_no, p.melt_no  FROM sadim_message m" +
                     " INNER JOIN sadim_pre_attestation_param p on p.id = m.param_id" +
                     " WHERE " +
                     "((date(m.ts)) >= date(CAST(?1 AS timestamp without time zone))" +
-                    " AND "+
+                    " AND " +
                     "(date(m.ts)) <= date(CAST(?2 AS timestamp without time zone)))" +
                     " AND (" +
                     "( ?3 IS NULL OR CAST(?3 AS CHARACTER VARYING) = p.prime_id )" +
@@ -32,15 +35,17 @@ public interface SadimMessageRepository extends JpaRepository<SadimMessage, Long
                     "( ?5 IS NULL OR  CAST(?5 AS CHARACTER VARYING) = CAST(p.lot_no AS CHARACTER VARYING))" +
                     ")"
     )
-    Page<SadimMessage> findByParams(String startDate,
-                                    String endDate,
-                                    String primeId,
-                                    Integer meltNo,
-                                    Integer lotNo,
-                                    PageRequest of);
+    Page<Tuple> findPreAttestationTuplesByParam(String startDate,
+                                                String endDate,
+                                                String primeId,
+                                                Integer meltNo,
+                                                Integer lotNo,
+                                                PageRequest of);
 
     @Query(nativeQuery = true,
-            value = "SELECT * FROM sadim_message m" +
+            value = "SELECT m.ts, p.id, p.prime_id, p.t12_min, p.t12_max, p.tcm_min, p.tcm_max," +
+                    "p.pbi, p.prof_fact, p.wedge_fact, p.sqc_crit_max, p.ph1_sgp, p.ph12_sgp," +
+                    "p.ph23_sgp, p.estimate, p.lclthckng, p.lot_no, p.melt_no  FROM sadim_message m" +
                     " INNER JOIN sadim_pre_attestation_param p on p.id = m.param_id" +
                     " WHERE " +
                     "(date(m.ts)) >= date(CAST(?1 AS timestamp without time zone))" +
@@ -48,5 +53,5 @@ public interface SadimMessageRepository extends JpaRepository<SadimMessage, Long
                     "(date(m.ts)) <= date(CAST(?2 AS timestamp without time zone))" +
                     ")"
     )
-    Page<SadimMessage> findByDates(String startDate, String endDate, PageRequest of);
+    Page<Tuple> findPreAttestationTuplesByDates(String startDate, String endDate, PageRequest of);
 }

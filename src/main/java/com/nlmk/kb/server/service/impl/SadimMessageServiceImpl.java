@@ -1,5 +1,7 @@
 package com.nlmk.kb.server.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -31,15 +34,17 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     private final SadimMessageRepository repository;
     private final DtoConverter dtoConverter;
     private final CommonConverter commonConverter;
+    private final ObjectMapper objectMapper;
 
     public SadimMessageServiceImpl(@Qualifier("sadimStreamApiParser") SadimJsonParser sadimJsonParser,
                                    SadimMessageRepository repository,
                                    DtoConverter dtoConverter,
-                                   CommonConverter commonConverter) {
+                                   CommonConverter commonConverter, ObjectMapper objectMapper) {
         this.sadimJsonParser = sadimJsonParser;
         this.repository = repository;
         this.dtoConverter = dtoConverter;
         this.commonConverter = commonConverter;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -119,31 +124,31 @@ public class SadimMessageServiceImpl implements SadimMessageService {
     }
 
     @Override
-    public Page<SadimMessage> findPreAttestationByParam(String primeId,
-                                                        Integer meltNo,
-                                                        Integer lotNo,
-                                                        Date startDate,
-                                                        Date endDate,
-                                                        PageRequest of) {
-        Assert.notNull(startDate,"Дата не может быть null.");
-        Assert.notNull(endDate,"Дата не может быть null.");
-        Assert.notNull(of,"PageRequest не может быть null.");
+    public Page<ObjectNode> findPageByParam(String primeId,
+                                            Integer meltNo,
+                                            Integer lotNo,
+                                            Date startDate,
+                                            Date endDate,
+                                            PageRequest of) {
+        Assert.notNull(startDate, "Дата не может быть null.");
+        Assert.notNull(endDate, "Дата не может быть null.");
+        Assert.notNull(of, "PageRequest не может быть null.");
 
-        Page<SadimMessage> sadimMessages ;
+        Page<Tuple> tuples;
 
         final var dstart = commonConverter.parseToStringByDatePattern(startDate, "yyyy-MM-dd");
         final var dend = commonConverter.parseToStringByDatePattern(endDate, "yyyy-MM-dd");
 
         if (primeId == null && meltNo == null && lotNo == null) {
-            sadimMessages = repository.findByDates(dstart, dend, of);
+            tuples = repository.findPreAttestationTuplesByDates(dstart, dend, of);
         } else {
             if (StringUtils.isBlank(primeId)) primeId = "";
             if (meltNo == null) meltNo = 0;
             if (lotNo == null) lotNo = 0;
 
-            sadimMessages = repository.findByParams(dstart, dend, primeId, meltNo, lotNo, of);
+            tuples = repository.findPreAttestationTuplesByParam(dstart, dend, primeId, meltNo, lotNo, of);
         }
-        return sadimMessages;
+        return tuples.map(this::toJsonNode);
     }
 
     private void validateParam(String pkId, String primeId) {
@@ -195,6 +200,15 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         return Optional.of(dtoConverter.toPreAttestationParamDto(
                 messages.get(0).getParam()
         ));
+    }
+
+    private ObjectNode toJsonNode(Tuple t) {
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("ts", commonConverter.getByTupleAlias(t, "ts"));
+        node.putPOJO("preAttestationParamDto", dtoConverter.toPreAttestationParamDto(t));
+
+        return node;
     }
 
     private void updateMessageInBase(SadimMessage sadimFromBase, Integer lotNo, Integer meltNo) {
