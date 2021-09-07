@@ -57,6 +57,7 @@ public class CommonConverterImpl implements CommonConverter {
         try {
             return format.parse(stringDate);
         } catch (ParseException e) {
+            log.warn("ParseException: [{}] with stringDate:[{}], stringFormat:[{}]", e.getMessage(), stringDate, stringFormat);
             return null;
         }
     }

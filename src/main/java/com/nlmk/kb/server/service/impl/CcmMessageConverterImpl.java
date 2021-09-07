@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.service.AttestationRequestConverter;
 import com.nlmk.kb.server.service.CcmMessageConverter;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.util.ValueConverter;
@@ -19,6 +20,7 @@ import java.util.Date;
 public class CcmMessageConverterImpl implements CcmMessageConverter {
 
     private final CommonConverter converter;
+    private final AttestationRequestConverter attestationRequestConverter;
 
     @Override
     public CcmAttestationRequestMessage fromCcmAttestationRequest(AttestationRequest ccmAttestationRequest,
@@ -28,7 +30,7 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
                                                                   int offset,
                                                                   String timestamp) {
 
-        final var value = ValueConverter.toPamAttestationRequest(ccmAttestationRequest);
+        final var value = attestationRequestConverter.toPamAttestationRequest(ccmAttestationRequest);
 
         final var requestMessage = new CcmAttestationRequestMessage();
         requestMessage.setPartition(partition);
