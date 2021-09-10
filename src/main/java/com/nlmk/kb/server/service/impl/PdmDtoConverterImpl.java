@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+
 import java.util.List;
 
 @Slf4j
@@ -38,8 +39,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -88,8 +89,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -105,8 +106,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public ThicknessTkLimitDto toThicknessTkLimitDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -133,8 +134,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public WidthTkLimitDto toWidthTkLimitDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -150,10 +151,10 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.LENGTH_PRODUCT.getValue())))
                 .prCrop(converter.getSpecValue(specs, SpecCode.EDGE_CHARACTER.getValue()))
                 .rollingWidthAccuracy(converter.getSpecValue(specs, SpecCode.MANUFACTURING_PRECISION_BY_WIDTH.getValue()))
-                .prWidthTolMin(converter.parsToDouble(
+                .prWidthTolMin(converter.parseToDouble(
                         converter.getSpecValue(specs, SpecCode.WIDTH_TOLERANCE_MIN.getValue())
                 ))
-                .prWidthTolMax(converter.parsToDouble(
+                .prWidthTolMax(converter.parseToDouble(
                         converter.getSpecValue(specs, SpecCode.WIDTH_TOLERANCE_MAX.getValue())
                 ))
                 .prWidthTolPerc(converter.getSpecValue(specs, SpecCode.WHIDTH_TOLERANCE_PERCENT.getValue()))
@@ -166,8 +167,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public LengthTkLimitDto toLengthTkLimitDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -177,12 +178,12 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
                 .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .prLengthGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.LENGTH_PRODUCT.getValue())))
-                .prLengthTolMax(converter.parsToDouble(
+                .prLengthTolMax(converter.parseToDouble(
                         converter.getSpecValue(specs, SpecCode.LENGTH_TOLERANCE_MAX.getValue())
                 ))
                 .rollingLengthAccuracy(converter.getSpecValue(specs, SpecCode.MANUFACTURING_PRECISION_BY_LENGTH.getValue()))
                 .prLengthTolMaxPerc(converter.getSpecValue(specs, SpecCode.LENGTH_TOLERANCE_PERCENT.getValue()))
-                .koefLengthTolMax(converter.parsToDouble(
+                .koefLengthTolMax(converter.parseToDouble(
                         converter.getSpecValue(specs, SpecCode.LENGTH_K.getValue())
                 ))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
@@ -193,8 +194,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public PhysMechPropertiesDto toPhysMechPropertiesDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -321,8 +322,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public EvennessTkLimitDto toEvennessTkLimitDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -334,10 +335,10 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prThickGood(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .prEvenness(converter.getSpecValue(specs, SpecCode.EVENNESS.getValue()))
                 .prYield(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.YIELD_POINT.getValue())))
-                .prEvennessTolMax(converter.parsToDouble(
+                .prEvennessTolMax(converter.parseToDouble(
                         converter.getSpecValue(specs, SpecCode.EVENNESS_TOLERANCE.getValue())
                 ))
-                .prEvennessTolPerc(converter.parsToDouble(
+                .prEvennessTolPerc(converter.parseToDouble(
                         converter.getSpecValue(specs, SpecCode.EVENNESS_TOLERANCE_PERCENT.getValue())
                 ))
                 .prTensileStrength(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TENSILE_STRENGTH.getValue())))
@@ -349,8 +350,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public TkNumDto toTkNumDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -366,7 +367,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         return tkNumDto;
     }
 
-    private String getDocDate(List<Spec> specs,int code){
+    private String getDocDate(List<Spec> specs, int code) {
         String docDate = converter.getSpecValue(specs, code);
 
         if (StringUtils.isEmpty(docDate)) {
@@ -377,8 +378,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public CEqDto toCEqDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -394,8 +395,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -403,7 +404,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tk_num(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
-                ._prior(converter.parsToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
+                ._prior(converter.parseToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
                 .tk_route(converter.getSpecValue(specs, SpecCode.ROUTE_TK.getValue()))
                 .pr_category(converter.getSpecValue(specs, SpecCode.CATEGORY_OF_MARK.getValue()))
                 .pr_prod_mark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
@@ -530,15 +531,15 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public ChemicalTkLimitDto toChemicalTkLimitDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
         final var chemicalDto = ChemicalTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
-                .prior(converter.parsToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
+                .prior(converter.parseToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 .tkRoute(converter.getSpecValue(specs, SpecCode.ROUTE_TK.getValue()))
                 .prSteelMark(converter.getSpecValue(specs, SpecCode.MELTING_MARK.getValue()))
@@ -612,8 +613,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public MicrostructureDto toMicrostructureDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -649,8 +650,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
 
@@ -682,8 +683,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public MatchTkDto toMatchTkDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toMatchTkDto PDM DICTIONARY: {} ", dictionary);
@@ -703,8 +704,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public MatchRpDto toMatchRpDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toMatchRpDto PDM DICTIONARY: {} ", dictionary);
@@ -722,8 +723,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public PcmDto toPcmDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toPcmDto PDM DICTIONARY: {} ", dictionary);
@@ -742,8 +743,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     @Override
     public ToleranceDto toToleranceDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary,"dictionary не должен быть null.");
-        Assert.notNull(dictionary.getData(),"dictionary.getData() не должен быть null.");
+        Assert.notNull(dictionary, "dictionary не должен быть null.");
+        Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
         log.debug("--- toleranceDto PDM DICTIONARY: {} ", dictionary);

@@ -9,11 +9,13 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,12 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
     @Override
     public Optional<PreAttestationParam> getParam(String jsonString) {
+
+        if (StringUtils.isBlank(jsonString)){
+            log.warn("jsonString is blank.");
+            return Optional.empty();
+        }
+
         String sadimDate = null;
         final var paramBuilder = PreAttestationParam.builder();
 
@@ -46,39 +54,39 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 }
                 if ("t12_min".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.t12Min(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.t12Min(converter.parseToDouble(jParser.getText()));
                 }
                 if ("t12_max".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.t12Max(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.t12Max(converter.parseToDouble(jParser.getText()));
                 }
                 if ("tcm_min".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.tcmMin(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.tcmMin(converter.parseToDouble(jParser.getText()));
                 }
                 if ("tcm_max".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.tcmMax(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.tcmMax(converter.parseToDouble(jParser.getText()));
                 }
                 if ("PBI".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.pbi(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.pbi(converter.parseToDouble(jParser.getText()));
                 }
                 if ("ProfFact".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.profFact(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.profFact(converter.parseToDouble(jParser.getText()));
                 }
                 if ("WedgeFact".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.wedgeFact(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.wedgeFact(converter.parseToDouble(jParser.getText()));
                 }
                 if ("SQC_CRIT_MAX".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.sqcCritMax(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.sqcCritMax(converter.parseToDouble(jParser.getText()));
                 }
                 if ("PH_1SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.ph1sgp(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.ph1sgp(converter.parseToDouble(jParser.getText()));
                 }
                 if ("PH_12SGP".equals(fieldname)) {
                     jParser.nextToken();
@@ -86,22 +94,22 @@ public class SadimStreamApiParser implements SadimJsonParser {
                 }
                 if ("PH_23SGP".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.ph23sgp(converter.parsToDouble(jParser.getText()));
+                    paramBuilder.ph23sgp(converter.parseToDouble(jParser.getText()));
                 }
                 if ("estimate".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.estimate(converter.parsToInteger(jParser.getText()));
+                    paramBuilder.estimate(converter.parseToInteger(jParser.getText()));
                 }
                 if ("lclThckng".equals(fieldname) && jParser.getCurrentToken() == JsonToken.START_OBJECT) {
-                    paramBuilder.lclThckng(getArrayFromLclThckngSadim(jParser));
+                    paramBuilder.lclThckng(getStringFromLclThckngSadim(jParser));
                 }
                 if ("lot_no".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.lotNo(converter.parsToInteger(jParser.getText()));
+                    paramBuilder.lotNo(converter.parseToInteger(jParser.getText()));
                 }
                 if ("melt_no".equals(fieldname)) {
                     jParser.nextToken();
-                    paramBuilder.meltNo(converter.parsToInteger(jParser.getText()));
+                    paramBuilder.meltNo(converter.parseToInteger(jParser.getText()));
                 }
             }
         } catch (IOException | NumberFormatException ioe) {
@@ -120,6 +128,12 @@ public class SadimStreamApiParser implements SadimJsonParser {
         }
     }
 
+    private String getStringFromLclThckngSadim(JsonParser jParser) throws IOException {
+        List<Double> lclThckng = getArrayFromLclThckngSadim(jParser);
+
+        return lclThckng.stream().map(Objects::toString).collect(Collectors.joining(";"));
+    }
+
     private List<Double> getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
         List<List<Double>> values = new ArrayList<>();
 
@@ -130,10 +144,13 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
                 while (!("values".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.END_ARRAY)) {
 
+                    // хотя далее формируем String c разделителем ';' parsToDouble позволяет
+                    // проверить корректность данных на этапе чтения json
+
                     if (jParser.nextToken() == JsonToken.START_ARRAY) {
                         List<Double> onePare = new ArrayList<>();
                         while (jParser.nextToken() != JsonToken.END_ARRAY) {
-                            onePare.add(converter.parsToDouble(jParser.getText()));
+                            onePare.add(converter.parseToDouble(jParser.getText()));
                         }
                         values.add(onePare);
                     }

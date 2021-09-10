@@ -17,20 +17,20 @@ public class SwaggerConfig {
         var authUrl = "/auth";
 
         return new OpenAPI()
-            .components(new Components()
-                .addSecuritySchemes("bearer-key", new SecurityScheme()
-                    .type(SecurityScheme.Type.OAUTH2)
-                    .description("Oauth2 flow")
-                    .flows(new OAuthFlows()
-                        .clientCredentials(new OAuthFlow()
+                .components(new Components()
+                        .addSecuritySchemes("bearer-key", new SecurityScheme()
+                                        .type(SecurityScheme.Type.OAUTH2)
+                                        .description("Oauth2 flow")
+                                        .flows(new OAuthFlows()
+                                                .clientCredentials(new OAuthFlow()
 //                            .authorizationUrl(authUrl + "/auth")
-                            .refreshUrl(authUrl + "/token")
-                            .tokenUrl(authUrl + "/token")
-                            .scopes(new Scopes())
+                                                                .refreshUrl(authUrl + "/token")
+                                                                .tokenUrl(authUrl + "/token")
+                                                                .scopes(new Scopes())
+                                                ))
                         ))
-                ))
-            .security(Collections.singletonList(
-                new SecurityRequirement().addList("bearer-key")
-            ));
+                .security(Collections.singletonList(
+                        new SecurityRequirement().addList("bearer-key")
+                ));
     }
 }

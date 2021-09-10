@@ -16,7 +16,7 @@ public class Data implements Serializable {
 
     private static final long serialVersionUID = 8547635103251490690L;
 
-    private List<Spec> specifications=new ArrayList<>();
+    private List<Spec> specifications = new ArrayList<>();
 
     public void addSpec(Spec spec) {
         if (spec != null)

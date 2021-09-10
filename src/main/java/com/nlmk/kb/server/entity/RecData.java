@@ -53,8 +53,8 @@ public class RecData {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)//
     @JoinColumn(name = "record_data_id",
-                nullable = false)
-    private List<RecSpec> specifications=new ArrayList<>();
+            nullable = false)
+    private List<RecSpec> specifications = new ArrayList<>();
 
     public void addSpec(RecSpec recordSpecification) {
         if (recordSpecification != null) {

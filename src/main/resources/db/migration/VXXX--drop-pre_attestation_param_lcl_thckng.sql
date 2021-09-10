@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS public.pre_attestation_param_lcl_thckng;

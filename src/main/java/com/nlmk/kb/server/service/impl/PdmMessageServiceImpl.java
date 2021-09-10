@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.DtoConverter;
 import com.nlmk.kb.server.service.NsiClientService;
 import com.nlmk.kb.server.service.PdmMessageService;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +30,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     private final PdmMessageRepository repository;
     private final DtoConverter dtoConverter;
     private final NsiClientService nsiClientService;
+    private final CommonConverter converter;
 
     @Override
     @Transactional
@@ -81,7 +81,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Optional<PdmMessage> update(PdmMessage message) {
-        log.debug("update PdmMessage: [{}]",message);
+        log.debug("update PdmMessage: [{}]", message);
 
         Assert.notNull(message, "PdmMessage for update is null.");
 
@@ -158,17 +158,11 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     }
 
     private String toStringByPattern(Date date, String pattern) {
-        if (date == null || pattern == null) {
-            return null;
-        }
-        DateFormat df = new SimpleDateFormat(pattern);
-        String s = df.format(date);
-        log.debug("toStringByPattern; date :" + s);
-        return s;
+        return converter.parseToStringByDatePattern(date,pattern);
     }
 
     private void setStatusMessage(PdmMessage message, HttpStatus status) {
-        log.debug("setStatusMessage; HttpStatus: [{}], PdmMessage:[{}]", status.toString(),message);
+        log.debug("setStatusMessage; HttpStatus: [{}], PdmMessage:[{}]", status.toString(), message);
 
         if (status == HttpStatus.ACCEPTED ||
                 status == HttpStatus.NOT_FOUND ||

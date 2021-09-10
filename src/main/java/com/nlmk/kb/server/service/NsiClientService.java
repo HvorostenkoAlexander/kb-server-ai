@@ -7,6 +7,7 @@ public interface NsiClientService {
 
     /**
      * Передача сведений из справочников PDM в nsi-server
+     *
      * @param message из БД kb-server
      */
 

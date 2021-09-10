@@ -28,7 +28,7 @@ public class PdmBrokerConfig {
 
     @Bean
     @Primary
-    public ConsumerFactory<Object,Object> pdmConsumerFactory(){
+    public ConsumerFactory<Object, Object> pdmConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
@@ -72,8 +72,8 @@ public class PdmBrokerConfig {
 
         factory.setConsumerFactory(pdmConsumerFactory());
         factory.setErrorHandler(((thrownException, data) -> {
-            log.error("ERROR: " +thrownException.getClass()+"; "+ thrownException.getMessage());
-            if (data!=null) {
+            log.error("ERROR: " + thrownException.getClass() + "; " + thrownException.getMessage());
+            if (data != null) {
                 log.error("ERROR RECORD: " + data.toString());
             }
         }));

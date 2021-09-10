@@ -21,8 +21,8 @@ public class PamClientServiceImpl implements PamClientService {
     private final String pamUrl;
     private final RestTemplate restTemplate;
 
-    public PamClientServiceImpl( @Value("${pam.url}") String pamUrl,
-                                 RestTemplate restTemplate) {
+    public PamClientServiceImpl(@Value("${pam.url}") String pamUrl,
+                                RestTemplate restTemplate) {
         this.pamUrl = pamUrl;
         this.restTemplate = restTemplate;
     }
@@ -37,7 +37,7 @@ public class PamClientServiceImpl implements PamClientService {
         ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
                 new HttpEntity<>(pamAttestationRequest, headers),
                 Long.class);
-        log.info("PAM-server response: "+response.getBody());
+        log.info("PAM-server response: " + response.getBody());
         return response.getBody();
     }
 }

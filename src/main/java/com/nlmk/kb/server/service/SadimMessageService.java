@@ -1,18 +1,28 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.entity.SadimMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Date;
 
 
 public interface SadimMessageService {
 
-    public SadimMessage saveMessage(ConsumerRecord consumerRecord);
+    SadimMessage saveMessage(ConsumerRecord consumerRecord);
 
-    public List<SadimMessage> findByParamPrimeId(String primeId);
+    PreAttestationParamDto findByAttesstationParam(String pkId,
+                                                   String primeId,
+                                                   Integer meltNo,
+                                                   Integer lotNo);
 
-    public Optional<SadimMessage> findByPartitionAndOffset(Integer partition, Long offset);
+    Page<ObjectNode> findPageByParam(String primeId,
+                                     Integer meltNo,
+                                     Integer lotNo,
+                                     Date startDate,
+                                     Date endDate,
+                                     PageRequest of);
 }

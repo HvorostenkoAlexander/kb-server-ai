@@ -8,9 +8,11 @@ import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.sadim.Sadim;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,11 @@ import java.util.stream.Collectors;
 public class SadimDataBindParser implements SadimJsonParser {
 
     public Optional<PreAttestationParam> getParam(String jsonString) {
+
+        if (StringUtils.isBlank(jsonString)){
+            log.warn("jsonString is blank.");
+            return Optional.empty();
+        }
 
         Sadim sadim = null;
         final var paramBuilder = PreAttestationParam.builder();
@@ -52,6 +59,8 @@ public class SadimDataBindParser implements SadimJsonParser {
                     strip.getLclThckng().getValues().stream().map(
                             d -> d.get(0)
                     ).collect(Collectors.toList())
+                            .stream().map(Objects::toString)
+                            .collect(Collectors.joining(";"))
             );
         } catch (JsonProcessingException e) {
             throw new SadimJsonProcessingException("Не удалось обработать json от SADIM: " + e.getMessage());

@@ -83,7 +83,7 @@ public class ValueConverter {
                 .kceh(Long.valueOf(recordData.getKceh()));
 
         if (recordData.getOrderNum() != null) {
-            dataFieldBuilder.orderNum(Long.valueOf(recordData.getOrderNum().intValue()));
+            dataFieldBuilder.orderNum(recordData.getOrderNum());
         }
         if (recordData.getOrderPos() != null) {
             dataFieldBuilder.orderPos(Long.valueOf(recordData.getOrderPos().intValue()));

@@ -20,22 +20,22 @@ public class CommonConverterTest {
     @Test
     void testParseDouble() {
         String str = "null";
-        Double d = cct.parsToDouble(str);
+        Double d = cct.parseToDouble(str);
         assertNull(d);
 
         str = null;
-        d = cct.parsToDouble(str);
+        d = cct.parseToDouble(str);
         assertNull(d);
     }
 
     @Test
     void testParseInteger() {
         String str = "null";
-        Integer i = cct.parsToInteger(str);
+        Integer i = cct.parseToInteger(str);
         assertNull(i);
 
         str = null;
-        i = cct.parsToInteger(str);
+        i = cct.parseToInteger(str);
         assertNull(i);
     }
 

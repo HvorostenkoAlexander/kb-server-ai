@@ -26,7 +26,8 @@ import java.util.Collections;
 @Hidden
 public class AuthenticationController {
 
-    @Value("${keycloak.realm}") String realm;
+    @Value("${keycloak.realm}")
+    String realm;
     private static final String TOKEN_URL_TEMPLATE = "/realms/%s/protocol/openid-connect/token";
     private final WebClient keycloakClient;
 
@@ -44,7 +45,7 @@ public class AuthenticationController {
     public ResponseEntity getToken(@RequestHeader("Authorization") String authHeader) {
 
         String[] authData =
-            new String(Base64.getDecoder().decode(authHeader.replace("Basic ", ""))).split(":");
+                new String(Base64.getDecoder().decode(authHeader.replace("Basic ", ""))).split(":");
 
         String tokenUrl = String.format(TOKEN_URL_TEMPLATE, realm);
 
@@ -55,16 +56,16 @@ public class AuthenticationController {
 
         try {
             KeycloakResponse res = keycloakClient.post()
-                .uri(tokenUrl)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromFormData(credentials))
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, response -> response
-                    .bodyToMono(String.class)
-                    .flatMap(error -> Mono.error(new KeycloakAuthorizationException(error))))
-                .bodyToMono(KeycloakResponse.class)
-                .block();
+                    .uri(tokenUrl)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromFormData(credentials))
+                    .retrieve()
+                    .onStatus(HttpStatus::is4xxClientError, response -> response
+                            .bodyToMono(String.class)
+                            .flatMap(error -> Mono.error(new KeycloakAuthorizationException(error))))
+                    .bodyToMono(KeycloakResponse.class)
+                    .block();
 
             return ResponseEntity.ok().body(res);
         } catch (KeycloakAuthorizationException e) {

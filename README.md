@@ -12,15 +12,6 @@
 
 Артефакты будут находиться в директории `target`.
 
-## Генарация классов согласно AVRO схемам:
-
-`mvn generate-sources`
-
-Файлы avro схем находятся в директории: ${project.basedir}/src/main/resources/avro/
-указанной в настройках avro-maven-plugin в pom.xml
-
-Классы будут находиться в директории ${project.basedir}/src/main/java указанной в pom.xml.
-
 ## Запуск сервера (модуля)
 
 Запуск можно производить 2 способами:
