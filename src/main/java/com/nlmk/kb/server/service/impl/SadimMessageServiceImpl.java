@@ -85,6 +85,15 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         Assert.notNull(primeId, "primeId must not be null");
 
         List<SadimMessage> messages = repository.findSadimMessagesByParam_PrimeIdOrderByTsDesc(primeId);
+
+        messages.stream().map(
+                s->"SADIM message: key: "+s.getKey()+
+                        "; ts: "+s.getTs()+
+                        "; partition: "+s.getPartition()+
+                        "; offset: "+s.getOffset()+
+                        "; Param: "+s.getParam()
+        ).forEach(log::info);
+
         log.warn("messages size by primeId: {}", messages.size());
 
         return messages;
@@ -95,6 +104,15 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         Assert.notNull(lotNo, "lotNo must not be null");
 
         List<SadimMessage> messages = repository.findSadimMessagesByParam_MeltNoAndParam_LotNoOrderByTsDesc(meltNo, lotNo);
+
+        messages.stream().map(
+                s->"SADIM message: key: "+s.getKey()+
+                        "; ts: "+s.getTs()+
+                        "; partition: "+s.getPartition()+
+                        "; offset: "+s.getOffset()+
+                        "; Param: "+s.getParam()
+        ).forEach(log::info);
+
         log.warn("messages size by lotNo, meltNo: {}", messages.size());
 
         return messages;
