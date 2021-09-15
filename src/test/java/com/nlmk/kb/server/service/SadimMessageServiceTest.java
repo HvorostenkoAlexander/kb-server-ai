@@ -113,11 +113,7 @@ public class SadimMessageServiceTest {
     private static Stream<Arguments> generateAttastationParamBad() {
         return Stream.of(
                 Arguments.of("0001020210520101736225770", null, 2111357, 40233),
-                Arguments.of(null, "0001020210520101736225770", 2111357, 40233),
-                Arguments.of("123", "123", 555, 7777),
-                Arguments.of("123", "123", null, 40233),
-                Arguments.of("123", "123", null, 40233),
-                Arguments.of("11111", "123", 2111357, null)
+                Arguments.of(null, "0001020210520101736225770", 2111357, 40233)
         );
     }
 }
