@@ -38,13 +38,13 @@ public class CcmCommonServiceImpl implements CcmCommonService {
             log.warn("В базе данных kb-server обаружено [{}] запроса на аттестацию с primeId: [{}]",
                     requests.size(), primeId);
             requests.stream().map(
-                    r -> "id: " + r.getId() + " ts: " + r.getKafkaTs() + "; primeId: " + r.getPrimeId()
+                    r -> "id: " + r.getId() + " ts: " + r.getKbSendingTs() + "; primeId: " + r.getPrimeId()
             ).forEach(log::debug);
         }
 
         try {
             requests.stream().sorted(
-                    Comparator.comparing(CcmAttestationRequestMessage::getKafkaTs)
+                    Comparator.comparing(CcmAttestationRequestMessage::getKbReceiptTs)
                             .reversed()
             ).findFirst().ifPresent(this::rePostRequest);
         } catch (Exception ex) {
@@ -73,7 +73,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     }
 
     private void rePostRequest(CcmAttestationRequestMessage r) {
-        log.info("Повторная отправка запроса на аттестацию. primeId: [{}], ts:[{}]", r.getPrimeId(), r.getKafkaTs());
+        log.info("Повторная отправка запроса на аттестацию. primeId: [{}], ts:[{}]", r.getPrimeId(), r.getKbSendingTs());
         postRequest(r, "re-recived");
     }
 
@@ -81,7 +81,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
         final var pamResult = ccmPamSender.postAttestationRequest(r.getRequest());
         if (pamResult != null) {
             r.setStatus(statusNote);
-            r.setKafkaTs(new Date());
+            r.setKbSendingTs(new Date());
             messageService.update(r);
         }
     }
