@@ -38,7 +38,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
             log.warn("В базе данных kb-server обаружено [{}] запроса на аттестацию с primeId: [{}]",
                     requests.size(), primeId);
             requests.stream().map(
-                    r -> "id: " + r.getId() + " ts: " + r.getKbSendingTs() + "; primeId: " + r.getPrimeId()
+                    r -> "id: " + r.getId() + " kbReceiptTs: " + r.getKbReceiptTs() + "; primeId: " + r.getPrimeId()
             ).forEach(log::debug);
         }
 
@@ -73,12 +73,16 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     }
 
     private void rePostRequest(CcmAttestationRequestMessage r) {
-        log.info("Повторная отправка запроса на аттестацию. primeId: [{}], ts:[{}]", r.getPrimeId(), r.getKbSendingTs());
+        log.info("Повторная отправка запроса на аттестацию. primeId: [{}], kbReceiptTs:[{}]",
+                r.getPrimeId(), r.getKbReceiptTs());
+
         postRequest(r, "re-recived");
     }
 
     private void postRequest(CcmAttestationRequestMessage r, String statusNote) {
+
         final var pamResult = ccmPamSender.postAttestationRequest(r.getRequest());
+
         if (pamResult != null) {
             r.setStatus(statusNote);
             r.setKbSendingTs(new Date());
