@@ -26,18 +26,20 @@ public class CommonConverterImpl implements CommonConverter {
     public Date parseToDate(String stringDate) {
 
         Date dateMs = parseToDateWithMs(stringDate);
-        Date dateNoMs = parseToDateNoMs(stringDate);
-        Date dateNoTimeZone = parseToDateNoTimeZone(stringDate);
-
-        if (dateMs != null) {
+        if (dateMs != null){
             return dateMs;
-        } else if (dateNoMs != null) {
-            return dateNoMs;
-        } else if (dateNoTimeZone != null) {
-            return dateNoTimeZone;
-        } else {
-            throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; ");
         }
+
+        Date dateNoMs = parseToDateNoMs(stringDate);
+        if (dateNoMs != null){
+            return dateNoMs;
+        }
+
+        Date dateNoTimeZone = parseToDateNoTimeZone(stringDate);
+        if (dateNoTimeZone != null){
+            return dateNoTimeZone;
+        }
+        throw new DateTimeParseException("Ошибка парсинга ts: " + stringDate + "; ");
     }
 
     private Date parseToDateNoTimeZone(String stringDate) {

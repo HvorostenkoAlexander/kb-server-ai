@@ -3,8 +3,6 @@ package com.nlmk.kb.server.service.impl;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.service.AttestationRequestConverter;
 import com.nlmk.kb.server.service.CcmMessageConverter;
-import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.util.ValueConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
@@ -19,7 +17,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class CcmMessageConverterImpl implements CcmMessageConverter {
 
-    private final CommonConverter converter;
     private final AttestationRequestConverter attestationRequestConverter;
 
     @Override
