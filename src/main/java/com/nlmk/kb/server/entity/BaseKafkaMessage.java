@@ -30,8 +30,8 @@ public class BaseKafkaMessage {
     @Column(name = "msg_key", nullable = false)
     private String key;
 
-    @Column(name = "kafka_ts", nullable = false)
-    private Date kafkaTs;
+    @Column(name = "kb_sending_ts", nullable = false)
+    private Date kbSendingTs;
 
     @Column(name = "kb_receipt_ts", nullable = false)
     private Date kbReceiptTs;

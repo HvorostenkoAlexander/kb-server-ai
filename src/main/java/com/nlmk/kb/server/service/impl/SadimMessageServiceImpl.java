@@ -85,6 +85,15 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         Assert.notNull(primeId, "primeId must not be null");
 
         List<SadimMessage> messages = repository.findSadimMessagesByParam_PrimeIdOrderByTsDesc(primeId);
+
+        messages.stream().map(
+                s -> "SADIM message: key: " + s.getKey() +
+                        "; ts: " + s.getTs() +
+                        "; partition: " + s.getPartition() +
+                        "; offset: " + s.getOffset() +
+                        "; Param: " + s.getParam()
+        ).forEach(log::debug);
+
         log.warn("messages size by primeId: {}", messages.size());
 
         return messages;
@@ -95,6 +104,15 @@ public class SadimMessageServiceImpl implements SadimMessageService {
         Assert.notNull(lotNo, "lotNo must not be null");
 
         List<SadimMessage> messages = repository.findSadimMessagesByParam_MeltNoAndParam_LotNoOrderByTsDesc(meltNo, lotNo);
+
+        messages.stream().map(
+                s -> "SADIM message: key: " + s.getKey() +
+                        "; ts: " + s.getTs() +
+                        "; partition: " + s.getPartition() +
+                        "; offset: " + s.getOffset() +
+                        "; Param: " + s.getParam()
+        ).forEach(log::debug);
+
         log.warn("messages size by lotNo, meltNo: {}", messages.size());
 
         return messages;
@@ -114,13 +132,15 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                                                           Integer lotNo) {
         validateParam(pkId, primeId);
 
-        return batchFind(List.of(pkId, primeId), meltNo, lotNo)
-                .orElseThrow(() -> {
-                    var exceptionString = String.format("В базе данных kb-server на обнаружены данные с параметрами:" +
+        return batchFind(List.of(pkId, primeId), meltNo, lotNo).orElseGet(
+                () -> {
+                    var warningString = String.format("В базе данных kb-server на обнаружены данные с параметрами:" +
                                     " pkId:[%s]; primeId:[%s]; nplv(meltNo):[%s]; hnum(lotNo):[%s]",
                             pkId, primeId, meltNo, lotNo);
-                    throw new IllegalArgumentException(exceptionString);
-                });
+                    log.warn(warningString);
+                    return null;
+                }
+        );
     }
 
     @Override

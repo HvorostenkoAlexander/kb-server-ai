@@ -37,7 +37,7 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
         requestMessage.setOffset(offset);
         requestMessage.setKey(key);
         requestMessage.setTopic(topic);
-        requestMessage.setKafkaTs(converter.parseToDate(ccmAttestationRequest.getTs().toString()));
+        requestMessage.setKbSendingTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         requestMessage.setKbReceiptTs(
                 Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
         );

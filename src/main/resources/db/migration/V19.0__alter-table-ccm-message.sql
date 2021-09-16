@@ -1,0 +1,1 @@
+ALTER TABLE public.ccm_message RENAME COLUMN kafka_ts TO kb_sending_ts;
