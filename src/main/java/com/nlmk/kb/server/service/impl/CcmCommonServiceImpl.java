@@ -30,12 +30,12 @@ public class CcmCommonServiceImpl implements CcmCommonService {
         final var requests = messageService.findByPrimeId(primeId);
 
         if (requests.isEmpty()) {
-            log.warn("Для повторной отправки в базе данных kb-server не обаружены запросы на аттестацию с primeId: [{}]", primeId);
+            log.debug("Для повторной отправки в базе данных kb-server не обаружены запросы на аттестацию с primeId: [{}]", primeId);
             return;
         }
 
         if (requests.size() > 1) {
-            log.warn("В базе данных kb-server обаружено [{}] запроса на аттестацию с primeId: [{}]",
+            log.warn("В базе данных kb-server обнаружено [{}] запроса на аттестацию с primeId: [{}]",
                     requests.size(), primeId);
             requests.stream().map(
                     r -> "id: " + r.getId() + " kbReceiptTs: " + r.getKbReceiptTs() + "; primeId: " + r.getPrimeId()
