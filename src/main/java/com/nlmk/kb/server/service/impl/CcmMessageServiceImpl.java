@@ -39,7 +39,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
                             ccmMessage.getOffset()
                     );
             if (storedRequests.size() > 1) {
-                log.info("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками" +
+                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию  с характеристиками" +
                                 " topic: {}," +
                                 " partition: {}," +
                                 " offset: {}",
