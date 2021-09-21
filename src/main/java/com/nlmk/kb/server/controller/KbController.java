@@ -91,7 +91,7 @@ public class KbController {
     @GetMapping("/launch_attestation/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public ResponseEntity<String> launchReAttestation(@PathVariable String primeId){
-        log.info("Повторная отправка запроса на аттестацию из kb-server. primeIs:[{}]",primeId);
+        log.info("Повторная отправка запроса на аттестацию из kb-server. primeId:[{}]",primeId);
 
         final var resultId = ccmCommonService.rePostAttestation(primeId);
         final var resultString = String.format(
