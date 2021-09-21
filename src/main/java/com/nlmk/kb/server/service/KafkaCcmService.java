@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +16,19 @@ import java.util.Date;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class KafkaCcmService {
 
-    @Value("${kafka.ack.nack.sleep-time}")
-    private long sleepTime;
-
+    private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageConverter messageConverter;
+
+    public KafkaCcmService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                           CcmCommonService ccmCommonService,
+                           CcmMessageConverter messageConverter) {
+        this.sleepTime = sleepTime;
+        this.ccmCommonService = ccmCommonService;
+        this.messageConverter = messageConverter;
+    }
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
             topics = {"${kafka.ccm.topicReq}"}

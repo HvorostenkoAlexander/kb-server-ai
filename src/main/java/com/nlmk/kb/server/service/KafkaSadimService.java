@@ -3,9 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
-import com.nlmk.kb.server.service.impl.CcmCommonServiceImpl;
 import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,13 +14,19 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class KafkaSadimService {
 
-    @Value("${kafka.ack.nack.sleep-time}")
-    private long sleepTime;
+    private final long sleepTime;
     private final SadimMessageService messageService;
-    private final CcmCommonServiceImpl ccmCommonService;
+    private final CcmCommonService ccmCommonService;
+
+    public KafkaSadimService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                             SadimMessageService messageService,
+                             CcmCommonService ccmCommonService) {
+        this.sleepTime = sleepTime;
+        this.messageService = messageService;
+        this.ccmCommonService = ccmCommonService;
+    }
 
     @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
@@ -51,7 +55,15 @@ public class KafkaSadimService {
             throw new RuntimeException("переброс: " + e);
         }
 
-        ccmCommonService.rePostAttestation(primeId);
+        sadimRePostAttestation(primeId);
+    }
+
+    private void sadimRePostAttestation(String primeId) {
+        try {
+            ccmCommonService.rePostAttestation(primeId);
+        } catch (Exception ex){
+            log.debug("Ошибка при повторной отправки запроса на аттестацию: [{}]",ex.getMessage());
+        }
     }
 
     private String getPrimeId(SadimMessage sadimMessage) {

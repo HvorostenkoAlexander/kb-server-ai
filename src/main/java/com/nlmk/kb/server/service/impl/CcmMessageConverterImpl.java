@@ -29,19 +29,18 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
 
         final var value = attestationRequestConverter.toPamAttestationRequest(ccmAttestationRequest);
 
-        final var requestMessage = new CcmAttestationRequestMessage();
-        requestMessage.setPartition(partition);
-        requestMessage.setOffset(offset);
-        requestMessage.setKey(key);
-        requestMessage.setTopic(topic);
-        requestMessage.setKbSendingTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
-        requestMessage.setKbReceiptTs(
-                Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
-        );
-        requestMessage.setRequest(value);
+        final var requestMessage = CcmAttestationRequestMessage.builder()
+                .partition(partition)
+                .offset(offset)
+                .key(key)
+                .topic(topic)
+                .kbSendingTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .kbReceiptTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .request(value);
+
         if (value.getValue().getData() != null) {
-            requestMessage.setPrimeId(value.getValue().getData().getPrimeId());
+            requestMessage.primeId(value.getValue().getData().getPrimeId());
         }
-        return requestMessage;
+        return requestMessage.build();
     }
 }
