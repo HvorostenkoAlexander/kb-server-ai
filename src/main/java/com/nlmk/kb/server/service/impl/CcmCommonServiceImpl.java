@@ -23,7 +23,6 @@ public class CcmCommonServiceImpl implements CcmCommonService {
 
     @Override
     public Long rePostAttestation(String primeId) throws IllegalArgumentException {
-        Long resultId = null;
 
         if (StringUtils.isBlank(primeId)) {
             log.warn("Невозможно осуществить повторную отправку. primeId is null.");
@@ -46,20 +45,15 @@ public class CcmCommonServiceImpl implements CcmCommonService {
             ).forEach(log::debug);
         }
 
-        try {
-            final var lastRequest = requests.stream()
-                    .max(
-                            Comparator.comparing(CcmAttestationRequestMessage::getKbReceiptTs)
-                    ).orElseThrow(
-                            () -> new IllegalArgumentException("Не удалось получить сведения о последнем запросе" +
-                                    " с primeId: " + primeId)
-                    );
+        final var lastRequest = requests.stream()
+                .max(
+                        Comparator.comparing(CcmAttestationRequestMessage::getKbReceiptTs)
+                ).orElseThrow(
+                        () -> new IllegalArgumentException("Не удалось получить сведения о последнем запросе" +
+                                " с primeId: " + primeId)
+                );
 
-            resultId = rePostRequest(lastRequest);
-        } catch (Exception ex) {
-            log.error("Ошибка при повторной передачи запроса на аттестацию: [{}]", ex.getMessage());
-        }
-        return resultId;
+        return rePostRequest(lastRequest);
     }
 
     @Override
