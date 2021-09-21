@@ -1,5 +1,6 @@
-package com.nlmk.kb.server.util;
+package com.nlmk.kb.server.service.impl;
 
+import com.nlmk.kb.server.entity.pam.AttestationRequest;
 import com.nlmk.kb.server.entity.pam.ChemicalSpec;
 import com.nlmk.kb.server.entity.pam.DataField;
 import com.nlmk.kb.server.entity.pam.MechanicalData;
@@ -10,7 +11,10 @@ import com.nlmk.kb.server.entity.pam.OrderRequest;
 import com.nlmk.kb.server.entity.pam.Pk;
 import com.nlmk.kb.server.entity.pam.Specs;
 import com.nlmk.kb.server.entity.pam.Value;
-import nlmk.l3.ccm.pgp.AttestationRequest;
+import com.nlmk.kb.server.service.AttestationRequestConverter;
+import com.nlmk.kb.server.service.CommonConverter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.RecordChemical;
 import nlmk.l3.ccm.pgp.RecordData;
 import nlmk.l3.ccm.pgp.RecordMechData;
@@ -20,39 +24,41 @@ import nlmk.l3.ccm.pgp.RecordMetgrapData;
 import nlmk.l3.ccm.pgp.RecordOrderReq;
 import nlmk.l3.ccm.pgp.RecordPk;
 import nlmk.l3.ccm.pgp.RecordSpecifications;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.stream.Collectors;
 
-public class ValueConverter {
-    private ValueConverter() {
-        throw new RuntimeException("ValueConverter is utility class, only for create attestation request value.");
-    }
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AttestatonRequestConverterImpl implements AttestationRequestConverter {
 
-    public static com.nlmk.kb.server.entity.pam.AttestationRequest toPamAttestationRequest(AttestationRequest request) {
+    private final CommonConverter converter;
 
-        final var value = new Value();
+    @Override
+    public AttestationRequest toPamAttestationRequest(nlmk.l3.ccm.pgp.AttestationRequest ccmAttRequest) {
+        Assert.notNull(ccmAttRequest, "ccmAttRequest is null");
+        Assert.notNull(ccmAttRequest.getTs(), "ccmAttRequest.getTs() is null");
+        Assert.notNull(ccmAttRequest.getOp(), "ccmAttRequest.getOp() is null");
 
-        final var attRequest = com.nlmk.kb.server.entity.pam.AttestationRequest.builder()
-                .value(value)
+        final var dateRequest = converter.parseToDate(ccmAttRequest.getTs().toString());
+        Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запроссе на аттестацию");
+
+        final var value = Value.builder()
+                .ts(dateRequest)
+                .op(ccmAttRequest.getOp().toString());
+
+        if (ccmAttRequest.getPk() != null) {
+            value.pk(toPamPk(ccmAttRequest.getPk()));
+        }
+        if (ccmAttRequest.getData() != null) {
+            value.data(toPamDataField(ccmAttRequest.getData()));
+        }
+
+        return AttestationRequest.builder()
+                .value(value.build())
                 .build();
-
-        LocalDateTime ldt = LocalDateTime.parse(request.getTs(), DateTimeFormatter.ISO_DATE_TIME);
-        Date date = java.sql.Timestamp.valueOf(ldt);
-
-        value.setTs(date);
-        value.setOp(request.getOp().toString());
-
-        if (request.getPk() != null) {
-            value.setPk(toPamPk(request.getPk()));
-        }
-        if (request.getData() != null) {
-            value.setData(toPamDataField(request.getData()));
-        }
-
-        return attRequest;
     }
 
     private static Pk toPamPk(RecordPk recordPk) {
@@ -146,189 +152,187 @@ public class ValueConverter {
 
     private static Specs toPamSpecs(RecordSpecifications specifications) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        Specs specs = Specs.builder()
+        final var specs = Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(specifications.getSpecName().toString())
-                .specTypeCode(specifications.getSpecTypeCode())
-                .build();
+                .specTypeCode(specifications.getSpecTypeCode());
+
         if (specifications.getSpecValue() != null) {
-            specs.setSpecValue(specifications.getSpecValue().toString());
+            specs.specValue(specifications.getSpecValue().toString());
         }
         if (specifications.getSpecFormat() != null) {
-            specs.setSpecFormat(specifications.getSpecFormat().toString());
+            specs.specFormat(specifications.getSpecFormat().toString());
         }
         if (specifications.getSpecMeasure() != null) {
-            specs.setSpecMeasure(specifications.getSpecMeasure().toString());
+            specs.specMeasure(specifications.getSpecMeasure().toString());
         }
-        return specs;
+        return specs.build();
     }
 
     private static OrderRequest toPamOrderRequest(RecordOrderReq recordOrderReq) {
-        OrderRequest orderRequest = OrderRequest.builder()
+        final var orderRequest = OrderRequest.builder()
                 .attrCode(recordOrderReq.getAttrCode())
                 .attrName(recordOrderReq.getAttrName().toString())
                 .attrTypeCode(recordOrderReq.getAttrTypeCode())
-                .attrTypeValue(recordOrderReq.getAttrTypeValue())
-                .build();
+                .attrTypeValue(recordOrderReq.getAttrTypeValue());
 
         if (recordOrderReq.getAttrValue() != null) {
-            orderRequest.setAttrValue(recordOrderReq.getAttrValue().toString());
+            orderRequest.attrValue(recordOrderReq.getAttrValue().toString());
         }
 
         if (recordOrderReq.getAttrFormat() != null) {
-            orderRequest.setAttrFormat(recordOrderReq.getAttrFormat().toString());
+            orderRequest.attrFormat(recordOrderReq.getAttrFormat().toString());
         }
 
         if (recordOrderReq.getAttrMeasure() != null) {
-            orderRequest.setAttrMeasure(recordOrderReq.getAttrMeasure().toString());
+            orderRequest.attrMeasure(recordOrderReq.getAttrMeasure().toString());
         }
 
         if (recordOrderReq.getListValues() != null) {
-            orderRequest.setListValues(
+            orderRequest.listValues(
                     recordOrderReq.getListValues().stream()
                             .filter(r -> r != null)
                             .map(r -> r.getValue().toString())
                             .collect(Collectors.toList())
             );
         }
-        return orderRequest;
+        return orderRequest.build();
     }
 
     private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
-        ChemicalSpec chemicalSpec = ChemicalSpec.builder()
+        final var chemicalSpec = ChemicalSpec.builder()
                 .chemCode(recordChemical.getChemCode())
-                .chemName(recordChemical.getChemName().toString())
-                .build();
+                .chemName(recordChemical.getChemName().toString());
+
         if (recordChemical.getChemValue() != null) {
-            chemicalSpec.setChemValue(recordChemical.getChemValue().toString());
+            chemicalSpec.chemValue(recordChemical.getChemValue().toString());
         }
         if (recordChemical.getChemFormat() != null) {
-            chemicalSpec.setChemFormat(recordChemical.getChemFormat().toString());
+            chemicalSpec.chemFormat(recordChemical.getChemFormat().toString());
         }
-        return chemicalSpec;
+        return chemicalSpec.build();
     }
 
     private static MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
-        MechanicalSpec mechanicalSpec = MechanicalSpec.builder()
-                .build();
+        final var mechanicalSpec = MechanicalSpec.builder();
+
         if (recordMechanical.getTestArrayId() != null) {
-            mechanicalSpec.setTestArrayId(recordMechanical.getTestArrayId().intValue());
+            mechanicalSpec.testArrayId(recordMechanical.getTestArrayId().intValue());
         }
         if (recordMechanical.getHnum() != null) {
-            mechanicalSpec.setHnum(recordMechanical.getHnum().intValue());
+            mechanicalSpec.hnum(recordMechanical.getHnum().intValue());
         }
         if (recordMechanical.getProtId() != null) {
-            mechanicalSpec.setProtId(recordMechanical.getProtId().intValue());
+            mechanicalSpec.protId(recordMechanical.getProtId().intValue());
         }
         if (recordMechanical.getProtNum() != null) {
-            mechanicalSpec.setProtNum(recordMechanical.getProtNum().intValue());
+            mechanicalSpec.protNum(recordMechanical.getProtNum().intValue());
         }
         if (recordMechanical.getSampleId() != null) {
-            mechanicalSpec.setSampleId(recordMechanical.getSampleId().intValue());
+            mechanicalSpec.sampleId(recordMechanical.getSampleId().intValue());
         }
         if (recordMechanical.getProbeCode() != null) {
-            mechanicalSpec.setProbeCode(recordMechanical.getProbeCode().intValue());
+            mechanicalSpec.probeCode(recordMechanical.getProbeCode().intValue());
         }
         if (recordMechanical.getSampleNum() != null) {
-            mechanicalSpec.setSampleNum(recordMechanical.getSampleNum().intValue());
+            mechanicalSpec.sampleNum(recordMechanical.getSampleNum().intValue());
         }
         if (recordMechanical.getSignAnalysis() != null) {
-            mechanicalSpec.setSignAnalysis(recordMechanical.getSignAnalysis().intValue());
+            mechanicalSpec.signAnalysis(recordMechanical.getSignAnalysis().intValue());
         }
         if (recordMechanical.getFormationListNum() != null) {
-            mechanicalSpec.setFormationListNum(recordMechanical.getFormationListNum().intValue());
+            mechanicalSpec.formationListNum(recordMechanical.getFormationListNum().intValue());
         }
         if (recordMechanical.getProbeName() != null) {
-            mechanicalSpec.setProbeName(recordMechanical.getProbeName().toString());
+            mechanicalSpec.probeName(recordMechanical.getProbeName().toString());
         }
         if (recordMechanical.getFormationListId() != null) {
-            mechanicalSpec.setFormationListId(recordMechanical.getFormationListId().toString());
+            mechanicalSpec.formationListId(recordMechanical.getFormationListId().toString());
         }
-        mechanicalSpec.setMechData(
+        mechanicalSpec.mechData(
                 recordMechanical.getMechData().stream()
                         .map(md -> toPamMechanicalData(md))
                         .collect(Collectors.toList())
         );
-        return mechanicalSpec;
+        return mechanicalSpec.build();
     }
 
     private static MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
-        MechanicalData mechanicalData = MechanicalData.builder()
+        final var mechanicalData = MechanicalData.builder()
                 .mechCode(recordMechData.getMechCode())
                 .mechName(recordMechData.getMechName().toString())
-                .mechTypeCode(recordMechData.getMechTypeCode())
-                .build();
+                .mechTypeCode(recordMechData.getMechTypeCode());
 
         if (recordMechData.getMechFormat() != null) {
-            mechanicalData.setMechFormat(recordMechData.getMechFormat().toString());
+            mechanicalData.mechFormat(recordMechData.getMechFormat().toString());
         }
         if (recordMechData.getMechValue() != null) {
-            mechanicalData.setMechValue(recordMechData.getMechValue().toString());
+            mechanicalData.mechValue(recordMechData.getMechValue().toString());
         }
         if (recordMechData.getMechMeasure() != null) {
-            mechanicalData.setMechMeasure(recordMechData.getMechMeasure().toString());
+            mechanicalData.mechMeasure(recordMechData.getMechMeasure().toString());
         }
-        return mechanicalData;
+        return mechanicalData.build();
     }
 
     private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
-        MetallographicSpec mtlSpec = MetallographicSpec.builder().build();
+        final var mtlSpec = MetallographicSpec.builder();
 
         if (recordMetallographic.getTestArrayId() != null) {
-            mtlSpec.setTestArrayId(recordMetallographic.getTestArrayId().intValue());
+            mtlSpec.testArrayId(recordMetallographic.getTestArrayId().intValue());
         }
         if (recordMetallographic.getProtId() != null) {
-            mtlSpec.setProtId(recordMetallographic.getProtId().intValue());
+            mtlSpec.protId(recordMetallographic.getProtId().intValue());
         }
         if (recordMetallographic.getProtNum() != null) {
-            mtlSpec.setProtNum(recordMetallographic.getProtNum().intValue());
+            mtlSpec.protNum(recordMetallographic.getProtNum().intValue());
         }
         if (recordMetallographic.getSampleId() != null) {
-            mtlSpec.setSampleId(recordMetallographic.getSampleId().intValue());
+            mtlSpec.sampleId(recordMetallographic.getSampleId().intValue());
         }
         if (recordMetallographic.getProbeName() != null) {
-            mtlSpec.setProbeName(recordMetallographic.getProbeName().toString());
+            mtlSpec.probeName(recordMetallographic.getProbeName().toString());
         }
         if (recordMetallographic.getProbeCode() != null) {
-            mtlSpec.setProbeCode(recordMetallographic.getProbeCode().intValue());
+            mtlSpec.probeCode(recordMetallographic.getProbeCode().intValue());
         }
         if (recordMetallographic.getSampleNum() != null) {
-            mtlSpec.setSampleNum(recordMetallographic.getSampleNum().intValue());
+            mtlSpec.sampleNum(recordMetallographic.getSampleNum().intValue());
         }
         if (recordMetallographic.getSignAnalysis() != null) {
-            mtlSpec.setSignAnalysis(recordMetallographic.getSignAnalysis().intValue());
+            mtlSpec.signAnalysis(recordMetallographic.getSignAnalysis().intValue());
         }
         if (recordMetallographic.getFormationListId() != null) {
-            mtlSpec.setFormationListId(recordMetallographic.getFormationListId().toString());
+            mtlSpec.formationListId(recordMetallographic.getFormationListId().toString());
         }
         if (recordMetallographic.getFormationListNum() != null) {
-            mtlSpec.setFormationListNum(recordMetallographic.getFormationListNum().intValue());
+            mtlSpec.formationListNum(recordMetallographic.getFormationListNum().intValue());
         }
 
-        mtlSpec.setMetgrapData(
+        mtlSpec.metgrapData(
                 recordMetallographic.getMetgrapData().stream()
                         .map(md -> toPamMetallographicData(md))
                         .collect(Collectors.toList())
         );
 
-        return mtlSpec;
+        return mtlSpec.build();
     }
 
     private static MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
-        MetallographicData mtlData = MetallographicData.builder()
+        final var mtlData = MetallographicData.builder()
                 .metgrapCode(recordMetgrapData.getMetgrapCode())
                 .metgrapName(recordMetgrapData.getMetgrapName().toString())
-                .metgrapTypeCode(Integer.toString(recordMetgrapData.getMetgrapTypeCode()))
-                .build();
+                .metgrapTypeCode(Integer.toString(recordMetgrapData.getMetgrapTypeCode()));
+
         if (recordMetgrapData.getMetgrapFormat() != null) {
-            mtlData.setMetgrapFormat(recordMetgrapData.getMetgrapFormat().toString());
+            mtlData.metgrapFormat(recordMetgrapData.getMetgrapFormat().toString());
         }
         if (recordMetgrapData.getMetgrapValue() != null) {
-            mtlData.setMetgrapValue(recordMetgrapData.getMetgrapValue().toString());
+            mtlData.metgrapValue(recordMetgrapData.getMetgrapValue().toString());
         }
         if (recordMetgrapData.getMetgrapMeasure() != null) {
-            mtlData.setMetgrapMeasure(recordMetgrapData.getMetgrapMeasure().toString());
+            mtlData.metgrapMeasure(recordMetgrapData.getMetgrapMeasure().toString());
         }
-        return mtlData;
+        return mtlData.build();
     }
 }

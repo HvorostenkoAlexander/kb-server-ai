@@ -23,8 +23,7 @@ public class KafkaCcmService {
     @Value("${kafka.ack.nack.sleep-time}")
     private long sleepTime;
 
-    private final PamClientService pamClientService;
-    private final CcmMessageService messageService;
+    private final CcmCommonService ccmCommonService;
     private final CcmMessageConverter messageConverter;
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
@@ -62,22 +61,8 @@ public class KafkaCcmService {
                     timestamp
             );
 
-            final var savedRequest = messageService.save(requestMessage).orElseThrow(
-                    () -> new RuntimeException("Не удалось сохранить сообщение partition: " + partition
-                            + "; offset: " + offset)
-            );
+            ccmCommonService.postAttestation(requestMessage);
 
-            if (request.getData() != null) {
-                final var pamResult = pamClientService.postAttestationRequest(savedRequest.getRequest());
-
-                if (pamResult != null) {
-                    savedRequest.setStatus("recived");
-                    savedRequest.setKafkaTs(new Date());
-                    messageService.update(savedRequest);
-                }
-            } else {
-                log.warn("В поступившем запросе на аттестацию нет данных.");
-            }
             ack.acknowledge();
         } catch (DateTimeParseException ddpe) {
             ack.acknowledge();

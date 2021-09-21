@@ -1,9 +1,8 @@
 package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.service.AttestationRequestConverter;
 import com.nlmk.kb.server.service.CcmMessageConverter;
-import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.util.ValueConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
@@ -18,7 +17,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class CcmMessageConverterImpl implements CcmMessageConverter {
 
-    private final CommonConverter converter;
+    private final AttestationRequestConverter attestationRequestConverter;
 
     @Override
     public CcmAttestationRequestMessage fromCcmAttestationRequest(AttestationRequest ccmAttestationRequest,
@@ -28,14 +27,14 @@ public class CcmMessageConverterImpl implements CcmMessageConverter {
                                                                   int offset,
                                                                   String timestamp) {
 
-        final var value = ValueConverter.toPamAttestationRequest(ccmAttestationRequest);
+        final var value = attestationRequestConverter.toPamAttestationRequest(ccmAttestationRequest);
 
         final var requestMessage = new CcmAttestationRequestMessage();
         requestMessage.setPartition(partition);
         requestMessage.setOffset(offset);
         requestMessage.setKey(key);
         requestMessage.setTopic(topic);
-        requestMessage.setKafkaTs(converter.parseToDate(ccmAttestationRequest.getTs().toString()));
+        requestMessage.setKbSendingTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         requestMessage.setKbReceiptTs(
                 Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
         );
