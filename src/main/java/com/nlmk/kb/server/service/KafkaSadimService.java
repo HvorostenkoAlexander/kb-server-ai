@@ -62,7 +62,7 @@ public class KafkaSadimService {
         try {
             ccmCommonService.rePostAttestation(primeId);
         } catch (Exception ex){
-            log.debug("Ошибка при повторной отправки запроса на аттестацию: [{}]",ex.getMessage());
+            log.warn("Повторная отправки запроса на аттестацию закончилась неудачей: [{}]",ex.getMessage());
         }
     }
 
