@@ -88,7 +88,7 @@ public class KbController {
         );
     }
 
-    @GetMapping("/launch_attestation/{primeId}")
+    @PostMapping("/launch_attestation/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     public ResponseEntity<String> launchReAttestation(@PathVariable String primeId){
         log.info("Повторная отправка запроса на аттестацию из kb-server. primeId:[{}]",primeId);

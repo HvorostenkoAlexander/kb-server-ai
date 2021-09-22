@@ -80,8 +80,8 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     }
 
     private Long rePostRequest(CcmAttestationRequestMessage r) {
-        log.info("Повторная отправка запроса на аттестацию. primeId: [{}], kbReceiptTs:[{}]",
-                r.getPrimeId(), r.getKbReceiptTs());
+        log.info("Повторная отправка запроса на аттестацию. id:[{}]; primeId: [{}]; kbReceiptTs:[{}]",
+                r.getId(), r.getPrimeId(), r.getKbReceiptTs());
 
         return postRequest(r, "re-recived");
     }
