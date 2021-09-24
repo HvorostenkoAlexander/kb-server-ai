@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.service.CcmCommonService;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PdmMessageService;
 import com.nlmk.kb.server.service.SadimMessageService;
@@ -39,6 +40,7 @@ public class KbController {
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
     private final SadimMessageService sadimMessageService;
+    private final CcmCommonService ccmCommonService;
 
     @GetMapping("/sadim")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -84,6 +86,21 @@ public class KbController {
                 endDate,
                 pageRequest
         );
+    }
+
+    @PostMapping("/launch_attestation/{primeId}")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public ResponseEntity<String> launchReAttestation(@PathVariable String primeId){
+        log.info("Повторная отправка запроса на аттестацию из kb-server. primeId:[{}]",primeId);
+
+        final var resultId = ccmCommonService.rePostAttestation(primeId);
+        final var resultString = String.format(
+                "Результат: [%s] получен при повторной отправки запроса на аттестацию с primeId: [%s]",
+                resultId,
+                primeId
+        );
+
+        return ResponseEntity.ok(resultString);
     }
 
     @GetMapping("/attestation_request")

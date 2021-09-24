@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +12,16 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class KafkaPdmService {
 
-    @Value("${kafka.ack.nack.sleep-time}")
-    private long sleepTime;
-
+    private final long sleepTime;
     private final PdmMessageHandler pdmMessageHandler;
+
+    public KafkaPdmService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                           PdmMessageHandler pdmMessageHandler) {
+        this.sleepTime = sleepTime;
+        this.pdmMessageHandler = pdmMessageHandler;
+    }
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
             topics = {
