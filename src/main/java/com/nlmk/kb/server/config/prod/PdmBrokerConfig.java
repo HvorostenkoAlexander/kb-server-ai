@@ -27,6 +27,7 @@ public class PdmBrokerConfig {
     private final PdmConsumerProperties consumerProperties;
 
     @Bean
+    @Primary
     public ConsumerFactory<Object, Object> pdmConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
