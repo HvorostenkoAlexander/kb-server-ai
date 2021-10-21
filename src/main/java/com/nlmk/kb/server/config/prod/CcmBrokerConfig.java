@@ -49,7 +49,6 @@ public class CcmBrokerConfig {
         } else {
             log.warn("Внимание! Подключаются настройки для тестового топика ССМ");
         }
-
         return props;
     }
 
