@@ -66,7 +66,6 @@ public class SadimBrokerConfig {
                 log.error("ERROR RECORD: " + data.toString());
             }
         }));
-        //factory.setConcurrency(1);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
         return factory;

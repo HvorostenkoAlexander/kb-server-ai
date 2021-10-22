@@ -4,4 +4,4 @@ COPY src/main/resources/application-prod.properties /user/local/service/
 COPY target/ /usr/local/service/
 COPY kafkaSsl/*.* /kafkaSsl/
 
-ENTRYPOINT ["java", "-jar", "/usr/local/service/kb-server.jar", "--spring.profiles.active=container", "--spring.config.location=optional:classpath:/application-prod.properties"]
+ENTRYPOINT ["java", "-jar", "/usr/local/service/kb-server.jar", "--spring.profiles.active=prod", "--spring.config.location=optional:classpath:/application-prod.properties"]
