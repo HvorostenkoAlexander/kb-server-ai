@@ -12,11 +12,11 @@ import java.util.Optional;
 
 public interface SadimMessageRepository extends JpaRepository<SadimMessage, Long> {
 
-    public List<SadimMessage> findSadimMessagesByParam_PrimeIdOrderByTsDesc(String primeId);
+    List<SadimMessage> findSadimMessagesByParam_PrimeIdOrderByTsDesc(String primeId);
 
-    public List<SadimMessage> findSadimMessagesByParam_MeltNoAndParam_LotNoOrderByTsDesc(Integer meltNo, Integer lotNo);
+    List<SadimMessage> findSadimMessagesByParam_MeltNoAndParam_LotNoOrderByTsDesc(Integer meltNo, Integer lotNo);
 
-    public Optional<SadimMessage> findFirstByPartitionAndOffset(Integer partition, Long offset);
+    Optional<SadimMessage> findFirstByPartitionAndOffset(Integer partition, Long offset);
 
     @Query(nativeQuery = true,
             value = "SELECT m.ts, p.id, p.prime_id, p.t12_min, p.t12_max, p.tcm_min, p.tcm_max," +

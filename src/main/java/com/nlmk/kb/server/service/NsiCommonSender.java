@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface NsiCommonSender {
 
-    public ResponseEntity<Long> exchange(HttpEntity<?> request,
+    ResponseEntity<Long> exchange(HttpEntity<?> request,
                                          final String url_dictionary,
                                          final String operation
     );

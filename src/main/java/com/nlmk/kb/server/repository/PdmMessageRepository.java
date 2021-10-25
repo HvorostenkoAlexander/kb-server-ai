@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface PdmMessageRepository extends JpaRepository<PdmMessage, Long> {
 
-    public boolean existsByTopicAndOffsetAndPartition(String topic, long offset, int partition);
+    boolean existsByTopicAndOffsetAndPartition(String topic, long offset, int partition);
 
-    public List<PdmMessage> findByTopicAndOffsetAndPartition(String topic, long offset, int partition);
+    List<PdmMessage> findByTopicAndOffsetAndPartition(String topic, long offset, int partition);
 
     @Query(nativeQuery = true,
             value = "SELECT * FROM pdm_message" +
@@ -23,9 +23,9 @@ public interface PdmMessageRepository extends JpaRepository<PdmMessage, Long> {
                     " OR ((date(ts_timestamp)) >= date(CAST(?3 AS timestamp with time zone))" +
                     " AND (date(ts_timestamp)) <= date(CAST(?4 AS timestamp with time zone))))"
     )
-    public Page<PdmMessage> getMessages(String topic,
-                                        Boolean isPosted,
-                                        String startDate,
-                                        String endDate,
-                                        PageRequest of);
+    Page<PdmMessage> getMessages(String topic,
+                                 Boolean isPosted,
+                                 String startDate,
+                                 String endDate,
+                                 PageRequest of);
 }

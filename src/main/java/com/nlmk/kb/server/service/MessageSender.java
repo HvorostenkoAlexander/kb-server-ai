@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface MessageSender {
 
-    public ResponseEntity<Long> send(PdmMessage message);
+    ResponseEntity<Long> send(PdmMessage message);
 
-    public String getType();
+    String getType();
 }

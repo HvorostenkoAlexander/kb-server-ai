@@ -144,9 +144,6 @@ public class SadimStreamApiParser implements SadimJsonParser {
 
                 while (!("values".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.END_ARRAY)) {
 
-                    // хотя далее формируем String c разделителем ';' parsToDouble позволяет
-                    // проверить корректность данных на этапе чтения json
-
                     if (jParser.nextToken() == JsonToken.START_ARRAY) {
                         List<Double> onePare = new ArrayList<>();
                         while (jParser.nextToken() != JsonToken.END_ARRAY) {

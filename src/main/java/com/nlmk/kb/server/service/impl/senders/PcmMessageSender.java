@@ -54,7 +54,7 @@ public class PcmMessageSender extends BaseSender implements MessageSender, PdmMe
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
 
-        final var message = PdmMessage.builder()
+        return PdmMessage.builder()
                 .topic(record.topic())
                 .key((String) record.key())
                 .offset(record.offset())
@@ -63,7 +63,5 @@ public class PcmMessageSender extends BaseSender implements MessageSender, PdmMe
                 .op(dictionary.getOp())
                 .ts(dictionary.getTs())
                 .build();
-
-        return message;
     }
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface CcmMessageService {
 
-    public Optional<CcmAttestationRequestMessage> save(CcmAttestationRequestMessage ccmMessage);
+    Optional<CcmAttestationRequestMessage> save(CcmAttestationRequestMessage ccmMessage);
 
     Page<CcmAttestationRequestMessage> findAll(PageRequest of);
 

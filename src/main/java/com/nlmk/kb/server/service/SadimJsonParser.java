@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface SadimJsonParser {
 
     /**
-     * Создание объекта класса PreAttestationParam из строки ф формате json
+     * Создание объекта класса PreAttestationParam из строки в формате json
      *
      * @param jsonString
      * @return объект Optional<PreAttestationParam>.

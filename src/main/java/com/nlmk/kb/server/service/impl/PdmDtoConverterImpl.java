@@ -94,14 +94,13 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var katSteel4041Dto = SteelCategoryG4041Dto.builder()
+        return SteelCategoryG4041Dto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
                 .prThickUncoata(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())))
                 .category(converter.getSpecValue(specs, SpecCode.CATEGORY_GOST_4041.getValue()))
                 .build();
-        return katSteel4041Dto;
     }
 
     @Override
@@ -111,7 +110,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var thicknessTkLimitDto = ThicknessTkLimitDto.builder()
+        return ThicknessTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .routeShop(converter.getSpecValue(specs, SpecCode.ROUTE_SHOP.getValue()))
@@ -129,7 +128,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prThickTolMaxPerc(converter.getSpecValue(specs, SpecCode.THICKNESS_TOLERANCE_PERCENT_MAX.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-        return thicknessTkLimitDto;
     }
 
     @Override
@@ -139,7 +137,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var widthTkLimitDto = WidthTkLimitDto.builder()
+        return WidthTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
@@ -159,10 +157,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 ))
                 .prWidthTolPerc(converter.getSpecValue(specs, SpecCode.WHIDTH_TOLERANCE_PERCENT.getValue()))
                 .build();
-
-        final var widthTolMinStr = converter.getSpecValue(specs, SpecCode.WIDTH_TOLERANCE_MIN.getValue());
-
-        return widthTkLimitDto;
     }
 
     @Override
@@ -172,7 +166,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var lengthTkLimitDto = LengthTkLimitDto.builder()
+        return LengthTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
@@ -188,8 +182,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 ))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-
-        return lengthTkLimitDto;
     }
 
     @Override
@@ -199,7 +191,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var physMechPropertiesDto = PhysMechPropertiesDto.builder()
+        return PhysMechPropertiesDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .pr_category(converter.getSpecValue(specs, SpecCode.CATEGORY_OF_MARK.getValue()))
@@ -316,8 +308,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .pr_bake_hardening(converter.getSpecValue(specs, SpecCode.BAKE_HARDENING.getValue()))
                 .pr_annotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-
-        return physMechPropertiesDto;
     }
 
     @Override
@@ -327,7 +317,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var evennessTkLimitDto = EvennessTkLimitDto.builder()
+        return EvennessTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .standSort(converter.getSpecValue(specs, SpecCode.ASSORTMENT_STANDARD.getValue()))
@@ -344,8 +334,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prTensileStrength(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TENSILE_STRENGTH.getValue())))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-
-        return evennessTkLimitDto;
     }
 
     @Override
@@ -355,7 +343,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var tkNumDto = TkNumDto.builder()
+        return TkNumDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
@@ -363,8 +351,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .dateStart(this.getDocDate(specs, SpecCode.START_DATE.getValue()))
                 .dateFinish(this.getDocDate(specs, SpecCode.FINISH_DATE.getValue()))
                 .build();
-
-        return tkNumDto;
     }
 
     private String getDocDate(List<Spec> specs, int code) {
@@ -383,14 +369,13 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var ceqDto = CEqDto.builder()
+        return CEqDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .ceqNum(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA_NUMBER.getValue()))
                 .ceqFormula(converter.getSpecValue(specs, SpecCode.CARBON_EQUIVALENT_FORMULA.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-        return ceqDto;
     }
 
     @Override
@@ -400,7 +385,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var mechanicalDto = MechanicalTkDto.builder()
+        return MechanicalTkDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tk_num(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
@@ -526,7 +511,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .pr_bake_hardening(converter.getSpecValue(specs, SpecCode.BAKE_HARDENING.getValue()))
                 .pr_annotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-        return mechanicalDto;
     }
 
     @Override
@@ -536,7 +520,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var chemicalDto = ChemicalTkLimitDto.builder()
+        return ChemicalTkLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prior(converter.parseToInteger(converter.getSpecValue(specs, SpecCode.PRIORITY.getValue())))
@@ -608,7 +592,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .nAl(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.N_AL.getValue())))
                 .tiN(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.TI_N.getValue())))
                 .build();
-        return chemicalDto;
     }
 
     @Override
@@ -618,7 +601,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        final var microstructureDto = MicrostructureDto.builder()
+        return MicrostructureDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
@@ -645,7 +628,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .perliteGrain(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.PERLITE_GRAIN.getValue())))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-        return microstructureDto;
     }
 
     @Override
@@ -657,7 +639,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         log.debug("--- toChemicalEquivalentStdDto PDM DICTIONARY: {} ", dictionary);
 
-        ChemicalEquivalentStdDto chemicalEquivalentStdDto = ChemicalEquivalentStdDto.builder()
+        return ChemicalEquivalentStdDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prProdMark(converter.getSpecValue(specs, SpecCode.STEEL_MARK.getValue()))
@@ -676,9 +658,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 )
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-        log.debug("--- PDM chemicalEquivalentStdDto: {} ", chemicalEquivalentStdDto);
-
-        return chemicalEquivalentStdDto;
     }
 
     @Override
@@ -687,19 +666,14 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
-        log.debug("--- toMatchTkDto PDM DICTIONARY: {} ", dictionary);
 
-        MatchTkDto matchTkDto = MatchTkDto.builder()
+        return MatchTkDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .tkNum(converter.getSpecValue(specs, SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue()))
                 .tkNumSap(converter.getSpecValue(specs, SpecCode.TK_SAP_NUMBER.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-
-        log.debug("--- PDM MatchTkDto: {} ", matchTkDto);
-
-        return matchTkDto;
     }
 
     @Override
@@ -708,17 +682,13 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
-        log.debug("--- toMatchRpDto PDM DICTIONARY: {} ", dictionary);
 
-        MatchRpDto matchTkDto = MatchRpDto.builder()
+        return MatchRpDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .rpNumSap(converter.getSpecValue(specs, SpecCode.RP_SAP_NUMBER.getValue()))
                 .tkNum(converter.getSpecValue(specs, SpecCode.RP_NUMBER_VERSION_ROUTE.getValue()))
                 .build();
-
-        log.debug("--- PDM MatchRpDto: {} ", matchTkDto);
-        return matchTkDto;
     }
 
     @Override
@@ -727,18 +697,14 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
-        log.debug("--- toPcmDto PDM DICTIONARY: {} ", dictionary);
 
-        final var pcmDto = PcmDto.builder()
+        return PcmDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .pcmNum(converter.getSpecValue(specs, SpecCode.CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER.getValue()))
                 .pcmFormula(converter.getSpecValue(specs, SpecCode.CRACK_RESISTANCE_FORMULA.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-
-        log.debug("--- toPcmDto PcmDto: {} ", pcmDto);
-        return pcmDto;
     }
 
     @Override
@@ -747,9 +713,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         Assert.notNull(dictionary.getData(), "dictionary.getData() не должен быть null.");
 
         final var specs = dictionary.getData().getSpecifications();
-        log.debug("--- toleranceDto PDM DICTIONARY: {} ", dictionary);
 
-        final var toleranceDto = ToleranceDto.builder()
+        return ToleranceDto.builder()
                 .remote_id(dictionary.getPk().getId())
                 .ts(dictionary.getTs())
                 .prStandMark(converter.getSpecValue(specs, SpecCode.PRODUCT_STANDARD.getValue()))
@@ -760,8 +725,5 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .standTolEvenness(converter.getSpecValue(specs, SpecCode.EVENNESS_TOLERANCE_STANDART.getValue()))
                 .prAnnotation(converter.getSpecValue(specs, SpecCode.NOTE.getValue()))
                 .build();
-
-        log.debug("--- toPcmDto PcmDto: {} ", toleranceDto);
-        return toleranceDto;
     }
 }
