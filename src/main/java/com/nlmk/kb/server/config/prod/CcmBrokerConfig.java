@@ -41,10 +41,10 @@ public class CcmBrokerConfig {
             log.warn("Внимание! Подключаются настройки для продуктового топика ССМ");
 
             props.put("security.protocol", "SSL");
-            props.put("ssl.truststore.location", consumerProperties.getSslTruststorePath());
-            props.put("ssl.truststore.password", consumerProperties.getSslTruststorePassword());
-            props.put("ssl.keystore.password", consumerProperties.getSslKeystorePassword());
-            props.put("ssl.keystore.location", consumerProperties.getSslKeystorePath());
+            props.put("ssl.truststore.location", consumerProperties.getTruststorePath());
+            props.put("ssl.truststore.password", consumerProperties.getTruststorePassword());
+            props.put("ssl.keystore.password", consumerProperties.getKeystorePassword());
+            props.put("ssl.keystore.location", consumerProperties.getKeystorePath());
             props.put("ssl.endpoint.identification.algorithm", "");
         } else {
             log.warn("Внимание! Подключаются настройки для тестового топика ССМ");
