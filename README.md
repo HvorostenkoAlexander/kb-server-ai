@@ -75,3 +75,34 @@ curl --location --request POST 'https://sso-test.dp.nlmk.com/auth/realms/apcs-te
 Для этого есть кнопка `Authorize`.
 
 В поля `client_id` и `client_secret` вводятся _значения_ для __тестового__ контура.
+
+## Jaeger UI (трассировка запросов)
+
+для работы с результатами трассировки локально необходимо:
+
+1. Установить docker образ jaeger на локальную машину:
+    
+    docker-compose.yml:
+    ```
+        version: '3.3'
+        
+        services:
+            jaeger-allinone:
+                image: jaegertracing/all-in-one:1.25
+                ports:
+                - "6831:6831/udp"
+                - "6832:6832/udp"
+                - "16686:16686"        
+                - "14268:14268"
+    ```
+2. docker-compose up
+3. Адреса Jaeger UI: 
+
+    local: http://localhost:16686/search
+
+    apcs-test: https://apcs-test-jaeger.app-test.nlmk.com/trace/403ac0b37b110aaa
+    
+    apcs-dev: https://apcs-dev-jaeger.app-test.nlmk.com/trace/403ac0b37b110aaa
+    
+    apcs-prod: https://apcs-prod-jaeger.app-test.nlmk.com/trace/403ac0b37b110aaa
+
