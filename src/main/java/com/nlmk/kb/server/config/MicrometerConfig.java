@@ -13,7 +13,7 @@ public class MicrometerConfig {
     @Bean
     public TimedAspect timedAspect(MeterRegistry registry) {
 
-        log.info("--- timedAspect: MeterRegistry: [{}]", registry);
+        log.info("--- timedAspect: MeterRegistry.config: [{}]", registry.config());
 
         return new TimedAspect(registry);
     }
