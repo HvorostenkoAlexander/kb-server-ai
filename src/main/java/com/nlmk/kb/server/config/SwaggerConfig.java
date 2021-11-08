@@ -25,6 +25,9 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
+        final var realms = "/realms/";
+        final var auth = "/protocol/openid-connect/auth";
+        final var token = "/protocol/openid-connect/token";
 
         return new OpenAPI()
                 .components(new Components()
@@ -33,9 +36,9 @@ public class SwaggerConfig {
                                 .description("Oauth2 flow")
                                 .flows(new OAuthFlows()
                                         .clientCredentials(new OAuthFlow()
-                                                .authorizationUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/auth")
-                                                .refreshUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token")
-                                                .tokenUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token")
+                                                .authorizationUrl(authServerUrl + realms + realm + auth)
+                                                .refreshUrl(authServerUrl + realms + realm + token)
+                                                .tokenUrl(authServerUrl + realms + realm + token)
                                                 .scopes(new Scopes())
                                         ))
                         ))
