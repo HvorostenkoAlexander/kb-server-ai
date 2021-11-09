@@ -11,13 +11,13 @@ import javax.persistence.Tuple;
 
 public interface DtoConverter {
 
-    public PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity);
+    PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity);
 
     PreAttestationParamDto toPreAttestationParamDto(Tuple t);
 
-    public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto);
+    DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto);
 
-    public DictionaryConfigDto toDictionaryConfigDto(DictionaryConfig entity);
+    DictionaryConfigDto toDictionaryConfigDto(DictionaryConfig entity);
 
-    public PdmMessageDto toPdmMessageDto(PdmMessage entity);
+    PdmMessageDto toPdmMessageDto(PdmMessage entity);
 }

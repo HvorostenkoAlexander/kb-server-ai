@@ -7,9 +7,8 @@ public interface NsiClientService {
 
     /**
      * Передача сведений из справочников PDM в nsi-server
-     *
      * @param message из БД kb-server
      */
 
-    public ResponseEntity<Long> sendPdmMessage(PdmMessage message);
+    ResponseEntity<Long> sendPdmMessage(PdmMessage message);
 }

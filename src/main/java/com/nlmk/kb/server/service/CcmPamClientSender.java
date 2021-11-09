@@ -4,5 +4,5 @@ import com.nlmk.kb.server.entity.pam.AttestationRequest;
 
 public interface CcmPamClientSender {
 
-    public Long postAttestationRequest(AttestationRequest pamAttestetionRequest);
+    Long postAttestationRequest(AttestationRequest pamAttestetionRequest);
 }

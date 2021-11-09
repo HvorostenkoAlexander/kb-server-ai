@@ -6,10 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class SadimConsumerProperties extends ConsumerProperties {
+public class SadimConsumerProperties {
+
+    private final String kafkaServer;
+    private final String kafkaGroupId;
 
     public SadimConsumerProperties(@Value("${kafka.sadim.bootstrap-servers}") String kafkaServer,
                                    @Value("${kafka.sadim.group-id}") String kafkaGroupId) {
-        super(kafkaServer, kafkaGroupId, null);
+        this.kafkaServer = kafkaServer;
+        this.kafkaGroupId = kafkaGroupId;
     }
 }

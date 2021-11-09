@@ -40,8 +40,6 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
         );
     }
 
-    //todo совместно решить какой тип  @Transactional использовать.
-    // org.springframework.transaction.annotation.Transactional vs javax.transaction.Transactional
     @Override
     @Transactional
     public DictionaryConfigDto update(Long id,

@@ -245,6 +245,4 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                     sadimFromBase.getParam());
         }
     }
-
-
 }

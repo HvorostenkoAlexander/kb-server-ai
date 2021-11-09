@@ -12,9 +12,9 @@ import java.util.Optional;
 
 public interface PdmMessageService {
 
-    public Optional<PdmMessage> save(PdmMessage message);
+    Optional<PdmMessage> save(PdmMessage message);
 
-    public Optional<PdmMessage> update(PdmMessage message);
+    Optional<PdmMessage> update(PdmMessage message);
 
     Page<PdmMessageDto> getMessages(String topic,
                                     Boolean isPosted,
