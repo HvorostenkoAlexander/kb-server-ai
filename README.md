@@ -100,9 +100,9 @@ curl --location --request POST 'https://sso-test.dp.nlmk.com/auth/realms/apcs-te
 
     local: http://localhost:16686/search
 
-    apcs-test: https://apcs-test-jaeger.app-test.nlmk.com/trace/403ac0b37b110aaa
+    apcs-test: https://apcs-test-jaeger.app-test.nlmk.com
     
-    apcs-dev: https://apcs-dev-jaeger.app-test.nlmk.com/trace/403ac0b37b110aaa
+    apcs-dev: https://apcs-dev-jaeger.app-test.nlmk.com
     
-    apcs-prod: https://apcs-prod-jaeger.app-test.nlmk.com/trace/403ac0b37b110aaa
+    apcs-prod: https://apcs-prod-jaeger.app-test.nlmk.com
 
