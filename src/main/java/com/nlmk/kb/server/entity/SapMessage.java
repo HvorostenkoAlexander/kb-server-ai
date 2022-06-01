@@ -1,11 +1,9 @@
 package com.nlmk.kb.server.entity;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,7 +19,6 @@ import java.util.Date;
 @Table(name = "sap_message", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
 })
-@TypeDef(name = "json", typeClass = JsonType.class)
 public class SapMessage {
 
     @Id
