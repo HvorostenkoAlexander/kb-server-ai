@@ -24,4 +24,5 @@ public interface CommonConverter {
     String parseToStringByDatePattern(Date date, String pattern);
 
     String getByTupleAlias(Tuple t, String alias);
+
 }

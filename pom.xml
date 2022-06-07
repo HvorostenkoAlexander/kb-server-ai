@@ -26,7 +26,7 @@
         <jaeger-web-starter.version>3.3.1</jaeger-web-starter.version>
         <okhttp3.version>4.9.3</okhttp3.version>
 
-        <product-api.version>1.21.0</product-api.version>
+        <product-api.version>1.22.0</product-api.version>
     </properties>
 
     <dependencyManagement>

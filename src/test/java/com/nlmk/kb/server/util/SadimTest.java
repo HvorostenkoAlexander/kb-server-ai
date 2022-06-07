@@ -1,10 +1,8 @@
 package com.nlmk.kb.server.util;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
