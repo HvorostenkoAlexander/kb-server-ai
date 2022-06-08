@@ -2,6 +2,8 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
+import com.nlmk.kb.server.exception.SadimKafkaException;
+import com.nlmk.kb.server.exception.PsmSenderException;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -38,22 +40,31 @@ public class KafkaSadimService {
 
         try {
             primeId = messageService.saveMessage(consumerRecord);
-
             ack.acknowledge();
-        } catch (SadimJsonProcessingException sjpe) {
+        } catch (SadimJsonProcessingException e) {
             ack.acknowledge();
-            throw new SadimJsonProcessingException(String.format(EXC_MESS, sjpe));
-        } catch (DateTimeParseException ddpe) {
+            throw new SadimJsonProcessingException(String.format(EXC_MESS, e));
+        } catch (DateTimeParseException e) {
             ack.acknowledge();
-            throw new DateTimeParseException(String.format(EXC_MESS, ddpe));
+            throw new DateTimeParseException(String.format(EXC_MESS, e));
+        } catch (PsmSenderException e) {
+            ack.nack(sleepTime);
+            throw new PsmSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             ack.nack(sleepTime);
-            throw new RuntimeException(String.format(EXC_MESS, e));
+            throw new SadimKafkaException(String.format(EXC_MESS, e));
         }
+
+        // нужна очередь ошибочных сообщений (dead letter queue, DLQ) и отдельный обработчик, чтобы не тормозить основную очередь.
 
         sadimRePostAttestation(primeId);
     }
 
+    /**
+     * Повторный запрос на Аттестацию
+     *
+     * @param primeId идентификатор
+     */
     private void sadimRePostAttestation(String primeId) {
         try {
             ccmCommonService.rePostAttestation(primeId);

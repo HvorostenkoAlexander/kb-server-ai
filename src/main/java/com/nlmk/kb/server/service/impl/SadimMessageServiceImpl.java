@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.impl;
 
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
+import com.nlmk.kb.server.service.PsmSender;
 import com.nlmk.kb.server.service.SadimJsonParser;
 import com.nlmk.kb.server.service.SadimMessageService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.util.Assert;
 public class SadimMessageServiceImpl implements SadimMessageService {
 
     private final SadimJsonParser sadimJsonParser;
+    private final PsmSender psmSender;
 
     @Override
     public String saveMessage(ConsumerRecord<Object, Object> consumerRecord) {
@@ -24,9 +26,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
 
         // получение параметров
         final var paramDto = sadimJsonParser.getParam(consumerRecord.value().toString())
-                .orElseThrow(
-                        () -> new SadimJsonProcessingException("Ошибка получения параметров из сообщения SADIM.")
-                );
+                .orElseThrow(() -> new SadimJsonProcessingException("Ошибка получения параметров из сообщения SADIM."));
         log.debug("SADIM message with offset [{}] paramDto: [{}]", consumerRecord.offset(), paramDto);
 
         // подготовка сообщения
@@ -37,7 +37,7 @@ public class SadimMessageServiceImpl implements SadimMessageService {
                 .param(paramDto)
                 .build();
         // отправка по сети
-        // TODO
+        psmSender.postSadimMessage(dto);
 
         return getPrimeId(paramDto);
     }

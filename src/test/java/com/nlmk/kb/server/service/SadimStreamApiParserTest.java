@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-class SadimMessageServiceTest {
+class SadimStreamApiParserTest {
 
     private final CommonConverter commonConverter = new CommonConverterImpl();
     private final SadimJsonParser sadimJsonParser = new SadimStreamApiParser(commonConverter);
