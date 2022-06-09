@@ -1,64 +1,64 @@
-package com.nlmk.kb.server.util;
+package com.nlmk.kb.server.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.kb.server.service.SadimJsonParser;
+import com.nlmk.kb.server.service.impl.CommonConverterImpl;
+import com.nlmk.kb.server.service.impl.SadimStreamApiParser;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nlmk.sadim.Sadim;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@SpringBootTest
-public class SadimTest {
+class SadimJsonParserTest {
 
-    @Autowired
-    @Qualifier("sadimStreamApiParser")
-    private SadimJsonParser parser;
+    private final CommonConverter commonConverter = new CommonConverterImpl();
+    private final SadimJsonParser parser = new SadimStreamApiParser(commonConverter);
+
+    @Test
+    void parsing() throws FileNotFoundException {
+        final var sadimJson = getJsonFromPath();
+        final var attestationParam = parser.getParam(sadimJson);
+
+        Assertions.assertTrue(attestationParam.isPresent());
+        Assertions.assertEquals("0001020210520101736225770", attestationParam.get().getPrimeId());
+    }
+
+    private String getJsonFromPath() throws FileNotFoundException {
+        final String validSadimFilePath = "src/test/resources/json/sadim09052021.json";
+        FileInputStream fis = new FileInputStream(validSadimFilePath);
+        return IOUtils.toString(fis);
+    }
 
     @Test
     void sadimJsonTest() throws IOException {
-        String testString = "2021-04-28T16:29:29.612-03:00";
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
         Sadim value = new ObjectMapper()
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                 .readValue(getClass().getClassLoader()
                         .getResourceAsStream("json/exampleFromSadim.json"), Sadim.class);
-
-        System.out.println("---sadim: " + value);
+        // System.out.println("---sadim: " + value);
         assertNotNull(value);
     }
 
     @Test
     void SadimStreamApiParserTest() throws FileNotFoundException {
-
-     //   SadimJsonParser parser = new SadimStreamApiParser();
-        val jsonString = getJsonFromPath("src/main/resources/json/sadim09052020_1.json");
-       // val jsonString = getJsonFromPath("src/main/resources/json/sadimError.json");
-        val param = parser.getParam(jsonString);
-
+        final var jsonString = getJsonFromPath("src/main/resources/json/sadim09052020_1.json");
+        final var param = parser.getParam(jsonString);
         log.info("--- param: " + param);
-
-        assertNotNull(param);
-        assertNotNull(param.get());
+        assertTrue(param.isPresent());
     }
 
     private List<Double> getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
@@ -107,9 +107,8 @@ public class SadimTest {
     }
 
     private String getJsonFromPath(String path) throws FileNotFoundException {
-        FileInputStream fis = new FileInputStream(new File(path));
-        String stringTooLong = IOUtils.toString(fis);
-
-        return stringTooLong;
+        FileInputStream fis = new FileInputStream(path);
+        return IOUtils.toString(fis);
     }
+
 }
