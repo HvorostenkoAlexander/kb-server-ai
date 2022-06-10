@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
+import com.nlmk.kb.server.exception.PsmSenderException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -20,8 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PsmSenderTest {
@@ -51,7 +52,6 @@ class PsmSenderTest {
 
     @Test
     void postZorderTest() throws InterruptedException, IOException {
-
         mockWebServer.enqueue(new MockResponse()
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setResponseCode(HttpStatus.BAD_REQUEST.value())
@@ -80,4 +80,46 @@ class PsmSenderTest {
         final ZORDERS051 zorderFromBody = objectMapper.readValue(body, ZORDERS051.class);
         assertEquals("0040452892", zorderFromBody.getIDOC().getE1EDK01().getBELNR());
     }
+
+    @Test
+    void postSadimMessage() throws Exception {
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.BAD_REQUEST.value())
+        );
+        final var dto = SadimMessageDto.builder().partition(0).offset(1L).key("key")
+                .param(SadimMessageDto.ParamDto.builder().primeId("pi100").build())
+                .build();
+
+        final var response1 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
+        assertEquals("postSadimMessage, for primeId [pi100], error [400 Client Error: [no body]]", response1.getMessage());
+        mockWebServer.takeRequest();
+
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.CREATED.value())
+        );
+
+        assertDoesNotThrow(() -> psmSender.postSadimMessage(dto));
+        RecordedRequest request2 = mockWebServer.takeRequest();
+        assertEquals("POST", request2.getMethod());
+        assertEquals("/sadim", request2.getPath());
+
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.UNAUTHORIZED.value())
+        );
+        final var response3 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
+        assertEquals("postSadimMessage, for primeId [pi100], error [401 Client Error: [no body]]", response3.getMessage());
+        mockWebServer.takeRequest();
+
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.FORBIDDEN.value())
+        );
+        final var response4 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
+        assertEquals("postSadimMessage, for primeId [pi100], error [403 Client Error: [no body]]", response4.getMessage());
+        mockWebServer.takeRequest();
+    }
+
 }

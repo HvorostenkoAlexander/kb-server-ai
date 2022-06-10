@@ -1,9 +1,7 @@
 package com.nlmk.kb.server.service.impl;
 
-import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.DictionaryConfigDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
-import com.nlmk.kb.server.entity.PreAttestationParam;
 import com.nlmk.kb.server.entity.configurator.DictionaryConfig;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -13,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.persistence.Tuple;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -23,38 +20,6 @@ import java.util.stream.Collectors;
 public class DtoConverterImpl implements DtoConverter {
 
     private final CommonConverter converter;
-
-    @Override
-    public PreAttestationParamDto toPreAttestationParamDto(PreAttestationParam entity) {
-        Assert.notNull(entity, "При конвертации в PreAttestationParamDto param = null.");
-
-        final var paramDto = PreAttestationParamDto.builder()
-                .id(entity.getId())
-                .primeId(entity.getPrimeId())
-                .t12Min(entity.getT12Min())
-                .t12Max(entity.getT12Max())
-                .tcmMin(entity.getTcmMin())
-                .tcmMax(entity.getTcmMax())
-                .pbi(entity.getPbi())
-                .profFact(entity.getProfFact())
-                .wedgeFact(entity.getWedgeFact())
-                .sqcCritMax(entity.getSqcCritMax())
-                .ph1sgp(entity.getPh1sgp())
-                .ph12sgp(converter.parseToDouble(entity.getPh12sgp()))
-                .ph23sgp(entity.getPh23sgp())
-                .estimate(entity.getEstimate())
-                .lotNo(entity.getLotNo())
-                .meltNo(entity.getMeltNo())
-                .build();
-        if (entity.getLclThckng() != null) {
-            paramDto.setLclThckng(
-                    converter.parseToDoubles(
-                            entity.getLclThckng()
-                    ).toArray(new Double[0])
-            );
-        }
-        return paramDto;
-    }
 
     @Override
     public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto) {
@@ -113,45 +78,4 @@ public class DtoConverterImpl implements DtoConverter {
         return dto;
     }
 
-    @Override
-    public PreAttestationParamDto toPreAttestationParamDto(Tuple t) {
-        Assert.notNull(t, "tuple is null.");
-        return PreAttestationParamDto.builder()
-                .id(Long.valueOf(converter.getByTupleAlias(t, "id")))
-                .primeId(converter.getByTupleAlias(t, "prime_id"))
-                .t12Min(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "t12_min")))
-                .t12Max(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "t12_max")))
-                .tcmMin(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "tcm_min")))
-                .tcmMax(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "tcm_max")))
-                .pbi(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "pbi")))
-                .profFact(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "prof_fact")))
-                .wedgeFact(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "wedge_fact")))
-                .sqcCritMax(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "sqc_crit_max")))
-                .ph1sgp(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "ph1_sgp")))
-                .ph12sgp(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "ph12_sgp")))
-                .ph23sgp(converter.parseToDouble(
-                        converter.getByTupleAlias(t, "ph23_sgp")))
-                .estimate(converter.parseToInteger(
-                        converter.getByTupleAlias(t, "estimate")))
-                .lclThckng(
-                        converter.parseToDoubles(
-                                converter.getByTupleAlias(t, "lclthckng"))
-                        .stream().toArray(Double[]::new)
-                )
-                .lotNo(converter.parseToInteger(
-                        converter.getByTupleAlias(t, "lot_no")))
-                .meltNo(converter.parseToInteger(
-                        converter.getByTupleAlias(t, "melt_no")))
-                .build();
-    }
 }

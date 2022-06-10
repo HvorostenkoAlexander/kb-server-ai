@@ -4,18 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
-import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.PdmDtoConverter;
+import com.nlmk.kb.server.service.impl.CommonConverterImpl;
+import com.nlmk.kb.server.service.impl.PdmDtoConverterImpl;
+import com.nlmk.kb.server.service.impl.creators.PdmDictionaryCreatorImpl;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.pdm.SpAsapChemicalProperties;
 import nlmk.l3.pdm.SpMicrostructure;
 import nlmk.l3.pdm.SpTkNum;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,17 +25,13 @@ import java.text.SimpleDateFormat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
-@SpringBootTest
-public class PdmConverterTest {
+class PdmConverterTest {
 
-    @Autowired
-    private PdmDictionaryCreator pdmDictionaryCreator;
-
-    @Autowired
-    private PdmDtoConverter pdmDtoConverter;
+    private final CommonConverter commonConverter = new CommonConverterImpl();
+    private final PdmDictionaryCreator pdmDictionaryCreator = new PdmDictionaryCreatorImpl(commonConverter);
+    private final PdmDtoConverter pdmDtoConverter = new PdmDtoConverterImpl(commonConverter);
 
     @Test
     void SpTkNumEmptyDateTest() throws FileNotFoundException, JsonProcessingException {
@@ -46,12 +42,12 @@ public class PdmConverterTest {
                 );
 
         PdmDictionary dictionary = pdmDictionaryCreator.createPdmDictionary(
-                tkNum.getTs(),tkNum.getOp(),tkNum.getPk(),tkNum.getData()
+                tkNum.getTs(), tkNum.getOp(), tkNum.getPk(), tkNum.getData()
         );
 
         TkNumDto tkNumDto = pdmDtoConverter.toTkNumDto(dictionary);
 
-        log.info("--- tkNumDto: {}",tkNumDto);
+        log.info("--- tkNumDto: {}", tkNumDto);
 
         assertNotNull(tkNumDto);
         assertNull(tkNumDto.getDateStart());
@@ -67,18 +63,18 @@ public class PdmConverterTest {
                 );
 
         PdmDictionary dictionary = pdmDictionaryCreator.createPdmDictionary(
-                tkNum.getTs(),tkNum.getOp(),tkNum.getPk(),tkNum.getData()
+                tkNum.getTs(), tkNum.getOp(), tkNum.getPk(), tkNum.getData()
         );
 
         TkNumDto tkNumDto = pdmDtoConverter.toTkNumDto(dictionary);
 
-        log.info("--- tkNumDto: {}",tkNumDto);
+        log.info("--- tkNumDto: {}", tkNumDto);
 
         assertNotNull(tkNumDto);
         assertNotNull(tkNumDto.getDateStart());
         assertNotNull(tkNumDto.getDateFinish());
-        assertEquals("2000-05-26T09:58:15.6117006+03:00",tkNumDto.getDateStart());
-        assertEquals("2022-05-26T09:58:15.6117006+03:00",tkNumDto.getDateFinish());
+        assertEquals("2000-05-26T09:58:15.6117006+03:00", tkNumDto.getDateStart());
+        assertEquals("2022-05-26T09:58:15.6117006+03:00", tkNumDto.getDateFinish());
     }
 
     @Test
@@ -91,7 +87,7 @@ public class PdmConverterTest {
                 );
 
         PdmDictionary pdmDictionary = pdmDictionaryCreator.createPdmDictionary(
-                micro.getTs(),micro.getOp(),micro.getPk(),micro.getData()
+                micro.getTs(), micro.getOp(), micro.getPk(), micro.getData()
         );
 
         assertNotNull(pdmDictionary);
@@ -107,7 +103,7 @@ public class PdmConverterTest {
                 );
 
         PdmDictionary pdmDictionary = pdmDictionaryCreator.createPdmDictionary(
-                chP.getTs(),chP.getOp(),chP.getPk(),chP.getData()
+                chP.getTs(), chP.getOp(), chP.getPk(), chP.getData()
         );
         assertNotNull(pdmDictionary);
     }
@@ -118,4 +114,5 @@ public class PdmConverterTest {
 
         return stringTooLong;
     }
+
 }

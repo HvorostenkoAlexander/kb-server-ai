@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CommonConverterTest {
+class CommonConverterTest {
 
-    private CommonConverter cct = new CommonConverterImpl();
+    private final CommonConverter cct = new CommonConverterImpl();
 
     @Test
     void testParseDouble() {
@@ -63,4 +63,5 @@ public class CommonConverterTest {
 
         System.out.println("ex: " + ex);
     }
+
 }

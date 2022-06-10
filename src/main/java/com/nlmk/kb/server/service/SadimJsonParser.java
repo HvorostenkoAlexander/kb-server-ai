@@ -1,19 +1,17 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.attestation.product.api.SadimMessageDto;
 
 import java.util.Optional;
 
 public interface SadimJsonParser {
 
     /**
-     * Создание объекта класса PreAttestationParam из строки в формате json
+     * Создание объекта с параметрами пред аттестации из строки в формате json
      *
-     * @param jsonString
-     * @return объект Optional<PreAttestationParam>.
-     * Если не удается получить объект Optional.isEmpty
+     * @param jsonString строка сообщения
+     * @return объект <code>SadimMessageDto.ParamDto</code>. Если не удается, то <code>Optional.isEmpty</code>.
      */
+    Optional<SadimMessageDto.ParamDto> getParam(String jsonString);
 
-
-    public Optional<PreAttestationParam> getParam(String jsonString);
 }

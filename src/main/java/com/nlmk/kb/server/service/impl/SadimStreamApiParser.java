@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.impl;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.nlmk.kb.server.entity.PreAttestationParam;
+import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.SadimJsonParser;
@@ -20,26 +20,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service("sadimStreamApiParser")
+@Service
 @RequiredArgsConstructor
 public class SadimStreamApiParser implements SadimJsonParser {
 
     private final CommonConverter converter;
 
     @Override
-    public Optional<PreAttestationParam> getParam(String jsonString) {
-
-        if (StringUtils.isBlank(jsonString)){
+    public Optional<SadimMessageDto.ParamDto> getParam(String jsonString) {
+        if (StringUtils.isBlank(jsonString)) {
             log.warn("jsonString is blank.");
             return Optional.empty();
         }
 
         String sadimDate = null;
-        final var paramBuilder = PreAttestationParam.builder();
+        final var paramBuilder = SadimMessageDto.ParamDto.builder();
 
-        try (
-                JsonParser jParser = new JsonFactory().createParser(jsonString)
-        ) {
+        try (JsonParser jParser = new JsonFactory().createParser(jsonString)) {
             while (jParser.nextToken() != null) {
                 String fieldname = jParser.getCurrentName();
 
@@ -156,4 +153,5 @@ public class SadimStreamApiParser implements SadimJsonParser {
         }
         return values.stream().map(value -> value.get(0)).collect(Collectors.toList());
     }
+
 }

@@ -1,13 +1,10 @@
 package com.nlmk.kb.server.controller;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.nlmk.attestation.product.api.PreAttestationParamDto;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.service.CcmCommonService;
 import com.nlmk.kb.server.service.CcmMessageService;
 import com.nlmk.kb.server.service.PdmMessageService;
-import com.nlmk.kb.server.service.SadimMessageService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -39,59 +35,12 @@ public class KbController {
 
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
-    private final SadimMessageService sadimMessageService;
     private final CcmCommonService ccmCommonService;
-
-    @GetMapping("/sadim")
-    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public PreAttestationParamDto getPreAttestationParam(@RequestParam(value = "pkId") String pkId,
-                                                         @RequestParam(value = "primeId") String primeId,
-                                                         @RequestParam(value = "nplv", required = false) Integer meltNo,
-                                                         @RequestParam(value = "hnum", required = false) Integer lotNo) {
-
-        log.info("request PreAttestationParamDto for pkId: [{}]; primeId: [{}]; nplv(meltNo): [{}]; hnum(lotNo): [{}]",
-                pkId, primeId, meltNo, lotNo);
-
-        final var paramDto = sadimMessageService.findByAttesstationParam(pkId, primeId, meltNo, lotNo);
-
-        log.info("RESULT paramDto from kb: {}", paramDto);
-        return paramDto;
-    }
-
-    @GetMapping("/sadim/data")
-    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public Page<ObjectNode> getPreAttestationByParam(
-            @RequestParam(value = "pageNumber", defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", defaultValue = "20") int size,
-            @RequestParam(value = "primeId", required = false) String primeId,
-            @RequestParam(value = "meltNo", required = false) Integer meltNo,
-            @RequestParam(value = "lotNo", required = false) Integer lotNo,
-            @RequestParam(value = "dstart", required = false, defaultValue = "1970-01-01")
-            @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-            @RequestParam(value = "dend", required = false, defaultValue = "2200-01-01")
-            @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
-            @RequestParam(value = "sortTsAsc", required = false) Boolean sortTs
-    ) {
-        log.info("kb, getPreAttestationByParam: pageNumber:[{}], pageSize:[{}], primeId:[{}], meltNo:[{}]" +
-                        " lotNo:[{}], dstart:[{}], dend:[{}], sortTs:[{}]",
-                page, size, primeId, meltNo, lotNo, startDate, endDate, sortTs);
-
-        final var pageRequest = buildPageRequest(page, size, sortTs);
-
-        return sadimMessageService.findPageByParam(
-                primeId,
-                meltNo,
-                lotNo,
-                startDate,
-                endDate,
-                pageRequest
-        );
-    }
 
     @PostMapping("/launch_attestation/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<String> launchReAttestation(@PathVariable String primeId){
-        log.info("Повторная отправка запроса на аттестацию из kb-server. primeId:[{}]",primeId);
+    public ResponseEntity<String> launchReAttestation(@PathVariable String primeId) {
+        log.info("Повторная отправка запроса на аттестацию из kb-server. primeId:[{}]", primeId);
 
         final var resultId = ccmCommonService.rePostAttestation(primeId);
         final var resultString = String.format(
@@ -176,17 +125,4 @@ public class KbController {
         return pdmMessageService.deleteMessageById(id);
     }
 
-    private PageRequest buildPageRequest(int page, int size, Boolean sortTs) {
-        PageRequest pageRequest;
-        if (sortTs != null) {
-            if (sortTs.booleanValue()) {
-                pageRequest = PageRequest.of(page, size, Sort.by("ts").ascending());
-            } else {
-                pageRequest = PageRequest.of(page, size, Sort.by("ts").descending());
-            }
-        } else {
-            pageRequest = PageRequest.of(page, size);
-        }
-        return pageRequest;
-    }
 }
