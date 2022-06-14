@@ -1,8 +1,9 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.SadimMessage;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
+import com.nlmk.kb.server.exception.SadimKafkaException;
+import com.nlmk.kb.server.exception.PsmSenderException;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaSadimService {
 
+    private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final SadimMessageService messageService;
     private final CcmCommonService ccmCommonService;
@@ -30,50 +32,47 @@ public class KafkaSadimService {
 
     @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord consumerRecord,
+    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
                                   Acknowledgment ack) {
 
         log.debug("SADIM message with partition: [{}]; offset: [{}];", consumerRecord.partition(), consumerRecord.offset());
-        String primeId = null;
+        String primeId;
 
         try {
-            final var sadimMessage = messageService.saveMessage(consumerRecord);
-            log.info("saved SADIM massage. Partition: [{}]; offset: [{}]; param: [{}];",
-                    sadimMessage.getPartition(), sadimMessage.getOffset(), sadimMessage.getParam());
-
-            primeId = getPrimeId(sadimMessage);
-
+            primeId = messageService.saveMessage(consumerRecord);
             ack.acknowledge();
-        } catch (SadimJsonProcessingException sjpe) {
+        } catch (SadimJsonProcessingException e) {
             ack.acknowledge();
-            throw new SadimJsonProcessingException("переброс: " + sjpe);
-        } catch (DateTimeParseException ddpe) {
+            throw new SadimJsonProcessingException(String.format(EXC_MESS, e));
+        } catch (DateTimeParseException e) {
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + ddpe);
+            throw new DateTimeParseException(String.format(EXC_MESS, e));
+        } catch (PsmSenderException e) {
+            ack.nack(sleepTime);
+            throw new PsmSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             ack.nack(sleepTime);
-            throw new RuntimeException("переброс: " + e);
+            throw new SadimKafkaException(String.format(EXC_MESS, e));
         }
+
+        // нужна очередь ошибочных сообщений (dead letter queue, DLQ) и отдельный обработчик, чтобы не тормозить основную очередь.
 
         sadimRePostAttestation(primeId);
     }
 
+    /**
+     * Повторный запрос на Аттестацию
+     *
+     * @param primeId идентификатор
+     */
     private void sadimRePostAttestation(String primeId) {
         try {
             ccmCommonService.rePostAttestation(primeId);
-        } catch (Exception ex){
-            log.debug("Повторная отправки запроса на аттестацию primeId:[{}] закончилась неудачей: [{}]",
+        } catch (Exception ex) {
+            log.debug("Повторная отправка запроса на аттестацию primeId:[{}] закончилась неудачей: [{}]",
                     primeId,
                     ex.getMessage());
         }
     }
 
-    private String getPrimeId(SadimMessage sadimMessage) {
-        if (sadimMessage == null ||
-                sadimMessage.getParam() == null ||
-                sadimMessage.getParam().getPrimeId() == null) {
-            return null;
-        }
-        return sadimMessage.getParam().getPrimeId();
-    }
 }

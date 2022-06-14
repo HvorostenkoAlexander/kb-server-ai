@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.23.0</version>
+    <version>1.25.0</version>
     <name>kb-server</name>
     <description>Module for read information from NLMK kafka topics</description>
     <properties>
@@ -23,9 +23,10 @@
         <logback-classic.version>1.2.3</logback-classic.version>
         <keycloak.version>12.0.2</keycloak.version>
         <springdoc.version>1.5.8</springdoc.version>
-        <opentracing-spring-jaeger-web-starter.version>3.3.1</opentracing-spring-jaeger-web-starter.version>
+        <jaeger-web-starter.version>3.3.1</jaeger-web-starter.version>
+        <okhttp3.version>4.9.3</okhttp3.version>
 
-        <product-api.version>1.20.0</product-api.version>
+        <product-api.version>1.22.0</product-api.version>
     </properties>
 
     <dependencyManagement>
@@ -149,6 +150,18 @@
             </exclusions>
         </dependency>
 
+        <!-- S3 client -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp3.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -163,7 +176,7 @@
         <dependency>
             <groupId>io.opentracing.contrib</groupId>
             <artifactId>opentracing-spring-jaeger-web-starter</artifactId>
-            <version>${opentracing-spring-jaeger-web-starter.version}</version>
+            <version>${jaeger-web-starter.version}</version>
         </dependency>
 
         <dependency>
@@ -181,6 +194,13 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>${okhttp3.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
