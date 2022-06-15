@@ -59,10 +59,12 @@ public class KafkaPdmService {
             } else {
                 ack.nack(sleepTime);
             }
-        } catch (DateTimeParseException ddpe) {
+        } catch (DateTimeParseException e) {
+            log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + ddpe);
+            throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
+            log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new RuntimeException("переброс: " + e);
         }

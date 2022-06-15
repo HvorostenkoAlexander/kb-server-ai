@@ -42,9 +42,11 @@ public class KafkaSapService {
                 ack.nack(sleepTime);
             }
         } catch (DateTimeParseException e) {
+            log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
             throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
+            log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new HandleRecordException("переброс: " + e);
         }

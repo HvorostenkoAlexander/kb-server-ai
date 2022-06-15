@@ -42,15 +42,19 @@ public class KafkaSadimService {
             primeId = messageService.saveMessage(consumerRecord);
             ack.acknowledge();
         } catch (SadimJsonProcessingException e) {
+            log.warn("receiveMessageReq, SadimJsonProcessingException", e);
             ack.acknowledge();
             throw new SadimJsonProcessingException(String.format(EXC_MESS, e));
         } catch (DateTimeParseException e) {
+            log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
             throw new DateTimeParseException(String.format(EXC_MESS, e));
         } catch (PsmSenderException e) {
+            log.warn("receiveMessageReq, PsmSenderException", e);
             ack.nack(sleepTime);
             throw new PsmSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
+            log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new SadimKafkaException(String.format(EXC_MESS, e));
         }
