@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.exception.CcmKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -42,18 +43,7 @@ public class KafkaCcmService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("CCM AttestationRequest:" +
-                        "partition: {}; " +
-                        "offset: {}; " +
-                        "key: {}; " +
-                        "timestamp: {}; " +
-                        "request.ts:{}; " +
-                        "request.op: {}; " +
-                        "request.pk.id: {}; ",
-                partition, offset, key, timestamp,
-                request.getTs(),
-                request.getOp(),
-                request.getPk().getId());
+        log.info("CCM AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = messageConverter.fromCcmAttestationRequest(
@@ -75,7 +65,7 @@ public class KafkaCcmService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new RuntimeException("переброс: " + e);
+            throw new CcmKafkaException("переброс: " + e);
         }
     }
 }
