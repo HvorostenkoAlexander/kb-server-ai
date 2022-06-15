@@ -55,9 +55,7 @@ public class CcmBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(ccmConsumerFactory());
-//        factory.setErrorHandler(((thrownException, data) -> {
-//            log.error("ERROR: " + thrownException.getMessage());
-//        }));
+        factory.setErrorHandler(((thrownException, consumerRecord) -> log.error("ERROR", thrownException)));
         factory.setConcurrency(1);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
