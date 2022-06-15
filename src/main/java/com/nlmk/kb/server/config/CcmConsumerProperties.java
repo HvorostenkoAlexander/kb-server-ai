@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class CcmConsumerProperties extends ConsumerProperties {
 
     private final String topicReq;
-    private boolean sslEnabled;
+    private final boolean sslEnabled;
 
     public CcmConsumerProperties(@Value("${kafka.ccm.bootstrap-servers}") String kafkaServer,
                                  @Value("${kafka.ccm.consumer.group-id}") String kafkaGroupId,
