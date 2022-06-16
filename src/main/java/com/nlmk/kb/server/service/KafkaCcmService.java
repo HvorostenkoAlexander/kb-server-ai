@@ -1,9 +1,11 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.exception.CcmKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
+import nlmk.l3.ccm.pgp.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -11,8 +13,6 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Slf4j
 @Service
@@ -42,18 +42,7 @@ public class KafkaCcmService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("CCM AttestationRequest:" +
-                        "partition: {}; " +
-                        "offset: {}; " +
-                        "key: {}; " +
-                        "timestamp: {}; " +
-                        "request.ts:{}; " +
-                        "request.op: {}; " +
-                        "request.pk.id: {}; ",
-                partition, offset, key, timestamp,
-                request.getTs(),
-                request.getOp(),
-                request.getPk().getId());
+        log.info("CCM AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = messageConverter.fromCcmAttestationRequest(
@@ -65,15 +54,25 @@ public class KafkaCcmService {
                     timestamp
             );
 
-            ccmCommonService.postAttestation(requestMessage);
-
+            // отправка запроса при наличии тела и правильной операции
+            if (request.getOp() == EnumOp.D
+                    || requestMessage.getRequest().getValue() == null
+                    || requestMessage.getRequest().getValue().getData() == null) {
+                log.warn("receiveMessageReq, SKIP send attestation request, partition {}, offset {}, key {}: wrong Op and Data",
+                        partition, offset, key);
+            } else {
+                ccmCommonService.postAttestation(requestMessage);
+            }
             ack.acknowledge();
-        } catch (DateTimeParseException ddpe) {
+        } catch (DateTimeParseException e) {
+            log.warn("receiveMessageReq", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + ddpe);
+            throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
+            log.warn("receiveMessageReq", e);
             ack.nack(sleepTime);
-            throw new RuntimeException("переброс: " + e);
+            throw new CcmKafkaException("переброс: " + e);
         }
     }
+
 }

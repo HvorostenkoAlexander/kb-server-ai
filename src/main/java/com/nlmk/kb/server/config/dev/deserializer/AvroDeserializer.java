@@ -7,12 +7,10 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
-import java.util.Map;
-
 @Slf4j
+@Deprecated
 public class AvroDeserializer<T extends SpecificRecordBase> implements Deserializer<T> {
 
     protected final Class<T> targetType;
@@ -22,18 +20,9 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
     }
 
     @Override
-    public void close() {
-    }
-
-    @Override
-    public void configure(Map<String, ?> arg0, boolean arg1) {
-    }
-
-    @Override
     public T deserialize(String topic, byte[] data) {
+        T result = null;
         try {
-            T result = null;
-
             if (data != null) {
                 DatumReader<GenericRecord> datumReader =
                         new SpecificDatumReader<>(targetType.getDeclaredConstructor().newInstance().getSchema());
@@ -42,10 +31,12 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
 
                 result = (T) datumReader.read(null, decoder);
             }
-            return result;
         } catch (Exception ex) {
-            throw new SerializationException(
-                    "Can't deserialize data '" + "' from topic '" + topic + "'" + "exception: " + ex.toString(), ex);
+            // запись в журнал ошибки десериализации
+            log.error("deserialize exception for topic [{}]", topic, ex);
         }
+        // пустой результат
+        return result;
     }
+
 }
