@@ -5,6 +5,7 @@ import com.nlmk.kb.server.exception.DateTimeParseException;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
+import nlmk.l3.ccm.pgp.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -55,8 +56,15 @@ public class KafkaCcmService {
                     timestamp
             );
 
-            ccmCommonService.postAttestation(requestMessage);
-
+            if (request.getOp() == EnumOp.D
+                    || requestMessage.getRequest().getValue() == null
+                    || requestMessage.getRequest().getValue().getData() == null) {
+                log.warn("receiveMessageReq, SKIP send attestation request, partition {}, offset {}, key {}: wrong Op and Data",
+                        partition, offset, key);
+            } else {
+                // отправка запроса при наличии тела и правильной операции
+                ccmCommonService.postAttestation(requestMessage);
+            }
             ack.acknowledge();
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
@@ -64,6 +72,7 @@ public class KafkaCcmService {
             throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
+            e.printStackTrace();
             ack.nack(sleepTime);
             throw new CcmKafkaException("переброс: " + e);
         }

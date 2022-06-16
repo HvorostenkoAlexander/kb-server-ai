@@ -20,8 +20,10 @@ class SendMessageToKafkaTest {
     KafkaProducer<Object, Object> stringProducer;
     private final String sadimTopic = "PA-MU.NLMK.P3.HSM";
     private final ObjectMapper mapper = new ObjectMapper();
+
     KafkaProducer<Object, Object> avroProducer;
     // одна комбинация: тема + схема (версия схемы привязана к теме!)
+    private final String ccmTopic = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
 
     @BeforeAll
     void setUp() {
@@ -85,6 +87,38 @@ class SendMessageToKafkaTest {
         );
 
         sendString(record);
+    }
+
+    @Test
+    void sendCcmMessage() {
+        nlmk.l3.ccm.pgp.RecordData data = nlmk.l3.ccm.pgp.RecordData.newBuilder()
+                .setPrimeId("prime12")
+                .setOrderPos(1)
+                .setRoll("r2")
+                .setThickness(1.2f)
+                .setWidth(1.3f)
+                .setWeightNet(1.4f)
+                .setKceh(3)
+                .setSpecifications(List.of())
+                .build();
+
+        nlmk.l3.ccm.pgp.AttestationRequest value = nlmk.l3.ccm.pgp.AttestationRequest.newBuilder()
+                .setTs("2021-04-08T10:35:25.452-03:00")
+                .setOp(nlmk.l3.ccm.pgp.EnumOp.I)
+                .setPk(nlmk.l3.ccm.pgp.RecordPk.newBuilder()
+                        .setId("0001020111023170548152095")
+                        .setSystemCode("16")
+                        .build())
+                .setData(data)
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(
+                ccmTopic,
+                "key~" + Instant.now().getEpochSecond(), // случайный key
+                value
+        );
+
+        sendAvro(record);
     }
 
 }
