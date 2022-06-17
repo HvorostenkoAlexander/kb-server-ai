@@ -123,7 +123,8 @@ public class KbController {
     }
 
     @PostMapping("/sap_message/zorder")
-    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    @Operation(summary = "Парсинг и сохранение заказа, переданного в виде xml",
+            security = {@SecurityRequirement(name = "bearer-key")})
     public ResponseEntity<String> sendingSapMessage(
             @RequestBody @Schema(example = "<?xml version=... ?><ZORDERS05_1></ZORDERS05_1>") String message
     ) throws JsonProcessingException {
