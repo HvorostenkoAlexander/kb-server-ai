@@ -1,27 +1,22 @@
 package com.nlmk.kb.server.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.dto.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
-import com.nlmk.kb.server.service.CcmCommonService;
-import com.nlmk.kb.server.service.CcmMessageService;
-import com.nlmk.kb.server.service.PdmMessageService;
+import com.nlmk.kb.server.service.*;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -36,6 +31,8 @@ public class KbController {
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
     private final CcmCommonService ccmCommonService;
+    private final S3Service s3Service;
+    private final PsmSender psmSender;
 
     @PostMapping("/launch_attestation/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -54,8 +51,8 @@ public class KbController {
 
     @GetMapping("/attestation_request")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber", required = true) int page,
-                                                           @RequestParam(value = "pageSize", required = true) int size) {
+    public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber") int page,
+                                                           @RequestParam(value = "pageSize") int size) {
         return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
@@ -125,4 +122,18 @@ public class KbController {
         return pdmMessageService.deleteMessageById(id);
     }
 
+    @PostMapping("/sap_message/zorder")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public ResponseEntity<String> sendingSapMessage(
+            @RequestBody @Schema(example = "<?xml version=... ?><ZORDERS05_1></ZORDERS05_1>") String message
+    ) throws JsonProcessingException {
+        log.info("kb, sendingSapMessage: message: [{}]", message);
+
+        ZORDERS051 zorder = s3Service.getZorder(message);
+
+        psmSender.postZorder(zorder);
+        log.info("kb, sendingSapMessage. Sent to PSM BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
+
+        return new ResponseEntity<>("BELNR: " + zorder.getIDOC().getE1EDK01().getBELNR(), HttpStatus.OK);
+    }
 }
