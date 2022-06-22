@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.26.0</version>
+    <version>1.26.1</version>
     <name>kb-server</name>
     <description>Module for read information from NLMK kafka topics</description>
     <properties>

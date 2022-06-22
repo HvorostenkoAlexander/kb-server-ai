@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ZORDERS05_1>
+    <IDOC BEGIN="1">
+        <EDI_DC40 SEGMENT="1"/>
+        <E1EDK01 SEGMENT="1">
+            <BELNR>40434341</BELNR><!-- номер заказа -->
+        </E1EDK01>
+        <E1EDK14 SEGMENT="1"/>
+        <E1EDK03 SEGMENT="1"/>
+        <E1EDKA1 SEGMENT="1"/>
+        <E1EDK02 SEGMENT="1"/>
+        <E1EDK17 SEGMENT="1"/>
+        <E1EDK18 SEGMENT="1"/>
+        <E1EDK35 SEGMENT="1"/>
+        <E1EDKT1 SEGMENT="1"/>
+        <E1EDP01 SEGMENT="1"/>
+        <E1EDP01 SEGMENT="1"/>
+        <E1EDP01 SEGMENT="1"/>
+        <E1EDP01 SEGMENT="1"/>
+        <E1CUCFG SEGMENT="1">
+            <POSEX>000004</POSEX><!-- позиция заказа -->
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>CEH_PROD</CHARC>
+                <CHARC_TXT>Цех производства</CHARC_TXT>
+                <VALUE>11</VALUE>
+                <VALUE_TXT>ЦГП</VALUE_TXT>
+                <AUTHOR>8</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>STNDRT_PROD</CHARC>
+                <CHARC_TXT>Стандарт на продукцию</CHARC_TXT>
+                <VALUE>ГОСТ 14918-2020</VALUE>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>MARKA</CHARC>
+                <CHARC_TXT>Марка</CHARC_TXT>
+                <VALUE>02</VALUE>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>STNDRT_MARKA</CHARC>
+                <CHARC_TXT>Стандарт на марку</CHARC_TXT>
+                <VALUE>ГОСТ 14918-2020</VALUE>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>STNDRT_SORT</CHARC>
+                <CHARC_TXT>Стандарт на сортамент</CHARC_TXT>
+                <VALUE>ГОСТ 14918-2020</VALUE>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>VID_POSTAVKI</CHARC>
+                <CHARC_TXT>Вид поставки</CHARC_TXT>
+                <VALUE>РЛН</VALUE>
+                <VALUE_TXT>Рулон</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>SHOT_MIN</CHARC>
+                <CHARC_TXT>Ширина от, мм</CHARC_TXT>
+                <VALUE>1,250.0</VALUE>
+                <VALUE_TXT>1.250,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>VN_DIAM_RL</CHARC>
+                <CHARC_TXT>Внутренний диаметр рулона, мм</CHARC_TXT>
+                <VALUE>600</VALUE>
+                <VALUE_TXT>600 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>TPRK</CHARC>
+                <CHARC_TXT>Точность прокатки</CHARC_TXT>
+                <VALUE>ТУ 0027</VALUE>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>KROM</CHARC>
+                <CHARC_TXT>Характер кромки</CHARC_TXT>
+                <VALUE>НО</VALUE>
+                <VALUE_TXT>необрезная</VALUE_TXT>
+            </E1CUVAL>
+        </E1CUCFG>
+        <E1EDS01 SEGMENT="1"/>
+        <E1EDS01 SEGMENT="1"/>
+    </IDOC>
+</ZORDERS05_1>
