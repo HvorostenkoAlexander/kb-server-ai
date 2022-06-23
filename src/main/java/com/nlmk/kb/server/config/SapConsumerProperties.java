@@ -8,9 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SapConsumerProperties extends ConsumerProperties {
 
+    private final boolean sslEnabled;
+
     public SapConsumerProperties(@Value("${kafka.sap.bootstrap-servers}") String kafkaServer,
                                  @Value("${kafka.sap.group-id}") String kafkaGroupId,
                                  @Value("${kafka.sap.schema.registry.url}") String schemaRegistryUrl,
+                                 @Value("${kafka.sap.ssl-enabled}") boolean sslEnabled,
                                  @Value("${kafka.sslTruststorePassword}") String truststorePassword,
                                  @Value("${kafka.sslKeystorePassword}") String keystorePassword,
                                  @Value("${kafka.client.truststore-path}") String truststorePath,
@@ -23,5 +26,7 @@ public class SapConsumerProperties extends ConsumerProperties {
                 truststorePath,
                 keystorePath
         );
+
+        this.sslEnabled = sslEnabled;
     }
 }

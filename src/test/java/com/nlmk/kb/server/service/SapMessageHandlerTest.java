@@ -55,7 +55,7 @@ class SapMessageHandlerTest {
                 .setTs("1652872288900")
                 .build();
 
-        ConsumerRecord<Object, Object> consumerRecord = new ConsumerRecord<>("topic", 1, 0, null, kafkaMessage);
+        ConsumerRecord<String, s3notification> consumerRecord = new ConsumerRecord<>("topic", 1, 0, null, kafkaMessage);
 
         final String s3zordersExample = Arrays.toString(new ClassPathResource("xml/zordersExample.xml").getInputStream().readAllBytes());
         final ZORDERS051 parsedZorder = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);

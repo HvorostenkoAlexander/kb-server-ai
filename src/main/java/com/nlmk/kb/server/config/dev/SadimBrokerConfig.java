@@ -25,8 +25,7 @@ public class SadimBrokerConfig {
 
     private final SadimConsumerProperties consumerProperties;
 
-    @Bean
-    public Map<String, Object> sadimConsumerConfigs() {
+    private Map<String, Object> sadimConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -37,8 +36,7 @@ public class SadimBrokerConfig {
         return props;
     }
 
-    @Bean
-    public ConsumerFactory<String, String> sadimConsumerFactory() {
+    private ConsumerFactory<String, String> sadimConsumerFactory() {
         StringDeserializer keyDeserializer = new StringDeserializer();
         keyDeserializer.configure(sadimConsumerConfigs(), true);
 

@@ -28,8 +28,7 @@ public class CcmBrokerConfig {
 
     private final CcmConsumerProperties consumerProperties;
 
-    @Bean
-    public Map<String, Object> ccmConsumerConfigs() {
+    private Map<String, Object> ccmConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
@@ -42,8 +41,7 @@ public class CcmBrokerConfig {
         return props;
     }
 
-    @Bean
-    public ConsumerFactory<Object, Object> ccmConsumerFactory() {
+    private ConsumerFactory<Object, Object> ccmConsumerFactory() {
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
         keyDeserializer.configure(ccmConsumerConfigs(), true);
 

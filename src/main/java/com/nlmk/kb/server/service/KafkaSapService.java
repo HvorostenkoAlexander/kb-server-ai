@@ -2,12 +2,15 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.HandleRecordException;
+import com.nlmk.s3.proxy.s3notification;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +28,11 @@ public class KafkaSapService {
 
     }
 
-    @KafkaListener(containerFactory = "kafkaListenerSap", topics = {"${kafka.sap.topic.s3.idoczordrs}"})
+    @KafkaListener(containerFactory = "kafkaListenerContainerFactorySap",
+            topics = {"${kafka.sap.topic.s3.idoczordrs}"}
+    )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> request, Acknowledgment ack) {
+    public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> request, Acknowledgment ack) {
         log.info("SAP consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),

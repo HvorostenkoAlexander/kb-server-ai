@@ -29,26 +29,26 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
     private static final String MSG_TEMPLATE = "handleConsumerRecord. {}";
 
     @Override
-    public boolean handleConsumerRecord(final ConsumerRecord<Object, Object> record) {
-        log.debug("handleConsumerRecord. record: [{}]", record);
+    public boolean handleConsumerRecord(final ConsumerRecord<String, s3notification> consumerRecord) {
+        log.debug("handleConsumerRecord. record: [{}]", consumerRecord);
 
-        s3notification notification = (s3notification) record.value();
+        s3notification notification = consumerRecord.value();
 
         Optional<SapMessage> storedMessage =
-                repository.findFirstByTopicAndOffsetAndPartition(record.topic(), record.offset(), record.partition());
+                repository.findFirstByTopicAndOffsetAndPartition(consumerRecord.topic(), consumerRecord.offset(), consumerRecord.partition());
 
         if (storedMessage.isPresent() && List.of(SapMessageState.DONE, SapMessageState.ERROR).contains(storedMessage.get().getState())) {
             log.warn("handleConsumerRecord. Сообщение SAP topic: [{}], partition: [{}], offset: [{}] уже было обработано со статусом [{}].",
-                    record.topic(), record.partition(), record.offset(), storedMessage.get().getState());
+                    consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), storedMessage.get().getState());
             return true;
         }
 
         SapMessage message = storedMessage.orElseGet(
                 () -> repository.save(SapMessage.builder()
-                        .topic(record.topic())
-                        .partition(record.partition())
-                        .offset(record.offset())
-                        .key((String) record.key())
+                        .topic(consumerRecord.topic())
+                        .partition(consumerRecord.partition())
+                        .offset(consumerRecord.offset())
+                        .key(consumerRecord.key())
                         .bucket(notification.getBucket().toString())
                         .path(notification.getPath().toString())
                         .processorVersion(notification.getProcessorVersion().toString())
