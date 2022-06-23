@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.26.20</version>
+    <version>1.26.21</version>
     <name>kb-server</name>
     <description>Module for read information from NLMK kafka topics</description>
     <properties>
@@ -23,6 +23,7 @@
         <logback-classic.version>1.2.3</logback-classic.version>
         <keycloak.version>12.0.2</keycloak.version>
         <springdoc.version>1.5.8</springdoc.version>
+        <jacoco.version>0.8.7</jacoco.version>
         <jaeger-web-starter.version>3.3.1</jaeger-web-starter.version>
         <okhttp3.version>4.9.3</okhttp3.version>
 
@@ -244,7 +245,25 @@
 
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
