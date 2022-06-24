@@ -7,7 +7,6 @@ import com.nlmk.kb.server.entity.pam.MechanicalData;
 import com.nlmk.kb.server.entity.pam.MechanicalSpec;
 import com.nlmk.kb.server.entity.pam.MetallographicData;
 import com.nlmk.kb.server.entity.pam.MetallographicSpec;
-import com.nlmk.kb.server.entity.pam.OrderRequest;
 import com.nlmk.kb.server.entity.pam.Pk;
 import com.nlmk.kb.server.entity.pam.Specs;
 import com.nlmk.kb.server.entity.pam.Value;
@@ -20,13 +19,12 @@ import nlmk.l3.ccm.pgp.RecordMechData;
 import nlmk.l3.ccm.pgp.RecordMechanical;
 import nlmk.l3.ccm.pgp.RecordMetallographic;
 import nlmk.l3.ccm.pgp.RecordMetgrapData;
-import nlmk.l3.ccm.pgp.RecordOrderReq;
 import nlmk.l3.ccm.pgp.RecordPk;
 import nlmk.l3.ccm.pgp.RecordSpecifications;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Objects;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -82,7 +80,9 @@ public class AttestationRequestConverterImpl implements AttestationRequestConver
                 .weightNet(toDouble(recordData.getWeightNet()))
                 .kceh((long) recordData.getKceh())
                 .orderNum((long) recordData.getOrderNum())
-                .orderPos((long) recordData.getOrderPos());
+                .orderPos((long) recordData.getOrderPos())
+                // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
+                .orderReq(List.of());
 
         if (recordData.getNplv() != null) {
             dataFieldBuilder.nplv(recordData.getNplv().longValue());
@@ -101,13 +101,6 @@ public class AttestationRequestConverterImpl implements AttestationRequestConver
                         .map(AttestationRequestConverterImpl::toPamSpecs)
                         .collect(Collectors.toList())
         );
-        if (recordData.getOrderReq() != null) {
-            dataFieldBuilder.orderReq(
-                    recordData.getOrderReq().stream()
-                            .map(AttestationRequestConverterImpl::toPamOrderRequest)
-                            .collect(Collectors.toList())
-            );
-        }
         if (recordData.getChemical() != null) {
             dataFieldBuilder.chemical(
                     recordData.getChemical().stream()
@@ -153,36 +146,6 @@ public class AttestationRequestConverterImpl implements AttestationRequestConver
             specs.specMeasure(specifications.getSpecMeasure().toString());
         }
         return specs.build();
-    }
-
-    private static OrderRequest toPamOrderRequest(RecordOrderReq recordOrderReq) {
-        final var orderRequest = OrderRequest.builder()
-                .attrCode(recordOrderReq.getAttrCode())
-                .attrName(recordOrderReq.getAttrName().toString())
-                .attrTypeCode(recordOrderReq.getAttrTypeCode())
-                .attrTypeValue(recordOrderReq.getAttrTypeValue());
-
-        if (recordOrderReq.getAttrValue() != null) {
-            orderRequest.attrValue(recordOrderReq.getAttrValue().toString());
-        }
-
-        if (recordOrderReq.getAttrFormat() != null) {
-            orderRequest.attrFormat(recordOrderReq.getAttrFormat().toString());
-        }
-
-        if (recordOrderReq.getAttrMeasure() != null) {
-            orderRequest.attrMeasure(recordOrderReq.getAttrMeasure().toString());
-        }
-
-        if (recordOrderReq.getListValues() != null) {
-            orderRequest.listValues(
-                    recordOrderReq.getListValues().stream()
-                            .filter(Objects::nonNull)
-                            .map(r -> r.getValue().toString())
-                            .collect(Collectors.toList())
-            );
-        }
-        return orderRequest.build();
     }
 
     private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
