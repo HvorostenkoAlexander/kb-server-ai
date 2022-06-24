@@ -19,10 +19,6 @@ public interface CommonConverter {
 
     Integer parseToInteger(String s);
 
-    List<Double> parseToDoubles(String s);
-
     String parseToStringByDatePattern(Date date, String pattern);
-
-    String getByTupleAlias(Tuple t, String alias);
 
 }

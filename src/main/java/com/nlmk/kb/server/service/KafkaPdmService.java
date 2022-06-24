@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.service.pdm.PdmMessageHandler;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -45,7 +46,7 @@ public class KafkaPdmService {
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord request, Acknowledgment ack) {
+    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> request, Acknowledgment ack) {
         log.info("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
                 request.topic(),
                 request.partition(),
@@ -69,4 +70,5 @@ public class KafkaPdmService {
             throw new RuntimeException("переброс: " + e);
         }
     }
+
 }

@@ -3,8 +3,8 @@ package com.nlmk.kb.server.service;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.kb.server.service.impl.CommonConverterImpl;
-import com.nlmk.kb.server.service.impl.SadimStreamApiParser;
+import com.nlmk.kb.server.service.sadim.SadimJsonParserImpl;
+import com.nlmk.kb.server.service.sadim.SadimJsonParser;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.sadim.Sadim;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SadimJsonParserTest {
 
     private final CommonConverter commonConverter = new CommonConverterImpl();
-    private final SadimJsonParser parser = new SadimStreamApiParser(commonConverter);
+    private final SadimJsonParser parser = new SadimJsonParserImpl(commonConverter);
 
     @Test
     void parsing() throws FileNotFoundException {
