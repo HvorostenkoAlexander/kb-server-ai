@@ -2,7 +2,9 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import com.nlmk.kb.server.entity.pam.AttestationRequest;
-import com.nlmk.kb.server.service.impl.CcmCommonServiceImpl;
+import com.nlmk.kb.server.service.ccm.CcmCommonServiceImpl;
+import com.nlmk.kb.server.service.ccm.CcmMessageService;
+import com.nlmk.kb.server.service.ccm.CcmPamClientSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +28,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class CcmCommonServiceTest {
+class CcmCommonServiceTest {
 
     @Mock
     private CcmPamClientSender ccmPamSender;
@@ -41,7 +43,6 @@ public class CcmCommonServiceTest {
 
     @Captor
     ArgumentCaptor<AttestationRequest> captorRequest = ArgumentCaptor.forClass(AttestationRequest.class);
-
 
     @BeforeEach
     void setUp() {
@@ -111,4 +112,5 @@ public class CcmCommonServiceTest {
 
         assertNotNull(iae);
     }
+
 }

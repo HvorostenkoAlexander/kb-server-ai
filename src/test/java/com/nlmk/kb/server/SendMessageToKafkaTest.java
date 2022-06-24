@@ -96,12 +96,11 @@ class SendMessageToKafkaTest {
                 .setNplv(2106684) // <- meltNo
                 .setHnum(25217) // <-- lotNo
                 .setRoll("1-1")
-                .setOrderPos(1)
                 .setThickness(2.65f)
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
                 .setKceh(12)
-                .setOrderNum(40434341L)
+                .setOrderNum(40434341)
                 .setOrderPos(4)
                 // спецификация
                 .setSpecifications(List.of(

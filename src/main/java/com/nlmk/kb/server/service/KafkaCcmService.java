@@ -2,6 +2,8 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.CcmKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.service.ccm.CcmCommonService;
+import com.nlmk.kb.server.service.ccm.CcmMessageConverter;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
@@ -13,8 +15,6 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Slf4j
 @Service
@@ -47,14 +47,8 @@ public class KafkaCcmService {
         log.info("CCM AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
-            final var requestMessage = messageConverter.fromCcmAttestationRequest(
-                    request,
-                    topic,
-                    key,
-                    partition,
-                    offset,
-                    timestamp
-            );
+            final var requestMessage = messageConverter
+                    .fromCcmAttestationRequest(request, topic, key, partition, offset, timestamp);
 
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
@@ -72,9 +66,9 @@ public class KafkaCcmService {
             throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
-            e.printStackTrace();
             ack.nack(sleepTime);
             throw new CcmKafkaException("переброс: " + e);
         }
     }
+
 }

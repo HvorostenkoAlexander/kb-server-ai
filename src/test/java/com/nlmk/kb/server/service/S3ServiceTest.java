@@ -1,8 +1,8 @@
 package com.nlmk.kb.server.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.S3ClientException;
+import com.nlmk.kb.server.service.sap.S3Service;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
