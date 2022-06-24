@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.config.prod;
 
-import com.nlmk.kb.server.config.CcmConsumerProperties;
+import com.nlmk.kb.server.config.CcmPgpConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,9 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @Profile("prod")
-public class CcmBrokerConfig {
+public class CcmPgpBrokerConfig {
 
-    private final CcmConsumerProperties consumerProperties;
+    private final CcmPgpConsumerProperties consumerProperties;
 
     private Map<String, Object> ccmConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();

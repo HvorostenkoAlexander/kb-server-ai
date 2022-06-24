@@ -1,13 +1,11 @@
 package com.nlmk.kb.server.config.dev;
 
-import com.nlmk.kb.server.config.CcmConsumerProperties;
-import com.nlmk.kb.server.config.dev.deserializer.AvroDeserializer;
+import com.nlmk.kb.server.config.CcmPgpConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,9 +22,9 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @Profile("dev")
-public class CcmBrokerConfig {
+public class CcmPgpBrokerConfig {
 
-    private final CcmConsumerProperties consumerProperties;
+    private final CcmPgpConsumerProperties consumerProperties;
 
     private Map<String, Object> ccmConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();

@@ -18,22 +18,22 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaCcmService {
+public class KafkaCcmPgpService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageConverter messageConverter;
 
-    public KafkaCcmService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
-                           CcmCommonService ccmCommonService,
-                           CcmMessageConverter messageConverter) {
+    public KafkaCcmPgpService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                              CcmCommonService ccmCommonService,
+                              CcmMessageConverter messageConverter) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.messageConverter = messageConverter;
     }
 
     @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
-            topics = {"${kafka.ccm.topicReq}"}
+            topics = {"${kafka.ccm.pgp.topicReq}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,

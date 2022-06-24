@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.27.0</version>
+    <version>1.28.0</version>
     <name>kb-server</name>
     <description>Module for read information from NLMK kafka topics</description>
     <properties>
@@ -27,7 +27,7 @@
         <jaeger-web-starter.version>3.3.1</jaeger-web-starter.version>
         <okhttp3.version>4.9.3</okhttp3.version>
 
-        <product-api.version>1.24.0</product-api.version>
+        <product-api.version>1.25.1</product-api.version>
     </properties>
 
     <dependencyManagement>
