@@ -47,14 +47,8 @@ public class KafkaCcmService {
         log.info("CCM AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
-            final var requestMessage = messageConverter.fromCcmAttestationRequest(
-                    request,
-                    topic,
-                    key,
-                    partition,
-                    offset,
-                    timestamp
-            );
+            final var requestMessage = messageConverter
+                    .fromCcmAttestationRequest(request, topic, key, partition, offset, timestamp);
 
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
@@ -72,9 +66,9 @@ public class KafkaCcmService {
             throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
-            e.printStackTrace();
             ack.nack(sleepTime);
             throw new CcmKafkaException("переброс: " + e);
         }
     }
+
 }

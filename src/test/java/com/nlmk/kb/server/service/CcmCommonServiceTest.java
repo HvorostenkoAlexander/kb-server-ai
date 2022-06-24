@@ -28,7 +28,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class CcmCommonServiceTest {
+class CcmCommonServiceTest {
 
     @Mock
     private CcmPamClientSender ccmPamSender;
@@ -43,7 +43,6 @@ public class CcmCommonServiceTest {
 
     @Captor
     ArgumentCaptor<AttestationRequest> captorRequest = ArgumentCaptor.forClass(AttestationRequest.class);
-
 
     @BeforeEach
     void setUp() {
@@ -113,4 +112,5 @@ public class CcmCommonServiceTest {
 
         assertNotNull(iae);
     }
+
 }

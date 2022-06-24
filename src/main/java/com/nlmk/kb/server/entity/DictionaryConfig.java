@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.entity.configurator;
+package com.nlmk.kb.server.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,14 +33,15 @@ public class DictionaryConfig {
     private Long id;
 
     @Column(unique = true, nullable = false, name = "topic")
-    private String topic;// имя топика;
+    private String topic; // имя топика
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Integer> codes;// перечень характеристик(кодов);
+    private List<Integer> codes; // перечень характеристик(кодов)
 
     @Column(nullable = false, name = "nsi_path")
-    private String nsiPath;// точка куда скидывать данные;
+    private String nsiPath; // точка куда скидывать данные
 
     @Column(nullable = false, name = "is_enabled")
-    private Boolean enabled; //активность.
+    private Boolean enabled; // активность
+
 }

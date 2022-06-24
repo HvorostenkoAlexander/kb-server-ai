@@ -4,7 +4,6 @@ import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CcmMessageRepository extends JpaRepository<CcmAttestationRequestMessage, Long> {
 
@@ -15,4 +14,5 @@ public interface CcmMessageRepository extends JpaRepository<CcmAttestationReques
                                                                         int offset);
 
     List<CcmAttestationRequestMessage> findByPrimeId(String primeId);
+
 }
