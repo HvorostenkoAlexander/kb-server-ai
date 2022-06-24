@@ -27,12 +27,13 @@ import nlmk.l3.ccm.pgp.RecordSpecifications;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestatonRequestConverterImpl implements AttestationRequestConverter {
+public class AttestationRequestConverterImpl implements AttestationRequestConverter {
 
     private final CommonConverter converter;
 
@@ -43,7 +44,7 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         Assert.notNull(ccmAttRequest.getOp(), "ccmAttRequest.getOp() is null");
 
         final var dateRequest = converter.parseToDate(ccmAttRequest.getTs().toString());
-        Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запроссе на аттестацию");
+        Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
         final var value = Value.builder()
                 .ts(dateRequest)
@@ -77,23 +78,13 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         final var dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
-                .thickness(
-                        toDouble(recordData.getThickness())
-                )
-                .width(
-                        toDouble(recordData.getWidth())
-                )
-                .weightNet(
-                        toDouble(recordData.getWeightNet())
-                )
-                .kceh(Long.valueOf(recordData.getKceh()));
+                .thickness(toDouble(recordData.getThickness()))
+                .width(toDouble(recordData.getWidth()))
+                .weightNet(toDouble(recordData.getWeightNet()))
+                .kceh((long) recordData.getKceh())
+                .orderNum((long) recordData.getOrderNum())
+                .orderPos((long) recordData.getOrderPos());
 
-        if (recordData.getOrderNum() != null) {
-            dataFieldBuilder.orderNum(recordData.getOrderNum());
-        }
-        if (recordData.getOrderPos() != null) {
-            dataFieldBuilder.orderPos(Long.valueOf(recordData.getOrderPos().intValue()));
-        }
         if (recordData.getNplv() != null) {
             dataFieldBuilder.nplv(recordData.getNplv().longValue());
         }
@@ -101,45 +92,41 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
             dataFieldBuilder.hnum(recordData.getHnum().longValue());
         }
         if (recordData.getLength() != null) {
-            dataFieldBuilder.length(
-                    toDouble(recordData.getLength())
-            );
+            dataFieldBuilder.length(toDouble(recordData.getLength()));
         }
         if (recordData.getBundleWeight() != null) {
-            dataFieldBuilder.bundleWeight(
-                    toDouble(recordData.getBundleWeight())
-            );
+            dataFieldBuilder.bundleWeight(toDouble(recordData.getBundleWeight()));
         }
         dataFieldBuilder.specifications(
                 recordData.getSpecifications().stream()
-                        .map(s -> toPamSpecs(s))
+                        .map(AttestationRequestConverterImpl::toPamSpecs)
                         .collect(Collectors.toList())
         );
         if (recordData.getOrderReq() != null) {
             dataFieldBuilder.orderReq(
                     recordData.getOrderReq().stream()
-                            .map(o -> toPamOrderRequest(o))
+                            .map(AttestationRequestConverterImpl::toPamOrderRequest)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getChemical() != null) {
             dataFieldBuilder.chemical(
                     recordData.getChemical().stream()
-                            .map(ch -> toPamChemicalSpec(ch))
+                            .map(AttestationRequestConverterImpl::toPamChemicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMechanical() != null) {
             dataFieldBuilder.mechanical(
                     recordData.getMechanical().stream()
-                            .map(mech -> toPamMechanicalSpec(mech))
+                            .map(AttestationRequestConverterImpl::toPamMechanicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMetallographic() != null) {
             dataFieldBuilder.metallographic(
                     recordData.getMetallographic().stream()
-                            .map(mtl -> toPamMetallographicSpec(mtl))
+                            .map(AttestationRequestConverterImpl::toPamMetallographicSpec)
                             .collect(Collectors.toList())
             );
         }
@@ -147,7 +134,7 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
     }
 
     private static Double toDouble(Float f) {
-        return Double.parseDouble(Float.toString(f.floatValue()));
+        return Double.parseDouble(Float.toString(f));
     }
 
     private static Specs toPamSpecs(RecordSpecifications specifications) {
@@ -191,7 +178,7 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         if (recordOrderReq.getListValues() != null) {
             orderRequest.listValues(
                     recordOrderReq.getListValues().stream()
-                            .filter(r -> r != null)
+                            .filter(Objects::nonNull)
                             .map(r -> r.getValue().toString())
                             .collect(Collectors.toList())
             );
@@ -217,31 +204,31 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         final var mechanicalSpec = MechanicalSpec.builder();
 
         if (recordMechanical.getTestArrayId() != null) {
-            mechanicalSpec.testArrayId(recordMechanical.getTestArrayId().intValue());
+            mechanicalSpec.testArrayId(recordMechanical.getTestArrayId());
         }
         if (recordMechanical.getHnum() != null) {
-            mechanicalSpec.hnum(recordMechanical.getHnum().intValue());
+            mechanicalSpec.hnum(recordMechanical.getHnum());
         }
         if (recordMechanical.getProtId() != null) {
-            mechanicalSpec.protId(recordMechanical.getProtId().intValue());
+            mechanicalSpec.protId(recordMechanical.getProtId());
         }
         if (recordMechanical.getProtNum() != null) {
-            mechanicalSpec.protNum(recordMechanical.getProtNum().intValue());
+            mechanicalSpec.protNum(recordMechanical.getProtNum());
         }
         if (recordMechanical.getSampleId() != null) {
-            mechanicalSpec.sampleId(recordMechanical.getSampleId().intValue());
+            mechanicalSpec.sampleId(recordMechanical.getSampleId());
         }
         if (recordMechanical.getProbeCode() != null) {
-            mechanicalSpec.probeCode(recordMechanical.getProbeCode().intValue());
+            mechanicalSpec.probeCode(recordMechanical.getProbeCode());
         }
         if (recordMechanical.getSampleNum() != null) {
-            mechanicalSpec.sampleNum(recordMechanical.getSampleNum().intValue());
+            mechanicalSpec.sampleNum(recordMechanical.getSampleNum());
         }
         if (recordMechanical.getSignAnalysis() != null) {
-            mechanicalSpec.signAnalysis(recordMechanical.getSignAnalysis().intValue());
+            mechanicalSpec.signAnalysis(recordMechanical.getSignAnalysis());
         }
         if (recordMechanical.getFormationListNum() != null) {
-            mechanicalSpec.formationListNum(recordMechanical.getFormationListNum().intValue());
+            mechanicalSpec.formationListNum(recordMechanical.getFormationListNum());
         }
         if (recordMechanical.getProbeName() != null) {
             mechanicalSpec.probeName(recordMechanical.getProbeName().toString());
@@ -251,7 +238,7 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         }
         mechanicalSpec.mechData(
                 recordMechanical.getMechData().stream()
-                        .map(md -> toPamMechanicalData(md))
+                        .map(AttestationRequestConverterImpl::toPamMechanicalData)
                         .collect(Collectors.toList())
         );
         return mechanicalSpec.build();
@@ -279,39 +266,39 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         final var mtlSpec = MetallographicSpec.builder();
 
         if (recordMetallographic.getTestArrayId() != null) {
-            mtlSpec.testArrayId(recordMetallographic.getTestArrayId().intValue());
+            mtlSpec.testArrayId(recordMetallographic.getTestArrayId());
         }
         if (recordMetallographic.getProtId() != null) {
-            mtlSpec.protId(recordMetallographic.getProtId().intValue());
+            mtlSpec.protId(recordMetallographic.getProtId());
         }
         if (recordMetallographic.getProtNum() != null) {
-            mtlSpec.protNum(recordMetallographic.getProtNum().intValue());
+            mtlSpec.protNum(recordMetallographic.getProtNum());
         }
         if (recordMetallographic.getSampleId() != null) {
-            mtlSpec.sampleId(recordMetallographic.getSampleId().intValue());
+            mtlSpec.sampleId(recordMetallographic.getSampleId());
         }
         if (recordMetallographic.getProbeName() != null) {
             mtlSpec.probeName(recordMetallographic.getProbeName().toString());
         }
         if (recordMetallographic.getProbeCode() != null) {
-            mtlSpec.probeCode(recordMetallographic.getProbeCode().intValue());
+            mtlSpec.probeCode(recordMetallographic.getProbeCode());
         }
         if (recordMetallographic.getSampleNum() != null) {
-            mtlSpec.sampleNum(recordMetallographic.getSampleNum().intValue());
+            mtlSpec.sampleNum(recordMetallographic.getSampleNum());
         }
         if (recordMetallographic.getSignAnalysis() != null) {
-            mtlSpec.signAnalysis(recordMetallographic.getSignAnalysis().intValue());
+            mtlSpec.signAnalysis(recordMetallographic.getSignAnalysis());
         }
         if (recordMetallographic.getFormationListId() != null) {
             mtlSpec.formationListId(recordMetallographic.getFormationListId().toString());
         }
         if (recordMetallographic.getFormationListNum() != null) {
-            mtlSpec.formationListNum(recordMetallographic.getFormationListNum().intValue());
+            mtlSpec.formationListNum(recordMetallographic.getFormationListNum());
         }
 
         mtlSpec.metgrapData(
                 recordMetallographic.getMetgrapData().stream()
-                        .map(md -> toPamMetallographicData(md))
+                        .map(AttestationRequestConverterImpl::toPamMetallographicData)
                         .collect(Collectors.toList())
         );
 
@@ -335,4 +322,5 @@ public class AttestatonRequestConverterImpl implements AttestationRequestConvert
         }
         return mtlData.build();
     }
+
 }

@@ -101,7 +101,7 @@ class SendMessageToKafkaTest {
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
                 .setKceh(12)
-                .setOrderNum(40434341L)
+                .setOrderNum(40434341)
                 .setOrderPos(4)
                 // спецификация
                 .setSpecifications(List.of(
