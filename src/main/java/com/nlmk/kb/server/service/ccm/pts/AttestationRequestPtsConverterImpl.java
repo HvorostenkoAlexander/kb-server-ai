@@ -66,7 +66,12 @@ public class AttestationRequestPtsConverterImpl implements AttestationRequestPts
                 .orderNum((long) recordData.getOrderNum())
                 .orderPos((long) recordData.getOrderPos())
                 // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
-                .orderReq(List.of());
+                .orderReq(List.of())
+                // этих полей нет, заглушка
+                .specifications(List.of())
+                .chemical(List.of())
+                .mechanical(List.of())
+                .metallographic(List.of());
 
         if (recordData.getNplv() != null) {
             dataFieldBuilder.nplv(recordData.getNplv().longValue());
