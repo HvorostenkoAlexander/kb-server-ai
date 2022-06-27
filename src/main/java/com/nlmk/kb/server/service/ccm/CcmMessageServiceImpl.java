@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.ccm;
 
-import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
     @Override
     @Transactional
-    public Optional<CcmAttestationRequestMessage> save(CcmAttestationRequestMessage ccmMessage) {
+    public Optional<CcmMessage> save(CcmMessage ccmMessage) {
 
         if (messageRepository.existsByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
                 ccmMessage.getPartition(),
@@ -31,7 +31,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
             log.info("the message with topic: [{}]; partition: {}; offset: {} is already present in the database. ",
                     ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
 
-            List<CcmAttestationRequestMessage> storedRequests = messageRepository
+            List<CcmMessage> storedRequests = messageRepository
                     .findByTopicAndPartitionAndOffset(
                             ccmMessage.getTopic(),
                             ccmMessage.getPartition(),
@@ -58,17 +58,17 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     }
 
     @Override
-    public Page<CcmAttestationRequestMessage> findAll(PageRequest of) {
+    public Page<CcmMessage> findAll(PageRequest of) {
         return messageRepository.findAll(of);
     }
 
     @Override
-    public List<CcmAttestationRequestMessage> findByPrimeId(String primeId) {
+    public List<CcmMessage> findByPrimeId(String primeId) {
         return messageRepository.findByPrimeId(primeId);
     }
 
     @Override
-    public CcmAttestationRequestMessage update(CcmAttestationRequestMessage ccmMessage) {
+    public CcmMessage update(CcmMessage ccmMessage) {
         Assert.notNull(ccmMessage, "ccmMessage must not be null");
 
         return messageRepository.save(ccmMessage);

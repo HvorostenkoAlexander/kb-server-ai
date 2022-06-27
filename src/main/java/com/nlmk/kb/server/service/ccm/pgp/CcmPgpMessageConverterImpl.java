@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.service.ccm;
+package com.nlmk.kb.server.service.ccm.pgp;
 
-import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
@@ -13,21 +13,21 @@ import java.util.Date;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CcmMessageConverterImpl implements CcmMessageConverter {
+public class CcmPgpMessageConverterImpl implements CcmPgpMessageConverter {
 
     private final AttestationRequestConverter attestationRequestConverter;
 
     @Override
-    public CcmAttestationRequestMessage fromCcmAttestationRequest(AttestationRequest ccmAttestationRequest,
-                                                                  String topic,
-                                                                  String key,
-                                                                  int partition,
-                                                                  int offset,
-                                                                  String timestamp) {
+    public CcmMessage fromCcmAttestationRequest(AttestationRequest ccmAttestationRequest,
+                                                String topic,
+                                                String key,
+                                                int partition,
+                                                int offset,
+                                                String timestamp) {
 
         final var value = attestationRequestConverter.toPamAttestationRequest(ccmAttestationRequest);
 
-        final var requestMessage = CcmAttestationRequestMessage.builder()
+        final var requestMessage = CcmMessage.builder()
                 .partition(partition)
                 .offset(offset)
                 .key(key)

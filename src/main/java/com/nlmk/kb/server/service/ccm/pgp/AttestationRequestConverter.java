@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.ccm;
+package com.nlmk.kb.server.service.ccm.pgp;
 
 import nlmk.l3.ccm.pgp.AttestationRequest;
 

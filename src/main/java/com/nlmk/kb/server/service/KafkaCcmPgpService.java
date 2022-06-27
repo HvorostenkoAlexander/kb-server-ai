@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.kb.server.exception.CcmPgpKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
-import com.nlmk.kb.server.service.ccm.CcmMessageConverter;
+import com.nlmk.kb.server.service.ccm.pgp.CcmPgpMessageConverter;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
@@ -22,11 +22,11 @@ public class KafkaCcmPgpService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-    private final CcmMessageConverter messageConverter;
+    private final CcmPgpMessageConverter messageConverter;
 
     public KafkaCcmPgpService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageConverter messageConverter) {
+                              CcmPgpMessageConverter messageConverter) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.messageConverter = messageConverter;

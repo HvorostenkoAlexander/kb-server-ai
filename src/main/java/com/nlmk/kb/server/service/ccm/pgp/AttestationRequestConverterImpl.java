@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.ccm;
+package com.nlmk.kb.server.service.ccm.pgp;
 
 import com.nlmk.kb.server.entity.pam.AttestationRequest;
 import com.nlmk.kb.server.entity.pam.ChemicalSpec;

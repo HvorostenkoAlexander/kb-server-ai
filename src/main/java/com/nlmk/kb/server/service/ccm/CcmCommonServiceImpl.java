@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.ccm;
 
-import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +44,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
 
         final var lastRequest = requests.stream()
                 .max(
-                        Comparator.comparing(CcmAttestationRequestMessage::getKbReceiptTs)
+                        Comparator.comparing(CcmMessage::getKbReceiptTs)
                 ).orElseThrow(
                         () -> new IllegalArgumentException("Не удалось получить сведения о последнем запросе" +
                                 " с primeId: " + primeId)
@@ -54,7 +54,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     }
 
     @Override
-    public void postAttestation(CcmAttestationRequestMessage request) {
+    public void postAttestation(CcmMessage request) {
         Assert.notNull(request, "request is null");
 
         final var savedRequest = messageService.save(request).orElseThrow(
@@ -73,14 +73,14 @@ public class CcmCommonServiceImpl implements CcmCommonService {
         }
     }
 
-    private Long rePostRequest(CcmAttestationRequestMessage r) {
+    private Long rePostRequest(CcmMessage r) {
         log.info("Повторная отправка запроса на аттестацию. id:[{}]; primeId: [{}]; kbReceiptTs:[{}]",
                 r.getId(), r.getPrimeId(), r.getKbReceiptTs());
 
         return postRequest(r, "re-recived");
     }
 
-    private Long postRequest(CcmAttestationRequestMessage r, String statusNote) {
+    private Long postRequest(CcmMessage r, String statusNote) {
 
         final var pamResult = ccmPamSender.postAttestationRequest(r.getRequest());
 

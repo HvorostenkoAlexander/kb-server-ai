@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.entity;
 
-import com.nlmk.kb.server.entity.pam.AttestationRequest;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +20,7 @@ import java.util.Date;
         @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
 })
 @TypeDef(name = "json", typeClass = JsonType.class)
-public class CcmAttestationRequestMessage {
+public class CcmMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +56,7 @@ public class CcmAttestationRequestMessage {
 
     @Type(type = "json")
     @Column(columnDefinition = "json")
-    private AttestationRequest request;
+    // сохранение в едином формате, значение, которое пойдет в запросе к PAM
+    private com.nlmk.kb.server.entity.pam.AttestationRequest request;
 
 }
