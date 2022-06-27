@@ -60,7 +60,7 @@ public class CcmPgpBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> kafkaListenerContainerFactoryReq() {
+    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmPgpKafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -72,4 +72,5 @@ public class CcmPgpBrokerConfig {
 
         return factory;
     }
+
 }

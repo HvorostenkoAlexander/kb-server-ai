@@ -23,7 +23,7 @@ class SendMessageToKafkaTest {
 
     KafkaProducer<Object, Object> avroProducer;
     // одна комбинация: тема + схема (версия схемы привязана к теме!)
-    private static final String CCM_TOPIC = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
+    private static final String CCM_PGP_TOPIC = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
 
     @BeforeAll
     void setUp() {
@@ -90,7 +90,7 @@ class SendMessageToKafkaTest {
     }
 
     @Test
-    void sendCcmMessage() {
+    void sendCcmPgpMessage() {
         nlmk.l3.ccm.pgp.RecordData data = nlmk.l3.ccm.pgp.RecordData.newBuilder()
                 .setPrimeId("0001020210329001515440422")
                 .setNplv(2106684) // <- meltNo
@@ -131,7 +131,7 @@ class SendMessageToKafkaTest {
                 .build();
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                CCM_TOPIC,
+                CCM_PGP_TOPIC,
                 "key~" + Instant.now().getEpochSecond(), // случайный key
                 value
         );

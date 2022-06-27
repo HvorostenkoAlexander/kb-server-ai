@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.config.prod;
 
-import com.nlmk.kb.server.config.CcmPgpConsumerProperties;
+import com.nlmk.kb.server.config.CcmPtsConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,9 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @Profile("prod")
-public class CcmPgpBrokerConfig {
+public class CcmPtsBrokerConfig {
 
-    private final CcmPgpConsumerProperties consumerProperties;
+    private final CcmPtsConsumerProperties consumerProperties;
 
     private Map<String, Object> ccmConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
@@ -37,7 +37,7 @@ public class CcmPgpBrokerConfig {
         props.put("specific.avro.reader", "true");
 
         if (consumerProperties.isSslEnabled()) {
-            log.warn("Внимание! Подключаются настройки для продуктового топика ССМ PGP");
+            log.warn("Внимание! Подключаются настройки для продуктового топика ССМ PTS");
 
             props.put("security.protocol", "SSL");
             props.put("ssl.truststore.location", consumerProperties.getTruststorePath());
@@ -46,7 +46,7 @@ public class CcmPgpBrokerConfig {
             props.put("ssl.keystore.location", consumerProperties.getKeystorePath());
             props.put("ssl.endpoint.identification.algorithm", "");
         } else {
-            log.warn("Внимание! Подключаются настройки для тестового топика ССМ PGP");
+            log.warn("Внимание! Подключаются настройки для тестового топика ССМ PTS");
         }
         return props;
     }
@@ -73,7 +73,7 @@ public class CcmPgpBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmPgpKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmPtsKafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();

@@ -32,7 +32,7 @@ public class KafkaCcmPgpService {
         this.messageConverter = messageConverter;
     }
 
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryReq",
+    @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
             topics = {"${kafka.ccm.pgp.topicReq}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

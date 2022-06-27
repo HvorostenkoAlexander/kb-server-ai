@@ -10,7 +10,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.common.serialization.Deserializer;
 
 @Slf4j
-@Deprecated
+@Deprecated(since = "1.27.0")
 public class AvroDeserializer<T extends SpecificRecordBase> implements Deserializer<T> {
 
     protected final Class<T> targetType;

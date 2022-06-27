@@ -1,6 +1,6 @@
-package com.nlmk.kb.server.config.prod;
+package com.nlmk.kb.server.config.dev;
 
-import com.nlmk.kb.server.config.CcmPgpConsumerProperties;
+import com.nlmk.kb.server.config.CcmPtsConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +21,10 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Profile("prod")
-public class CcmPgpBrokerConfig {
+@Profile("dev")
+public class CcmPtsBrokerConfig {
 
-    private final CcmPgpConsumerProperties consumerProperties;
+    private final CcmPtsConsumerProperties consumerProperties;
 
     private Map<String, Object> ccmConsumerConfigs() {
         Map<String, Object> props = new HashMap<>();
@@ -33,26 +33,13 @@ public class CcmPgpBrokerConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getKafkaGroupId());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
-
-        if (consumerProperties.isSslEnabled()) {
-            log.warn("Внимание! Подключаются настройки для продуктового топика ССМ PGP");
-
-            props.put("security.protocol", "SSL");
-            props.put("ssl.truststore.location", consumerProperties.getTruststorePath());
-            props.put("ssl.truststore.password", consumerProperties.getTruststorePassword());
-            props.put("ssl.keystore.password", consumerProperties.getKeystorePassword());
-            props.put("ssl.keystore.location", consumerProperties.getKeystorePath());
-            props.put("ssl.endpoint.identification.algorithm", "");
-        } else {
-            log.warn("Внимание! Подключаются настройки для тестового топика ССМ PGP");
-        }
         return props;
     }
 
     private ConsumerFactory<Object, Object> ccmConsumerFactory() {
-
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
         keyDeserializer.configure(ccmConsumerConfigs(), true);
 
@@ -73,19 +60,16 @@ public class CcmPgpBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmPgpKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmPtsKafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(ccmConsumerFactory());
-        factory.setErrorHandler(((thrownException, data) -> {
-            log.error("ERROR: " + thrownException.getMessage());
-            if (data != null) {
-                log.error("ERROR RECORD: " + data.toString());
-            }
-        }));
+        factory.setErrorHandler(((thrownException, consumerRecord) -> log.error("ERROR", thrownException)));
+        factory.setConcurrency(1);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+
         return factory;
     }
 
