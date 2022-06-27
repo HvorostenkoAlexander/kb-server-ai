@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.CcmKafkaException;
+import com.nlmk.kb.server.exception.CcmPgpKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageConverter;
@@ -44,7 +44,7 @@ public class KafkaCcmPgpService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("CCM AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
+        log.info("CCM PGP AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = messageConverter
@@ -67,7 +67,7 @@ public class KafkaCcmPgpService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmKafkaException("переброс: " + e);
+            throw new CcmPgpKafkaException("переброс: " + e);
         }
     }
 
