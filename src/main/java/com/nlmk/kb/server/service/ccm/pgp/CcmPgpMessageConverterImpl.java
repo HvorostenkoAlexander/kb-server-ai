@@ -15,7 +15,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class CcmPgpMessageConverterImpl implements CcmPgpMessageConverter {
 
-    private final AttestationRequestConverter attestationRequestConverter;
+    private final AttestationRequestPgpConverter attestationRequestConverter;
 
     @Override
     public CcmMessage fromCcmAttestationRequest(AttestationRequest ccmAttestationRequest,

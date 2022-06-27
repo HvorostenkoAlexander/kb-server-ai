@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestationRequestConverterImpl implements AttestationRequestConverter {
+public class AttestationRequestPgpConverterImpl implements AttestationRequestPgpConverter {
 
     private final CommonConverter converter;
 
@@ -98,27 +98,27 @@ public class AttestationRequestConverterImpl implements AttestationRequestConver
         }
         dataFieldBuilder.specifications(
                 recordData.getSpecifications().stream()
-                        .map(AttestationRequestConverterImpl::toPamSpecs)
+                        .map(AttestationRequestPgpConverterImpl::toPamSpecs)
                         .collect(Collectors.toList())
         );
         if (recordData.getChemical() != null) {
             dataFieldBuilder.chemical(
                     recordData.getChemical().stream()
-                            .map(AttestationRequestConverterImpl::toPamChemicalSpec)
+                            .map(AttestationRequestPgpConverterImpl::toPamChemicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMechanical() != null) {
             dataFieldBuilder.mechanical(
                     recordData.getMechanical().stream()
-                            .map(AttestationRequestConverterImpl::toPamMechanicalSpec)
+                            .map(AttestationRequestPgpConverterImpl::toPamMechanicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMetallographic() != null) {
             dataFieldBuilder.metallographic(
                     recordData.getMetallographic().stream()
-                            .map(AttestationRequestConverterImpl::toPamMetallographicSpec)
+                            .map(AttestationRequestPgpConverterImpl::toPamMetallographicSpec)
                             .collect(Collectors.toList())
             );
         }
@@ -200,7 +200,7 @@ public class AttestationRequestConverterImpl implements AttestationRequestConver
         }
         mechanicalSpec.mechData(
                 recordMechanical.getMechData().stream()
-                        .map(AttestationRequestConverterImpl::toPamMechanicalData)
+                        .map(AttestationRequestPgpConverterImpl::toPamMechanicalData)
                         .collect(Collectors.toList())
         );
         return mechanicalSpec.build();
@@ -260,7 +260,7 @@ public class AttestationRequestConverterImpl implements AttestationRequestConver
 
         mtlSpec.metgrapData(
                 recordMetallographic.getMetgrapData().stream()
-                        .map(AttestationRequestConverterImpl::toPamMetallographicData)
+                        .map(AttestationRequestPgpConverterImpl::toPamMetallographicData)
                         .collect(Collectors.toList())
         );
 
