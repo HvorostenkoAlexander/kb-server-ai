@@ -11,6 +11,7 @@ import com.nlmk.kb.server.entity.pam.Pk;
 import com.nlmk.kb.server.entity.pam.Specs;
 import com.nlmk.kb.server.entity.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
+import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.RecordChemical;
@@ -30,28 +31,28 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestationRequestPgpConverterImpl implements AttestationRequestPgpConverter {
+public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
 
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest toPamAttestationRequest(nlmk.l3.ccm.pgp.AttestationRequest ccmAttRequest) {
-        Assert.notNull(ccmAttRequest, "ccmAttRequest is null");
-        Assert.notNull(ccmAttRequest.getTs(), "ccmAttRequest.getTs() is null");
-        Assert.notNull(ccmAttRequest.getOp(), "ccmAttRequest.getOp() is null");
+    public AttestationRequest adapt(nlmk.l3.ccm.pgp.AttestationRequest requestMessagePgp) {
+        Assert.notNull(requestMessagePgp, "requestMessagePgp is null");
+        Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
+        Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
 
-        final var dateRequest = converter.parseToDate(ccmAttRequest.getTs().toString());
+        final var dateRequest = converter.parseToDate(requestMessagePgp.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
         final var value = Value.builder()
                 .ts(dateRequest)
-                .op(ccmAttRequest.getOp().toString());
+                .op(requestMessagePgp.getOp().toString());
 
-        if (ccmAttRequest.getPk() != null) {
-            value.pk(toPamPk(ccmAttRequest.getPk()));
+        if (requestMessagePgp.getPk() != null) {
+            value.pk(toPamPk(requestMessagePgp.getPk()));
         }
-        if (ccmAttRequest.getData() != null) {
-            value.data(toPamDataField(ccmAttRequest.getData()));
+        if (requestMessagePgp.getData() != null) {
+            value.data(toPamDataField(requestMessagePgp.getData()));
         }
 
         return AttestationRequest.builder()
@@ -98,27 +99,27 @@ public class AttestationRequestPgpConverterImpl implements AttestationRequestPgp
         }
         dataFieldBuilder.specifications(
                 recordData.getSpecifications().stream()
-                        .map(AttestationRequestPgpConverterImpl::toPamSpecs)
+                        .map(AttestationRequestAdapterPgpImpl::toPamSpecs)
                         .collect(Collectors.toList())
         );
         if (recordData.getChemical() != null) {
             dataFieldBuilder.chemical(
                     recordData.getChemical().stream()
-                            .map(AttestationRequestPgpConverterImpl::toPamChemicalSpec)
+                            .map(AttestationRequestAdapterPgpImpl::toPamChemicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMechanical() != null) {
             dataFieldBuilder.mechanical(
                     recordData.getMechanical().stream()
-                            .map(AttestationRequestPgpConverterImpl::toPamMechanicalSpec)
+                            .map(AttestationRequestAdapterPgpImpl::toPamMechanicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMetallographic() != null) {
             dataFieldBuilder.metallographic(
                     recordData.getMetallographic().stream()
-                            .map(AttestationRequestPgpConverterImpl::toPamMetallographicSpec)
+                            .map(AttestationRequestAdapterPgpImpl::toPamMetallographicSpec)
                             .collect(Collectors.toList())
             );
         }
@@ -200,7 +201,7 @@ public class AttestationRequestPgpConverterImpl implements AttestationRequestPgp
         }
         mechanicalSpec.mechData(
                 recordMechanical.getMechData().stream()
-                        .map(AttestationRequestPgpConverterImpl::toPamMechanicalData)
+                        .map(AttestationRequestAdapterPgpImpl::toPamMechanicalData)
                         .collect(Collectors.toList())
         );
         return mechanicalSpec.build();
@@ -260,7 +261,7 @@ public class AttestationRequestPgpConverterImpl implements AttestationRequestPgp
 
         mtlSpec.metgrapData(
                 recordMetallographic.getMetgrapData().stream()
-                        .map(AttestationRequestPgpConverterImpl::toPamMetallographicData)
+                        .map(AttestationRequestAdapterPgpImpl::toPamMetallographicData)
                         .collect(Collectors.toList())
         );
 

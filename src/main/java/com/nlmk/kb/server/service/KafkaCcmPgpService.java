@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.kb.server.exception.CcmPgpKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
-import com.nlmk.kb.server.service.ccm.pgp.CcmPgpMessageConverter;
+import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
@@ -22,14 +22,14 @@ public class KafkaCcmPgpService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-    private final CcmPgpMessageConverter messageConverter;
+    private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
 
     public KafkaCcmPgpService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmPgpMessageConverter messageConverter) {
+                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
-        this.messageConverter = messageConverter;
+        this.ccmMessageAdapter = ccmMessageAdapter;
     }
 
     @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
@@ -47,8 +47,7 @@ public class KafkaCcmPgpService {
         log.info("CCM PGP AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
-            final var requestMessage = messageConverter
-                    .fromCcmAttestationRequest(request, topic, key, partition, offset, timestamp);
+            final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset, timestamp);
 
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null

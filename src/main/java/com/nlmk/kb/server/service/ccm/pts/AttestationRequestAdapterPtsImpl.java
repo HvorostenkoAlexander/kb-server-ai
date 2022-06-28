@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.kb.server.entity.pam.AttestationRequest;
 import com.nlmk.kb.server.entity.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
+import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pts.*;
@@ -14,28 +15,28 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestationRequestPtsConverterImpl implements AttestationRequestPtsConverter {
+public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
 
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest toPamAttestationRequest(nlmk.l3.ccm.pts.AttestationRequest ccmPtsRequest) {
-        Assert.notNull(ccmPtsRequest, "ccmPtsRequest is null");
-        Assert.notNull(ccmPtsRequest.getTs(), "ccmPtsRequest.getTs() is null");
-        Assert.notNull(ccmPtsRequest.getOp(), "ccmPtsRequest.getOp() is null");
+    public AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
+        Assert.notNull(requestMessagePts, "requestMessagePts is null");
+        Assert.notNull(requestMessagePts.getTs(), "requestMessagePts.getTs() is null");
+        Assert.notNull(requestMessagePts.getOp(), "requestMessagePts.getOp() is null");
 
-        final var dateRequest = converter.parseToDate(ccmPtsRequest.getTs().toString());
+        final var dateRequest = converter.parseToDate(requestMessagePts.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
         final var value = Value.builder()
                 .ts(dateRequest)
-                .op(ccmPtsRequest.getOp().toString());
+                .op(requestMessagePts.getOp().toString());
 
-        if (ccmPtsRequest.getPk() != null) {
-            value.pk(toPamPk(ccmPtsRequest.getPk()));
+        if (requestMessagePts.getPk() != null) {
+            value.pk(toPamPk(requestMessagePts.getPk()));
         }
-        if (ccmPtsRequest.getData() != null) {
-            value.data(toPamDataField(ccmPtsRequest.getData()));
+        if (requestMessagePts.getData() != null) {
+            value.data(toPamDataField(requestMessagePts.getData()));
         }
 
         return AttestationRequest.builder()
