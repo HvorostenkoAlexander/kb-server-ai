@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.config;
+package com.nlmk.kb.server.config.broker;
 
 import com.nlmk.s3.proxy.s3notification;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
@@ -61,19 +61,16 @@ public class SapBrokerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, s3notification> kafkaListenerContainerFactorySap() {
+    public ConcurrentKafkaListenerContainerFactory<String, s3notification> sapKafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, s3notification> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(sapConsumerFactory());
-        factory.setErrorHandler(((thrownException, data) -> {
-            log.error("ERROR: " + thrownException.getClass() + "; " + thrownException.getMessage());
-            if (data != null) {
-                log.error("ERROR RECORD: " + data);
-            }
-        }));
+        factory.setErrorHandler(((thrownException, consumerRecord) -> log.error("ERROR", thrownException)));
+        factory.setConcurrency(1);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
     }
+
 }

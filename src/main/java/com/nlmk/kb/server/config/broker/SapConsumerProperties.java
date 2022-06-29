@@ -1,5 +1,6 @@
-package com.nlmk.kb.server.config;
+package com.nlmk.kb.server.config.broker;
 
+import com.nlmk.kb.server.config.ConsumerProperties;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,4 +30,5 @@ public class SapConsumerProperties extends ConsumerProperties {
 
         this.sslEnabled = sslEnabled;
     }
+
 }
