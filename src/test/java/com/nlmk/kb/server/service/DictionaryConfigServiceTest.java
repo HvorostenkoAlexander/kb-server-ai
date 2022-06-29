@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @SpringBootTest
-public class DictionaryConfigServiceTest {
+class DictionaryConfigServiceTest {
 
     @Autowired
     private DictionaryConfigService service;
@@ -182,12 +182,12 @@ public class DictionaryConfigServiceTest {
     }
 
     @Test
-    void uniqueTopicNameTest(){
+    void uniqueTopicNameTest() {
         val entity = DictionaryConfig.builder()
                 .topic("newTopicName")
                 .nsiPath("newNsiPath")
                 .enabled(true)
-                .codes(List.of(444,445,446))
+                .codes(List.of(444, 445, 446))
                 .build();
         repository.save(entity);
 
@@ -199,9 +199,10 @@ public class DictionaryConfigServiceTest {
                 .build();
 
         DataIntegrityViolationException dive = assertThrows(DataIntegrityViolationException.class,
-                () -> service.update(entity.getId(),nonUniqueTopicDto)
+                () -> service.update(entity.getId(), nonUniqueTopicDto)
         );
 
         assertNotNull(dive);
     }
+
 }

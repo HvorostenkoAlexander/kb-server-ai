@@ -1,21 +1,20 @@
-package com.nlmk.kb.server.config;
+package com.nlmk.kb.server.config.broker;
 
+import com.nlmk.kb.server.config.broker.ConsumerProperties;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class CcmConsumerProperties extends ConsumerProperties {
+public class PdmConsumerProperties extends ConsumerProperties {
 
-    private final String topicReq;
     private final boolean sslEnabled;
 
-    public CcmConsumerProperties(@Value("${kafka.ccm.bootstrap-servers}") String kafkaServer,
-                                 @Value("${kafka.ccm.consumer.group-id}") String kafkaGroupId,
-                                 @Value("${kafka.ccm.topicReq}") String topicReq,
-                                 @Value("${kafka.ccm.schema.registry.url}") String schemaRegistryUrl,
-                                 @Value("${kafka.ccm.ssl-enabled}") boolean sslEnabled,
+    public PdmConsumerProperties(@Value("${kafka.pdm.bootstrap-servers}") String kafkaServer,
+                                 @Value("${kafka.pdm.consumer.group-id}") String kafkaGroupId,
+                                 @Value("${kafka.pdm.schema.registry.url}") String schemaRegistryUrl,
+                                 @Value("${kafka.pdm.ssl-enabled}") boolean sslEnabled,
                                  @Value("${kafka.sslTruststorePassword}") String truststorePassword,
                                  @Value("${kafka.sslKeystorePassword}") String keystorePassword,
                                  @Value("${kafka.client.truststore-path}") String truststorePath,
@@ -29,7 +28,7 @@ public class CcmConsumerProperties extends ConsumerProperties {
                 keystorePath
         );
 
-        this.topicReq = topicReq;
         this.sslEnabled = sslEnabled;
     }
+
 }

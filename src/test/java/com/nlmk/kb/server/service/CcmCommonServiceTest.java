@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.entity.pam.AttestationRequest;
 import com.nlmk.kb.server.service.ccm.CcmCommonServiceImpl;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
@@ -39,7 +39,7 @@ class CcmCommonServiceTest {
     @InjectMocks
     private CcmCommonServiceImpl ccmCommonService;
 
-    private List<CcmAttestationRequestMessage> ccmMessages;
+    private List<CcmMessage> ccmMessages;
 
     @Captor
     ArgumentCaptor<AttestationRequest> captorRequest = ArgumentCaptor.forClass(AttestationRequest.class);
@@ -47,7 +47,7 @@ class CcmCommonServiceTest {
     @BeforeEach
     void setUp() {
         ccmMessages = List.of(
-                CcmAttestationRequestMessage.builder()
+                CcmMessage.builder()
                         .id(1L)
                         .primeId("12345")
                         .kbReceiptTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
@@ -55,7 +55,7 @@ class CcmCommonServiceTest {
                                 .id(11L)
                                 .build())
                         .build(),
-                CcmAttestationRequestMessage.builder()
+                CcmMessage.builder()
                         .id(2L)
                         .primeId("12345")
                         .kbReceiptTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().plusMillis(123455)))

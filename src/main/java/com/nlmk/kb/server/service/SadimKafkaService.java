@@ -17,14 +17,14 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaSadimService {
+public class SadimKafkaService {
 
     private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final SadimMessageService messageService;
     private final CcmCommonService ccmCommonService;
 
-    public KafkaSadimService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+    public SadimKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                              SadimMessageService messageService,
                              CcmCommonService ccmCommonService) {
         this.sleepTime = sleepTime;
@@ -32,7 +32,8 @@ public class KafkaSadimService {
         this.ccmCommonService = ccmCommonService;
     }
 
-    @KafkaListener(containerFactory = "kafkaListenerSadim", topics = {"${kafka.sadim.topic}"})
+    @KafkaListener(containerFactory = "sadimKafkaListenerContainerFactory",
+            topics = {"${kafka.sadim.topic}"})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
                                   Acknowledgment ack) {

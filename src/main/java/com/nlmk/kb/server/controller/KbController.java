@@ -3,7 +3,7 @@ package com.nlmk.kb.server.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.dto.PdmMessageDto;
-import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.*;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
@@ -55,14 +55,14 @@ public class KbController {
 
     @GetMapping("/attestation_request")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public Page<CcmAttestationRequestMessage> getAllByPage(@RequestParam(value = "pageNumber") int page,
-                                                           @RequestParam(value = "pageSize") int size) {
+    public Page<CcmMessage> getAllByPage(@RequestParam(value = "pageNumber") int page,
+                                         @RequestParam(value = "pageSize") int size) {
         return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
     @GetMapping("/attestation_request/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public List<CcmAttestationRequestMessage> getByPrimeId(@PathVariable String primeId) {
+    public List<CcmMessage> getByPrimeId(@PathVariable String primeId) {
 
         return ccmMessageService.findByPrimeId(primeId);
     }

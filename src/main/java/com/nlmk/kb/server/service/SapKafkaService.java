@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.HandleRecordException;
+import com.nlmk.kb.server.exception.SapKafkaException;
 import com.nlmk.kb.server.service.sap.SapMessageHandler;
 import com.nlmk.s3.proxy.s3notification;
 import io.micrometer.core.annotation.Timed;
@@ -15,19 +15,19 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaSapService {
+public class SapKafkaService {
 
     private final long sleepTime;
     private final SapMessageHandler sapMessageHandler;
 
-    public KafkaSapService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+    public SapKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                            SapMessageHandler sapMessageHandler) {
         this.sleepTime = sleepTime;
         this.sapMessageHandler = sapMessageHandler;
 
     }
 
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactorySap",
+    @KafkaListener(containerFactory = "sapKafkaListenerContainerFactory",
             topics = {"${kafka.sap.topic.s3.idoczordrs}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
@@ -52,7 +52,7 @@ public class KafkaSapService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new HandleRecordException("переброс: " + e);
+            throw new SapKafkaException("переброс: " + e);
         }
     }
 

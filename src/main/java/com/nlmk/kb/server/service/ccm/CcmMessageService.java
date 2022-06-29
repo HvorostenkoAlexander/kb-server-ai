@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.ccm;
 
-import com.nlmk.kb.server.entity.CcmAttestationRequestMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -9,12 +9,12 @@ import java.util.Optional;
 
 public interface CcmMessageService {
 
-    Optional<CcmAttestationRequestMessage> save(CcmAttestationRequestMessage ccmMessage);
+    Optional<CcmMessage> save(CcmMessage ccmMessage);
 
-    Page<CcmAttestationRequestMessage> findAll(PageRequest of);
+    Page<CcmMessage> findAll(PageRequest of);
 
-    List<CcmAttestationRequestMessage> findByPrimeId(String primeId);
+    List<CcmMessage> findByPrimeId(String primeId);
 
-    CcmAttestationRequestMessage update(CcmAttestationRequestMessage ccmMessage);
+    CcmMessage update(CcmMessage ccmMessage);
 
 }

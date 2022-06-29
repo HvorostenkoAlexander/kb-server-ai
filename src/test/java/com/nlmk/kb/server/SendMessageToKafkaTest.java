@@ -23,7 +23,8 @@ class SendMessageToKafkaTest {
 
     KafkaProducer<Object, Object> avroProducer;
     // одна комбинация: тема + схема (версия схемы привязана к теме!)
-    private static final String CCM_TOPIC = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
+    private static final String CCM_PGP_TOPIC = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
+    private static final String CCM_PTS_TOPIC = "000-1.l3-ccm-pts.db.Attestation-Request.0";
 
     @BeforeAll
     void setUp() {
@@ -90,7 +91,7 @@ class SendMessageToKafkaTest {
     }
 
     @Test
-    void sendCcmMessage() {
+    void sendCcmPgpMessage() {
         nlmk.l3.ccm.pgp.RecordData data = nlmk.l3.ccm.pgp.RecordData.newBuilder()
                 .setPrimeId("0001020210329001515440422")
                 .setNplv(2106684) // <- meltNo
@@ -131,12 +132,48 @@ class SendMessageToKafkaTest {
                 .build();
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                CCM_TOPIC,
+                CCM_PGP_TOPIC,
                 "key~" + Instant.now().getEpochSecond(), // случайный key
                 value
         );
 
         sendAvro(record);
+    }
+
+    @Test
+    void sendCcmPtsMessage() {
+        nlmk.l3.ccm.pts.RecordData data = nlmk.l3.ccm.pts.RecordData.newBuilder()
+                .setPrimeId("42")
+                .setNplv(2106684) // <- meltNo
+                .setHnum(25217) // <-- lotNo
+                .setRoll("1-1")
+                .setThickness(2.65f)
+                .setWidth(1232.0f)
+                .setWeightNet(10.86f)
+                .setKceh(12)
+                .setOrderNum(40434341)
+                .setOrderPos(4)
+                // .. будут еще поля
+                .build();
+
+        nlmk.l3.ccm.pts.AttestationRequest value = nlmk.l3.ccm.pts.AttestationRequest.newBuilder()
+                .setTs("2022-06-27T16:45:25.000+05:00")
+                .setOp(nlmk.l3.ccm.pts.EnumOp.U)
+                .setPk(nlmk.l3.ccm.pts.RecordPk.newBuilder()
+                        .setId("42")
+                        .setSystemCode("16")
+                        .build())
+                .setData(data)
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(
+                CCM_PTS_TOPIC,
+                "key~" + Instant.now().getEpochSecond(), // случайный key
+                value
+        );
+
+        sendAvro(record);
+
     }
 
 }
