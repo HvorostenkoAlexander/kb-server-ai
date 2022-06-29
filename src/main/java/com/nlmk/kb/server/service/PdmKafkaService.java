@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.PdmKafkaException;
 import com.nlmk.kb.server.service.pdm.PdmMessageHandler;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -13,18 +14,18 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaPdmService {
+public class PdmKafkaService {
 
     private final long sleepTime;
     private final PdmMessageHandler pdmMessageHandler;
 
-    public KafkaPdmService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+    public PdmKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                            PdmMessageHandler pdmMessageHandler) {
         this.sleepTime = sleepTime;
         this.pdmMessageHandler = pdmMessageHandler;
     }
 
-    @KafkaListener(containerFactory = "kafkaListenerContainerFactoryPdm",
+    @KafkaListener(containerFactory = "pdmKafkaListenerContainerFactory",
             topics = {
                     "${kafka.pdm.topic.microstructure}",
                     "${kafka.pdm.topic.asap-chemical-properties}",
@@ -67,7 +68,7 @@ public class KafkaPdmService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new RuntimeException("переброс: " + e);
+            throw new PdmKafkaException("переброс: " + e);
         }
     }
 
