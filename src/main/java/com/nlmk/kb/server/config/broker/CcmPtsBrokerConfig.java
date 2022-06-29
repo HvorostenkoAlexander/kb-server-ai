@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.config.dev;
+package com.nlmk.kb.server.config.broker;
 
 import com.nlmk.kb.server.config.CcmPtsConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
@@ -8,7 +8,6 @@ import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -21,30 +20,36 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Profile("dev")
 public class CcmPtsBrokerConfig {
 
     private final CcmPtsConsumerProperties consumerProperties;
 
-    private Map<String, Object> ccmConsumerConfigs() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getKafkaGroupId());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
-        props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
-        props.put("specific.avro.reader", "true");
-        return props;
-    }
-
     private ConsumerFactory<Object, Object> ccmConsumerFactory() {
+        Map<String, Object> configuration = new HashMap<>();
+
+        configuration.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, consumerProperties.getKafkaServer());
+        configuration.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        configuration.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        configuration.put(ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getKafkaGroupId());
+        configuration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        configuration.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
+        configuration.put("specific.avro.reader", "true");
+
+        log.info("SSL {}", consumerProperties.isSslEnabled() ? "enabled" : "disabled");
+        if (consumerProperties.isSslEnabled()) {
+            configuration.put("security.protocol", "SSL");
+            configuration.put("ssl.truststore.location", consumerProperties.getTruststorePath());
+            configuration.put("ssl.truststore.password", consumerProperties.getTruststorePassword());
+            configuration.put("ssl.keystore.password", consumerProperties.getKeystorePassword());
+            configuration.put("ssl.keystore.location", consumerProperties.getKeystorePath());
+            configuration.put("ssl.endpoint.identification.algorithm", "");
+        }
+
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
-        keyDeserializer.configure(ccmConsumerConfigs(), true);
+        keyDeserializer.configure(configuration, true);
 
         KafkaAvroDeserializer valueDeserializer = new KafkaAvroDeserializer();
-        valueDeserializer.configure(ccmConsumerConfigs(), false);
+        valueDeserializer.configure(configuration, false);
 
         ErrorHandlingDeserializer<Object> errorHandlingKeyDeserializer
                 = new ErrorHandlingDeserializer<>(keyDeserializer);
@@ -53,7 +58,7 @@ public class CcmPtsBrokerConfig {
                 = new ErrorHandlingDeserializer<>(valueDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(
-                ccmConsumerConfigs(),
+                configuration,
                 errorHandlingKeyDeserializer,
                 errorHandlingValueDeserializer
         );
@@ -67,9 +72,7 @@ public class CcmPtsBrokerConfig {
 
         factory.setConsumerFactory(ccmConsumerFactory());
         factory.setErrorHandler(((thrownException, consumerRecord) -> log.error("ERROR", thrownException)));
-        factory.setConcurrency(1);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
-
         return factory;
     }
 

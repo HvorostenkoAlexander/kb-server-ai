@@ -1,13 +1,13 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.CcmPtsKafkaException;
+import com.nlmk.kb.server.exception.CcmPgpKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.ccm.pts.EnumOp;
-import nlmk.l3.ccm.pts.AttestationRequest;
+import nlmk.l3.ccm.pgp.AttestationRequest;
+import nlmk.l3.ccm.pgp.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaCcmPtsService {
+public class CcmPgpKafkaService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
 
-    public KafkaCcmPtsService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+    public CcmPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<AttestationRequest> ccmMessageAdapter) {
         this.sleepTime = sleepTime;
@@ -32,8 +32,8 @@ public class KafkaCcmPtsService {
         this.ccmMessageAdapter = ccmMessageAdapter;
     }
 
-    @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory",
-            topics = {"${kafka.ccm.pts.topicReq}"}
+    @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
+            topics = {"${kafka.ccm.pgp.topicReq}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
@@ -44,7 +44,7 @@ public class KafkaCcmPtsService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("CCM PTS AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
+        log.info("CCM PGP AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset, timestamp);
@@ -66,7 +66,7 @@ public class KafkaCcmPtsService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPtsKafkaException("переброс: " + e);
+            throw new CcmPgpKafkaException("переброс: " + e);
         }
     }
 

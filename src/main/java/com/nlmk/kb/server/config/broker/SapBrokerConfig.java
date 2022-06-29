@@ -34,17 +34,14 @@ public class SapBrokerConfig {
         props.put("schema.registry.url", consumerProperties.getSchemaRegistryUrl());
         props.put("specific.avro.reader", "true");
 
+        log.info("SSL {}", consumerProperties.isSslEnabled() ? "enabled" : "disabled");
         if (consumerProperties.isSslEnabled()) {
-            log.info("SapBrokerConfig. SSL enabled.");
-
             props.put("security.protocol", "SSL");
             props.put("ssl.truststore.location", consumerProperties.getTruststorePath());
             props.put("ssl.truststore.password", consumerProperties.getTruststorePassword());
             props.put("ssl.keystore.password", consumerProperties.getKeystorePassword());
             props.put("ssl.keystore.location", consumerProperties.getKeystorePath());
             props.put("ssl.endpoint.identification.algorithm", "");
-        } else {
-            log.info("SapBrokerConfig. SSL disabled.");
         }
 
         KafkaAvroDeserializer keyDeserializer = new KafkaAvroDeserializer();
@@ -68,7 +65,6 @@ public class SapBrokerConfig {
 
         factory.setConsumerFactory(sapConsumerFactory());
         factory.setErrorHandler(((thrownException, consumerRecord) -> log.error("ERROR", thrownException)));
-        factory.setConcurrency(1);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
     }
