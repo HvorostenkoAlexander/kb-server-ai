@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.config;
+package com.nlmk.kb.server.config.broker;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.config.broker;
 
-import com.nlmk.kb.server.config.CcmPgpConsumerProperties;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
