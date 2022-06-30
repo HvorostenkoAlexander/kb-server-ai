@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -20,7 +21,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     private final CcmMessageService messageService;
 
     @Override
-    public ProductAttestationResultDto rePostAttestation(String primeId) throws IllegalArgumentException {
+    public Optional<ProductAttestationResultDto> rePostAttestation(String primeId) throws IllegalArgumentException {
 
         if (StringUtils.isBlank(primeId)) {
             log.warn("Невозможно осуществить повторную отправку. primeId is null.");
@@ -51,11 +52,11 @@ public class CcmCommonServiceImpl implements CcmCommonService {
                                 " с primeId: " + primeId)
                 );
 
-        return rePostRequest(lastRequest);
+        return Optional.of(rePostRequest(lastRequest));
     }
 
     @Override
-    public void postAttestation(CcmMessage request) {
+    public Optional<ProductAttestationResultDto> postAttestation(CcmMessage request) {
         Assert.notNull(request, "request is null");
 
         final var savedRequest = messageService.save(request).orElseThrow(
@@ -63,15 +64,14 @@ public class CcmCommonServiceImpl implements CcmCommonService {
                         + "; offset: " + request.getOffset())
         );
 
-        if (request.getRequest() != null ||
-                request.getRequest().getValue() != null ||
-                request.getRequest().getValue().getData() != null) {
-
-            postRequest(savedRequest, "recived");
-
-        } else {
+        if (request.getRequest() == null
+                || request.getRequest().getValue() == null
+                || request.getRequest().getValue().getData() == null) {
             log.warn("В поступившем запросе на аттестацию нет данных. Отправка невозможна.");
+            return Optional.empty();
         }
+
+        return Optional.of(postRequest(savedRequest, "recived"));
     }
 
     private ProductAttestationResultDto rePostRequest(CcmMessage r) {

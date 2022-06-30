@@ -3,10 +3,18 @@ package com.nlmk.kb.server.service.ccm;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 
+import java.util.Optional;
+
 public interface CcmCommonService {
 
-    ProductAttestationResultDto rePostAttestation(String primeId) throws IllegalArgumentException;
+    Optional<ProductAttestationResultDto> rePostAttestation(String primeId) throws IllegalArgumentException;
 
-    void postAttestation(CcmMessage request);
+    /**
+     * Отправка сохраненного сообщения в сервис Аттестации
+     *
+     * @param requestMessage преобразованное сообщение Kafka с запросом на Аттестацию
+     * @return объект ответа сервиса Аттестации
+     */
+    Optional<ProductAttestationResultDto> postAttestation(CcmMessage requestMessage);
 
 }
