@@ -1,5 +1,13 @@
 package com.nlmk.kb.server.config;
 
 public class KbConstants {
+
+    private KbConstants() {
+        throw new IllegalStateException("Constants class");
+    }
+
+    public static final String REQUEST_ID_HEADER = "X-Request-ID";
+    public static final String REQUEST_ID_KEY = "requestID";
     public static final String KAFKA_ID = "KAFKA_ID";
+
 }
