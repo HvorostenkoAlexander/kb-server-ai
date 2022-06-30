@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.entity.pam;
+package com.nlmk.kb.server.api.pam;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

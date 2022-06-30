@@ -57,6 +57,6 @@ public class CcmMessage {
     @Type(type = "json")
     @Column(columnDefinition = "json")
     // сохранение в едином формате, значение, которое пойдет в запросе к PAM
-    private com.nlmk.kb.server.entity.pam.AttestationRequest request;
+    private com.nlmk.kb.server.api.pam.AttestationRequest request;
 
 }

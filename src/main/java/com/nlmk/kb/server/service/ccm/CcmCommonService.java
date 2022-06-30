@@ -12,9 +12,9 @@ public interface CcmCommonService {
     /**
      * Отправка сохраненного сообщения в сервис Аттестации
      *
-     * @param requestMessage преобразованное сообщение Kafka с запросом на Аттестацию
+     * @param ccmMessage преобразованное сообщение Kafka с запросом на Аттестацию
      * @return объект ответа сервиса Аттестации
      */
-    Optional<ProductAttestationResultDto> postAttestation(CcmMessage requestMessage);
+    Optional<ProductAttestationResultDto> postAttestation(CcmMessage ccmMessage);
 
 }

@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.entity.pam;
+package com.nlmk.kb.server.api.pam;
 
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.Params;

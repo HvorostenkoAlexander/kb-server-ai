@@ -1,6 +1,5 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sender;
 
-import com.nlmk.kb.server.service.NsiCommonSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,29 +12,28 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
-public class NsiCommonSenderImpl implements NsiCommonSender {
+public class NsiSenderImpl implements NsiSender {
 
     private final RestTemplate restTemplate;
-    private final String URL_NSI_DICTIONARY;
+    private final String nsiUrlDict;
 
-    public NsiCommonSenderImpl(RestTemplate restTemplate,
-                               @Value("${nsi.url.dict}") String URL_NSI_DICTIONARY) {
+    public NsiSenderImpl(RestTemplate restTemplate,
+                         @Value("${nsi.url.dict}") String nsiUrlDict) {
         this.restTemplate = restTemplate;
-        this.URL_NSI_DICTIONARY = URL_NSI_DICTIONARY;
+        this.nsiUrlDict = nsiUrlDict;
     }
 
     @Override
     public ResponseEntity<Long> exchange(HttpEntity<?> request,
                                          final String url_dictionary,
-                                         final String operation
-    ) {
-        ResponseEntity<Long> response = new ResponseEntity<>(0L, HttpStatus.BAD_REQUEST);
+                                         final String operation) {
+        ResponseEntity<Long> response;
 
         switch (operation) {
             case "I": {
                 log.info("post to NSI: " + request);
                 response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
+                        .exchange(nsiUrlDict + url_dictionary,
                                 HttpMethod.POST,
                                 request,
                                 Long.class);
@@ -45,7 +43,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
             case "U": {
                 log.info("put to NSI: " + request);
                 response = restTemplate
-                        .exchange(URL_NSI_DICTIONARY + url_dictionary,
+                        .exchange(nsiUrlDict + url_dictionary,
                                 HttpMethod.PUT,
                                 request,
                                 Long.class);
@@ -56,7 +54,7 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
                 log.info("delete from NSI: " + request);
                 try {
                     response = restTemplate
-                            .exchange(URL_NSI_DICTIONARY + url_dictionary,
+                            .exchange(nsiUrlDict + url_dictionary,
                                     HttpMethod.DELETE,
                                     request,
                                     Long.class);
@@ -78,4 +76,5 @@ public class NsiCommonSenderImpl implements NsiCommonSender {
         }
         return response;
     }
+
 }

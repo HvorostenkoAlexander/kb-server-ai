@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.pdm.senders;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
-import com.nlmk.kb.server.service.NsiCommonSender;
+import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
 import com.nlmk.kb.server.service.pdm.PdmMessageCreator;
@@ -24,7 +24,7 @@ public class EquivalentsMessageSender extends BaseCreator implements MessageSend
 
     public EquivalentsMessageSender(@Value("${kafka.pdm.topic.equivalents}") String type,
                                     PdmDtoConverter pdmDtoConverter,
-                                    NsiCommonSender commonSender,
+                                    NsiSender commonSender,
                                     PdmDictionaryCreator pdmDictionaryCreator,
                                     DictionaryConfigService dictionaryConfigService) {
         super(type, pdmDtoConverter, commonSender, pdmDictionaryCreator, dictionaryConfigService);

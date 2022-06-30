@@ -36,6 +36,6 @@ public interface AttestationController {
     @ApiResponse(responseCode = "201",
             description = "Аттестация Единицы Продукции успешно пройдена", content = @Content)
     CcmPtsResponse postAttestationCcmPts(@RequestHeader(name = KbConstants.REQUEST_ID_HEADER, required = false) String requestId,
-                                         @RequestBody @Valid CcmPtsRequest dto);
+                                         @RequestBody @Valid CcmPtsRequest attRequest);
 
 }

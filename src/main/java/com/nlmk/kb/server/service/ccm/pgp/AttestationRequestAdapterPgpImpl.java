@@ -1,15 +1,15 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
-import com.nlmk.kb.server.entity.pam.AttestationRequest;
-import com.nlmk.kb.server.entity.pam.ChemicalSpec;
-import com.nlmk.kb.server.entity.pam.DataField;
-import com.nlmk.kb.server.entity.pam.MechanicalData;
-import com.nlmk.kb.server.entity.pam.MechanicalSpec;
-import com.nlmk.kb.server.entity.pam.MetallographicData;
-import com.nlmk.kb.server.entity.pam.MetallographicSpec;
-import com.nlmk.kb.server.entity.pam.Pk;
-import com.nlmk.kb.server.entity.pam.Specs;
-import com.nlmk.kb.server.entity.pam.Value;
+import com.nlmk.kb.server.api.pam.AttestationRequest;
+import com.nlmk.kb.server.api.pam.ChemicalSpec;
+import com.nlmk.kb.server.api.pam.DataField;
+import com.nlmk.kb.server.api.pam.MechanicalData;
+import com.nlmk.kb.server.api.pam.MechanicalSpec;
+import com.nlmk.kb.server.api.pam.MetallographicData;
+import com.nlmk.kb.server.api.pam.MetallographicSpec;
+import com.nlmk.kb.server.api.pam.Pk;
+import com.nlmk.kb.server.api.pam.Specs;
+import com.nlmk.kb.server.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
 import lombok.RequiredArgsConstructor;

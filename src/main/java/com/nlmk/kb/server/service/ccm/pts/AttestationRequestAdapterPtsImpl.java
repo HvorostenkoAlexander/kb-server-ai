@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.kb.server.entity.pam.AttestationRequest;
-import com.nlmk.kb.server.entity.pam.*;
+import com.nlmk.kb.server.api.pam.AttestationRequest;
+import com.nlmk.kb.server.api.pam.DataField;
+import com.nlmk.kb.server.api.pam.Pk;
+import com.nlmk.kb.server.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
 import lombok.RequiredArgsConstructor;

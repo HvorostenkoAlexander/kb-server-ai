@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.ccm;
+package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.config.KbConstants;
@@ -12,18 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
-import com.nlmk.kb.server.entity.pam.AttestationRequest;
+import com.nlmk.kb.server.api.pam.AttestationRequest;
 
 
 @Slf4j
 @Service
-public class CcmPamClientSenderImpl implements CcmPamClientSender {
+public class PamSenderImpl implements PamSender {
 
     private final String pamUrl;
     private final RestTemplate restTemplate;
 
-    public CcmPamClientSenderImpl(@Value("${pam.url}") String pamUrl,
-                                  RestTemplate restTemplate) {
+    public PamSenderImpl(@Value("${pam.url}") String pamUrl,
+                         RestTemplate restTemplate) {
         this.pamUrl = pamUrl;
         this.restTemplate = restTemplate;
     }

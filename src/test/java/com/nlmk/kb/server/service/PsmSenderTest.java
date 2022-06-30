@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.PsmSenderException;
+import com.nlmk.kb.server.service.sender.PsmSender;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;

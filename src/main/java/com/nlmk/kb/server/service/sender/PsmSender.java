@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sender;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.product.api.SadimMessageDto;

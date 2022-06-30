@@ -3,10 +3,10 @@ package com.nlmk.kb.server.service;
 import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.entity.pam.AttestationRequest;
+import com.nlmk.kb.server.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.ccm.CcmCommonServiceImpl;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
-import com.nlmk.kb.server.service.ccm.CcmPamClientSender;
+import com.nlmk.kb.server.service.sender.PamSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.times;
 class CcmCommonServiceTest {
 
     @Mock
-    private CcmPamClientSender ccmPamSender;
+    private PamSender ccmPamSender;
 
     @Mock
     private CcmMessageService ccmMessageService;

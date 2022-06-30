@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.service.sender.PamSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CcmCommonServiceImpl implements CcmCommonService {
 
-    private final CcmPamClientSender ccmPamSender;
+    private final PamSender ccmPamSender;
     private final CcmMessageService messageService;
 
     @Override
@@ -56,17 +57,17 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     }
 
     @Override
-    public Optional<ProductAttestationResultDto> postAttestation(CcmMessage request) {
-        Assert.notNull(request, "request is null");
+    public Optional<ProductAttestationResultDto> postAttestation(CcmMessage ccmMessage) {
+        Assert.notNull(ccmMessage, "request is null");
 
-        final var savedRequest = messageService.save(request).orElseThrow(
-                () -> new RuntimeException("Не удалось сохранить сообщение partition: " + request.getPartition()
-                        + "; offset: " + request.getOffset())
+        final var savedRequest = messageService.save(ccmMessage).orElseThrow(
+                () -> new RuntimeException("Не удалось сохранить сообщение partition: " + ccmMessage.getPartition()
+                        + "; offset: " + ccmMessage.getOffset())
         );
 
-        if (request.getRequest() == null
-                || request.getRequest().getValue() == null
-                || request.getRequest().getValue().getData() == null) {
+        if (ccmMessage.getRequest() == null
+                || ccmMessage.getRequest().getValue() == null
+                || ccmMessage.getRequest().getValue().getData() == null) {
             log.warn("В поступившем запросе на аттестацию нет данных. Отправка невозможна.");
             return Optional.empty();
         }

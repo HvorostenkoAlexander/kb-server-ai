@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.pdm.senders;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
-import com.nlmk.kb.server.service.NsiCommonSender;
+import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
 import com.nlmk.kb.server.service.pdm.PdmMessageCreator;
@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
 public class TkNumMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
 
     public TkNumMessageSender(@Value("${kafka.pdm.topic.tk-num}") String type,
-                              NsiCommonSender commonSender,
+                              NsiSender commonSender,
                               PdmDtoConverter pdmDtoConverter,
                               PdmDictionaryCreator pdmDictionaryCreator,
                               DictionaryConfigService dictionaryConfigService) {
