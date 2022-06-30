@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     private final CcmMessageService messageService;
 
     @Override
-    public Long rePostAttestation(String primeId) throws IllegalArgumentException {
+    public ProductAttestationResultDto rePostAttestation(String primeId) throws IllegalArgumentException {
 
         if (StringUtils.isBlank(primeId)) {
             log.warn("Невозможно осуществить повторную отправку. primeId is null.");
@@ -73,14 +74,14 @@ public class CcmCommonServiceImpl implements CcmCommonService {
         }
     }
 
-    private Long rePostRequest(CcmMessage r) {
+    private ProductAttestationResultDto rePostRequest(CcmMessage r) {
         log.info("Повторная отправка запроса на аттестацию. id:[{}]; primeId: [{}]; kbReceiptTs:[{}]",
                 r.getId(), r.getPrimeId(), r.getKbReceiptTs());
 
         return postRequest(r, "re-recived");
     }
 
-    private Long postRequest(CcmMessage r, String statusNote) {
+    private ProductAttestationResultDto postRequest(CcmMessage r, String statusNote) {
 
         final var pamResult = ccmPamSender.postAttestationRequest(r.getRequest());
 

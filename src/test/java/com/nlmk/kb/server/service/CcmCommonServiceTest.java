@@ -1,5 +1,7 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.entity.pam.AttestationRequest;
 import com.nlmk.kb.server.service.ccm.CcmCommonServiceImpl;
@@ -69,18 +71,20 @@ class CcmCommonServiceTest {
 
     @Test
     void rePostAttestationTestOk() {
-
         given(ccmMessageService.findByPrimeId(any(String.class))).willReturn(ccmMessages);
-        given(ccmPamSender.postAttestationRequest(any())).willReturn(45L);
+        given(ccmPamSender.postAttestationRequest(any()))
+                .willReturn(ProductAttestationResultDto.builder()
+                        .result(ProductDto.builder().id(45L).build())
+                        .build());
 
-        Long resultId = ccmCommonService.rePostAttestation("12345");
+        final var result = ccmCommonService.rePostAttestation("12345");
 
         then(ccmMessageService).should(times(1)).findByPrimeId(any(String.class));
         then(ccmMessageService).should(times(1)).update(any());
         then(ccmPamSender).should(times(1)).postAttestationRequest(any());
         then(ccmPamSender).should().postAttestationRequest(captorRequest.capture());
 
-        assertNotNull(resultId);
+        assertNotNull(result);
         assertEquals(ccmMessages.get(1).getRequest().getId(), captorRequest.getValue().getId());
     }
 

@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +29,17 @@ public class CcmPamClientSenderImpl implements CcmPamClientSender {
     }
 
     @Override
-    public Long postAttestationRequest(AttestationRequest pamAttestationRequest) {
-        Assert.notNull(pamAttestationRequest, "pamAttestationRequest is null");
+    public ProductAttestationResultDto postAttestationRequest(AttestationRequest request) {
+        Assert.notNull(request, "pamAttestationRequest is null");
 
-        log.debug("Отправка AttestationRequest с primeId: [{}]", pamAttestationRequest.getValue().getData().getPrimeId());
+        log.debug("Отправка AttestationRequest с primeId: [{}]", request.getValue().getData().getPrimeId());
 
         HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
 
-        ResponseEntity<Long> response = restTemplate.postForEntity(pamUrl,
-                new HttpEntity<>(pamAttestationRequest, headers),
-                Long.class);
+        ResponseEntity<ProductAttestationResultDto> response = restTemplate.postForEntity(
+                pamUrl + "/attestation",
+                new HttpEntity<>(request, headers),
+                ProductAttestationResultDto.class);
         log.info("PAM-server response: " + response.getBody());
         return response.getBody();
     }
