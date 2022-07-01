@@ -1,7 +1,5 @@
 package com.nlmk.kb.server.service.ccm;
 
-import com.nlmk.kb.server.api.pam.AttestationRequest;
-
 /**
  * Адаптер в тип <code>AttestationRequest</code>
  *
@@ -15,6 +13,6 @@ public interface AttestationRequestAdapter<M> {
      * @param requestMessage сообщение Kafka, запрос заданного типа
      * @return экземпляр объекта <code>AttestationRequest</code>
      */
-    AttestationRequest adapt(M requestMessage);
+    com.nlmk.attestation.product.api.pam.AttestationRequest adapt(M requestMessage);
 
 }

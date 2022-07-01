@@ -1,15 +1,5 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
-import com.nlmk.kb.server.api.pam.AttestationRequest;
-import com.nlmk.kb.server.api.pam.ChemicalSpec;
-import com.nlmk.kb.server.api.pam.DataField;
-import com.nlmk.kb.server.api.pam.MechanicalData;
-import com.nlmk.kb.server.api.pam.MechanicalSpec;
-import com.nlmk.kb.server.api.pam.MetallographicData;
-import com.nlmk.kb.server.api.pam.MetallographicSpec;
-import com.nlmk.kb.server.api.pam.Pk;
-import com.nlmk.kb.server.api.pam.Specs;
-import com.nlmk.kb.server.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +26,7 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest adapt(nlmk.l3.ccm.pgp.AttestationRequest requestMessagePgp) {
+    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(nlmk.l3.ccm.pgp.AttestationRequest requestMessagePgp) {
         Assert.notNull(requestMessagePgp, "requestMessagePgp is null");
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
@@ -44,7 +34,7 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         final var dateRequest = converter.parseToDate(requestMessagePgp.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
-        final var value = Value.builder()
+        final var value = com.nlmk.attestation.product.api.pam.Value.builder()
                 .ts(dateRequest)
                 .op(requestMessagePgp.getOp().toString());
 
@@ -55,13 +45,13 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
             value.data(toPamDataField(requestMessagePgp.getData()));
         }
 
-        return AttestationRequest.builder()
+        return com.nlmk.attestation.product.api.pam.AttestationRequest.builder()
                 .value(value.build())
                 .build();
     }
 
-    private static Pk toPamPk(RecordPk recordPk) {
-        Pk pk = new Pk();
+    private static com.nlmk.attestation.product.api.pam.Pk toPamPk(RecordPk recordPk) {
+        com.nlmk.attestation.product.api.pam.Pk pk = new com.nlmk.attestation.product.api.pam.Pk();
         if (recordPk.getId() != null) {
             pk.setId(recordPk.getId().toString());
         }
@@ -71,9 +61,9 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return pk;
     }
 
-    private static DataField toPamDataField(RecordData recordData) {
+    private static com.nlmk.attestation.product.api.pam.DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var dataFieldBuilder = DataField.builder()
+        final var dataFieldBuilder = com.nlmk.attestation.product.api.pam.DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
                 .thickness(toDouble(recordData.getThickness()))
@@ -130,9 +120,9 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return Double.parseDouble(Float.toString(f));
     }
 
-    private static Specs toPamSpecs(RecordSpecifications specifications) {
+    private static com.nlmk.attestation.product.api.pam.Specs toPamSpecs(RecordSpecifications specifications) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var specs = Specs.builder()
+        final var specs = com.nlmk.attestation.product.api.pam.Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(specifications.getSpecName().toString())
                 .specTypeCode(specifications.getSpecTypeCode());
@@ -149,8 +139,8 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return specs.build();
     }
 
-    private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
-        final var chemicalSpec = ChemicalSpec.builder()
+    private static com.nlmk.attestation.product.api.pam.ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
+        final var chemicalSpec = com.nlmk.attestation.product.api.pam.ChemicalSpec.builder()
                 .chemCode(recordChemical.getChemCode())
                 .chemName(recordChemical.getChemName().toString());
 
@@ -163,8 +153,8 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return chemicalSpec.build();
     }
 
-    private static MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
-        final var mechanicalSpec = MechanicalSpec.builder();
+    private static com.nlmk.attestation.product.api.pam.MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
+        final var mechanicalSpec = com.nlmk.attestation.product.api.pam.MechanicalSpec.builder();
 
         if (recordMechanical.getTestArrayId() != null) {
             mechanicalSpec.testArrayId(recordMechanical.getTestArrayId());
@@ -207,8 +197,8 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return mechanicalSpec.build();
     }
 
-    private static MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
-        final var mechanicalData = MechanicalData.builder()
+    private static com.nlmk.attestation.product.api.pam.MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
+        final var mechanicalData = com.nlmk.attestation.product.api.pam.MechanicalData.builder()
                 .mechCode(recordMechData.getMechCode())
                 .mechName(recordMechData.getMechName().toString())
                 .mechTypeCode(recordMechData.getMechTypeCode());
@@ -225,8 +215,8 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return mechanicalData.build();
     }
 
-    private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
-        final var mtlSpec = MetallographicSpec.builder();
+    private static com.nlmk.attestation.product.api.pam.MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
+        final var mtlSpec = com.nlmk.attestation.product.api.pam.MetallographicSpec.builder();
 
         if (recordMetallographic.getTestArrayId() != null) {
             mtlSpec.testArrayId(recordMetallographic.getTestArrayId());
@@ -268,8 +258,8 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         return mtlSpec.build();
     }
 
-    private static MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
-        final var mtlData = MetallographicData.builder()
+    private static com.nlmk.attestation.product.api.pam.MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
+        final var mtlData = com.nlmk.attestation.product.api.pam.MetallographicData.builder()
                 .metgrapCode(recordMetgrapData.getMetgrapCode())
                 .metgrapName(recordMetgrapData.getMetgrapName().toString())
                 .metgrapTypeCode(Integer.toString(recordMetgrapData.getMetgrapTypeCode()));

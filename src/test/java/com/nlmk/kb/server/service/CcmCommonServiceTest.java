@@ -1,9 +1,9 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.ccm.CcmCommonServiceImpl;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.sender.PamSender;

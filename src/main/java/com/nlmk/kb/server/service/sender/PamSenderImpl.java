@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.sender;
 
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.util.RestTemplateUtils;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
-import com.nlmk.kb.server.api.pam.AttestationRequest;
 
 
 @Slf4j

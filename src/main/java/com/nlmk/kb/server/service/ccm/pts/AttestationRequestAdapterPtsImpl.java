@@ -1,9 +1,5 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.kb.server.api.pam.AttestationRequest;
-import com.nlmk.kb.server.api.pam.DataField;
-import com.nlmk.kb.server.api.pam.Pk;
-import com.nlmk.kb.server.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +18,7 @@ public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapt
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
+    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
         Assert.notNull(requestMessagePts, "requestMessagePts is null");
         Assert.notNull(requestMessagePts.getTs(), "requestMessagePts.getTs() is null");
         Assert.notNull(requestMessagePts.getOp(), "requestMessagePts.getOp() is null");
@@ -30,7 +26,7 @@ public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapt
         final var dateRequest = converter.parseToDate(requestMessagePts.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
-        final var value = Value.builder()
+        final var value = com.nlmk.attestation.product.api.pam.Value.builder()
                 .ts(dateRequest)
                 .op(requestMessagePts.getOp().toString());
 
@@ -41,13 +37,13 @@ public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapt
             value.data(toPamDataField(requestMessagePts.getData()));
         }
 
-        return AttestationRequest.builder()
+        return com.nlmk.attestation.product.api.pam.AttestationRequest.builder()
                 .value(value.build())
                 .build();
     }
 
-    private static Pk toPamPk(RecordPk recordPk) {
-        Pk pk = new Pk();
+    private static com.nlmk.attestation.product.api.pam.Pk toPamPk(RecordPk recordPk) {
+        com.nlmk.attestation.product.api.pam.Pk pk = new com.nlmk.attestation.product.api.pam.Pk();
         if (recordPk.getId() != null) {
             pk.setId(recordPk.getId().toString());
         }
@@ -57,9 +53,9 @@ public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapt
         return pk;
     }
 
-    private static DataField toPamDataField(RecordData recordData) {
+    private static com.nlmk.attestation.product.api.pam.DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var dataFieldBuilder = DataField.builder()
+        final var dataFieldBuilder = com.nlmk.attestation.product.api.pam.DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
                 .thickness(toDouble(recordData.getThickness()))
