@@ -5,13 +5,13 @@ import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pts.AttestationRequest;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
 

@@ -4,16 +4,14 @@ import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.AttestationRequest;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class CcmPgpMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
 

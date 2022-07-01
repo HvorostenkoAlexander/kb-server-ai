@@ -24,6 +24,9 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     @Override
     public Optional<ProductAttestationResultDto> rePostAttestation(String primeId) throws IllegalArgumentException {
 
+        // добавить поиск сообщений двух типов: CcmMessage и AttestationMessage todo
+        // (выборка самого последнего из всех!)
+
         if (StringUtils.isBlank(primeId)) {
             log.warn("Невозможно осуществить повторную отправку. primeId is null.");
             throw new IllegalArgumentException("Невозможно осуществить повторную отправку. primeId is null.");

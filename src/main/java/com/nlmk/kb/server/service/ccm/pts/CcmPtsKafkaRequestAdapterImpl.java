@@ -3,15 +3,13 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pts.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-@Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
 

@@ -3,24 +3,17 @@ package com.nlmk.kb.server.service;
 import com.nlmk.kb.server.api.CcmPtsRequest;
 import com.nlmk.kb.server.api.CcmPtsResponse;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
+import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
+import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.sender.PamSender;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AttestationMessageServiceImpl implements AttestationMessageService {
-
-    private final AttestationMessageRepository repository;
-    private final PamSender pamSender;
-
-    @Override
-    public CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest attRequest) {
-        // todo
-        return null;
-    }
 
     /*
      * 1. принять запрос на аттестацию
@@ -30,5 +23,21 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
      * 5. получить ответ
      * 6. преобразовать ответ и отправить
      */
+
+    private final RestRequestAdapter<CcmPtsRequest> ccmPtsRestRequestAdapter;
+    private final RestResponseAdapter<CcmPtsResponse> ccmPtsRestResponseAdapter;
+
+    private final AttestationMessageRepository repository;
+    private final PamSender pamSender;
+
+    @Override
+    public CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest request) {
+        log.info("ccmPtsRequestProcessing, request [{}]", request);
+        final var attMessage = ccmPtsRestRequestAdapter.adapt(request);
+        repository.save(attMessage);
+        final var attResult = pamSender.postAttestationRequest(attMessage.getRequestObject());
+        return ccmPtsRestResponseAdapter.adapt(attResult);
+    }
+
 
 }

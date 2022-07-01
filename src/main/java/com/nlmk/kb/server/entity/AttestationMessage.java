@@ -41,6 +41,8 @@ public class AttestationMessage {
     // запрос на аттестацию, в едином формате (com.nlmk.attestation.product.api.pam.AttestationRequest)
     @Column(name = "request", nullable = false)
     private String request;
+    @Transient
+    private com.nlmk.attestation.product.api.pam.AttestationRequest requestObject;
 
     // момент завершения запроса на Аттестацию
     @Column(name = "attestation_ts")

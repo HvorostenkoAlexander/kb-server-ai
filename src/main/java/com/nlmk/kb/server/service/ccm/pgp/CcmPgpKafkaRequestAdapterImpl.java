@@ -3,16 +3,14 @@ package com.nlmk.kb.server.service.ccm.pgp;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pgp.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
 
