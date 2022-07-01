@@ -5,7 +5,7 @@ package com.nlmk.kb.server.service.ccm;
  *
  * @param <M> сообщение Kafka, запрос заданного типа
  */
-public interface AttestationRequestAdapter<M> {
+public interface KafkaRequestAdapter<M> {
 
     /**
      * Адаптировать сообщение Kafka в тип <code>AttestationRequest</code>

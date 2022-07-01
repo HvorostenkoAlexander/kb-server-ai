@@ -1,9 +1,8 @@
-package com.nlmk.kb.server.service.ccm.pts;
+package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.api.CcmPtsRequest;
 import com.nlmk.kb.server.api.CcmPtsResponse;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
-import com.nlmk.kb.server.service.ccm.AttestationMessageService;
 import com.nlmk.kb.server.service.sender.PamSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestationMessageServicePtsImpl implements AttestationMessageService<CcmPtsRequest, CcmPtsResponse> {
+public class AttestationMessageServiceImpl implements AttestationMessageService {
 
     private final AttestationMessageRepository repository;
     private final PamSender pamSender;
 
     @Override
-    public CcmPtsResponse requestProcessing(CcmPtsRequest attRequest) {
+    public CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest attRequest) {
         // todo
         return null;
     }

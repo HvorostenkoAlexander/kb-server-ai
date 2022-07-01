@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
+import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pts.AttestationRequest;
@@ -13,9 +13,9 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class CcmMessageAdapterPtsImpl implements CcmMessageAdapter<AttestationRequest> {
+public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
 
-    private final AttestationRequestAdapter<AttestationRequest> adapter;
+    private final KafkaRequestAdapter<AttestationRequest> adapter;
 
     @Override
     public CcmMessage adapt(AttestationRequest requestMessage,

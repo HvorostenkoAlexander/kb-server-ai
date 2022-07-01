@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
+import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +15,9 @@ import java.util.Date;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CcmMessageAdapterPgpImpl implements CcmMessageAdapter<AttestationRequest> {
+public class CcmPgpMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
 
-    private final AttestationRequestAdapter<AttestationRequest> adapter;
+    private final KafkaRequestAdapter<AttestationRequest> adapter;
 
     @Override
     public CcmMessage adapt(AttestationRequest requestMessage,

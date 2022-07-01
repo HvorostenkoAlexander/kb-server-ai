@@ -1,17 +1,10 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
+import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.ccm.pgp.RecordChemical;
-import nlmk.l3.ccm.pgp.RecordData;
-import nlmk.l3.ccm.pgp.RecordMechData;
-import nlmk.l3.ccm.pgp.RecordMechanical;
-import nlmk.l3.ccm.pgp.RecordMetallographic;
-import nlmk.l3.ccm.pgp.RecordMetgrapData;
-import nlmk.l3.ccm.pgp.RecordPk;
-import nlmk.l3.ccm.pgp.RecordSpecifications;
+import nlmk.l3.ccm.pgp.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -21,7 +14,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
+public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
 
     private final CommonConverter converter;
 
@@ -89,27 +82,27 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         }
         dataFieldBuilder.specifications(
                 recordData.getSpecifications().stream()
-                        .map(AttestationRequestAdapterPgpImpl::toPamSpecs)
+                        .map(CcmPgpKafkaRequestAdapterImpl::toPamSpecs)
                         .collect(Collectors.toList())
         );
         if (recordData.getChemical() != null) {
             dataFieldBuilder.chemical(
                     recordData.getChemical().stream()
-                            .map(AttestationRequestAdapterPgpImpl::toPamChemicalSpec)
+                            .map(CcmPgpKafkaRequestAdapterImpl::toPamChemicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMechanical() != null) {
             dataFieldBuilder.mechanical(
                     recordData.getMechanical().stream()
-                            .map(AttestationRequestAdapterPgpImpl::toPamMechanicalSpec)
+                            .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalSpec)
                             .collect(Collectors.toList())
             );
         }
         if (recordData.getMetallographic() != null) {
             dataFieldBuilder.metallographic(
                     recordData.getMetallographic().stream()
-                            .map(AttestationRequestAdapterPgpImpl::toPamMetallographicSpec)
+                            .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicSpec)
                             .collect(Collectors.toList())
             );
         }
@@ -191,7 +184,7 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
         }
         mechanicalSpec.mechData(
                 recordMechanical.getMechData().stream()
-                        .map(AttestationRequestAdapterPgpImpl::toPamMechanicalData)
+                        .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalData)
                         .collect(Collectors.toList())
         );
         return mechanicalSpec.build();
@@ -251,7 +244,7 @@ public class AttestationRequestAdapterPgpImpl implements AttestationRequestAdapt
 
         mtlSpec.metgrapData(
                 recordMetallographic.getMetgrapData().stream()
-                        .map(AttestationRequestAdapterPgpImpl::toPamMetallographicData)
+                        .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicData)
                         .collect(Collectors.toList())
         );
 

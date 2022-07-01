@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
+import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pts.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
+public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
 
     private final CommonConverter converter;
 
