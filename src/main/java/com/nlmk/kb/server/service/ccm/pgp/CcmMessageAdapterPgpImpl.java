@@ -24,8 +24,7 @@ public class CcmMessageAdapterPgpImpl implements CcmMessageAdapter<AttestationRe
                             String topic,
                             String key,
                             int partition,
-                            int offset,
-                            String timestamp) {
+                            int offset) {
 
         final var attestationRequest = adapter.adapt(requestMessage);
         final var ts = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());

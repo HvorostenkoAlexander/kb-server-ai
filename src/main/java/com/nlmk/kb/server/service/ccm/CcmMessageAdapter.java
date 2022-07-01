@@ -15,14 +15,12 @@ public interface CcmMessageAdapter<M> {
      * @param key            ключ сообщения Kafka
      * @param partition      секция сообщения Kafka
      * @param offset         смещение сообщения Kafka
-     * @param timestamp      момент получения сообщения Kafka
      * @return экземпляр объекта <code>CcmMessage</code>
      */
     com.nlmk.kb.server.entity.CcmMessage adapt(M requestMessage,
                                                String topic,
                                                String key,
                                                int partition,
-                                               int offset,
-                                               String timestamp);
+                                               int offset);
 
 }
