@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.controller;
 
-import com.nlmk.kb.server.api.CcmPtsRequest;
-import com.nlmk.kb.server.api.CcmPtsResponse;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;

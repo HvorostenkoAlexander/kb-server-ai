@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.api;
+package com.nlmk.kb.server.api.ccm.pts;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

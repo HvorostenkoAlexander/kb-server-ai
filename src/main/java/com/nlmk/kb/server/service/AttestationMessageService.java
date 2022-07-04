@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.api.CcmPtsRequest;
-import com.nlmk.kb.server.api.CcmPtsResponse;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 
 /**
  * Обработка запроса на Аттестацию для заданных типов

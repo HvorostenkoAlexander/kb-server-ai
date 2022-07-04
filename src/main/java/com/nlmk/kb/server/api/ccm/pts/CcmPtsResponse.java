@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.api;
+package com.nlmk.kb.server.api.ccm.pts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
-import com.nlmk.kb.server.api.CcmPtsResponse;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import org.springframework.stereotype.Component;
 
