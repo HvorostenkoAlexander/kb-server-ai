@@ -55,11 +55,10 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
                     .sender(AttestationMessageSender.CCM_PTS)
                     .receiptTs(tsReceipt)
                     .primeId(primeId)
-                    .requestObject(attRequest)
                     .request(objectMapper.writeValueAsString(attRequest))
                     .build();
 
-            final var attResult = pamSender.postAttestationRequest(attMessage.getRequestObject());
+            final var attResult = pamSender.postAttestationRequest(attRequest);
             attMessage.setAttestationTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
             repository.save(attMessage);
             return ccmPtsRestResponseAdapter.adapt(attResult);
