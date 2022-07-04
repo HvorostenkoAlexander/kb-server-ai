@@ -1,14 +1,14 @@
 package com.nlmk.kb.server.api.ccm.pts;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -137,12 +137,33 @@ public class CcmPtsRequest {
         @NotBlank
         private String specTypeName; // Наименование типа данных
         @NotNull
-        private Integer specTypeValue; // Тип значения (1 - простое, 2 - перечислимое)
+        private SpecTypeValue specTypeValue; // Тип значения (1 - простое, 2 - перечислимое)
         private String specValue; // Значение
         private List<@Valid OneSpecValue> listValues;
         private String specDecryption; // Расшифровка справочного значения
         private String specFormat; // Формат передачи характеристики
         private String specMeasure; // Единица измерения
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum SpecTypeValue {
+
+        SIMPLE(1, "простое"),
+        ENUMERABLE(2, "перечислимое");
+
+        @JsonValue
+        private final Integer value;
+        private final String desc;
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public static SpecTypeValue fromValue(int value) {
+            return Arrays.stream(SpecTypeValue.values())
+                    .filter(s -> s.getValue().equals(value))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeValue value [%s]", value)));
+
+        }
     }
 
     @Data
@@ -181,9 +202,30 @@ public class CcmPtsRequest {
         @NotBlank
         private String samplingPlaceName; // Наименование места отбора пробы
         @NotNull
-        private Integer analysisValue; // Результат (1-Худший, 2-Лучший)
+        private AnalysisValue analysisValue; // Результат (1-Худший, 2-Лучший)
         @NotEmpty
         private List<@Valid OnePropValue> listValues; // Список значений
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum AnalysisValue {
+
+        WORST(1, "Худший"),
+        BEST(2, "Лучший");
+
+        @JsonValue
+        private final Integer value;
+        private final String desc;
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public static AnalysisValue fromValue(int value) {
+            return Arrays.stream(AnalysisValue.values())
+                    .filter(s -> s.getValue().equals(value))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown AnalysisValue value [%s]", value)));
+
+        }
     }
 
     @Data
@@ -194,7 +236,7 @@ public class CcmPtsRequest {
         @NotNull
         private Integer attrCode; // Код атрибута
         @NotNull
-        private Integer attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
+        private CcmPtsTypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
         private String attrValue; // Значение атрибута
         private String attrFormat; // Формат атрибута
         private String attrMeasure; // Единица измерения атрибута
@@ -218,11 +260,33 @@ public class CcmPtsRequest {
     @AllArgsConstructor
     public static class OneAttValue {
         @NotNull
-        private Integer side; // Сторона (1 - Лицевая, 2 - Обратная, 3 - Обе стороны)
+        private Side side; // Сторона (1 - Лицевая, 2 - Обратная, 3 - Обе стороны)
         @NotNull
         private Integer attrCode; // Код атрибута
         @NotNull
         private Double attrValue; // Значение атрибута
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum Side {
+
+        FRONT(1, "Лицевая"),
+        BACK(2, "Обратная"),
+        BOTH_SIDES(3, "Обе стороны");
+
+        @JsonValue
+        private final Integer value;
+        private final String desc;
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public static Side fromValue(int value) {
+            return Arrays.stream(Side.values())
+                    .filter(s -> s.getValue().equals(value))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown Side value [%s]", value)));
+
+        }
     }
 
     @Data

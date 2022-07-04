@@ -2,6 +2,7 @@ package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsTypeCode;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,8 @@ class AttestationControllerTest {
                                         CcmPtsRequest.Specification.builder()
                                                 .specCode(50).specName("s51")
                                                 .specTypeCode(52).specTypeName("s53")
-                                                .specTypeValue(1).listValues(List.of(
+                                                .specTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE)
+                                                .listValues(List.of(
                                                         CcmPtsRequest.OneSpecValue.builder().value("v54").build()
                                                 )).build()
                                 ))
@@ -85,10 +87,11 @@ class AttestationControllerTest {
                                                 .analyzes(List.of(
                                                         CcmPtsRequest.OnePropAnalyze.builder()
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
-                                                                .analysisValue(2)
+                                                                .analysisValue(CcmPtsRequest.AnalysisValue.BEST)
                                                                 .listValues(List.of(
                                                                         CcmPtsRequest.OnePropValue.builder()
-                                                                                .attrCode(64).attrType(3).build()
+                                                                                .attrCode(64)
+                                                                                .attrType(CcmPtsTypeCode.NUMBER).build()
                                                                 )).build()
                                                 ))
                                                 .attestationList(List.of(
@@ -96,7 +99,8 @@ class AttestationControllerTest {
                                                                 .typeCode(70).typeName("t71")
                                                                 .listValues(List.of(
                                                                         CcmPtsRequest.OneAttValue.builder()
-                                                                                .side(72).attrCode(73).attrValue(74.0)
+                                                                                .side(CcmPtsRequest.Side.BACK)
+                                                                                .attrCode(73).attrValue(74.0)
                                                                                 .build()
                                                                 )).build()
                                                 )).build()
