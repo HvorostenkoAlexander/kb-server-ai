@@ -1,7 +1,13 @@
 package com.nlmk.kb.server.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
+import com.nlmk.kb.server.entity.AttestationMessage;
+import com.nlmk.kb.server.entity.AttestationMessageSender;
+import com.nlmk.kb.server.exception.RequestProcessingException;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
@@ -9,20 +15,16 @@ import com.nlmk.kb.server.service.sender.PamSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class AttestationMessageServiceImpl implements AttestationMessageService {
-
-    /*
-     * 1. принять запрос на аттестацию
-     * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
-     * 3. сохранить в базу (для запуска повторной аттестации по сообщениям САДиМ)
-     * 4. отправить запрос в PAM
-     * 5. получить ответ
-     * 6. преобразовать ответ и отправить
-     */
 
     private final RestRequestAdapter<CcmPtsRequest> ccmPtsRestRequestAdapter;
     private final RestResponseAdapter<CcmPtsResponse> ccmPtsRestResponseAdapter;
@@ -30,14 +32,50 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     private final AttestationMessageRepository repository;
     private final PamSender pamSender;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
+    @Transactional
     public CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest request) {
+        /*
+         * 1. принять запрос на аттестацию
+         * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
+         * 3. отправить запрос на аттестацию в PAM
+         * 5. получить ответ от PAM
+         * 3. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * 6. преобразовать и отправить ответ
+         */
         log.info("ccmPtsRequestProcessing, request [{}]", request);
-        final var attMessage = ccmPtsRestRequestAdapter.adapt(request);
-        repository.save(attMessage);
-        final var attResult = pamSender.postAttestationRequest(attMessage.getRequestObject());
-        return ccmPtsRestResponseAdapter.adapt(attResult);
+        final var attRequest = ccmPtsRestRequestAdapter.adapt(request);
+        final var tsReceipt = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        final var primeId = getPrimeId(attRequest);
+
+        try {
+            final var attMessage = AttestationMessage.builder()
+                    .sender(AttestationMessageSender.CCM_PTS)
+                    .receiptTs(tsReceipt)
+                    .primeId(primeId)
+                    .requestObject(attRequest)
+                    .request(objectMapper.writeValueAsString(attRequest))
+                    .build();
+
+            final var attResult = pamSender.postAttestationRequest(attMessage.getRequestObject());
+            attMessage.setAttestationTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+            repository.save(attMessage);
+            return ccmPtsRestResponseAdapter.adapt(attResult);
+        } catch (JsonProcessingException e) {
+            log.error("ccmPtsRequestProcessing", e);
+            throw new RequestProcessingException(String.format("ccmPtsRequestProcessing, error for primeId [%s]", primeId));
+        }
     }
 
+    private String getPrimeId(AttestationRequest attRequest) {
+        if (attRequest != null
+                && attRequest.getValue() != null
+                && attRequest.getValue().getData() != null) {
+            return attRequest.getValue().getData().getPrimeId();
+        }
+        return null;
+    }
 
 }
