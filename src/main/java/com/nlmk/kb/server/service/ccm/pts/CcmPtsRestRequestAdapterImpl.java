@@ -7,6 +7,7 @@ import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,14 +44,56 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
                                 .orderPos(orderPos)
                                 // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
                                 .orderReq(List.of())
+                                .specifications(prepareSpecs(requestMessage))
                                 .chemical(prepareChemicalSpecs(requestMessage))
                                 // этих полей нет, заглушка todo
-                                .specifications(List.of())
                                 .mechanical(List.of())
                                 .metallographic(List.of())
                                 .build())
                         .build())
                 .build();
+    }
+
+    /**
+     * Подготовка общей спецификации
+     *
+     * @param requestMessage запрос типа CcmPtsRequest
+     * @return список спецификации
+     */
+    private List<Specs> prepareSpecs(CcmPtsRequest requestMessage) {
+        if (requestMessage == null
+                || requestMessage.getData() == null
+                || requestMessage.getData().getSpecifications() == null
+                || requestMessage.getData().getSpecifications().isEmpty()) {
+            return List.of();
+        }
+
+        final var specs = new ArrayList<Specs>();
+        requestMessage.getData().getSpecifications().forEach(s -> {
+            if (s.getSpecCode() != null && s.getSpecTypeValue() != null) {
+                if (s.getSpecTypeValue() == CcmPtsRequest.SpecTypeValue.SIMPLE) {
+                    specs.add(Specs.builder()
+                            .specCode(s.getSpecCode())
+                            .specName(s.getSpecName())
+                            .specValue(s.getSpecValue())
+                            .specTypeCode(s.getSpecTypeCode())
+                            .specFormat(s.getSpecFormat())
+                            .specMeasure(s.getSpecMeasure())
+                            .build());
+                } else if (s.getSpecTypeValue() == CcmPtsRequest.SpecTypeValue.ENUMERABLE
+                        && s.getListValues() != null && !s.getListValues().isEmpty()) {
+                    s.getListValues().forEach(v -> specs.add(Specs.builder()
+                            .specCode(s.getSpecCode())
+                            .specName(s.getSpecName())
+                            .specValue(v.getValue())
+                            .specTypeCode(s.getSpecTypeCode())
+                            .specFormat(s.getSpecFormat())
+                            .specMeasure(s.getSpecMeasure())
+                            .build()));
+                }
+            }
+        });
+        return specs;
     }
 
     /**

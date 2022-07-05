@@ -42,7 +42,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.Pk toPamPk(RecordPk recordPk) {
+    private static Pk toPamPk(RecordPk recordPk) {
         Pk pk = new Pk();
         if (recordPk.getId() != null) {
             pk.setId(recordPk.getId().toString());
