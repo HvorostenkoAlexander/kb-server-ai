@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.attestation.product.api.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import com.nlmk.kb.server.api.ccm.pts.CcmPtsTypeCode;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +58,7 @@ class RestRequestAdapterTest {
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OnePropValue.builder()
                                                                         .attrCode(64)
-                                                                        .attrType(CcmPtsTypeCode.NUMBER).build()
+                                                                        .attrType(TypeCode.NUMBER).build()
                                                         )).build()
                                         ))
                                         .attestationList(List.of(

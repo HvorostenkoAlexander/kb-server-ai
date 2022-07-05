@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.api.ccm.pts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.nlmk.attestation.product.api.TypeCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -89,7 +90,7 @@ public class CcmPtsResponse {
         @NotBlank
         private String name; // Наименование характеристики
         @NotNull
-        private CcmPtsTypeCode typeCode; // Тип данных (1-строка, 2-число, 3-дата)
+        private TypeCode typeCode; // Тип данных (1-строка, 2-число, 3-дата)
         @NotBlank
         private String typeName; // Наименование типа данных
         private String value; // Значение характеристики
@@ -138,7 +139,7 @@ public class CcmPtsResponse {
         @NotBlank
         private String value; // Значение параметра
         @NotNull
-        private CcmPtsTypeCode typeCode; // Тип параметра (1-строка, 2-число, 3-дата)
+        private TypeCode typeCode; // Тип параметра (1-строка, 2-число, 3-дата)
         @NotBlank
         private String typeName; // Наименование типа параметра
     }

@@ -2,6 +2,7 @@ package com.nlmk.kb.server.api.ccm.pts;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.nlmk.attestation.product.api.TypeCode;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -236,7 +237,7 @@ public class CcmPtsRequest {
         @NotNull
         private Integer attrCode; // Код атрибута
         @NotNull
-        private CcmPtsTypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
+        private TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
         private String attrValue; // Значение атрибута
         private String attrFormat; // Формат атрибута
         private String attrMeasure; // Единица измерения атрибута
