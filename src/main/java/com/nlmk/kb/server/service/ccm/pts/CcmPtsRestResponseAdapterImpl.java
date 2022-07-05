@@ -6,8 +6,6 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -21,10 +19,9 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
         }
 
         final var product = attResult.getResult();
-        final var ts = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
 
         final var builder = CcmPtsResponse.builder()
-                .ts(ts)
+                .ts(new Date())
                 .pk(CcmPtsResponse.Pk.builder()
                         .id(product.getId().toString())
                         .systemCode(SpecCode.SYSTEM_CODE.getValue().toString()).build()); // ?

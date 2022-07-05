@@ -27,8 +27,6 @@ import javax.validation.Valid;
         description = "Доступ к ресурсу ограничен, нет прав у роли, указанной в JWT", content = @Content)
 public interface AttestationController {
 
-    // + postAttestationCcmPgp (nlmk.l3.ccm.pgp)
-
     @PostMapping("/ccm/pts")
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Запрос на Аттестацию Единицы Продукции, цех ЦТС (nlmk.l3.ccm.pts)",

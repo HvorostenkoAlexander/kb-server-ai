@@ -17,9 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,6 +34,17 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
+    public Optional<AttestationMessage> findLastAttestationMessage(String primeId) {
+        return repository.findFirstByPrimeIdOrderByReceiptTsDesc(primeId);
+    }
+
+    @Override
+    @Transactional
+    public void updateAttestationMessage(AttestationMessage attMessage) {
+        repository.save(attMessage);
+    }
+
+    @Override
     @Transactional
     public CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest request) {
         /*
@@ -47,19 +57,18 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
          */
         log.info("ccmPtsRequestProcessing, request [{}]", request);
         final var attRequest = ccmPtsRestRequestAdapter.adapt(request);
-        final var tsReceipt = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         final var primeId = getPrimeId(attRequest);
 
         try {
             final var attMessage = AttestationMessage.builder()
                     .sender(AttestationMessageSender.CCM_PTS)
-                    .receiptTs(tsReceipt)
+                    .receiptTs(new Date())
                     .primeId(primeId)
                     .request(objectMapper.writeValueAsString(attRequest))
                     .build();
 
             final var attResult = pamSender.postAttestationRequest(attRequest);
-            attMessage.setAttestationTs(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+            attMessage.setAttestationTs(new Date());
             repository.save(attMessage);
             return ccmPtsRestResponseAdapter.adapt(attResult);
         } catch (JsonProcessingException e) {
