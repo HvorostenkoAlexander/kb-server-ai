@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CcmPtsResponse {
 
-    @NotBlank
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "UTC") // ISO8601
     private Date ts;
     @NotNull
