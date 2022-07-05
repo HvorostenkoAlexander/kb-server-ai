@@ -3,18 +3,18 @@ package com.nlmk.kb.server.service.ccm;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 
 /**
- * Адаптер в тип <code>M</code>
+ * Адаптер в тип <code>T</code>
  *
- * @param <M> сообщение Rest, ответ заданного типа
+ * @param <T> сообщение Rest, ответ заданного типа
  */
-public interface RestResponseAdapter<M> {
+public interface RestResponseAdapter<T> {
 
     /**
      * Адаптировать результат Аттестации <code>ProductAttestationResultDto</code> в ответ заданного типа <code>M</code>
      *
      * @param attResult результат Аттестации
-     * @return экземпляр объекта заданного типа <code>M</code>
+     * @return экземпляр объекта заданного типа <code>T</code>
      */
-    M adapt(ProductAttestationResultDto attResult);
+    T adapt(ProductAttestationResultDto attResult);
 
 }

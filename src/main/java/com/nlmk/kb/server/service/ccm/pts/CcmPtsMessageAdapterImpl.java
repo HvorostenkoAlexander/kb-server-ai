@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pts.AttestationRequest;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -24,7 +22,7 @@ public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<AttestationRe
                             int partition,
                             int offset) {
         final var attestationRequest = adapter.adapt(requestMessage);
-        final var ts = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        final var ts = new Date();
 
         final var ccmMessageBuilder = CcmMessage.builder()
                 .partition(partition)

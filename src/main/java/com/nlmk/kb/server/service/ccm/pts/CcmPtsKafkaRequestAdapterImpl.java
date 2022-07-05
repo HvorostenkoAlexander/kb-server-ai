@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
+public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
 
     private final CommonConverter converter;
 
@@ -24,7 +25,7 @@ public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         final var dateRequest = converter.parseToDate(requestMessagePts.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
-        final var value = com.nlmk.attestation.product.api.pam.Value.builder()
+        final var value = Value.builder()
                 .ts(dateRequest)
                 .op(requestMessagePts.getOp().toString());
 
@@ -40,8 +41,8 @@ public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
                 .build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.Pk toPamPk(RecordPk recordPk) {
-        com.nlmk.attestation.product.api.pam.Pk pk = new com.nlmk.attestation.product.api.pam.Pk();
+    private static Pk toPamPk(RecordPk recordPk) {
+        Pk pk = new Pk();
         if (recordPk.getId() != null) {
             pk.setId(recordPk.getId().toString());
         }
@@ -51,9 +52,9 @@ public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return pk;
     }
 
-    private static com.nlmk.attestation.product.api.pam.DataField toPamDataField(RecordData recordData) {
+    private static DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var dataFieldBuilder = com.nlmk.attestation.product.api.pam.DataField.builder()
+        final var dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
                 .thickness(toDouble(recordData.getThickness()))

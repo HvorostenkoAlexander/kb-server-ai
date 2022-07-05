@@ -3,9 +3,9 @@ package com.nlmk.kb.server.service.ccm;
 /**
  * Адаптер в тип <code>com.nlmk.attestation.product.api.pam.AttestationRequest</code>
  *
- * @param <M> сообщение Rest, запрос заданного типа
+ * @param <T> сообщение Rest, запрос заданного типа
  */
-public interface RestRequestAdapter<M> {
+public interface RestRequestAdapter<T> {
 
     /**
      * Адаптировать REST запрос в тип <code>com.nlmk.attestation.product.api.pam.AttestationMessage</code>
@@ -13,6 +13,6 @@ public interface RestRequestAdapter<M> {
      * @param requestMessage сообщение Rest, запрос заданного типа
      * @return экземпляр объекта <code>com.nlmk.attestation.product.api.pam.AttestationMessage</code>
      */
-    com.nlmk.attestation.product.api.pam.AttestationRequest adapt(M requestMessage);
+    com.nlmk.attestation.product.api.pam.AttestationRequest adapt(T requestMessage);
 
 }

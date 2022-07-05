@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
+public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
 
     private final CommonConverter converter;
 
@@ -25,7 +26,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         final var dateRequest = converter.parseToDate(requestMessagePgp.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
-        final var value = com.nlmk.attestation.product.api.pam.Value.builder()
+        final var value = Value.builder()
                 .ts(dateRequest)
                 .op(requestMessagePgp.getOp().toString());
 
@@ -42,7 +43,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
     }
 
     private static com.nlmk.attestation.product.api.pam.Pk toPamPk(RecordPk recordPk) {
-        com.nlmk.attestation.product.api.pam.Pk pk = new com.nlmk.attestation.product.api.pam.Pk();
+        Pk pk = new Pk();
         if (recordPk.getId() != null) {
             pk.setId(recordPk.getId().toString());
         }
@@ -52,9 +53,9 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return pk;
     }
 
-    private static com.nlmk.attestation.product.api.pam.DataField toPamDataField(RecordData recordData) {
+    private static DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var dataFieldBuilder = com.nlmk.attestation.product.api.pam.DataField.builder()
+        final var dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
                 .thickness(toDouble(recordData.getThickness()))
@@ -111,9 +112,9 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return Double.parseDouble(Float.toString(f));
     }
 
-    private static com.nlmk.attestation.product.api.pam.Specs toPamSpecs(RecordSpecifications specifications) {
+    private static Specs toPamSpecs(RecordSpecifications specifications) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var specs = com.nlmk.attestation.product.api.pam.Specs.builder()
+        final var specs = Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(specifications.getSpecName().toString())
                 .specTypeCode(specifications.getSpecTypeCode());
@@ -130,8 +131,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return specs.build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
-        final var chemicalSpec = com.nlmk.attestation.product.api.pam.ChemicalSpec.builder()
+    private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
+        final var chemicalSpec = ChemicalSpec.builder()
                 .chemCode(recordChemical.getChemCode())
                 .chemName(recordChemical.getChemName().toString());
 
@@ -144,8 +145,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return chemicalSpec.build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
-        final var mechanicalSpec = com.nlmk.attestation.product.api.pam.MechanicalSpec.builder();
+    private static MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
+        final var mechanicalSpec = MechanicalSpec.builder();
 
         if (recordMechanical.getTestArrayId() != null) {
             mechanicalSpec.testArrayId(recordMechanical.getTestArrayId());
@@ -188,8 +189,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return mechanicalSpec.build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
-        final var mechanicalData = com.nlmk.attestation.product.api.pam.MechanicalData.builder()
+    private static MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
+        final var mechanicalData = MechanicalData.builder()
                 .mechCode(recordMechData.getMechCode())
                 .mechName(recordMechData.getMechName().toString())
                 .mechTypeCode(recordMechData.getMechTypeCode());
@@ -206,8 +207,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return mechanicalData.build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
-        final var mtlSpec = com.nlmk.attestation.product.api.pam.MetallographicSpec.builder();
+    private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
+        final var mtlSpec = MetallographicSpec.builder();
 
         if (recordMetallographic.getTestArrayId() != null) {
             mtlSpec.testArrayId(recordMetallographic.getTestArrayId());
@@ -249,8 +250,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
         return mtlSpec.build();
     }
 
-    private static com.nlmk.attestation.product.api.pam.MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
-        final var mtlData = com.nlmk.attestation.product.api.pam.MetallographicData.builder()
+    private static MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
+        final var mtlData = MetallographicData.builder()
                 .metgrapCode(recordMetgrapData.getMetgrapCode())
                 .metgrapName(recordMetgrapData.getMetgrapName().toString())
                 .metgrapTypeCode(Integer.toString(recordMetgrapData.getMetgrapTypeCode()));
