@@ -1,10 +1,8 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.attestation.product.api.AttestationDto;
-import com.nlmk.attestation.product.api.ProductDto;
-import com.nlmk.attestation.product.api.RequestDto;
-import com.nlmk.attestation.product.api.Status;
+import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
+import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestResponseAdapterImpl;
@@ -33,13 +31,22 @@ class RestResponseAdapterTest {
                         .referenceCode("33")
                         .requests(List.of(
                                 RequestDto.builder()
+                                        .id(123L)
                                         .primeID("54321")
                                         .status(Status.NO_NEED_ATTESTATION)
                                         .attestations(List.of(
                                                 AttestationDto.builder()
-                                                        .code(1).value("10").min(9.0).max(18.0).build(),
+                                                        .code(SpecCode.LENGTH.getValue())
+                                                        .value("20").group(Group.GEOM)
+                                                        .equal("25").status(Status.NOT_MATCHED)
+                                                        .comment("Согласно заказа")
+                                                        .build(),
                                                 AttestationDto.builder()
-                                                        .code(2).value("20").equal("25").build()
+                                                        .code(SpecCode.MASS_FRACTION_B.getValue())
+                                                        .value("10").group(Group.HIM)
+                                                        .min(9.0).max(18.0).status(Status.NO_NEED_ATTESTATION)
+                                                        .comment("Согласно ГОСТ 1")
+                                                        .build()
                                         ))
                                         .build()
                         ))
@@ -56,26 +63,43 @@ class RestResponseAdapterTest {
                         .mismatch(CcmPtsResponse.Mismatch.builder().code(3).name("Аттестация не требуется").build())
                         .attestationList(List.of(
                                 CcmPtsResponse.Attestation.builder()
-                                        .groupCode(-1).groupName("noName")
+                                        .groupCode(-1)
+                                        .groupName(Group.HIM.name())
                                         .listValues(List.of(
                                                 CcmPtsResponse.AttestationValue.builder()
-                                                        .code(1).value("10")
+                                                        .code(SpecCode.MASS_FRACTION_B.getValue())
+                                                        .name(SpecCode.MASS_FRACTION_B.getDesc())
+                                                        .value("10")
                                                         .normLimits(CcmPtsResponse.NormLimit.builder()
                                                                 .valueMin(9.0).valueMax(18.0)
                                                                 .build())
                                                         .mismatch(CcmPtsResponse.Mismatch.builder()
+                                                                .code(Status.NO_NEED_ATTESTATION.getValue())
+                                                                .name(Status.NO_NEED_ATTESTATION.getDesc())
                                                                 .build())
+                                                        .note("Согласно ГОСТ 1")
                                                         .parameters(List.of())
-                                                        .build(),
+                                                        .build()
+                                        ))
+                                        .build(),
+                                CcmPtsResponse.Attestation.builder()
+                                        .groupCode(-1)
+                                        .groupName(Group.GEOM.name())
+                                        .listValues(List.of(
                                                 CcmPtsResponse.AttestationValue.builder()
-                                                        .code(2).value("20")
+                                                        .code(SpecCode.LENGTH.getValue())
+                                                        .name(SpecCode.LENGTH.getDesc())
+                                                        .value("20")
                                                         .normLimits(CcmPtsResponse.NormLimit.builder()
                                                                 .listAccValues(List.of(
                                                                         CcmPtsResponse.AccValue.builder().value("25").build()
                                                                 ))
                                                                 .build())
                                                         .mismatch(CcmPtsResponse.Mismatch.builder()
+                                                                .code(Status.NOT_MATCHED.getValue())
+                                                                .name(Status.NOT_MATCHED.getDesc())
                                                                 .build())
+                                                        .note("Согласно заказа")
                                                         .parameters(List.of())
                                                         .build()
                                         ))
