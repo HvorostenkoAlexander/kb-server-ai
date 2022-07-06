@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,7 +28,7 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
         return AttestationRequest.builder()
                 .value(Value.builder()
                         .ts(dateRequest)
-                        .op("I") // ?
+                        .op("I")
                         .pk(new Pk(requestMessage.getPk().getId(), requestMessage.getPk().getSystemCode()))
                         .data(DataField.builder()
                                 .primeId(requestMessage.getPk().getId())
@@ -38,7 +39,7 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
                                 .thickness(data.getGeometry().getThickness())
                                 .width(data.getGeometry().getWidth())
                                 .weightNet(data.getWeightNet())
-                                //.bundleWeight() // ?
+                                .bundleWeight(calcBundleWeight(requestMessage))
                                 .kceh(data.getKceh().longValue())
                                 .orderNum(orderNum)
                                 .orderPos(orderPos)
@@ -46,12 +47,45 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
                                 .orderReq(List.of())
                                 .specifications(prepareSpecs(requestMessage))
                                 .chemical(prepareChemicalSpecs(requestMessage))
-                                // этих полей нет, заглушка todo
+                                // данных нет для ЦТС
                                 .mechanical(List.of())
                                 .metallographic(List.of())
                                 .build())
                         .build())
                 .build();
+    }
+
+    /**
+     * Расчёт массы связки
+     *
+     * @param requestMessage запрос типа CcmPtsRequest
+     * @return расчётное значение
+     */
+    private Double calcBundleWeight(CcmPtsRequest requestMessage) {
+        if (requestMessage == null
+                || requestMessage.getData() == null
+                || (requestMessage.getData().getWeightNet() == null
+                && (requestMessage.getData().getBundles() == null || requestMessage.getData().getBundles().isEmpty()))) {
+            return null;
+        }
+
+        var weightEM = 0.0;
+        if (requestMessage.getData().getWeightNet() != null) {
+            weightEM = requestMessage.getData().getWeightNet();
+        }
+
+        if (requestMessage.getData().getBundles() == null || requestMessage.getData().getBundles().isEmpty()) {
+            return weightEM;
+        }
+
+        final var weightBundle = requestMessage.getData().getBundles().stream()
+                .map(CcmPtsRequest.Bundle::getStripWeight)
+                .filter(Objects::nonNull)
+                .reduce(Double::sum)
+                .orElse(0.0);
+
+        // масса всех бунтов, входящих в одну связку, плюс масса ЕМ
+        return weightBundle + weightEM;
     }
 
     /**
