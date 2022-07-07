@@ -2,7 +2,7 @@ package com.nlmk.kb.server.service.sadim;
 
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
-import com.nlmk.kb.server.service.PsmSender;
+import com.nlmk.kb.server.service.sender.PsmSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

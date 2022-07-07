@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.pdm.senders;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
-import com.nlmk.kb.server.service.NsiCommonSender;
+import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
 import com.nlmk.kb.server.service.pdm.PdmMessageCreator;
@@ -24,7 +24,7 @@ public class KatSteel4041MessageSender extends BaseCreator implements MessageSen
 
     public KatSteel4041MessageSender(@Value("${kafka.pdm.topic.kat-steel-4041}") String type,
                                      PdmDtoConverter pdmDtoConverter,
-                                     NsiCommonSender commonSender,
+                                     NsiSender commonSender,
                                      PdmDictionaryCreator pdmDictionaryCreator,
                                      DictionaryConfigService dictionaryConfigService) {
         super(type, pdmDtoConverter, commonSender, pdmDictionaryCreator, dictionaryConfigService);

@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sender;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,6 @@ import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.PsmSenderException;
-import com.nlmk.kb.server.service.PsmSender;
 import com.nlmk.kb.server.util.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;

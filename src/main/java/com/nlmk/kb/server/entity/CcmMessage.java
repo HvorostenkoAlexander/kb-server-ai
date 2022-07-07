@@ -39,9 +39,11 @@ public class CcmMessage {
     @Column(name = "msg_key", nullable = false)
     private String key;
 
+    // момент приема результата Аттестации от PAM
     @Column(name = "kb_sending_ts", nullable = false)
     private Date kbSendingTs;
 
+    // момент приема сообщения из Kafka
     @Column(name = "kb_receipt_ts", nullable = false)
     private Date kbReceiptTs;
 
@@ -57,6 +59,6 @@ public class CcmMessage {
     @Type(type = "json")
     @Column(columnDefinition = "json")
     // сохранение в едином формате, значение, которое пойдет в запросе к PAM
-    private com.nlmk.kb.server.entity.pam.AttestationRequest request;
+    private com.nlmk.attestation.product.api.pam.AttestationRequest request;
 
 }

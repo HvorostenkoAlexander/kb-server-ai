@@ -1,31 +1,28 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
+import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pts.AttestationRequest;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class CcmMessageAdapterPtsImpl implements CcmMessageAdapter<AttestationRequest> {
+public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
 
-    private final AttestationRequestAdapter<AttestationRequest> adapter;
+    private final KafkaRequestAdapter<AttestationRequest> adapter;
 
     @Override
     public CcmMessage adapt(AttestationRequest requestMessage,
                             String topic,
                             String key,
                             int partition,
-                            int offset,
-                            String timestamp) {
+                            int offset) {
         final var attestationRequest = adapter.adapt(requestMessage);
-        final var ts = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        final var ts = new Date();
 
         final var ccmMessageBuilder = CcmMessage.builder()
                 .partition(partition)

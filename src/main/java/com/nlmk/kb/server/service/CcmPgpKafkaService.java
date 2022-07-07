@@ -47,7 +47,7 @@ public class CcmPgpKafkaService {
         log.info("CCM PGP AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
-            final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset, timestamp);
+            final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
 
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null

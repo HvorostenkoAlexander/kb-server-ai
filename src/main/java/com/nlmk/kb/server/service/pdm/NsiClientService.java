@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import org.springframework.http.ResponseEntity;

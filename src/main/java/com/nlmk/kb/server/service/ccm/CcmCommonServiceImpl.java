@@ -1,6 +1,13 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
+import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.service.AttestationMessageService;
+import com.nlmk.kb.server.service.sender.PamSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -9,87 +16,146 @@ import org.springframework.util.Assert;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CcmCommonServiceImpl implements CcmCommonService {
 
-    private final CcmPamClientSender ccmPamSender;
-    private final CcmMessageService messageService;
+    private final PamSender pamSender;
+    private final CcmMessageService ccmMessageService;
+    private final AttestationMessageService attMessageService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Long rePostAttestation(String primeId) throws IllegalArgumentException {
-
+    public Optional<ProductAttestationResultDto> rePostAttestation(String primeId) throws IllegalArgumentException {
         if (StringUtils.isBlank(primeId)) {
             log.warn("Невозможно осуществить повторную отправку. primeId is null.");
             throw new IllegalArgumentException("Невозможно осуществить повторную отправку. primeId is null.");
         }
-        final var requests = messageService.findByPrimeId(primeId);
 
-        if (requests.isEmpty()) {
-            log.debug("Для повторной отправки в базе данных kb-server не обнаружены запросы на аттестацию с primeId: [{}]", primeId);
-            throw new IllegalArgumentException("Для повторной отправки в базе данных kb-server не " +
-                    "обнаружены запросы на аттестацию с primeId: " + primeId);
+        // поиск сообщений двух типов: CcmMessage и AttestationMessage (выборка последнего из найденного!)
+
+        final var lastCcmMessage = findLastCcmMessage(primeId);
+        final var lastAttMessage = findLastAttestationMessage(primeId);
+
+        if (lastCcmMessage.isEmpty()
+                && lastAttMessage.isEmpty()) {
+            log.warn("rePostAttestation, для повторной отправки в базе данных kb-server не обнаружены запросы на аттестацию с primeId: [{}]", primeId);
+            throw new IllegalArgumentException(String.format("Для повторной отправки в базе данных kb-server не обнаружены запросы на аттестацию с primeId: [%s]", primeId));
         }
 
-        if (requests.size() > 1) {
-            log.warn("В базе данных kb-server обнаружено [{}] запроса на аттестацию с primeId: [{}]",
-                    requests.size(), primeId);
+        if (lastCcmMessage.isPresent() && lastAttMessage.isPresent()) {
+            // какое сообщение последнее?
+            if (lastCcmMessage.get().getKbReceiptTs()
+                    .after(lastAttMessage.get().getReceiptTs())) {
+                // CcmMessage последнее
+                return Optional.of(rePostCcmMessage(lastCcmMessage.get()));
+            }
+            return Optional.of(rePostAttestationMessage(lastAttMessage.get()));
+        } else if (lastCcmMessage.isPresent()) {
+            return Optional.of(rePostCcmMessage(lastCcmMessage.get()));
+        }
 
-            requests.stream().map(
-                    r -> "id: " + r.getId() + " kbReceiptTs: " + r.getKbReceiptTs() + "; primeId: " + r.getPrimeId()
+        return Optional.of(rePostAttestationMessage(lastAttMessage.get()));
+    }
+
+    /**
+     * Поиск и выбор последнего сообщения с запросом на Аттестацию (CcmMessage)
+     *
+     * @param primeId идентификатор ЕМ
+     * @return найденное сообщение или пусто
+     */
+    private Optional<CcmMessage> findLastCcmMessage(String primeId) {
+        final var ccmMessages = ccmMessageService.findByPrimeId(primeId);
+
+        if (ccmMessages.isEmpty()) {
+            log.info("findLastCcmMessage, last CcmMessage not found by primeId: [{}]", primeId);
+            return Optional.empty();
+        }
+
+        if (ccmMessages.size() > 1) {
+            log.warn("findLastCcmMessage, fined [{}] CcmMessages by primeId: [{}]", ccmMessages.size(), primeId);
+            ccmMessages.stream().map(
+                    r -> String.format("id: %s, kbReceiptTs: %s, primeId: %s", r.getId(), r.getKbReceiptTs(), r.getPrimeId())
             ).forEach(log::debug);
         }
 
-        final var lastRequest = requests.stream()
-                .max(
-                        Comparator.comparing(CcmMessage::getKbReceiptTs)
-                ).orElseThrow(
-                        () -> new IllegalArgumentException("Не удалось получить сведения о последнем запросе" +
-                                " с primeId: " + primeId)
-                );
+        final var last = ccmMessages.stream().max(Comparator.comparing(CcmMessage::getKbReceiptTs));
+        if (last.isEmpty()) {
+            log.warn("findLastCcmMessage, Не удалось получить сведения о последнем запросе с primeId: [{}]", primeId);
+        }
+        return last;
+    }
 
-        return rePostRequest(lastRequest);
+    /**
+     * Поиск и выбор последнего сообщения с запросом на Аттестацию (AttestationMessage)
+     *
+     * @param primeId идентификатор ЕМ
+     * @return найденное сообщение или пусто
+     */
+    private Optional<AttestationMessage> findLastAttestationMessage(String primeId) {
+        final var attMessage = attMessageService.findLastAttestationMessage(primeId);
+
+        if (attMessage.isEmpty()) {
+            log.info("findLastAttestationMessage, last AttestationMessage not found by primeId: [{}]", primeId);
+            return Optional.empty();
+        }
+
+        return attMessage;
     }
 
     @Override
-    public void postAttestation(CcmMessage request) {
-        Assert.notNull(request, "request is null");
+    public Optional<ProductAttestationResultDto> postAttestation(CcmMessage ccmMessage) {
+        Assert.notNull(ccmMessage, "request is null");
 
-        final var savedRequest = messageService.save(request).orElseThrow(
-                () -> new RuntimeException("Не удалось сохранить сообщение partition: " + request.getPartition()
-                        + "; offset: " + request.getOffset())
+        final var savedRequest = ccmMessageService.save(ccmMessage).orElseThrow(
+                () -> new RuntimeException("Не удалось сохранить сообщение partition: " + ccmMessage.getPartition()
+                        + "; offset: " + ccmMessage.getOffset())
         );
 
-        if (request.getRequest() != null ||
-                request.getRequest().getValue() != null ||
-                request.getRequest().getValue().getData() != null) {
-
-            postRequest(savedRequest, "recived");
-
-        } else {
+        if (ccmMessage.getRequest() == null
+                || ccmMessage.getRequest().getValue() == null
+                || ccmMessage.getRequest().getValue().getData() == null) {
             log.warn("В поступившем запросе на аттестацию нет данных. Отправка невозможна.");
+            return Optional.empty();
         }
+
+        return Optional.of(postCcmMessage(savedRequest, "recived"));
     }
 
-    private Long rePostRequest(CcmMessage r) {
+    private ProductAttestationResultDto rePostCcmMessage(CcmMessage ccmMessage) {
         log.info("Повторная отправка запроса на аттестацию. id:[{}]; primeId: [{}]; kbReceiptTs:[{}]",
-                r.getId(), r.getPrimeId(), r.getKbReceiptTs());
+                ccmMessage.getId(), ccmMessage.getPrimeId(), ccmMessage.getKbReceiptTs());
 
-        return postRequest(r, "re-recived");
+        return postCcmMessage(ccmMessage, "re-recived");
     }
 
-    private Long postRequest(CcmMessage r, String statusNote) {
+    private ProductAttestationResultDto postCcmMessage(CcmMessage ccmMessage, String statusNote) {
 
-        final var pamResult = ccmPamSender.postAttestationRequest(r.getRequest());
+        final var pamResult = pamSender.postAttestationRequest(ccmMessage.getRequest());
 
         if (pamResult != null) {
-            r.setStatus(statusNote);
-            r.setKbSendingTs(new Date());
-            messageService.update(r);
+            ccmMessage.setStatus(statusNote);
+            ccmMessage.setKbSendingTs(new Date());
+            ccmMessageService.update(ccmMessage);
         }
         return pamResult;
+    }
+
+    private ProductAttestationResultDto rePostAttestationMessage(AttestationMessage attMessage) {
+        try {
+            final var attRequest = objectMapper.readValue(attMessage.getRequest(), AttestationRequest.class);
+            final var pamResult = pamSender.postAttestationRequest(attRequest);
+            if (pamResult != null) {
+                attMessage.setAttestationTs(new Date());
+                attMessageService.updateAttestationMessage(attMessage);
+            }
+            return pamResult;
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(String.format("rePostAttestationMessage, JSON error, ID [%s], primeId [%s]", attMessage.getId(), attMessage.getPrimeId()));
+        }
     }
 
 }

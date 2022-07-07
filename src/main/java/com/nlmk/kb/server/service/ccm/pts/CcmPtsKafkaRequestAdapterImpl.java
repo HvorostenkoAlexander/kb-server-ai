@@ -1,26 +1,23 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.kb.server.entity.pam.AttestationRequest;
-import com.nlmk.kb.server.entity.pam.*;
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.AttestationRequestAdapter;
+import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pts.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-@Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
-public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
+public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
 
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
+    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
         Assert.notNull(requestMessagePts, "requestMessagePts is null");
         Assert.notNull(requestMessagePts.getTs(), "requestMessagePts.getTs() is null");
         Assert.notNull(requestMessagePts.getOp(), "requestMessagePts.getOp() is null");
@@ -39,7 +36,7 @@ public class AttestationRequestAdapterPtsImpl implements AttestationRequestAdapt
             value.data(toPamDataField(requestMessagePts.getData()));
         }
 
-        return AttestationRequest.builder()
+        return com.nlmk.attestation.product.api.pam.AttestationRequest.builder()
                 .value(value.build())
                 .build();
     }
