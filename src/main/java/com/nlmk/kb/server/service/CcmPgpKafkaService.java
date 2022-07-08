@@ -1,5 +1,7 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.exception.AttestationResultException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.exception.CcmPgpKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
@@ -20,16 +22,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class CcmPgpKafkaService {
 
+    private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
+    private final AttestationResultSender attestationResultSender;
 
     public CcmPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter) {
+                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
+                              AttestationResultSender attestationResultSender) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
+        this.attestationResultSender = attestationResultSender;
     }
 
     @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
@@ -56,17 +62,31 @@ public class CcmPgpKafkaService {
                         partition, offset, key);
             } else {
                 // отправка запроса при наличии тела и правильной операции
-                ccmCommonService.postAttestation(requestMessage);
+                final var attResult = ccmCommonService.postAttestation(requestMessage);
+                if (attResult.isEmpty()
+                        || attResult.get().getResult() == null) {
+                    throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
+                }
+                // отправка ответа с результатами аттестации
+                attestationResultSender.send(attResult.get());
             }
             ack.acknowledge();
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + e);
+            throw new DateTimeParseException(String.format(EXC_MESS, e));
+        } catch (AttestationResultException e) {
+            log.warn("receiveMessageReq, AttestationResultException", e);
+            ack.nack(sleepTime);
+            throw new AttestationResultException(String.format(EXC_MESS, e));
+        } catch (AttestationResultSenderException e) {
+            log.warn("receiveMessageReq, AttestationResultSenderException", e);
+            ack.nack(sleepTime);
+            throw new AttestationResultSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPgpKafkaException("переброс: " + e);
+            throw new CcmPgpKafkaException(String.format(EXC_MESS, e));
         }
     }
 
