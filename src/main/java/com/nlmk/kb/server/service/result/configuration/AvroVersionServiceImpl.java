@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.result_config;
+package com.nlmk.kb.server.service.result.configuration;
 
 import com.nlmk.kb.server.entity.AvroVersion;
 import lombok.RequiredArgsConstructor;

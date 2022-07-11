@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.result_config;
+package com.nlmk.kb.server.service.result.configuration;
 
 import com.nlmk.kb.server.api.ResultsConfigDto;
 import org.springframework.data.domain.Page;

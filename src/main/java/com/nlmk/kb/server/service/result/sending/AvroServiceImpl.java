@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.result_config;
+package com.nlmk.kb.server.service.result.sending;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.io.EncoderFactory;

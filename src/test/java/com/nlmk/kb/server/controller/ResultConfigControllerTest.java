@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.controller;
 
-import com.nlmk.kb.server.service.result_config.AvroVersionService;
-import com.nlmk.kb.server.service.result_config.ResultConfigService;
+import com.nlmk.kb.server.service.result.configuration.AvroVersionService;
+import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

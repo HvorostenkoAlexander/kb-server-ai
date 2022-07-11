@@ -2,8 +2,8 @@ package com.nlmk.kb.server.controller;
 
 import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.entity.AvroVersion;
-import com.nlmk.kb.server.service.result_config.AvroVersionService;
-import com.nlmk.kb.server.service.result_config.ResultConfigService;
+import com.nlmk.kb.server.service.result.configuration.AvroVersionService;
+import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

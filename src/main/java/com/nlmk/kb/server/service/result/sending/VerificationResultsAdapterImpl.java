@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.result_config;
+package com.nlmk.kb.server.service.result.sending;
 
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Group;

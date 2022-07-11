@@ -1,9 +1,12 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.exception.AttestationResultException;
 import com.nlmk.kb.server.exception.CcmPtsKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.ProductSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
+import com.nlmk.kb.server.service.sender.ProductSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.ccm.pts.EnumOp;
@@ -20,16 +23,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class CcmPtsKafkaService {
 
+    private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
+    private final ProductSender attestationResultSender;
 
     public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter) {
+                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
+                              ProductSender attestationResultSender) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
+        this.attestationResultSender = attestationResultSender;
     }
 
     @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory",
@@ -56,17 +63,31 @@ public class CcmPtsKafkaService {
                         partition, offset, key);
             } else {
                 // отправка запроса при наличии тела и правильной операции
-                ccmCommonService.postAttestation(requestMessage);
+                final var attResult = ccmCommonService.postAttestation(requestMessage);
+                if (attResult.isEmpty()
+                        || attResult.get().getResult() == null) {
+                    throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
+                }
+                // отправка ответа с результатами аттестации
+                attestationResultSender.send(attResult.get());
             }
             ack.acknowledge();
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + e);
+            throw new DateTimeParseException(String.format(EXC_MESS, e));
+        } catch (AttestationResultException e) {
+            log.warn("receiveMessageReq, AttestationResultException", e);
+            ack.nack(sleepTime);
+            throw new AttestationResultException(String.format(EXC_MESS, e));
+        } catch (ProductSenderException e) {
+            log.warn("receiveMessageReq, AttestationResultSenderException", e);
+            ack.nack(sleepTime);
+            throw new ProductSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPtsKafkaException("переброс: " + e);
+            throw new CcmPtsKafkaException(String.format(EXC_MESS, e));
         }
     }
 

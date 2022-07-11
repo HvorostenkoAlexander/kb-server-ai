@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.result_config;
+package com.nlmk.kb.server.service.result.sending;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.api.MessageValueDto;
