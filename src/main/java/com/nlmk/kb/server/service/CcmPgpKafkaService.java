@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.AttestationResultException;
-import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.ProductSenderException;
 import com.nlmk.kb.server.exception.CcmPgpKafkaException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
@@ -79,10 +79,10 @@ public class CcmPgpKafkaService {
             log.warn("receiveMessageReq, AttestationResultException", e);
             ack.nack(sleepTime);
             throw new AttestationResultException(String.format(EXC_MESS, e));
-        } catch (AttestationResultSenderException e) {
+        } catch (ProductSenderException e) {
             log.warn("receiveMessageReq, AttestationResultSenderException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultSenderException(String.format(EXC_MESS, e));
+            throw new ProductSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
