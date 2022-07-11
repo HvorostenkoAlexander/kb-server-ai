@@ -29,15 +29,15 @@ public abstract class BaseSender {
     protected static final Long DEFAULT_CONNECT_TIMEOUT = 30000L;
     protected static final Long DEFAULT_READ_TIMEOUT = 30000L;
 
-    public BaseSender(String kafkaHttpProxyAddress,
-                      String kafkaHttpProxyLogin,
-                      String kafkaHttpProxyPassword,
-                      RestTemplateBuilder restTemplateBuilder,
-                      KafkaRestMessageAdapter messageConverter) {
+    protected BaseSender(String kafkaHttpProxyAddress,
+                         String kafkaHttpProxyLogin,
+                         String kafkaHttpProxyPassword,
+                         RestTemplateBuilder restTemplateBuilder,
+                         KafkaRestMessageAdapter kafkaRestMessageAdapter) {
         this.kafkaHttpProxyAddress = kafkaHttpProxyAddress;
         this.kafkaHttpProxyLogin = kafkaHttpProxyLogin;
         this.kafkaHttpProxyPassword = kafkaHttpProxyPassword;
-        this.messageConverter = messageConverter;
+        this.messageConverter = kafkaRestMessageAdapter;
 
         if (StringUtils.hasText(this.kafkaHttpProxyLogin) && StringUtils.hasText(this.kafkaHttpProxyPassword)) {
             restTemplateBuilder = restTemplateBuilder
@@ -53,8 +53,7 @@ public abstract class BaseSender {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT_HEADER));
         headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(CONTENT_TYPE_HEADER));
-        HttpEntity<MessagesBatchDto> entity = new HttpEntity<>(batchDto, headers);
-        return entity;
+        return new HttpEntity<>(batchDto, headers);
     }
 
 }

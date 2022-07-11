@@ -24,8 +24,8 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
                                         @Value("${kafka.ccm.httpProxy.password}")
                                         String kafkaHttpProxyPassword,
                                         RestTemplateBuilder restTemplateBuilder,
-                                        KafkaRestMessageAdapter messageConverter) {
-        super(kafkaHttpProxyAddress, kafkaHttpProxyLogin, kafkaHttpProxyPassword, restTemplateBuilder, messageConverter);
+                                        KafkaRestMessageAdapter kafkaRestMessageAdapter) {
+        super(kafkaHttpProxyAddress, kafkaHttpProxyLogin, kafkaHttpProxyPassword, restTemplateBuilder, kafkaRestMessageAdapter);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
         final var address = String.format(KAFKA_REST_PROXY_TEMPLATE, getKafkaHttpProxyAddress(), topic);
 
         try {
-            ResponseEntity<JsonNode> resp = getRestTemplate().exchange(address, HttpMethod.POST, buildHttpEntity(batchDto),
-                    JsonNode.class);
+            ResponseEntity<JsonNode> resp = getRestTemplate()
+                    .exchange(address, HttpMethod.POST, buildHttpEntity(batchDto), JsonNode.class);
 
             log.info("Response from KAFKA: {}", resp);
         } catch (Exception e) {
