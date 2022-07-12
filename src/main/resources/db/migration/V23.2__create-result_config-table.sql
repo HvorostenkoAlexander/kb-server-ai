@@ -13,5 +13,5 @@ COMMENT ON COLUMN public.result_config.condition IS E'Условия';
 COMMENT ON COLUMN public.result_config.is_enabled IS E'Вкл/выкл';
 
 INSERT INTO public.result_config (topic,avro,is_enabled)
-VALUES ('000-0.l3-apcs.db.nlmk.verification-results.0','Передача результатов аттестации APCS. Version: [1]',true)
+VALUES ('000-1.l3-apcs.db.nlmk.verification-results.0','Передача результатов аттестации APCS. Version: [1]',true)
 ;

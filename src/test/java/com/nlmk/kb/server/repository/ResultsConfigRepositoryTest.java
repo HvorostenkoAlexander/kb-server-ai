@@ -18,7 +18,7 @@ class ResultsConfigRepositoryTest {
         final var res = repository.findByAvroName("Передача результатов аттестации APCS. Version: [1]");
         Assertions.assertEquals(1, res.size());
         Assertions.assertTrue(res.get(0).isEnabled());
-        Assertions.assertEquals("000-0.l3-apcs.db.nlmk.verification-results.0", res.get(0).getTopic());
+        Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results.0", res.get(0).getTopic());
     }
 
 }
