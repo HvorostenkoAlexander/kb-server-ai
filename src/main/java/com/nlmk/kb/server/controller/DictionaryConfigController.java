@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.controller;
 
-import com.nlmk.kb.server.dto.DictionaryConfigDto;
+import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;

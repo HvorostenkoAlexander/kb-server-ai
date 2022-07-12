@@ -1,8 +1,7 @@
 package com.nlmk.kb.server.service.pdm;
 
-import com.nlmk.kb.server.dto.DictionaryConfigDto;
+import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
-import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.pdm;
 
-import com.nlmk.kb.server.dto.DictionaryConfigDto;
+import com.nlmk.kb.server.api.DictionaryConfigDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
