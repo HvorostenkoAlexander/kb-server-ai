@@ -51,9 +51,19 @@ public class ProductSenderImpl implements ProductSender {
         }
 
         final var product = productAttestationResult.getResult();
-        final var isNew = productAttestationResult.isNewProduct();
         log.info("send attestation result for product: id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
 
+        sending(configs,
+                enabledSenders,
+                product,
+                productAttestationResult.isNewProduct()
+        );
+    }
+
+    private void sending(List<ResultsConfigDto> configs,
+                         List<MessageProducer> enabledSenders,
+                         ProductDto product,
+                         boolean isNew) {
         for (ResultsConfigDto config : configs) {
             var sender = enabledSenders.stream()
                     .filter(s -> s.getType().equals(config.getAvroName()))
