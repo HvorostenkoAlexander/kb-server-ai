@@ -1,8 +1,6 @@
 package com.nlmk.kb.server.service.result.sending;
 
-import com.nlmk.attestation.product.api.AttestationDto;
-import com.nlmk.attestation.product.api.Group;
-import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.*;
@@ -35,16 +33,20 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                 .build();
 
-        List<AttestationDto> attectaions = List.of();
+        List<AttestationDto> attestations = List.of();
         String primeId = null;
         long kceh = 0L;
         int mismatch = 2;
         String ts = null;
         if (product.getRequests() != null && !product.getRequests().isEmpty()) {
-            attectaions = product.getRequests().get(0).getAttestations();
+            attestations = product.getRequests().get(0).getAttestations();
             primeId = product.getRequests().get(0).getPrimeID();
-            kceh = product.getRequests().get(0).getKceh();
-            mismatch = product.getRequests().get(0).getStatus().getValue();
+            if (product.getRequests().get(0).getKceh() != null) {
+                kceh = product.getRequests().get(0).getKceh();
+            }
+            if (product.getRequests().get(0).getStatus() != null) {
+                mismatch = product.getRequests().get(0).getStatus().getValue();
+            }
             if (product.getRequests().get(0).getAttestationTs() != null) {
                 ts = product.getRequests().get(0).getAttestationTs().toString();
             }
@@ -55,21 +57,22 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
         List<RecordMechanical> mechanicalSpec = new ArrayList<>();
         List<RecordMettallographic> metallographSpec = new ArrayList<>();
 
-        if (attectaions != null) {
-            commonSpec = attectaions.stream()
-                    .filter(attestationDto ->
-                            !(attestationDto.getGroup().equals(Group.HIM) ||
-                                    attestationDto.getGroup().equals(Group.MEH) ||
-                                    attestationDto.getGroup().equals(Group.MET))
-                    ).map(this::toRecordSpecifications).collect(Collectors.toList());
+        if (attestations != null) {
+            commonSpec = attestations.stream()
+                    .filter(att -> !(Group.HIM.equals(att.getGroup())
+                            || Group.MEH.equals(att.getGroup())
+                            || Group.MET.equals(att.getGroup()))
+                    ).map(this::toRecordSpecifications)
+                    .collect(Collectors.toList());
 
-            chemicalSpec = attectaions.stream()
-                    .filter(attestationDto -> attestationDto.getGroup().equals(Group.HIM))
-                    .map(this::toChemicalSpecifications).collect(Collectors.toList());
+            chemicalSpec = attestations.stream()
+                    .filter(att -> Group.HIM.equals(att.getGroup()))
+                    .map(this::toChemicalSpecifications)
+                    .collect(Collectors.toList());
 
-            mechanicalSpec = this.toMechanicalSpecList(attectaions);
+            mechanicalSpec = this.toMechanicalSpecList(attestations);
 
-            metallographSpec = this.toMetallographSpecList(attectaions);
+            metallographSpec = this.toMetallographSpecList(attestations);
         }
 
         RecordData recordData = RecordData.newBuilder()
@@ -104,7 +107,8 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
         String note = null;
         String defectSuggestion = null;
 
-        if (attestation.getStatus().getValue() == 4 || attestation.getStatus().getValue() == 5) {
+        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
+                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
             defectSuggestion = attestation.getComment();
         } else {
             note = attestation.getComment();
@@ -166,7 +170,7 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
 
     private List<RecordMettallographic> toMetallographSpecList(List<AttestationDto> attestations) {
         List<AttestationDto> metallAttestation = attestations.stream()
-                .filter(attestation -> attestation.getGroup().equals(Group.MET))
+                .filter(att -> Group.MET.equals(att.getGroup()))
                 .collect(Collectors.toList());
 
         Map<String, List<AttestationDto>> metallAttestationByFormationListId = groupByFormationListId(metallAttestation);
@@ -218,7 +222,7 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
 
     private List<RecordMechanical> toMechanicalSpecList(List<AttestationDto> attestations) {
         List<AttestationDto> mechAttestation = attestations.stream()
-                .filter(attestation -> attestation.getGroup().equals(Group.MEH))
+                .filter(att -> Group.MEH.equals(att.getGroup()))
                 .collect(Collectors.toList());
 
         Map<Integer, List<AttestationDto>> mechAttestationBySignAnalysis = groupBySignAnalysys(mechAttestation);

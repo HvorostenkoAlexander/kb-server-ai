@@ -53,53 +53,56 @@ public class ProductSenderImpl implements ProductSender {
         final var product = productAttestationResult.getResult();
         log.info("send attestation result for product: id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
 
-        sending(configs,
-                enabledSenders,
-                product,
-                productAttestationResult.isNewProduct()
-        );
+        for (ResultsConfigDto config : configs) {
+            log.info("send, config [{}]", config);
+            sending(config,
+                    enabledSenders,
+                    product,
+                    productAttestationResult.isNewProduct()
+            );
+        }
     }
 
-    private void sending(List<ResultsConfigDto> configs,
+    private void sending(ResultsConfigDto config,
                          List<MessageProducer> enabledSenders,
                          ProductDto product,
                          boolean isNew) {
-        for (ResultsConfigDto config : configs) {
-            var sender = enabledSenders.stream()
-                    .filter(s -> s.getType().equals(config.getAvroName()))
-                    .findFirst();
+        var sender = enabledSenders.stream()
+                .filter(s -> s.getType().equals(config.getAvroName()))
+                .findFirst();
 
-            if (sender.isEmpty()) {
-                log.warn("Для топика: [{}], не зарегистрирован отправитель с avroName: [{}]",
-                        config.getTopic(), config.getAvroName());
-                continue;
-            }
+        if (sender.isEmpty()) {
+            log.warn("sending, для топика: [{}], не зарегистрирован отправитель с avroName: [{}]",
+                    config.getTopic(), config.getAvroName());
+            return;
+        }
 
-            ProductDto sendingProduct = null;
-            if (config.getCondition() != null) {
-                final var sendingProductOpt = conditionFilter.filter(product, config.getCondition());
+        ProductDto sendingProduct = product;
+        if (config.getCondition() != null) {
+            final var sendingProductOpt = conditionFilter.filter(product, config.getCondition());
 
-                if (sendingProductOpt.isEmpty()) {
-                    log.warn("send, sending product after filter is EMPTY");
-                    return;
-                }
-                sendingProduct = sendingProductOpt.get();
-
-                log.info("sendingProduct after filter: [{}],", sendingProduct);
-
-                if (sendingProduct.getRequests() != null) {
-                    sendingProduct.getRequests().stream().map(this::getKceh).forEach(log::info);
-                }
-            }
-
-            if (sendingProduct == null || sendingProduct.getRequests().isEmpty()) {
-                log.warn("В полученном результате нет сведений отвечающих условиям: [{}]", config.getCondition());
+            if (sendingProductOpt.isEmpty()) {
+                log.warn("sending, sending product after filter is EMPTY");
                 return;
             }
+            sendingProduct = sendingProductOpt.get();
 
-            // отправка результата
-            sender.get().produce(sendingProduct, isNew, config.getTopic());
+            log.info("sending, sendingProduct after filter: [{}],", sendingProduct);
+
+            if (sendingProduct.getRequests() != null) {
+                sendingProduct.getRequests().stream().map(this::getKceh).forEach(log::info);
+            }
         }
+
+        if (sendingProduct == null
+                || sendingProduct.getRequests() == null
+                || sendingProduct.getRequests().isEmpty()) {
+            log.warn("sending, в полученном результате нет сведений отвечающих условиям: [{}]", config.getCondition());
+            return;
+        }
+
+        // отправка результата
+        sender.get().produce(sendingProduct, isNew, config.getTopic());
     }
 
     private List<MessageProducer> getEnabledSenders(List<ResultsConfigDto> configs) {
@@ -109,7 +112,8 @@ public class ProductSenderImpl implements ProductSender {
 
         return configs.stream()
                 .map(ResultsConfigDto::getAvroName)
-                .collect(Collectors.toMap(k -> k, senders::get))
+                .filter(a -> senders.get(a) != null)
+                .collect(toMap(k -> k, senders::get))
                 .values().stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableList());

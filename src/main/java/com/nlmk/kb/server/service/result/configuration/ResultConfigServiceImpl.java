@@ -7,7 +7,6 @@ import com.nlmk.kb.server.repository.ResultsConfigRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -65,24 +64,11 @@ public class ResultConfigServiceImpl implements ResultConfigService {
     }
 
     @Override
-    public List<ResultsConfigDto> findByAvroName(String avroName) {
-        Assert.notNull(avroName, "Служебное имя avro-схемы не должно быть null");
-
-        return repository.findByAvroName(avroName).stream().map(
-                resultsConfigMapper::toDto
-        ).collect(Collectors.toList());
-    }
-
-    @Override
     public List<ResultsConfigDto> getEnabledTopics() {
-
-        final var isEnabled = Example.of(
-                ResultsConfig.builder().enabled(true).build()
-        );
-
-        return repository.findAll(isEnabled).stream().map(
-                resultsConfigMapper::toDto
-        ).collect(Collectors.toList());
+        return repository.findAll().stream()
+                .filter(ResultsConfig::isEnabled)
+                .map(resultsConfigMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

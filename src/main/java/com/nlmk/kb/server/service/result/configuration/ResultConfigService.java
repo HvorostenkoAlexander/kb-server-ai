@@ -18,8 +18,6 @@ public interface ResultConfigService {
 
     ResultsConfigDto update(@NotNull @Valid ResultsConfigDto dto);
 
-    List<ResultsConfigDto> findByAvroName(String avroName);
-
     List<ResultsConfigDto> getEnabledTopics();
 
     void deleteById(long id);

@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class VerificationResultSenderImpl extends BaseSender implements VerificationResultSender {
 
-    public VerificationResultSenderImpl(@Value("${kafka.ccm.httpProxy.address}")
+    public VerificationResultSenderImpl(@Value("${kafka.httpProxy.address}")
                                         String kafkaHttpProxyAddress,
-                                        @Value("${kafka.ccm.httpProxy.login}")
+                                        @Value("${kafka.httpProxy.login}")
                                         String kafkaHttpProxyLogin,
-                                        @Value("${kafka.ccm.httpProxy.password}")
+                                        @Value("${kafka.httpProxy.password}")
                                         String kafkaHttpProxyPassword,
                                         RestTemplateBuilder restTemplateBuilder,
                                         KafkaRestMessageAdapter kafkaRestMessageAdapter) {
@@ -41,7 +41,7 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
         }
 
         final var key = generateKey(result);
-        final var batchDto = getMessageConverter().adapt(result, key);
+        final var batchDto = getKafkaRestMessageAdapter().adapt(result, key);
         final var address = String.format(KAFKA_REST_PROXY_TEMPLATE, getKafkaHttpProxyAddress(), topic);
 
         try {

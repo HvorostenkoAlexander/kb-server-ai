@@ -21,7 +21,7 @@ public abstract class BaseSender {
     private final String kafkaHttpProxyLogin;
     private final String kafkaHttpProxyPassword;
     private final RestTemplate restTemplate;
-    private final KafkaRestMessageAdapter messageConverter;
+    private final KafkaRestMessageAdapter kafkaRestMessageAdapter;
 
     protected static final String KAFKA_REST_PROXY_TEMPLATE = "%s/topics/%s";
     protected static final String CONTENT_TYPE_HEADER = "application/vnd.kafka.avro.v2+json";
@@ -37,7 +37,7 @@ public abstract class BaseSender {
         this.kafkaHttpProxyAddress = kafkaHttpProxyAddress;
         this.kafkaHttpProxyLogin = kafkaHttpProxyLogin;
         this.kafkaHttpProxyPassword = kafkaHttpProxyPassword;
-        this.messageConverter = kafkaRestMessageAdapter;
+        this.kafkaRestMessageAdapter = kafkaRestMessageAdapter;
 
         if (StringUtils.hasText(this.kafkaHttpProxyLogin) && StringUtils.hasText(this.kafkaHttpProxyPassword)) {
             restTemplateBuilder = restTemplateBuilder
