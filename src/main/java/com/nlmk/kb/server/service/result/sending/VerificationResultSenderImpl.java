@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.result.sending;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nlmk.kb.server.entity.KafkaMessageKey;
+import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.ProductSenderException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +33,10 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
     public void send(VerificationResults result, String topic) {
 
         if (result == null || StringUtils.isBlank(topic)) {
-            log.error("Не указан результат или топик для отправки сообщения.");
             throw new ProductSenderException("Не указан результат или топик для отправки сообщения.");
         }
         if (StringUtils.isBlank(getKafkaHttpProxyAddress())) {
-            log.warn("Не установлен адрес сервера kafka-rest. Передача данных невозможна.");
-            return;
+            throw new KafkaRestConfigException("Не установлен адрес сервера kafka-rest. Передача данных невозможна.");
         }
 
         final var key = generateKey(result);
@@ -48,7 +47,7 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
             ResponseEntity<JsonNode> resp = getRestTemplate()
                     .exchange(address, HttpMethod.POST, buildHttpEntity(batchDto), JsonNode.class);
 
-            log.info("Response from KAFKA: {}", resp);
+            log.info("Response from KAFKA: [{}]", resp);
         } catch (Exception e) {
             log.error("Ошибка отправки сообщения: {}", e.getMessage());
             throw new KafkaRestException(e);

@@ -32,8 +32,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
 class ProductSenderTest {
 
@@ -130,8 +128,8 @@ class ProductSenderTest {
         Assertions.assertDoesNotThrow(() -> productSender.send(attResult));
 
         RecordedRequest request = mockKafkaRest.takeRequest();
-        assertEquals("POST", request.getMethod());
-        assertEquals("/topics/topic2", request.getPath());
+        Assertions.assertEquals("POST", request.getMethod());
+        Assertions.assertEquals("/topics/topic2", request.getPath());
         Assertions.assertEquals(1, mockKafkaRest.getRequestCount());
     }
 

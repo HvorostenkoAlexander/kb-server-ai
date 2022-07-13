@@ -1,9 +1,6 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.AttestationResultException;
-import com.nlmk.kb.server.exception.CcmPtsKafkaException;
-import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.ProductSenderException;
+import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.sender.ProductSender;
@@ -80,8 +77,12 @@ public class CcmPtsKafkaService {
             log.warn("receiveMessageReq, AttestationResultException", e);
             ack.nack(sleepTime);
             throw new AttestationResultException(String.format(EXC_MESS, e));
+        } catch (KafkaRestConfigException e) {
+            log.warn("receiveMessageReq, KafkaRestConfigException", e);
+            ack.acknowledge();
+            throw new KafkaRestConfigException(String.format(EXC_MESS, e));
         } catch (ProductSenderException e) {
-            log.warn("receiveMessageReq, AttestationResultSenderException", e);
+            log.warn("receiveMessageReq, ProductSenderException", e);
             ack.nack(sleepTime);
             throw new ProductSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
