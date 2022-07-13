@@ -69,7 +69,10 @@ public class PdmBrokerConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(pdmConsumerFactory());
-        factory.setErrorHandler(((thrownException, consumerRecord) -> log.error("ERROR", thrownException)));
+        factory.setErrorHandler((thrownException, consumerRecord) -> {
+            final var data = (consumerRecord == null) ? "empty" : consumerRecord.toString();
+            log.error("ERROR, consumerRecord [{}]", data, thrownException);
+        });
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
 
         return factory;
