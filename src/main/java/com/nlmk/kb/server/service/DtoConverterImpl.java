@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.dto.DictionaryConfigDto;
-import com.nlmk.kb.server.dto.PdmMessageDto;
+import com.nlmk.kb.server.api.DictionaryConfigDto;
+import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.DictionaryConfig;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.pdm;
 
-import com.nlmk.kb.server.dto.PdmMessageDto;
+import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.dto;
+package com.nlmk.kb.server.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

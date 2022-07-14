@@ -31,10 +31,8 @@ class S3ServiceTest {
     @MockBean
     private MinioClient s3Client;
 
-
     @Test
     void zorderUnmarshalling() throws Exception {
-
         final String path = "zordersExample.xml";
         final String bucket = "bucket";
 

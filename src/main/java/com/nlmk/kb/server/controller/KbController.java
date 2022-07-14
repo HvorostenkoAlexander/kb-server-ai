@@ -2,7 +2,7 @@ package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.zorder.ZORDERS051;
-import com.nlmk.kb.server.dto.PdmMessageDto;
+import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
