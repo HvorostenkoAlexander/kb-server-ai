@@ -6,10 +6,6 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * с целью возможности передачи в Kafka-Rest одним сообщением сведений
- * о нескольких объектах применяется List
- */
 @Data
 @AllArgsConstructor
 public class MessagesBatchDto {
@@ -20,6 +16,9 @@ public class MessagesBatchDto {
     @JsonProperty("value_schema")
     private String valueSchema;
 
+    /**
+     * Для возможности передачи в Kafka-Rest одним сообщением сведений о нескольких объектах применяется List
+     */
     @JsonProperty("records")
     private List<MessageValueDto> records;
 

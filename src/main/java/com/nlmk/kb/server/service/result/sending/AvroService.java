@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public interface AvroService {
 
-    <T extends SpecificRecordBase> String toJsonString(T record) throws IOException;
+    <T extends SpecificRecordBase> String toJsonString(T specificRecord) throws IOException;
 
 }

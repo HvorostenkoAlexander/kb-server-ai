@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -27,32 +25,28 @@ public class KafkaRestMessageAdapterImpl implements KafkaRestMessageAdapter {
     @Override
     public MessagesBatchDto adapt(SpecificRecordBase specificRecord, KafkaMessageKey messageKey) {
         if (specificRecord == null) {
-            log.warn("Сообщение для отправки is null");
+            log.warn("adapt, сообщение для отправки is null");
             throw new ProductSenderException("Сообщение для отправки is null");
         }
+
         if (messageKey == null) {
-            log.warn("Key для сообщения is null");
+            log.warn("adapt, key для сообщения is null");
             throw new ProductSenderException("Key для сообщения is null");
         }
 
-        final var schemaValue = specificRecord.getSchema().toString();
-        final var schemaKey = messageKey.getSchemaKey();
+        try {
+            final var jsonString = avroService.toJsonString(specificRecord);
+            final var value = objectMapper.readTree(jsonString);
+            final var key = messageKey.getKey();
 
-        List<MessageValueDto> recs = Stream.of(specificRecord)
-                .map(t -> {
-                    try {
-                        final var jsonString = avroService.toJsonString(t);
-                        final var node = objectMapper.readTree(jsonString);
-                        final var key = messageKey.getKey();
-
-                        return new MessageValueDto(key, node);
-                    } catch (IOException ex) {
-                        throw new KafkaRestException(ex);
-                    }
-                })
-                .collect(Collectors.toList());
-
-        return new MessagesBatchDto(schemaKey, schemaValue, recs);
+            return new MessagesBatchDto(
+                    messageKey.getSchemaKey(),
+                    specificRecord.getSchema().toString(),
+                    List.of(new MessageValueDto(key, value)));
+        } catch (IOException e) {
+            log.warn("adapt, ошибка создания MessageValueDto");
+            throw new KafkaRestException(e);
+        }
     }
 
 }

@@ -15,12 +15,12 @@ import java.io.IOException;
 public class AvroServiceImpl implements AvroService {
 
     @Override
-    public <T extends SpecificRecordBase> String toJsonString(T record) throws IOException {
+    public <T extends SpecificRecordBase> String toJsonString(T specificRecord) throws IOException {
         SpecificDatumWriter<T> writer = new SpecificDatumWriter<>();
-        writer.setSchema(record.getSchema());
+        writer.setSchema(specificRecord.getSchema());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        JsonEncoder jsonEncoder = EncoderFactory.get().jsonEncoder(record.getSchema(), byteArrayOutputStream);
-        writer.write(record, jsonEncoder);
+        JsonEncoder jsonEncoder = EncoderFactory.get().jsonEncoder(specificRecord.getSchema(), byteArrayOutputStream);
+        writer.write(specificRecord, jsonEncoder);
         jsonEncoder.flush();
         return new String(byteArrayOutputStream.toByteArray());
     }
