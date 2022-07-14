@@ -6,6 +6,6 @@ import org.apache.avro.specific.SpecificRecordBase;
 
 public interface KafkaRestMessageAdapter {
 
-    MessagesBatchDto adapt(SpecificRecordBase record, KafkaMessageKey key);
+    MessagesBatchDto adapt(SpecificRecordBase specificRecord, KafkaMessageKey key);
 
 }

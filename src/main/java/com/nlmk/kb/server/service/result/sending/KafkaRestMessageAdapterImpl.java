@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -21,10 +22,11 @@ import java.util.stream.Collectors;
 public class KafkaRestMessageAdapterImpl implements KafkaRestMessageAdapter {
 
     private final AvroService avroService;
+    private final ObjectMapper objectMapper;
 
     @Override
-    public MessagesBatchDto adapt(SpecificRecordBase record, KafkaMessageKey messageKey) {
-        if (record == null) {
+    public MessagesBatchDto adapt(SpecificRecordBase specificRecord, KafkaMessageKey messageKey) {
+        if (specificRecord == null) {
             log.warn("Сообщение для отправки is null");
             throw new ProductSenderException("Сообщение для отправки is null");
         }
@@ -33,12 +35,10 @@ public class KafkaRestMessageAdapterImpl implements KafkaRestMessageAdapter {
             throw new ProductSenderException("Key для сообщения is null");
         }
 
-        final var schemaValue = record.getSchema().toString();
+        final var schemaValue = specificRecord.getSchema().toString();
         final var schemaKey = messageKey.getSchemaKey();
-        final var objectMapper = new ObjectMapper();
 
-        List<MessageValueDto> recs = List.of(record)
-                .stream()
+        List<MessageValueDto> recs = Stream.of(specificRecord)
                 .map(t -> {
                     try {
                         final var jsonString = avroService.toJsonString(t);
