@@ -46,9 +46,9 @@ class ProductSenderTest {
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
-        dpr.add("kafka.httpProxy.address", () -> "http://localhost:" + mockKafkaRest.getPort());
-        dpr.add("kafka.httpProxy.login", () -> "kb-user");
-        dpr.add("kafka.httpProxy.password", () -> "qwe123");
+        dpr.add("service-web-client.kafka-rest.address", () -> "http://localhost:" + mockKafkaRest.getPort());
+        dpr.add("service-web-client.kafka-rest.login", () -> "kb-user");
+        dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
     @BeforeAll

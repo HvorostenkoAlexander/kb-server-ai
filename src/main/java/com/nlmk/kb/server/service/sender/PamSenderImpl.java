@@ -22,7 +22,7 @@ public class PamSenderImpl implements PamSender {
     private final String pamUrl;
     private final RestTemplate restTemplate;
 
-    public PamSenderImpl(@Value("${pam.url}") String pamUrl,
+    public PamSenderImpl(@Value("${service-web-client.pam-server.url}") String pamUrl,
                          RestTemplate restTemplate) {
         this.pamUrl = pamUrl;
         this.restTemplate = restTemplate;

@@ -24,7 +24,7 @@ public class PsmSenderImpl implements PsmSender {
 
     public PsmSenderImpl(RestTemplate restTemplate,
                          ObjectMapper objectMapper,
-                         @Value("${psm.url}") String psmUrl) {
+                         @Value("${service-web-client.psm-server.url}") String psmUrl) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.psmUrl = psmUrl;

@@ -18,7 +18,7 @@ public class NsiSenderImpl implements NsiSender {
     private final String nsiUrlDict;
 
     public NsiSenderImpl(RestTemplate restTemplate,
-                         @Value("${nsi.url.dict}") String nsiUrlDict) {
+                         @Value("${service-web-client.nsi-server.url}") String nsiUrlDict) {
         this.restTemplate = restTemplate;
         this.nsiUrlDict = nsiUrlDict;
     }

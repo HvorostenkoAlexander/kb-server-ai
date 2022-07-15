@@ -37,7 +37,7 @@ class PsmSenderTest {
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
-        dpr.add("psm.url", () -> "http://localhost:" + mockWebServer.getPort());
+        dpr.add("service-web-client.psm-server.url", () -> "http://localhost:" + mockWebServer.getPort());
     }
 
     @BeforeAll
