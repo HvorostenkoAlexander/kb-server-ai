@@ -34,9 +34,9 @@ class ProductSenderEmptyAddressTest {
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
-        dpr.add("kafka.httpProxy.address", () -> ""); // !
-        dpr.add("kafka.httpProxy.login", () -> "kb-user");
-        dpr.add("kafka.httpProxy.password", () -> "qwe123");
+        dpr.add("service-web-client.kafka-rest.address", () -> ""); // !
+        dpr.add("service-web-client.kafka-rest.login", () -> "kb-user");
+        dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
     @Test
