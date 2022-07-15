@@ -36,6 +36,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     private final CommonConverter converter;
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034208">Химический состав по стандартам</a>
+     */
     @Override
     public ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, "dictionary не должен быть null.");
@@ -62,6 +65,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .n(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_N.getValue())))
                 .ti(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_TI.getValue())))
                 .nb(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_NB.getValue())))
+                .sn(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.REQUIRED_CONTENT_SN_MAX.getValue())))
                 .v(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_V.getValue())))
                 .b(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_B.getValue())))
                 .mo(converter.stringToLimit(converter.getSpecValue(specs, SpecCode.MASS_FRACTION_MO.getValue())))
