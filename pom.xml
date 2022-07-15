@@ -29,7 +29,7 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
 
-        <product-api.version>1.28.1</product-api.version>
+        <product-api.version>1.28.4</product-api.version>
     </properties>
 
     <dependencyManagement>

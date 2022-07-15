@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,6 @@ import java.util.List;
 @ApiResponse(responseCode = "403",
         description = "Доступ к ресурсу ограничен, нет прав у роли, указанной в JWT", content = @Content)
 public interface KbController {
-
 
     @PostMapping("/launch_attestation/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -76,5 +77,19 @@ public interface KbController {
     ResponseEntity<String> postSendingSapMessage(
             @RequestBody @Schema(example = "<?xml version=... ?><ZORDERS05_1></ZORDERS05_1>") String message
     ) throws JsonProcessingException;
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/send_attestation_result")
+    @Operation(summary = "Передача результата Аттестации в ССМ",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    @ApiResponse(responseCode = "200",
+            description = "Результат Аттестации успешно передан в ССМ", content = @Content)
+    @ApiResponse(responseCode = "500",
+            description = "Ошибки подготовки сообщения к отправке", content = @Content)
+    @ApiResponse(responseCode = "502",
+            description = "Отправка сообщения закончилась ошибкой", content = @Content)
+    @ApiResponse(responseCode = "503",
+            description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
+    void postProductAttestationResult(@RequestBody ProductAttestationResultDto attestationResult);
 
 }

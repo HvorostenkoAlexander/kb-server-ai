@@ -8,6 +8,7 @@ import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
+import com.nlmk.kb.server.service.sender.ProductSender;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,8 @@ class KbControllerTest {
     CcmCommonService ccmCommonService;
     @MockBean
     PsmSender psmSender;
+    @MockBean
+    ProductSender productSender;
 
     @Test
     void sendingSapMessage() throws Exception {

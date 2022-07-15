@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
@@ -8,6 +9,7 @@ import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
+import com.nlmk.kb.server.service.sender.ProductSender;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class KbControllerImpl implements KbController {
     private final CcmCommonService ccmCommonService;
     private final S3Service s3Service;
     private final PsmSender psmSender;
+    private final ProductSender attestationResultSender;
 
     @Override
     public ResponseEntity<String> postLaunchReAttestation(String primeId) {
@@ -109,6 +112,12 @@ public class KbControllerImpl implements KbController {
         log.info("kb, sendingSapMessage. Sent to PSM BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
 
         return new ResponseEntity<>("BELNR: " + zorder.getIDOC().getE1EDK01().getBELNR(), HttpStatus.OK);
+    }
+
+    @Override
+    public void postProductAttestationResult(ProductAttestationResultDto attestationResult) {
+        log.info("postProductAttestationResult, ProductAttestationResultDto [{}]", attestationResult);
+        attestationResultSender.send(attestationResult);
     }
 
 }
