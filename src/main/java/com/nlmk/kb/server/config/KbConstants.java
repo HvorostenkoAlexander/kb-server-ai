@@ -8,6 +8,11 @@ public class KbConstants {
 
     public static final String REQUEST_ID_HEADER = "X-Request-ID";
     public static final String REQUEST_ID_KEY = "requestID";
+
+    public static final String DEFAULT_PREFIX = "kb-";
+    // источников запроса два: kafka topic и rest запросы
+    public static final String REQUEST_PREFIX = "kb-rest-";
     public static final String KAFKA_ID = "KAFKA_ID";
+    public static final String KAFKA_PREFIX = "kb-topic-";
 
 }
