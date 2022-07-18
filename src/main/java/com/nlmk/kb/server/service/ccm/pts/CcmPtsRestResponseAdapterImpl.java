@@ -35,7 +35,7 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
         return CcmPtsResponse.builder()
                 .ts(new Date())
                 .pk(CcmPtsResponse.Pk.builder()
-                        .id(request.getId() != null ? request.getId().toString() : null)
+                        .id(product.getId() != null ? product.getId().toString() : null)
                         .systemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                         .build())
                 .data(CcmPtsResponse.Record.builder()

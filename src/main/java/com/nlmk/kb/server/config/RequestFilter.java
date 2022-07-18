@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -21,11 +22,8 @@ public class RequestFilter implements Filter {
                          FilterChain filterChain) throws IOException, ServletException {
 
         final var id = ((HttpServletRequest) servletRequest).getHeader(KbConstants.REQUEST_ID_HEADER);
-        if (id == null) {
-            MDC.put(KbConstants.REQUEST_ID_KEY, UUID.randomUUID().toString());
-        } else {
-            MDC.put(KbConstants.REQUEST_ID_KEY, id);
-        }
+        MDC.put(KbConstants.REQUEST_ID_KEY,
+                KbConstants.REQUEST_PREFIX + Objects.requireNonNullElseGet(id, UUID::randomUUID));
 
         try {
             filterChain.doFilter(servletRequest, servletResponse);

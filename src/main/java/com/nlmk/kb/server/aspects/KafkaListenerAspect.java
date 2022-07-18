@@ -16,7 +16,7 @@ public class KafkaListenerAspect {
     @Around("@annotation(org.springframework.kafka.annotation.KafkaListener))")
     public void wrapKafkaListener(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        MDC.put(KbConstants.KAFKA_ID, UUID.randomUUID().toString());
+        MDC.put(KbConstants.KAFKA_ID, KbConstants.KAFKA_PREFIX + UUID.randomUUID());
 
         try {
             joinPoint.proceed(joinPoint.getArgs());
@@ -24,4 +24,5 @@ public class KafkaListenerAspect {
             MDC.remove(KbConstants.KAFKA_ID);
         }
     }
+
 }

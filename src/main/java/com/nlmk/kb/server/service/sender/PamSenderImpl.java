@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -19,12 +18,12 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class PamSenderImpl implements PamSender {
 
-    private final String pamUrl;
+    private final String pamAttestation;
     private final RestTemplate restTemplate;
 
     public PamSenderImpl(@Value("${service-web-client.pam-server.url}") String pamUrl,
                          RestTemplate restTemplate) {
-        this.pamUrl = pamUrl;
+        this.pamAttestation = pamUrl + "/attestation";
         this.restTemplate = restTemplate;
     }
 
@@ -32,15 +31,17 @@ public class PamSenderImpl implements PamSender {
     public ProductAttestationResultDto postAttestationRequest(AttestationRequest request) {
         Assert.notNull(request, "pamAttestationRequest is null");
 
-        log.debug("Отправка AttestationRequest с primeId: [{}]", request.getValue().getData().getPrimeId());
+        log.info("postAttestationRequest, primeId: [{}]", request.getValue().getData().getPrimeId());
 
-        HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
+        final var requestIdKafka = MDC.get(KbConstants.KAFKA_ID);
+        final var requestIdRest = MDC.get(KbConstants.REQUEST_ID_KEY);
+        final var requestId = (requestIdKafka != null) ? requestIdKafka : requestIdRest;
 
         ResponseEntity<ProductAttestationResultDto> response = restTemplate.postForEntity(
-                pamUrl + "/attestation",
-                new HttpEntity<>(request, headers),
+                pamAttestation,
+                new HttpEntity<>(request, RestTemplateUtils.prepareHeaders(requestId)),
                 ProductAttestationResultDto.class);
-        log.info("PAM-server response: " + response.getBody());
+        log.info("postAttestationRequest, PAM-server response: " + response.getBody());
         return response.getBody();
     }
 
