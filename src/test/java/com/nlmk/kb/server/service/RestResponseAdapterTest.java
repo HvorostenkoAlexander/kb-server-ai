@@ -27,11 +27,11 @@ class RestResponseAdapterTest {
     private ProductAttestationResultDto prepareAttestationResult() {
         return ProductAttestationResultDto.builder()
                 .result(ProductDto.builder()
-                        .id(123L)
+                        .id(1L)
                         .referenceCode("33")
                         .requests(List.of(
                                 RequestDto.builder()
-                                        .id(123L)
+                                        .id(2L)
                                         .primeID("54321")
                                         .status(Status.NO_NEED_ATTESTATION)
                                         .attestations(List.of(
@@ -57,7 +57,7 @@ class RestResponseAdapterTest {
     private CcmPtsResponse prepareCcmPtsResponse() {
         return CcmPtsResponse.builder()
                 .ts(new Date(1000000000_000L))
-                .pk(CcmPtsResponse.Pk.builder().id("123").systemCode("31").build())
+                .pk(CcmPtsResponse.Pk.builder().id("1").systemCode("31").build())
                 .data(CcmPtsResponse.Record.builder()
                         .primeSystemCode("33").primeId("54321")
                         .mismatch(CcmPtsResponse.Mismatch.builder().code(3).name("Аттестация не требуется").build())
