@@ -65,7 +65,7 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
             if (!oneGroup.isEmpty()) {
                 attestations.add(
                         CcmPtsResponse.Attestation.builder()
-                                .groupCode(-1) // ?
+                                .groupCode(group.getCode())
                                 .groupName(group.name())
                                 .listValues(prepareAttestationValue(request.getAttestations(), group))
                                 .build()
@@ -79,31 +79,33 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
     private List<CcmPtsResponse.AttestationValue> prepareAttestationValue(List<AttestationDto> attResult, Group group) {
         return attResult.stream()
                 .filter(f -> group.equals(f.getGroup()))
-                .map(a -> CcmPtsResponse.AttestationValue.builder()
-                        // skip: format, measure, defectSuggestion
-                        .code(a.getCode())
-                        .name(SpecCode.fromValue(a.getCode()).getDesc())
-                        // .typeCode(?)
-                        // .typeName(?)
-                        .value(a.getValue())
-                        // .docId(?)
-                        // .docName(?)
-                        .normLimits(CcmPtsResponse.NormLimit.builder()
-                                // или диапазон
-                                .valueMin(a.getMin())
-                                .valueMax(a.getMax())
-                                // или одиночное значение
-                                .listAccValues(a.getEqual() == null ? null : List.of(
-                                        CcmPtsResponse.AccValue.builder().value(a.getEqual()).build()
-                                ))
-                                .build())
-                        .mismatch(CcmPtsResponse.Mismatch.builder()
-                                .code(a.getStatus() != null ? a.getStatus().getValue() : null)
-                                .name(a.getStatus() != null ? a.getStatus().getDesc() : null)
-                                .build())
-                        .note(a.getComment())
-                        .parameters(List.of()) // ?
-                        .build())
+                .map(attestation -> {
+                    final var specCode = SpecCode.fromValue(attestation.getCode());
+                    return CcmPtsResponse.AttestationValue.builder()
+                            // skip: format, measure, defectSuggestion
+                            // no data: docId, docName, parameters
+                            .code(specCode.getValue())
+                            .name(specCode.getDesc())
+                            .typeCode(specCode.getTypeCode())
+                            .typeName(specCode.getTypeCode().getDesc())
+                            .value(attestation.getValue())
+                            .normLimits(CcmPtsResponse.NormLimit.builder()
+                                    // или диапазон
+                                    .valueMin(attestation.getMin())
+                                    .valueMax(attestation.getMax())
+                                    // или одиночное значение
+                                    .listAccValues(attestation.getEqual() == null ? null : List.of(
+                                            CcmPtsResponse.AccValue.builder().value(attestation.getEqual()).build()
+                                    ))
+                                    .build())
+                            .mismatch(CcmPtsResponse.Mismatch.builder()
+                                    .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)
+                                    .name(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
+                                    .build())
+                            .note(attestation.getComment())
+                            .parameters(List.of())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
