@@ -83,13 +83,12 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                     final var specCode = SpecCode.fromValue(attestation.getCode());
                     return CcmPtsResponse.AttestationValue.builder()
                             // skip: format, measure, defectSuggestion
+                            // no data: docId, docName, parameters
                             .code(specCode.getValue())
                             .name(specCode.getDesc())
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
-                            // .docId(?)
-                            // .docName(?)
                             .normLimits(CcmPtsResponse.NormLimit.builder()
                                     // или диапазон
                                     .valueMin(attestation.getMin())
@@ -104,7 +103,7 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                                     .name(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
                                     .build())
                             .note(attestation.getComment())
-                            .parameters(List.of()) // ?
+                            .parameters(List.of())
                             .build();
                 })
                 .collect(Collectors.toList());
