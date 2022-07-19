@@ -163,7 +163,6 @@ public class CcmPtsRequest {
                     .filter(s -> s.getValue().equals(value))
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeValue value [%s]", value)));
-
         }
     }
 
@@ -225,7 +224,6 @@ public class CcmPtsRequest {
                     .filter(s -> s.getValue().equals(value))
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown AnalysisValue value [%s]", value)));
-
         }
     }
 
@@ -286,7 +284,6 @@ public class CcmPtsRequest {
                     .filter(s -> s.getValue().equals(value))
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown Side value [%s]", value)));
-
         }
     }
 

@@ -63,12 +63,14 @@ class RestResponseAdapterTest {
                         .mismatch(CcmPtsResponse.Mismatch.builder().code(3).name("Аттестация не требуется").build())
                         .attestationList(List.of(
                                 CcmPtsResponse.Attestation.builder()
-                                        .groupCode(-1)
+                                        .groupCode(Group.HIM.getCode())
                                         .groupName(Group.HIM.name())
                                         .listValues(List.of(
                                                 CcmPtsResponse.AttestationValue.builder()
                                                         .code(SpecCode.MASS_FRACTION_B.getValue())
                                                         .name(SpecCode.MASS_FRACTION_B.getDesc())
+                                                        .typeCode(TypeCode.NUMBER)
+                                                        .typeName(TypeCode.NUMBER.getDesc())
                                                         .value("10")
                                                         .normLimits(CcmPtsResponse.NormLimit.builder()
                                                                 .valueMin(9.0).valueMax(18.0)
@@ -83,12 +85,14 @@ class RestResponseAdapterTest {
                                         ))
                                         .build(),
                                 CcmPtsResponse.Attestation.builder()
-                                        .groupCode(-1)
+                                        .groupCode(Group.GEOM.getCode())
                                         .groupName(Group.GEOM.name())
                                         .listValues(List.of(
                                                 CcmPtsResponse.AttestationValue.builder()
                                                         .code(SpecCode.LENGTH.getValue())
                                                         .name(SpecCode.LENGTH.getDesc())
+                                                        .typeCode(TypeCode.NUMBER)
+                                                        .typeName(TypeCode.NUMBER.getDesc())
                                                         .value("20")
                                                         .normLimits(CcmPtsResponse.NormLimit.builder()
                                                                 .listAccValues(List.of(
