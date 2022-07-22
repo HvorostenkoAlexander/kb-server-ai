@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestResponseAdapterImpl;

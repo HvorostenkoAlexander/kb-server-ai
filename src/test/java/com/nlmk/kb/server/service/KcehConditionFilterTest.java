@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.*;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
