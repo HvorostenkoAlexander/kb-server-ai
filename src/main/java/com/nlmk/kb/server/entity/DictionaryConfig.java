@@ -7,14 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Getter
@@ -36,6 +29,7 @@ public class DictionaryConfig {
     private String topic; // имя топика
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "dictionary_config_codes", joinColumns = @JoinColumn(name = "dictionary_config_id"))
     private List<Integer> codes; // перечень характеристик(кодов)
 
     @Column(nullable = false, name = "nsi_path")
