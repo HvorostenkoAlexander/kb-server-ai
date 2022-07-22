@@ -59,7 +59,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .partition(entity.getPartition())
                 .offset(entity.getOffset())
                 .key(entity.getKey())
-                .op(entity.getOp())
+                .op(entity.getOp().name())
                 .isPosted(entity.isPosted())
                 .note(entity.getNote())
                 .build();

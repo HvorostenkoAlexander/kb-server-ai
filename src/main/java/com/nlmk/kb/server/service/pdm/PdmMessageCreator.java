@@ -7,6 +7,6 @@ public interface PdmMessageCreator {
 
     String getType();
 
-    PdmMessage createPdmMessage(ConsumerRecord<Object, Object> record);
+    PdmMessage createPdmMessage(ConsumerRecord<Object, Object> consumerRecord);
 
 }

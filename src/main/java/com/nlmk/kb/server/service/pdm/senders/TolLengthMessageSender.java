@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.pdm.senders;
 
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
+import com.nlmk.kb.server.entity.pdm.PdmOp;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
@@ -46,20 +47,20 @@ public class TolLengthMessageSender extends BaseCreator implements MessageSender
     }
 
     @Override
-    public PdmMessage createPdmMessage(ConsumerRecord<Object, Object> record) {
-        SpTolLength pdmObject = (SpTolLength) record.value();
+    public PdmMessage createPdmMessage(ConsumerRecord<Object, Object> consumerRecord) {
+        SpTolLength pdmObject = (SpTolLength) consumerRecord.value();
 
         final var dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
 
         return PdmMessage.builder()
-                .topic(record.topic())
-                .key((String) record.key())
-                .offset(record.offset())
-                .partition(record.partition())
+                .topic(consumerRecord.topic())
+                .key((String) consumerRecord.key())
+                .offset(consumerRecord.offset())
+                .partition(consumerRecord.partition())
                 .dictionary(dictionary)
-                .op(dictionary.getOp())
+                .op(PdmOp.fromValue(dictionary.getOp()))
                 .ts(dictionary.getTs())
                 .build();
     }

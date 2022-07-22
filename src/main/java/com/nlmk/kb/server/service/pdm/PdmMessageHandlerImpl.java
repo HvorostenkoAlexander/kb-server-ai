@@ -18,15 +18,15 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
     private final PdmMessageService messageService;
 
     @Override
-    public boolean handleConsumerRecord(final ConsumerRecord<Object, Object> record) {
-        log.debug("handleConsumerRecord: [{}]", record);
+    public boolean handleConsumerRecord(final ConsumerRecord<Object, Object> consumerRecord) {
+        log.debug("handleConsumerRecord: [{}]", consumerRecord);
 
-        if (isTopicDisabled(record.topic())) {
-            log.warn("handleConsumerRecord: topic: [{}] is DISABLED", record.topic());
+        if (isTopicDisabled(consumerRecord.topic())) {
+            log.warn("handleConsumerRecord: topic: [{}] is DISABLED", consumerRecord.topic());
             return false;
         }
 
-        PdmMessage message = messageConverter.fromConsumerRecord(record);
+        PdmMessage message = messageConverter.fromConsumerRecord(consumerRecord);
         Optional<PdmMessage> savedMessage = messageService.save(message);
 
         if (savedMessage.isPresent()) {

@@ -8,13 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -54,7 +48,8 @@ public class PdmMessage {
     private Date ts;
 
     @Column(nullable = false)
-    private String op;
+    @Enumerated(EnumType.STRING)
+    private PdmOp op;
 
     @Column(name = "is_posted",
             nullable = false)
