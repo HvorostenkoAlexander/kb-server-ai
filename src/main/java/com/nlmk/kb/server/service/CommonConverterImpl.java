@@ -62,7 +62,7 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     @Override
-    public String getSpecValue(List<Spec> specs, SpecCode specCode) {
+    public String getStringSpecValue(List<Spec> specs, SpecCode specCode) {
         if (specs == null) {
             return null;
         }
@@ -75,9 +75,10 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     @Override
-    public LimitDto stringToLimit(String value) {
+    public LimitDto getLimitSpecValue(List<Spec> specs, SpecCode specCode) {
         return LimitDto.builder()
-                .srcValue(value)
+                // для сохранения в НСИ этого достаточно
+                .srcValue(getStringSpecValue(specs, specCode))
                 .build();
     }
 

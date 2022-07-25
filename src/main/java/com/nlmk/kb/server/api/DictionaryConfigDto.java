@@ -18,14 +18,15 @@ public class DictionaryConfigDto {
     private Long id;
 
     @NotBlank(message = "поле не должно быть пустым")
-    private String topic;// имя топика;
+    private String topic; // имя топика
 
     @NotEmpty(message = "поле не должно быть пустым")
-    private Integer[] codes;// перечень характеристик(кодов);
+    private Integer[] codes; // перечень характеристик(кодов)
 
     @NotBlank(message = "поле не должно быть пустым")
-    private String nsiPath;// точка куда скидывать данные;
+    private String nsiPath; // точка куда скидывать данные
 
     @NotNull(message = "поле не должно быть null")
-    private Boolean enabled; //активность.
+    private Boolean enabled; // активность
+
 }

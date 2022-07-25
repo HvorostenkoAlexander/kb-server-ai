@@ -11,9 +11,23 @@ public interface CommonConverter {
 
     Date parseToDate(String stringDate);
 
-    String getSpecValue(List<Spec> specs, SpecCode specCode);
+    /**
+     * Получить строковое значение из Спецификации по коду Спецификации
+     *
+     * @param specs    список Спецификации сообщения
+     * @param specCode код Спецификации
+     * @return строковое значение или null
+     */
+    String getStringSpecValue(List<Spec> specs, SpecCode specCode);
 
-    LimitDto stringToLimit(String value);
+    /**
+     * Получить объект LimitDto по значению из Спецификации по коду Спецификации
+     *
+     * @param specs    список Спецификации сообщения
+     * @param specCode код Спецификации
+     * @return объект LimitDto
+     */
+    LimitDto getLimitSpecValue(List<Spec> specs, SpecCode specCode);
 
     Double parseToDouble(String s);
 

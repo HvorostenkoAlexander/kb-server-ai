@@ -55,7 +55,7 @@ class SadimJsonParserTest {
 
     @Test
     void SadimStreamApiParserTest() throws FileNotFoundException {
-        final var jsonString = getJsonFromPath("src/main/resources/json/sadim09052020_1.json");
+        final var jsonString = getJsonFromPath("src/test/resources/json/sadim09052020_1.json");
         final var param = parser.getParam(jsonString);
         log.info("--- param: " + param);
         assertTrue(param.isPresent());

@@ -23,7 +23,9 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
     public boolean handleConsumerRecord(final ConsumerRecord<Object, Object> consumerRecord) {
         log.debug("handleConsumerRecord: [{}]", consumerRecord);
 
-        if (isTopicDisabled(consumerRecord.topic())) {
+        final var dictConf = dictionaryService.findByTopic(consumerRecord.topic());
+
+        if (!dictConf.getEnabled()) {
             log.warn("handleConsumerRecord: topic: [{}] is DISABLED", consumerRecord.topic());
             return false;
         }
@@ -39,10 +41,6 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
                     MessageFormat.format("Не удалось сохранить PdmMessage: [{0}]", message)
             );
         }
-    }
-
-    private boolean isTopicDisabled(String topic) {
-        return !dictionaryService.findByTopic(topic).getEnabled();
     }
 
 }
