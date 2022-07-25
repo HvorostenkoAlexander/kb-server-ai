@@ -2,6 +2,7 @@
 WITH dc AS (
  INSERT INTO dictionary_config (topic, nsi_path, is_enabled)
  VALUES ('000-0.l3-pdm.cdc.sp-asap-mech-properties-dt.0', '/nsi/dict/nsd_asap_mech_properties_dt', true)
+ RETURNING id
 ) INSERT INTO dictionary_config_codes (dictionary_config_id, codes) VALUES
  ((select id from dc),1)
 ,((select id from dc),3)
@@ -70,6 +71,7 @@ WITH dc AS (
 WITH dc AS (
  INSERT INTO dictionary_config (topic, nsi_path, is_enabled)
  VALUES ('000-0.l3-pdm.cdc.sp-phys-mech-prop-anis-steel-stand.0', '/nsi/dict/nsd_phys_mech_prop_anis_steel_stand', true)
+ RETURNING id
 ) INSERT INTO dictionary_config_codes (dictionary_config_id, codes) VALUES
  ((select id from dc),2)
 ,((select id from dc),3)
