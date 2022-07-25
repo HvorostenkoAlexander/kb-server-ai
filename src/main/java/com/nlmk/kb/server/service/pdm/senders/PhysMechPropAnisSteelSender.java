@@ -15,8 +15,10 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+@Service
 public class PhysMechPropAnisSteelSender extends BaseCreator implements MessageSender, PdmMessageCreator {
 
     public PhysMechPropAnisSteelSender(@Value("${kafka.pdm.topic.phys-mech-prop-anis-steel}") String type,

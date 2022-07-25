@@ -26,6 +26,9 @@ class SendMessageToKafkaTest {
     private static final String CCM_PGP_TOPIC = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
     private static final String CCM_PTS_TOPIC = "000-1.l3-ccm-pts.db.Attestation-Request.0";
 
+    private static final String PDM_TOPIC_ASAP_MECH_PROP_DT = "000-0.l3-pdm.cdc.sp-asap-mech-properties-dt.0";
+    private static final String PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL = "000-0.l3-pdm.cdc.sp-phys-mech-prop-anis-steel-stand.0";
+
     @BeforeAll
     void setUp() {
         final var avroProps = new Properties();
@@ -173,7 +176,88 @@ class SendMessageToKafkaTest {
         );
 
         sendAvro(record);
+    }
 
+    @Test
+    void sendPdmSpAsapMechPropertiesDt() {
+        nlmk.l3.pdm.SpAsapMechPropertiesDt value = nlmk.l3.pdm.SpAsapMechPropertiesDt.newBuilder()
+                .setTs("2022-07-25T15:25:25.123+05:00")
+                .setOp(nlmk.l3.pdm.opEnum.I) // I -> U -> D
+                .setPk(nlmk.l3.pdm.Pk.newBuilder()
+                        .setId("42")
+                        .setSystemCode("16")
+                        .setDirectoryId("4242")
+                        .build())
+                .setData(nlmk.l3.pdm.Data.newBuilder()
+                        .setSpecifications(List.of(
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(3).setSpecName("Марка на продукцию")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("08ю").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(1).setSpecName("Стандарт на продукцию")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("ГОСТ 1234-2022").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(586).setSpecName("Толщина проката")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("10..17").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(138).setSpecName("Примечание")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("Тест").build()
+                        ))
+                        .build())
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(
+                PDM_TOPIC_ASAP_MECH_PROP_DT,
+                "key~" + Instant.now().getEpochSecond(), // случайный key
+                value
+        );
+
+        sendAvro(record);
+    }
+
+    @Test
+    void sendPdmSpPhysMechPropAnisSteelStand() {
+        nlmk.l3.pdm.SpPhysMechPropAnisSteelStand value = nlmk.l3.pdm.SpPhysMechPropAnisSteelStand.newBuilder()
+                .setTs("2022-07-25T15:35:35.321+05:00")
+                .setOp(nlmk.l3.pdm.opEnum.I) // I -> U -> D
+                .setPk(nlmk.l3.pdm.Pk.newBuilder()
+                        .setId("44")
+                        .setSystemCode("16")
+                        .setDirectoryId("4444")
+                        .build())
+                .setData(nlmk.l3.pdm.Data.newBuilder()
+                        .setSpecifications(List.of(
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(3).setSpecName("Марка на продукцию")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("03а").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(1).setSpecName("Стандарт на продукцию")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("ГОСТ 4040-2020").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(586).setSpecName("Толщина проката")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("16..57").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(138).setSpecName("Примечание")
+                                        .setSpecTypeCode(1).setSpecMeasure("x")
+                                        .setSpecValue("Тест").build()
+                        ))
+                        .build())
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(
+                PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL,
+                "key~" + Instant.now().getEpochSecond(), // случайный key
+                value
+        );
+
+        sendAvro(record);
     }
 
 }

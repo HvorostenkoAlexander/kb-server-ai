@@ -9,14 +9,16 @@ import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
 import com.nlmk.kb.server.service.pdm.PdmMessageCreator;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.util.RestTemplateUtils;
-import nlmk.l3.pdm.SpAsapChemicalProperties;
+import nlmk.l3.pdm.SpAsapMechPropertiesDt;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+@Service
 public class AsapMechPropertiesDtSender extends BaseCreator implements MessageSender, PdmMessageCreator {
 
     public AsapMechPropertiesDtSender(@Value("${kafka.pdm.topic.asap-mech-properties-dt}") String type,
@@ -44,7 +46,7 @@ public class AsapMechPropertiesDtSender extends BaseCreator implements MessageSe
 
     @Override
     public PdmMessage createPdmMessage(ConsumerRecord<Object, Object> consumerRecord) {
-        final var pdmObject = (SpAsapChemicalProperties) consumerRecord.value();
+        final var pdmObject = (SpAsapMechPropertiesDt) consumerRecord.value();
 
         final var dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
