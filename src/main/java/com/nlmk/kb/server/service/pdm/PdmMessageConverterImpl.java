@@ -24,14 +24,14 @@ public class PdmMessageConverterImpl implements PdmMessageConverter {
     }
 
     @Override
-    public PdmMessage fromConsumerRecord(ConsumerRecord<Object, Object> record) {
+    public PdmMessage fromConsumerRecord(ConsumerRecord<Object, Object> consumerRecord) {
 
-        PdmMessageCreator creator = creators.get(record.topic());
+        PdmMessageCreator creator = creators.get(consumerRecord.topic());
 
         if (creator == null) {
-            throw new IllegalArgumentException("Не поддерживается конвертация сообщений для топика: " + record.topic());
+            throw new IllegalArgumentException("Не поддерживается конвертация сообщений для топика: " + consumerRecord.topic());
         }
-        return creator.createPdmMessage(record);
+        return creator.createPdmMessage(consumerRecord);
     }
 
 }

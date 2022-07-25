@@ -43,7 +43,7 @@ public class KatSteel4041MessageSender extends BaseCreator implements MessageSen
         final var request = new HttpEntity<>(sendingDto, headers);
         final var nsiUrl = getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic());
 
-        return super.getCommonSender().exchange(request, nsiUrl, message.getOp());
+        return super.getNsiSender().exchange(request, nsiUrl, message.getOp());
     }
 
     @Override

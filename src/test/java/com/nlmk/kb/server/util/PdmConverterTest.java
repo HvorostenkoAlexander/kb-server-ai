@@ -109,10 +109,9 @@ class PdmConverterTest {
     }
 
     private String getJsonFromPath(String path) throws FileNotFoundException {
-        FileInputStream fis = new FileInputStream(new File(path));
-        String stringTooLong = IOUtils.toString(fis);
+        FileInputStream fis = new FileInputStream(path);
 
-        return stringTooLong;
+        return IOUtils.toString(fis);
     }
 
 }

@@ -47,7 +47,9 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.tk-num}",
                     "${kafka.pdm.topic.ceq}",
                     "${kafka.pdm.topic.mech-properties}",
-                    "${kafka.pdm.topic.chemical-properties}"
+                    "${kafka.pdm.topic.chemical-properties}",
+                    "${kafka.pdm.topic.asap-mech-properties-dt}",
+                    "${kafka.pdm.topic.phys-mech-prop-anis-steel}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

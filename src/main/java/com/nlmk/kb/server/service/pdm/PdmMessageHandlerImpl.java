@@ -1,11 +1,13 @@
 package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
+import com.nlmk.kb.server.exception.PdmMessageHandlerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Optional;
 
 @Slf4j
@@ -33,8 +35,8 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
             messageService.sendToNsi(savedMessage.get());
             return true;
         } else {
-            throw new RuntimeException(
-                    String.format("Не удалось сохранить PdmMessage: [%s]", message)
+            throw new PdmMessageHandlerException(
+                    MessageFormat.format("Не удалось сохранить PdmMessage: [{0}]", message)
             );
         }
     }
