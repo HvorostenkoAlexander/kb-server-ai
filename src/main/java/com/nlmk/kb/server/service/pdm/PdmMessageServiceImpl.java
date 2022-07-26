@@ -4,7 +4,6 @@ import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
