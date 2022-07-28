@@ -2,6 +2,8 @@ package com.nlmk.kb.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -104,7 +106,7 @@ class SendMessageToKafkaTest {
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
                 .setKceh(12)
-                .setOrderNum(40434341)
+                .setOrderNum(40)
                 .setOrderPos(4)
                 // спецификация
                 .setSpecifications(List.of(
@@ -191,21 +193,25 @@ class SendMessageToKafkaTest {
                 .setData(nlmk.l3.pdm.Data.newBuilder()
                         .setSpecifications(List.of(
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(3).setSpecName("Марка на продукцию")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("08ю").build(),
+                                        .setSpecCode(SpecCode.STEEL_MARK.getValue())
+                                        .setSpecName(SpecCode.STEEL_MARK.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("NV23S-95L").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(1).setSpecName("Стандарт на продукцию")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("ГОСТ 1234-2022").build(),
+                                        .setSpecCode(SpecCode.ADDITIONAL_REQUIREMENTS.getValue())
+                                        .setSpecName(SpecCode.ADDITIONAL_REQUIREMENTS.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("ДТ 0043").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(586).setSpecName("Толщина проката")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("10..17").build(),
+                                        .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
+                                        .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("СТО 05757665-008-2019").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(138).setSpecName("Примечание")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("Тест").build()
+                                        .setSpecCode(SpecCode.P1750SST.getValue())
+                                        .setSpecName(SpecCode.P1750SST.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("*..0.95").build()
                         ))
                         .build())
                 .build();
@@ -232,21 +238,30 @@ class SendMessageToKafkaTest {
                 .setData(nlmk.l3.pdm.Data.newBuilder()
                         .setSpecifications(List.of(
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(3).setSpecName("Марка на продукцию")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("03а").build(),
+                                        .setSpecCode(SpecCode.STEEL_MARK.getValue())
+                                        .setSpecName(SpecCode.STEEL_MARK.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("Ст3сп").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(1).setSpecName("Стандарт на продукцию")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("ГОСТ 4040-2020").build(),
+                                        .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
+                                        .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("ГОСТ 21427.4-78").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(586).setSpecName("Толщина проката")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("16..57").build(),
+                                        .setSpecCode(SpecCode.THICKNESS_PRODUCTS.getValue())
+                                        .setSpecName(SpecCode.THICKNESS_PRODUCTS.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("2.65").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(138).setSpecName("Примечание")
-                                        .setSpecTypeCode(1).setSpecMeasure("x")
-                                        .setSpecValue("Тест").build()
+                                        .setSpecCode(SpecCode.P15400.getValue())
+                                        .setSpecName(SpecCode.P15400.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("*..23.0").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
+                                        .setSpecName(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("2..*").build()
                         ))
                         .build())
                 .build();
