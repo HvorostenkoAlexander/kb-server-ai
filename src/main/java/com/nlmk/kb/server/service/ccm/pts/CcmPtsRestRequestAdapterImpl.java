@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
@@ -47,6 +48,7 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
                                 .orderReq(List.of())
                                 .specifications(prepareSpecs(requestMessage))
                                 .chemical(prepareChemicalSpecs(requestMessage))
+                                .mechanicalPts(prepareMechanicalProperties(requestMessage))
                                 // данных нет для ЦТС
                                 .mechanical(List.of())
                                 .metallographic(List.of())
@@ -152,6 +154,48 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
                         .chemValue(c2.getValue() != null ? c2.getValue().toString() : null)
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Подготовка свойств Механики для ЦТС
+     *
+     * @param requestMessage запрос типа CcmPtsRequest
+     * @return список свойств Механики
+     */
+    private List<PtsMechanicalProperty> prepareMechanicalProperties(CcmPtsRequest requestMessage) {
+        if (requestMessage == null
+                || requestMessage.getData() == null
+                || requestMessage.getData().getProperties() == null
+                || requestMessage.getData().getProperties().isEmpty()) {
+            return List.of();
+        }
+
+        final var properties = new ArrayList<PtsMechanicalProperty>();
+
+        requestMessage.getData().getProperties().forEach(p -> {
+            if (p.getListValues() != null && !p.getListValues().isEmpty()) {
+                final var oneProperty = new PtsMechanicalProperty();
+                p.getListValues().forEach(v -> {
+                    if (v.getAttrCode() != null) {
+                        // только определенные коды для Механики
+                        if (SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue().equals(v.getAttrCode())) {
+                            oneProperty.setListValues(List.of(
+                                    PtsPropertyValue.builder()
+                                            .attrCode(v.getAttrCode())
+                                            .attrType(v.getAttrType().getValue())
+                                            .attrValue(v.getAttrValue())
+                                            .attrFormat(v.getAttrFormat())
+                                            .attrMeasure(v.getAttrMeasure())
+                                            .build()
+                            ));
+                        }
+                    }
+                });
+                properties.add(oneProperty);
+            }
+        });
+
+        return properties;
     }
 
 }

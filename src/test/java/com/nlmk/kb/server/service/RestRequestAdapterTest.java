@@ -79,7 +79,9 @@ class RestRequestAdapterTest {
                                         )).build()
                         ))
                         .properties(List.of(
-                                CcmPtsRequest.OneProperty.builder().typeCode(60).typeName("t61")
+                                CcmPtsRequest.OneProperty.builder()
+                                        .typeCode(60)
+                                        .typeName("t61")
                                         .analyzes(List.of(
                                                 CcmPtsRequest.OnePropAnalyze.builder()
                                                         .samplingPlaceCode(62).samplingPlaceName("s63")
@@ -99,6 +101,16 @@ class RestRequestAdapterTest {
                                                                         .attrCode(73).attrValue(74.0)
                                                                         .build()
                                                         )).build()
+                                        ))
+                                        .listValues(List.of(
+                                                CcmPtsRequest.OnePropValue.builder()
+                                                        .attrCode(SpecCode.AGING_FACTOR.getValue())
+                                                        .attrType(TypeCode.STRING).attrValue("af12")
+                                                        .build(),
+                                                CcmPtsRequest.OnePropValue.builder()
+                                                        .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
+                                                        .attrType(TypeCode.NUMBER).attrValue("12")
+                                                        .build()
                                         )).build()
                         ))
                         .build())
@@ -135,6 +147,17 @@ class RestRequestAdapterTest {
                                 .orderReq(List.of())
                                 .mechanical(List.of())
                                 .metallographic(List.of())
+                                .mechanicalPts(List.of(
+                                        PtsMechanicalProperty.builder()
+                                                .listValues(List.of(
+                                                        PtsPropertyValue.builder()
+                                                                .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
+                                                                .attrType(TypeCode.NUMBER.getValue())
+                                                                .attrValue("12")
+                                                                .build()
+                                                ))
+                                                .build()
+                                ))
                                 .build())
                         .build())
                 .build();
