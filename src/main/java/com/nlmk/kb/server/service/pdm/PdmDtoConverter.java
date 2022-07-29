@@ -1,24 +1,11 @@
 package com.nlmk.kb.server.service.pdm;
 
-import com.nlmk.attestation.product.api.nsi.CEqDto;
-import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
-import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
-import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
-import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
-import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
-import com.nlmk.attestation.product.api.nsi.MatchRpDto;
-import com.nlmk.attestation.product.api.nsi.MatchTkDto;
-import com.nlmk.attestation.product.api.nsi.MechanicalTkDto;
-import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
-import com.nlmk.attestation.product.api.nsi.PcmDto;
-import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
-import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
-import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
-import com.nlmk.attestation.product.api.nsi.TkNumDto;
-import com.nlmk.attestation.product.api.nsi.ToleranceDto;
-import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.*;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 
+/**
+ * Методы создания заданных DTO из PdmDictionary
+ */
 public interface PdmDtoConverter {
 
     ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary);
@@ -54,4 +41,9 @@ public interface PdmDtoConverter {
     MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary);
 
     ChemicalTkLimitDto toChemicalTkLimitDto(PdmDictionary dictionary);
+
+    AsapMechPropertiesDtDto toAsapMechPropertiesDtDto(PdmDictionary dictionary);
+
+    PhysMechPropAnisSteelStandDto toPhysMechPropAnisSteelStandDto(PdmDictionary dictionary);
+
 }

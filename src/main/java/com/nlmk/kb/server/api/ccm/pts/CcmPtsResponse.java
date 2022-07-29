@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.api.ccm.pts;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nlmk.attestation.product.api.TypeCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

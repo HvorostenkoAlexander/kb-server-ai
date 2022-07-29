@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.nsi.LimitDto;
+import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.entity.pdm.Spec;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -60,19 +62,23 @@ public class CommonConverterImpl implements CommonConverter {
     }
 
     @Override
-    public String getSpecValue(List<Spec> specs, int code) {
+    public String getStringSpecValue(List<Spec> specs, SpecCode specCode) {
         if (specs == null) {
             return null;
         }
 
-        final var spec = specs.stream().filter(s -> s.getSpecCode() == code).findFirst();
-        return spec.map(Spec::getSpecValue).orElse(null);
+        return specs.stream()
+                .filter(Objects::nonNull)
+                .filter(s -> s.getSpecCode() == specCode.getValue())
+                .findFirst()
+                .map(Spec::getSpecValue).orElse(null);
     }
 
     @Override
-    public LimitDto stringToLimit(String value) {
+    public LimitDto getLimitSpecValue(List<Spec> specs, SpecCode specCode) {
         return LimitDto.builder()
-                .srcValue(value)
+                // для сохранения в НСИ этого достаточно
+                .srcValue(getStringSpecValue(specs, specCode))
                 .build();
     }
 

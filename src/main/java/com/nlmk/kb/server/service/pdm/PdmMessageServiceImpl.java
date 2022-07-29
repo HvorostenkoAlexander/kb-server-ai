@@ -4,7 +4,6 @@ import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PdmMessageServiceImpl implements PdmMessageService {
+
+    private static final String ID_NOT_NULL = "id не должен быть null";
 
     private final PdmMessageRepository repository;
     private final DtoConverter dtoConverter;
@@ -116,7 +117,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public PdmMessageDto getMessageById(Long id) {
-        Assert.notNull(id, "id не должен быть null");
+        Assert.notNull(id, ID_NOT_NULL);
 
         return repository.findById(id).map(dtoConverter::toPdmMessageDto).orElseThrow(
                 () -> new IllegalArgumentException(
@@ -127,7 +128,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public Long deleteMessageById(Long id) {
-        Assert.notNull(id, "id не должен быть null");
+        Assert.notNull(id, ID_NOT_NULL);
         repository.deleteById(id);
 
         return id;
@@ -135,7 +136,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public ResponseEntity<Long> resendingToNsi(Long id) {
-        Assert.notNull(id, "id не должен быть null");
+        Assert.notNull(id, ID_NOT_NULL);
 
         final var message = repository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException(
@@ -150,13 +151,12 @@ public class PdmMessageServiceImpl implements PdmMessageService {
     public ResponseEntity<Long> sendToNsi(PdmMessage message) {
         ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
         setStatusMessage(message, response.getStatusCode());
-        final var updated = update(message);
-
+        update(message);
         return response;
     }
 
     private String toStringByPattern(Date date, String pattern) {
-        return converter.parseToStringByDatePattern(date,pattern);
+        return converter.parseToStringByDatePattern(date, pattern);
     }
 
     private void setStatusMessage(PdmMessage message, HttpStatus status) {
@@ -174,4 +174,5 @@ public class PdmMessageServiceImpl implements PdmMessageService {
             message.setNote(status.toString());
         }
     }
+
 }

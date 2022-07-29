@@ -2,7 +2,7 @@ package com.nlmk.kb.server.api.ccm.pts;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.nlmk.attestation.product.api.TypeCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import lombok.*;
 
 import javax.validation.Valid;

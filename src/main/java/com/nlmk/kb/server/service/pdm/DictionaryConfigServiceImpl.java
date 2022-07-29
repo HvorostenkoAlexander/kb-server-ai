@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
-import com.nlmk.kb.server.service.DtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -22,6 +21,8 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class DictionaryConfigServiceImpl implements DictionaryConfigService {
 
+    private static final String OBJECT_NOT_FOUND_BY_ID = "Не найден объект с id: [%s]";
+
     private final DictionaryConfigRepository repository;
     private final DtoConverter converter;
 
@@ -34,7 +35,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
     public DictionaryConfigDto findById(Long id) {
         return repository.findById(id).map(converter::toDictionaryConfigDto).orElseThrow(
                 () -> new IllegalArgumentException(
-                        String.format("Не найден объект с id: [%s]", id)
+                        String.format(OBJECT_NOT_FOUND_BY_ID, id)
                 )
         );
     }
@@ -44,7 +45,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
     public DictionaryConfigDto update(Long id, @Valid DictionaryConfigDto dto) {
         if (!repository.existsById(id)) {
             throw new IllegalArgumentException(
-                    String.format("Не найден объект с id: [%s]", id)
+                    String.format(OBJECT_NOT_FOUND_BY_ID, id)
             );
         }
 
@@ -60,7 +61,7 @@ public class DictionaryConfigServiceImpl implements DictionaryConfigService {
         } catch (EmptyResultDataAccessException erdae) {
             log.error(erdae.getMessage());
             throw new IllegalArgumentException(
-                    String.format("Не найден объект с id: [%s]", id)
+                    String.format(OBJECT_NOT_FOUND_BY_ID, id)
             );
         }
     }

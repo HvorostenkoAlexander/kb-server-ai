@@ -13,7 +13,7 @@ abstract class BaseCreator {
 
     private final String type;
     private final PdmDtoConverter pdmDtoConverter;
-    private final NsiSender commonSender;
+    private final NsiSender nsiSender;
     private final PdmDictionaryCreator pdmDictionaryCreator;
     private final DictionaryConfigService dictionaryConfigService;
 

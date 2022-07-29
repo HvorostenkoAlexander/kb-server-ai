@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DtoConverterImpl implements DtoConverter {
-
-    private final CommonConverter converter;
 
     @Override
     public DictionaryConfig toDictionaryConfig(DictionaryConfigDto dto) {
@@ -59,7 +57,7 @@ public class DtoConverterImpl implements DtoConverter {
                 .partition(entity.getPartition())
                 .offset(entity.getOffset())
                 .key(entity.getKey())
-                .op(entity.getOp())
+                .op(entity.getOp().name())
                 .isPosted(entity.isPosted())
                 .note(entity.getNote())
                 .build();

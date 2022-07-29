@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.api.PdmMessageDto;

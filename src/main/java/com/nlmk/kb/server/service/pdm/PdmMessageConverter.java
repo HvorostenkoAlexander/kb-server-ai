@@ -5,6 +5,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public interface PdmMessageConverter {
 
-    PdmMessage fromConsumerRecord(ConsumerRecord<Object, Object> record);
+    PdmMessage fromConsumerRecord(ConsumerRecord<Object, Object> consumerRecord);
 
 }

@@ -15,4 +15,6 @@ public class KbConstants {
     public static final String KAFKA_ID = "KAFKA_ID";
     public static final String KAFKA_PREFIX = "kb-topic-";
 
+    public static final String THROW_EXC_MESSAGE_TEMPLATE = "переброс: {0}";
+
 }

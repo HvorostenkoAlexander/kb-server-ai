@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.PdmKafkaException;
 import com.nlmk.kb.server.service.pdm.PdmMessageHandler;
@@ -11,6 +12,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+
+import java.text.MessageFormat;
 
 @Slf4j
 @Service
@@ -25,7 +28,8 @@ public class PdmKafkaService {
         this.pdmMessageHandler = pdmMessageHandler;
     }
 
-    @KafkaListener(containerFactory = "pdmKafkaListenerContainerFactory",
+    @KafkaListener(
+            containerFactory = "pdmKafkaListenerContainerFactory",
             topics = {
                     "${kafka.pdm.topic.microstructure}",
                     "${kafka.pdm.topic.asap-chemical-properties}",
@@ -43,7 +47,9 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.tk-num}",
                     "${kafka.pdm.topic.ceq}",
                     "${kafka.pdm.topic.mech-properties}",
-                    "${kafka.pdm.topic.chemical-properties}"
+                    "${kafka.pdm.topic.chemical-properties}",
+                    "${kafka.pdm.topic.asap-mech-properties-dt}",
+                    "${kafka.pdm.topic.phys-mech-prop-anis-steel}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
@@ -64,11 +70,11 @@ public class PdmKafkaService {
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + e);
+            throw new DateTimeParseException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new PdmKafkaException("переброс: " + e);
+            throw new PdmKafkaException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 
