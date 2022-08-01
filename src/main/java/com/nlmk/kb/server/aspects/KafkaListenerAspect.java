@@ -19,7 +19,9 @@ public class KafkaListenerAspect {
         MDC.put(KbConstants.KAFKA_ID, KbConstants.KAFKA_PREFIX + UUID.randomUUID());
 
         try {
-            joinPoint.proceed(joinPoint.getArgs());
+            if (joinPoint != null) {
+                joinPoint.proceed(joinPoint.getArgs());
+            }
         } finally {
             MDC.remove(KbConstants.KAFKA_ID);
         }

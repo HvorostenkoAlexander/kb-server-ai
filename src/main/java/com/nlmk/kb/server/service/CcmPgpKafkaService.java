@@ -88,7 +88,7 @@ public class CcmPgpKafkaService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPgpKafkaException(String.format(EXC_MESS, e));
+            throw new CcmPgpKafkaException(String.format(EXC_MESS, e), e);
         }
     }
 
