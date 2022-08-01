@@ -55,6 +55,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
 
     private static DataField toPamDataField(RecordData recordData) {
         // установка значений полей, значения в которых не null согласно AVRO-схеме
+        // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
         final var dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .roll(recordData.getRoll().toString())
@@ -62,11 +63,12 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .width(toDouble(recordData.getWidth()))
                 .weightNet(toDouble(recordData.getWeightNet()))
                 .kceh((long) recordData.getKceh())
-                .orderNum((long) recordData.getOrderNum())
-                .orderPos((long) recordData.getOrderPos())
-                // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
+                .orderNum(recordData.getOrderNum())
                 .orderReq(List.of());
 
+        if (recordData.getOrderPos() != null) {
+            dataFieldBuilder.orderPos(recordData.getOrderPos().longValue());
+        }
         if (recordData.getNplv() != null) {
             dataFieldBuilder.nplv(recordData.getNplv().longValue());
         }
