@@ -106,23 +106,13 @@ class SendMessageToKafkaTest {
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
                 .setKceh(12)
-                .setOrderNum(40)
+                .setOrderNum(40L)
                 .setOrderPos(4)
-                // спецификация
                 .setSpecifications(List.of(
                         nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(1)
                                 .setSpecCode(3).setSpecName("Марка стали").setSpecValue("Ст3сп").build(),
                         nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(2)
                                 .setSpecCode(45).setSpecName("Признак травления").setSpecValue("0").build()
-                ))
-                // ТрЗак
-                .setOrderReq(List.of(
-                        nlmk.l3.ccm.pgp.RecordOrderReq.newBuilder().setAttrTypeCode(1).setAttrTypeValue(1)
-                                .setAttrCode(219).setAttrName("Наименование продукции")
-                                .setAttrValue("Сталь тонколистовая горячекатаная").build(),
-                        nlmk.l3.ccm.pgp.RecordOrderReq.newBuilder().setAttrTypeCode(1).setAttrTypeValue(1)
-                                .setAttrCode(4).setAttrName("Вид продукции")
-                                .setAttrValue("РУЛОН").build()
                 ))
                 .build();
 
