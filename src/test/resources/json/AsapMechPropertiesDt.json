@@ -1,0 +1,16 @@
+{"ts": "2022-07-25T16:50:26.1252864+05:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "402644",
+    "id": "815"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "11ЮА", "specMeasure": ""},
+      {"specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "ТУ 14-106-454-94", "specMeasure": ""},
+      {"specCode": 586, "specName": "Толщина проката", "specTypeCode": 1, "specValue": "4.00..8.00", "specMeasure": ""},
+      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "Тест", "specMeasure": ""}
+    ]
+  }
+}

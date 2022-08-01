@@ -5,39 +5,31 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
 public class RequestFilter implements Filter {
 
-    private final String REQUEST_ID_KEY = "requestID";
-
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
+    public void doFilter(ServletRequest servletRequest,
+                         ServletResponse servletResponse,
+                         FilterChain filterChain) throws IOException, ServletException {
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
-        String xRequestId = ((HttpServletRequest) servletRequest).getHeader("X-Request-ID");
-
-        MDC.put(REQUEST_ID_KEY, xRequestId == null ? UUID.randomUUID().toString() : xRequestId);
+        final var id = ((HttpServletRequest) servletRequest).getHeader(KbConstants.REQUEST_ID_HEADER);
+        MDC.put(KbConstants.REQUEST_ID_KEY,
+                KbConstants.REQUEST_PREFIX + Objects.requireNonNullElseGet(id, UUID::randomUUID));
 
         try {
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
-            MDC.remove(REQUEST_ID_KEY);
+            MDC.remove(KbConstants.REQUEST_ID_KEY);
         }
     }
 
-    @Override
-    public void destroy() {
-    }
 }
-

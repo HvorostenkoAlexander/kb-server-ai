@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 public class KbServerApplication {
 
     public static void main(String[] args) {
-         SpringApplication.run(KbServerApplication.class, args);
+        SpringApplication.run(KbServerApplication.class);
     }
+
 }
