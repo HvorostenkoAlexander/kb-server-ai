@@ -88,7 +88,7 @@ public class CcmPtsKafkaService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPtsKafkaException(String.format(EXC_MESS, e));
+            throw new CcmPtsKafkaException(String.format(EXC_MESS, e), e);
         }
     }
 
