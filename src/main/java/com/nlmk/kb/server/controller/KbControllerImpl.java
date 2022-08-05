@@ -52,12 +52,14 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public Page<CcmMessage> getAllByPage(int page, int size) {
+    public Page<CcmMessage> getAttestationRequestAllByPage(int page, int size) {
+        log.info("getAttestationRequestAllByPage, page [{}], size [{}]", page ,size);
         return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
     @Override
-    public List<CcmMessage> getByPrimeId(String primeId) {
+    public List<CcmMessage> getAttestationRequestByPrimeId(String primeId) {
+        log.info("getAttestationRequestByPrimeId, primeId [{}]", primeId);
         return ccmMessageService.findByPrimeId(primeId);
     }
 

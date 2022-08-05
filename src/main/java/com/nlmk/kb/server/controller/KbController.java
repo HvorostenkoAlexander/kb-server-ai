@@ -34,12 +34,12 @@ public interface KbController {
 
     @GetMapping("/attestation_request")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    Page<CcmMessage> getAllByPage(@RequestParam(value = "pageNumber") int page,
-                                  @RequestParam(value = "pageSize") int size);
+    Page<CcmMessage> getAttestationRequestAllByPage(@RequestParam(value = "pageNumber") int page,
+                                                    @RequestParam(value = "pageSize") int size);
 
     @GetMapping("/attestation_request/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    List<CcmMessage> getByPrimeId(@PathVariable String primeId);
+    List<CcmMessage> getAttestationRequestByPrimeId(@PathVariable String primeId);
 
     @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
