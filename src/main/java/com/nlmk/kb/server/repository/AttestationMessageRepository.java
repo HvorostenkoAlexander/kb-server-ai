@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface AttestationMessageRepository extends JpaRepository<AttestationMessage, Long> {
 
     /**
-     * Найти последнее принятое сообщение, для указанного идентификатора единицы металла
+     * Найти последнее принятое сообщение для указанного идентификатора единицы металла
      *
      * @param primeId значение фильтра, идентификатор единицы металла
      * @return сообщение, если есть
@@ -17,10 +17,10 @@ public interface AttestationMessageRepository extends JpaRepository<AttestationM
     Optional<AttestationMessage> findFirstByPrimeIdOrderByReceiptTsDesc(String primeId);
 
     /**
-     * Найти все принятые сообщения, для указанного идентификатора единицы металла
+     * Найти все принятые сообщения для указанного идентификатора единицы металла
      *
      * @param primeId значение фильтра, идентификатор единицы металла
-     * @return список сообщений, если есть
+     * @return список сообщений или пустой список
      */
     List<AttestationMessage> findByPrimeIdOrderByReceiptTsDesc(String primeId);
 
