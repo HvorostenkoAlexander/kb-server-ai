@@ -5,6 +5,7 @@ import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.attestation.zorder.ZORDERS051E1EDK01;
 import com.nlmk.attestation.zorder.ZORDRSPORDERS05ZORDERS051;
+import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.AttestationMessageService;
@@ -29,9 +30,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.List;
+import java.util.Date;
+import java.util.Optional;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -139,39 +140,37 @@ class KbControllerTest {
     void getAttestationRequestForPrimeId() throws Exception {
         final var url = "/attestation/request/pi100";
 
-        when(ccmMessageService.findByPrimeId(any())).thenReturn(List.of());
-        when(attestationMessageService.findAllAttestationRequestByPrimeId(any())).thenReturn(List.of());
+        when(ccmMessageService.findLastMessage(any())).thenReturn(Optional.empty());
+        when(attestationMessageService.findLastAttestationMessage(any())).thenReturn(Optional.empty());
 
         mvc.perform(MockMvcRequestBuilders.get(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[]"));
+                .andExpect(status().isNotFound());
 
-        when(ccmMessageService.findByPrimeId(any())).thenReturn(List.of(
+        when(ccmMessageService.findLastMessage(any())).thenReturn(Optional.of(
                 CcmMessage.builder().request(
                         AttestationRequest.builder().value(Value.builder().build()).build()
-                ).build()
+                ).kbReceiptTs(new Date(1_000_000_000L)).build()
         ));
-
         mvc.perform(MockMvcRequestBuilders.get(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$").exists());
 
-        when(attestationMessageService.findAllAttestationRequestByPrimeId(any())).thenReturn(List.of(
-                AttestationRequest.builder().value(Value.builder().build()).build()
+        // выбор одного из двух
+        when(attestationMessageService.findLastAttestationMessage(any())).thenReturn(Optional.of(
+                AttestationMessage.builder().request("{}")
+                        .receiptTs(new Date(1_200_000_000L)).build()
         ));
-
+        when(attestationMessageService.getAttestationRequestFromMessage(any()))
+                .thenReturn(AttestationRequest.builder().value(Value.builder().build()).build());
         mvc.perform(MockMvcRequestBuilders.get(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$").exists());
 
         doThrow(CcmRequestParsingException.class).when(attestationMessageService)
-                .findAllAttestationRequestByPrimeId(any());
+                .getAttestationRequestFromMessage(any());
 
         mvc.perform(MockMvcRequestBuilders.get(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V"))

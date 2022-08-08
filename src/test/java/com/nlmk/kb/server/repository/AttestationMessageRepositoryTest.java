@@ -45,11 +45,6 @@ class AttestationMessageRepositoryTest {
         Assertions.assertEquals(1600_300000_000L, fined.get().getAttestationTs().getTime());
 
         Assertions.assertTrue(repository.findFirstByPrimeIdOrderByReceiptTsDesc("0005").isEmpty());
-
-        final var primeIdList = repository.findByPrimeIdOrderByReceiptTsDesc("0001");
-        Assertions.assertEquals(2, primeIdList.size());
-        Assertions.assertEquals("{\"ts\":\"2\"}", primeIdList.get(0).getRequest());
-        Assertions.assertEquals("{\"ts\":\"1\"}", primeIdList.get(1).getRequest());
     }
 
 }

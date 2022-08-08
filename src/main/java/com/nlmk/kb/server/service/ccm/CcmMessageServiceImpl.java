@@ -74,4 +74,9 @@ public class CcmMessageServiceImpl implements CcmMessageService {
         return messageRepository.save(ccmMessage);
     }
 
+    @Override
+    public Optional<CcmMessage> findLastMessage(String primeId) {
+        return messageRepository.findFirstByPrimeIdOrderByKbReceiptTsDesc(primeId);
+    }
+
 }

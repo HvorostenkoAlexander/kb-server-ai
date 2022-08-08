@@ -44,9 +44,9 @@ public interface KbController {
     List<CcmMessage> getCcmMessageByPrimeId(@PathVariable String primeId);
 
     @GetMapping("/attestation/request/{primeId}")
-    @Operation(summary = "Получения списка запросов на Аттестацию для указанного primeId",
+    @Operation(summary = "Получения последнего запросов на Аттестацию для указанного primeId",
             security = {@SecurityRequirement(name = "bearer-key")})
-    List<AttestationRequest> getAttestationRequestForPrimeId(@PathVariable String primeId);
+    AttestationRequest getAttestationRequestForPrimeId(@PathVariable String primeId);
 
     @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})

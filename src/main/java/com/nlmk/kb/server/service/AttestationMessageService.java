@@ -37,11 +37,11 @@ public interface AttestationMessageService {
     CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest request);
 
     /**
-     * Поиск всех сообщений с запросами на Аттестацию
+     * Получение объекта AttestationRequest из сообщения
      *
-     * @param primeId идентификатор Единицы Металла (Единице Продукции)
-     * @return список сообщений или пустой список
+     * @param message сообщение с запросом на Аттестацию
+     * @return объект AttestationRequest или исключение
      */
-    List<AttestationRequest> findAllAttestationRequestByPrimeId(String primeId);
+    AttestationRequest getAttestationRequestFromMessage(AttestationMessage message);
 
 }

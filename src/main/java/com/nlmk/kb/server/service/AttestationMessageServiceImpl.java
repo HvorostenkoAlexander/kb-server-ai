@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -84,26 +82,18 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<AttestationRequest> findAllAttestationRequestByPrimeId(String primeId) {
-        final var attMessages = repository.findByPrimeIdOrderByReceiptTsDesc(primeId);
-        if (attMessages.isEmpty()) {
-            return List.of();
+    public AttestationRequest getAttestationRequestFromMessage(AttestationMessage message) {
+        if (message == null) {
+            return null;
         }
 
         try {
-            final var attRequests = new ArrayList<AttestationRequest>();
-            for (AttestationMessage am : attMessages) {
-                attRequests.add(
-                        objectMapper.readValue(am.getRequest(), AttestationRequest.class)
-                );
-            }
-            return attRequests;
+            return objectMapper.readValue(message.getRequest(), AttestationRequest.class);
         } catch (JsonProcessingException e) {
-            log.error("findAllAttestationRequestByPrimeId", e);
-            throw new CcmRequestParsingException(
-                    MessageFormat.format("findAllAttestationRequestByPrimeId, parsing error for primeId [{0}]", primeId)
-            );
+            log.error("getAttestationRequestFromMessage", e);
+            throw new CcmRequestParsingException(MessageFormat.format(
+                    "getAttestationRequestFromMessage, parsing error for primeId [{0}]", message.getPrimeId()
+            ));
         }
     }
 

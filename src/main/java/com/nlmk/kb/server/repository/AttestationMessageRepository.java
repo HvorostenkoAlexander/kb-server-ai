@@ -16,12 +16,4 @@ public interface AttestationMessageRepository extends JpaRepository<AttestationM
      */
     Optional<AttestationMessage> findFirstByPrimeIdOrderByReceiptTsDesc(String primeId);
 
-    /**
-     * Найти все принятые сообщения для указанного идентификатора единицы металла
-     *
-     * @param primeId значение фильтра, идентификатор единицы металла
-     * @return список сообщений или пустой список
-     */
-    List<AttestationMessage> findByPrimeIdOrderByReceiptTsDesc(String primeId);
-
 }

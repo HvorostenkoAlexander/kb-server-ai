@@ -6,6 +6,7 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
@@ -22,9 +23,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -68,16 +69,30 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public List<AttestationRequest> getAttestationRequestForPrimeId(String primeId) {
+    public AttestationRequest getAttestationRequestForPrimeId(String primeId) {
         log.info("getAttestationRequestForPrimeId, primeId [{}]", primeId);
 
         // запросы на Аттестацию в двух разных таблицах
-        final var result = ccmMessageService.findByPrimeId(primeId).stream()
-                .map(CcmMessage::getRequest)
-                .collect(Collectors.toList());
-        result.addAll(attestationMessageService.findAllAttestationRequestByPrimeId(primeId));
+        final var ccmKafka = ccmMessageService.findLastMessage(primeId);
+        final var ccmRest = attestationMessageService.findLastAttestationMessage(primeId);
 
-        return result;
+        if (ccmKafka.isEmpty() && ccmRest.isEmpty()) {
+            throw new AttestationRequestNotFoundException(MessageFormat.format(
+                    "AttestationRequest for primeId [{0}] not found", primeId
+            ));
+        }
+
+        if (ccmKafka.isPresent() && ccmRest.isPresent()) {
+            // какое сообщение последнее?
+            if (ccmKafka.get().getKbReceiptTs().after(ccmRest.get().getReceiptTs())) {
+                return ccmKafka.get().getRequest();
+            }
+            return attestationMessageService.getAttestationRequestFromMessage(ccmRest.get());
+        } else if (ccmRest.isPresent()) {
+            return attestationMessageService.getAttestationRequestFromMessage(ccmRest.get());
+        }
+
+        return ccmKafka.get().getRequest();
     }
 
     @Override

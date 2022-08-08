@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.controller;
 
+import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.ProductSenderException;
@@ -23,6 +24,13 @@ public class KbExceptionHandler {
         log.error("handleException: {}", ex.getMessage());
 
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AttestationRequestNotFoundException.class)
+    public ResponseEntity<String> handleAttestationRequestNotFoundException(AttestationRequestNotFoundException ex) {
+        log.error("handleAttestationRequestNotFoundException: {}", ex.getMessage());
+
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
