@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
@@ -39,7 +40,13 @@ public interface KbController {
 
     @GetMapping("/attestation_request/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    List<CcmMessage> getAttestationRequestByPrimeId(@PathVariable String primeId);
+    @Deprecated(since = "1.33.0")
+    List<CcmMessage> getCcmMessageByPrimeId(@PathVariable String primeId);
+
+    @GetMapping("/attestation/request/{primeId}")
+    @Operation(summary = "Получения списка запросов на Аттестацию для указанного primeId",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    List<AttestationRequest> getAttestationRequestForPrimeId(@PathVariable String primeId);
 
     @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})

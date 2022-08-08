@@ -1,9 +1,11 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,5 +35,13 @@ public interface AttestationMessageService {
      * @return объект ответа тип <code>CcmPtsResponse</code>
      */
     CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest request);
+
+    /**
+     * Поиск всех сообщений с запросами на Аттестацию
+     *
+     * @param primeId идентификатор Единицы Металла (Единице Продукции)
+     * @return список сообщений или пустой список
+     */
+    List<AttestationRequest> findAllAttestationRequestByPrimeId(String primeId);
 
 }

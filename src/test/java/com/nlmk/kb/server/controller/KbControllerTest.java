@@ -1,12 +1,13 @@
 package com.nlmk.kb.server.controller;
 
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.attestation.zorder.ZORDERS051E1EDK01;
 import com.nlmk.attestation.zorder.ZORDRSPORDERS05ZORDERS051;
-import com.nlmk.kb.server.exception.KafkaRestConfigException;
-import com.nlmk.kb.server.exception.KafkaRestException;
-import com.nlmk.kb.server.exception.ProductSenderException;
-import com.nlmk.kb.server.exception.S3ClientException;
+import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
@@ -28,6 +29,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.List;
+
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -39,17 +43,19 @@ class KbControllerTest {
     @Autowired
     private MockMvc mvc;
     @MockBean
-    S3Service s3Service;
+    private S3Service s3Service;
     @MockBean
-    CcmMessageService ccmMessageService;
+    private CcmMessageService ccmMessageService;
     @MockBean
-    PdmMessageService pdmMessageService;
+    private PdmMessageService pdmMessageService;
     @MockBean
-    CcmCommonService ccmCommonService;
+    private CcmCommonService ccmCommonService;
     @MockBean
-    PsmSender psmSender;
+    private PsmSender psmSender;
     @MockBean
-    ProductSender productSender;
+    private ProductSender productSender;
+    @MockBean
+    private AttestationMessageService attestationMessageService;
 
     @Test
     void sendingSapMessage() throws Exception {
@@ -127,6 +133,49 @@ class KbControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void getAttestationRequestForPrimeId() throws Exception {
+        final var url = "/attestation/request/pi100";
+
+        when(ccmMessageService.findByPrimeId(any())).thenReturn(List.of());
+        when(attestationMessageService.findAllAttestationRequestByPrimeId(any())).thenReturn(List.of());
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+
+        when(ccmMessageService.findByPrimeId(any())).thenReturn(List.of(
+                CcmMessage.builder().request(
+                        AttestationRequest.builder().value(Value.builder().build()).build()
+                ).build()
+        ));
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)));
+
+        when(attestationMessageService.findAllAttestationRequestByPrimeId(any())).thenReturn(List.of(
+                AttestationRequest.builder().value(Value.builder().build()).build()
+        ));
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(2)));
+
+        doThrow(CcmRequestParsingException.class).when(attestationMessageService)
+                .findAllAttestationRequestByPrimeId(any());
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isBadRequest());
     }
 
 }

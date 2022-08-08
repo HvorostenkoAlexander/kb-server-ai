@@ -1,10 +1,12 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -36,6 +39,7 @@ public class KbControllerImpl implements KbController {
     private final S3Service s3Service;
     private final PsmSender psmSender;
     private final ProductSender attestationResultSender;
+    private final AttestationMessageService attestationMessageService;
 
     @Override
     public ResponseEntity<String> postLaunchReAttestation(String primeId) {
@@ -53,14 +57,27 @@ public class KbControllerImpl implements KbController {
 
     @Override
     public Page<CcmMessage> getAttestationRequestAllByPage(int page, int size) {
-        log.info("getAttestationRequestAllByPage, page [{}], size [{}]", page ,size);
+        log.info("getAttestationRequestAllByPage, page [{}], size [{}]", page, size);
         return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
     @Override
-    public List<CcmMessage> getAttestationRequestByPrimeId(String primeId) {
-        log.info("getAttestationRequestByPrimeId, primeId [{}]", primeId);
+    public List<CcmMessage> getCcmMessageByPrimeId(String primeId) {
+        log.info("getCcmMessageByPrimeId, primeId [{}]", primeId);
         return ccmMessageService.findByPrimeId(primeId);
+    }
+
+    @Override
+    public List<AttestationRequest> getAttestationRequestForPrimeId(String primeId) {
+        log.info("getAttestationRequestForPrimeId, primeId [{}]", primeId);
+
+        // запросы на Аттестацию в двух разных таблицах
+        final var result = ccmMessageService.findByPrimeId(primeId).stream()
+                .map(CcmMessage::getRequest)
+                .collect(Collectors.toList());
+        result.addAll(attestationMessageService.findAllAttestationRequestByPrimeId(primeId));
+
+        return result;
     }
 
     @Override

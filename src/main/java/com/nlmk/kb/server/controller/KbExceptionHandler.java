@@ -3,7 +3,6 @@ package com.nlmk.kb.server.controller;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.ProductSenderException;
-import com.nlmk.kb.server.exception.RequestProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +37,6 @@ public class KbExceptionHandler {
         );
 
         return new ResponseEntity<>(errMap, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(RequestProcessingException.class)
-    public ResponseEntity<String> handleRequestProcessingException(RequestProcessingException ex) {
-        log.error("handleRequestProcessingException: {}", ex.getMessage());
-
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ProductSenderException.class)
