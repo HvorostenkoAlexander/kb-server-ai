@@ -7,7 +7,8 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.AttestationMessageSender;
-import com.nlmk.kb.server.exception.RequestProcessingException;
+import com.nlmk.kb.server.exception.CcmRequestParsingException;
+import com.nlmk.kb.server.exception.CcmRequestProcessingException;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
@@ -17,7 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -73,7 +77,33 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
             return ccmPtsRestResponseAdapter.adapt(attResult);
         } catch (JsonProcessingException e) {
             log.error("ccmPtsRequestProcessing", e);
-            throw new RequestProcessingException(String.format("ccmPtsRequestProcessing, error for primeId [%s]", primeId));
+            throw new CcmRequestProcessingException(
+                    MessageFormat.format("ccmPtsRequestProcessing, error for primeId [{0}]", primeId)
+            );
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AttestationRequest> findAllAttestationRequestByPrimeId(String primeId) {
+        final var attMessages = repository.findByPrimeIdOrderByReceiptTsDesc(primeId);
+        if (attMessages.isEmpty()) {
+            return List.of();
+        }
+
+        try {
+            final var attRequests = new ArrayList<AttestationRequest>();
+            for (AttestationMessage am : attMessages) {
+                attRequests.add(
+                        objectMapper.readValue(am.getRequest(), AttestationRequest.class)
+                );
+            }
+            return attRequests;
+        } catch (JsonProcessingException e) {
+            log.error("findAllAttestationRequestByPrimeId", e);
+            throw new CcmRequestParsingException(
+                    MessageFormat.format("findAllAttestationRequestByPrimeId, parsing error for primeId [{0}]", primeId)
+            );
         }
     }
 
