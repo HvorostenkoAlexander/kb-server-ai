@@ -1,8 +1,5 @@
 package com.nlmk.kb.server.service.ccm;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.CcmMessage;
@@ -14,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,7 +22,6 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     private final PamSender pamSender;
     private final CcmMessageService ccmMessageService;
     private final AttestationMessageService attMessageService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Optional<ProductAttestationResultDto> rePostAttestation(String primeId) throws IllegalArgumentException {
@@ -68,25 +63,11 @@ public class CcmCommonServiceImpl implements CcmCommonService {
      * @return найденное сообщение или пусто
      */
     private Optional<CcmMessage> findLastCcmMessage(String primeId) {
-        final var ccmMessages = ccmMessageService.findByPrimeId(primeId);
-
-        if (ccmMessages.isEmpty()) {
-            log.info("findLastCcmMessage, last CcmMessage not found by primeId: [{}]", primeId);
-            return Optional.empty();
-        }
-
-        if (ccmMessages.size() > 1) {
-            log.warn("findLastCcmMessage, fined [{}] CcmMessages by primeId: [{}]", ccmMessages.size(), primeId);
-            ccmMessages.stream().map(
-                    r -> String.format("id: %s, kbReceiptTs: %s, primeId: %s", r.getId(), r.getKbReceiptTs(), r.getPrimeId())
-            ).forEach(log::debug);
-        }
-
-        final var last = ccmMessages.stream().max(Comparator.comparing(CcmMessage::getKbReceiptTs));
-        if (last.isEmpty()) {
-            log.warn("findLastCcmMessage, Не удалось получить сведения о последнем запросе с primeId: [{}]", primeId);
-        }
-        return last;
+        return ccmMessageService.findLastMessage(primeId)
+                .or(() -> {
+                    log.info("findLastCcmMessage, last CcmMessage not found by primeId: [{}]", primeId);
+                    return Optional.empty();
+                });
     }
 
     /**
@@ -96,14 +77,11 @@ public class CcmCommonServiceImpl implements CcmCommonService {
      * @return найденное сообщение или пусто
      */
     private Optional<AttestationMessage> findLastAttestationMessage(String primeId) {
-        final var attMessage = attMessageService.findLastAttestationMessage(primeId);
-
-        if (attMessage.isEmpty()) {
-            log.info("findLastAttestationMessage, last AttestationMessage not found by primeId: [{}]", primeId);
-            return Optional.empty();
-        }
-
-        return attMessage;
+        return attMessageService.findLastAttestationMessage(primeId)
+                .or(() -> {
+                    log.info("findLastAttestationMessage, last AttestationMessage not found by primeId: [{}]", primeId);
+                    return Optional.empty();
+                });
     }
 
     @Override
@@ -145,17 +123,16 @@ public class CcmCommonServiceImpl implements CcmCommonService {
     }
 
     private ProductAttestationResultDto rePostAttestationMessage(AttestationMessage attMessage) {
-        try {
-            final var attRequest = objectMapper.readValue(attMessage.getRequest(), AttestationRequest.class);
-            final var pamResult = pamSender.postAttestationRequest(attRequest);
-            if (pamResult != null) {
-                attMessage.setAttestationTs(new Date());
-                attMessageService.updateAttestationMessage(attMessage);
-            }
-            return pamResult;
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException(String.format("rePostAttestationMessage, JSON error, ID [%s], primeId [%s]", attMessage.getId(), attMessage.getPrimeId()));
+        log.info("Повторная отправка запроса на аттестацию. id:[{}]; primeId: [{}]; receiptTs:[{}]",
+                attMessage.getId(), attMessage.getPrimeId(), attMessage.getReceiptTs());
+
+        final var attRequest = attMessageService.getAttestationRequestFromMessage(attMessage);
+        final var pamResult = pamSender.postAttestationRequest(attRequest);
+        if (pamResult != null) {
+            attMessage.setAttestationTs(new Date());
+            attMessageService.updateAttestationMessage(attMessage);
         }
+        return pamResult;
     }
 
 }
