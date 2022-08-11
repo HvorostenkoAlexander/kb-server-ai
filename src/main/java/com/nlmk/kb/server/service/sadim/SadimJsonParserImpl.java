@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.sadim.SadimJsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,75 +37,99 @@ public class SadimJsonParserImpl implements SadimJsonParser {
 
         try (JsonParser jParser = new JsonFactory().createParser(jsonString)) {
             while (jParser.nextToken() != null) {
-                String fieldname = jParser.getCurrentName();
-
-                if ("time_rolling".equals(fieldname)) {
-                    jParser.nextToken();
-                    sadimDate = jParser.getText();
+                final var field = SadimJsonElement.fromName(jParser.getCurrentName());
+                if (field == null) {
+                    continue;
                 }
 
-                if ("PRIME_ID".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.primeId(jParser.getText());
-                }
-                if ("t12_min".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.t12Min(converter.parseToDouble(jParser.getText()));
-                }
-                if ("t12_max".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.t12Max(converter.parseToDouble(jParser.getText()));
-                }
-                if ("tcm_min".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.tcmMin(converter.parseToDouble(jParser.getText()));
-                }
-                if ("tcm_max".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.tcmMax(converter.parseToDouble(jParser.getText()));
-                }
-                if ("PBI".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.pbi(converter.parseToDouble(jParser.getText()));
-                }
-                if ("ProfFact".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.profFact(converter.parseToDouble(jParser.getText()));
-                }
-                if ("WedgeFact".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.wedgeFact(converter.parseToDouble(jParser.getText()));
-                }
-                if ("SQC_CRIT_MAX".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.sqcCritMax(converter.parseToDouble(jParser.getText()));
-                }
-                if ("PH_1SGP".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.ph1sgp(converter.parseToDouble(jParser.getText()));
-                }
-                if ("PH_12SGP".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.ph12sgp(jParser.getText());
-                }
-                if ("PH_23SGP".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.ph23sgp(converter.parseToDouble(jParser.getText()));
-                }
-                if ("estimate".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.estimate(converter.parseToInteger(jParser.getText()));
-                }
-                if ("lclThckng".equals(fieldname) && jParser.getCurrentToken() == JsonToken.START_OBJECT) {
-                    paramBuilder.lclThckng(getStringFromLclThckngSadim(jParser));
-                }
-                if ("lot_no".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.lotNo(converter.parseToInteger(jParser.getText()));
-                }
-                if ("melt_no".equals(fieldname)) {
-                    jParser.nextToken();
-                    paramBuilder.meltNo(converter.parseToInteger(jParser.getText()));
+                switch (field) {
+                    case TIME_ROLLING: {
+                        jParser.nextToken();
+                        sadimDate = jParser.getText();
+                        break;
+                    }
+                    case PRIME_ID: {
+                        jParser.nextToken();
+                        paramBuilder.primeId(jParser.getText());
+                        break;
+                    }
+                    case T12_MIN: {
+                        jParser.nextToken();
+                        paramBuilder.t12Min(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case T12_MAX: {
+                        jParser.nextToken();
+                        paramBuilder.t12Max(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case TCM_MIN: {
+                        jParser.nextToken();
+                        paramBuilder.tcmMin(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case TCM_MAX: {
+                        jParser.nextToken();
+                        paramBuilder.tcmMax(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case PBI: {
+                        jParser.nextToken();
+                        paramBuilder.pbi(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case PROF_FACT: {
+                        jParser.nextToken();
+                        paramBuilder.profFact(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case WEDGE_FACT: {
+                        jParser.nextToken();
+                        paramBuilder.wedgeFact(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case SQC_CRIT_MAX: {
+                        jParser.nextToken();
+                        paramBuilder.sqcCritMax(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case PH_1SGP: {
+                        jParser.nextToken();
+                        paramBuilder.ph1sgp(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case PH_12SGP: {
+                        jParser.nextToken();
+                        paramBuilder.ph12sgp(jParser.getText());
+                        break;
+                    }
+                    case PH_23SGP: {
+                        jParser.nextToken();
+                        paramBuilder.ph23sgp(converter.parseToDouble(jParser.getText()));
+                        break;
+                    }
+                    case ESTIMATE: {
+                        jParser.nextToken();
+                        paramBuilder.estimate(converter.parseToInteger(jParser.getText()));
+                        break;
+                    }
+                    case LOT_NO: {
+                        jParser.nextToken();
+                        paramBuilder.lotNo(converter.parseToInteger(jParser.getText()));
+                        break;
+                    }
+                    case MELT_NO: {
+                        jParser.nextToken();
+                        paramBuilder.meltNo(converter.parseToInteger(jParser.getText()));
+                        break;
+                    }
+                    case LCL_THCKNG: {
+                        if (jParser.getCurrentToken() == JsonToken.START_OBJECT) {
+                            paramBuilder.lclThckng(getStringFromLclThckngSadim(jParser));
+                        }
+                        break;
+                    }
+                    default:
                 }
             }
         } catch (IOException | NumberFormatException ioe) {
@@ -120,9 +143,9 @@ public class SadimJsonParserImpl implements SadimJsonParser {
 
         if (param.getPrimeId() != null) {
             return Optional.of(param);
-        } else {
-            return Optional.empty();
         }
+
+        return Optional.empty();
     }
 
     private String getStringFromLclThckngSadim(JsonParser jParser) throws IOException {
@@ -134,12 +157,15 @@ public class SadimJsonParserImpl implements SadimJsonParser {
     private List<Double> getArrayFromLclThckngSadim(JsonParser jParser) throws IOException {
         List<List<Double>> values = new ArrayList<>();
 
-        while (!("lclThckng".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.END_OBJECT)) {
+        while (!(SadimJsonElement.LCL_THCKNG.getName().equals(jParser.getCurrentName())
+                && jParser.getCurrentToken() == JsonToken.END_OBJECT)) {
             jParser.nextToken();
 
-            if ("values".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.START_ARRAY) {
+            if (SadimJsonElement.VALUES.getName().equals(jParser.getCurrentName())
+                    && jParser.getCurrentToken() == JsonToken.START_ARRAY) {
 
-                while (!("values".equals(jParser.getCurrentName()) && jParser.getCurrentToken() == JsonToken.END_ARRAY)) {
+                while (!(SadimJsonElement.VALUES.getName().equals(jParser.getCurrentName())
+                        && jParser.getCurrentToken() == JsonToken.END_ARRAY)) {
 
                     if (jParser.nextToken() == JsonToken.START_ARRAY) {
                         List<Double> onePare = new ArrayList<>();
