@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.result.sending;
 
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.*;
 import org.springframework.stereotype.Service;
@@ -117,8 +118,8 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
         return RecordCommons.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecName(null)
-                .setSpecTypeCode(1)
-                .setSpecTypeName("string")
+                .setSpecTypeCode(TypeCode.STRING.getValue())
+                .setSpecTypeName(TypeCode.STRING.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setSpecFormat(null)
                 .setSpecMeasure(null)

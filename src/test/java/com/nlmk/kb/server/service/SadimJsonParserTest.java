@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.kb.server.service.sadim.SadimJsonElement;
 import com.nlmk.kb.server.service.sadim.SadimJsonParserImpl;
 import com.nlmk.kb.server.service.sadim.SadimJsonParser;
 import io.micrometer.core.instrument.util.IOUtils;
@@ -29,12 +30,36 @@ class SadimJsonParserTest {
     private final SadimJsonParser parser = new SadimJsonParserImpl(commonConverter);
 
     @Test
+    void enumFiled() {
+        Assertions.assertNull(SadimJsonElement.fromName(null));
+        Assertions.assertNull(SadimJsonElement.fromName(""));
+        Assertions.assertNull(SadimJsonElement.fromName(" "));
+        Assertions.assertNull(SadimJsonElement.fromName("A"));
+
+        Assertions.assertEquals(SadimJsonElement.LOT_NO, SadimJsonElement.fromName("lot_no"));
+    }
+
+    @Test
     void parsing() throws FileNotFoundException {
         final var sadimJson = getJsonFromPath();
         final var attestationParam = parser.getParam(sadimJson);
 
         Assertions.assertTrue(attestationParam.isPresent());
         Assertions.assertEquals("0001020210520101736225770", attestationParam.get().getPrimeId());
+        Assertions.assertEquals(40233, attestationParam.get().getLotNo());
+        Assertions.assertEquals(2111357, attestationParam.get().getMeltNo());
+        Assertions.assertEquals(825, attestationParam.get().getT12Min());
+        Assertions.assertEquals(865, attestationParam.get().getT12Max());
+        Assertions.assertEquals(615, attestationParam.get().getTcmMin());
+        Assertions.assertEquals(665, attestationParam.get().getTcmMax());
+        Assertions.assertEquals(100, attestationParam.get().getPbi());
+        Assertions.assertEquals(25, attestationParam.get().getProfFact());
+        Assertions.assertEquals(5, attestationParam.get().getWedgeFact());
+        Assertions.assertEquals(100, attestationParam.get().getPh1sgp());
+        Assertions.assertEquals("26.62", attestationParam.get().getPh12sgp());
+        Assertions.assertEquals(90.27, attestationParam.get().getPh23sgp());
+        Assertions.assertEquals(4, attestationParam.get().getSqcCritMax());
+        Assertions.assertEquals("5.0;9.0;6.0;4.0;2.0;12.0;4.0;2.0", attestationParam.get().getLclThckng());
     }
 
     private String getJsonFromPath() throws FileNotFoundException {
