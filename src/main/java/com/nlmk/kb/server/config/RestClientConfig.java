@@ -31,6 +31,8 @@ public class RestClientConfig {
                                          ClientHttpRequestFactory clientHttpRequestFactory) {
         String tokenUrl = String.format(TOKEN_URL_TEMPLATE, serverUrl, realm);
 
+        // remove ClientCredentialsResourceDetails in next release (with RestTemplate) todo
+
         ClientCredentialsResourceDetails clientCredentialsResourceDetails = new ClientCredentialsResourceDetails();
         clientCredentialsResourceDetails.setAccessTokenUri(tokenUrl);
         clientCredentialsResourceDetails.setClientId(clientId);
