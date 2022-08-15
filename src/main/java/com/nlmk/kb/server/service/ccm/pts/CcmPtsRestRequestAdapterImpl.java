@@ -23,9 +23,9 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
     public AttestationRequest adapt(CcmPtsRequest requestMessage) {
         final var dateRequest = converter.parseToDate(requestMessage.getTs());
         final var data = requestMessage.getData();
-        final var orderNum = data.getOrderNum() != null ? data.getOrderNum().longValue() : null;
-        final var orderPos = data.getOrderPos() != null ? data.getOrderPos().longValue() : null;
 
+        // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
+        // пустые списки для mechanical, metallographic
         return AttestationRequest.builder()
                 .value(Value.builder()
                         .ts(dateRequest)
@@ -33,23 +33,21 @@ public class CcmPtsRestRequestAdapterImpl implements RestRequestAdapter<CcmPtsRe
                         .pk(new Pk(requestMessage.getPk().getId(), requestMessage.getPk().getSystemCode()))
                         .data(DataField.builder()
                                 .primeId(requestMessage.getPk().getId())
-                                .nplv(data.getMarking().getNplv().longValue())
-                                .hnum(data.getMarking().getHnum().longValue())
+                                .nplv(data.getMarking().getNplv())
+                                .hnum(data.getMarking().getHnum())
                                 .roll(data.getMarking().getRoll().toString())
                                 .length(data.getGeometry().getLength())
                                 .thickness(data.getGeometry().getThickness())
                                 .width(data.getGeometry().getWidth())
                                 .weightNet(data.getWeightNet())
                                 .bundleWeight(calcBundleWeight(requestMessage))
-                                .kceh(data.getKceh().longValue())
-                                .orderNum(orderNum)
-                                .orderPos(orderPos)
-                                // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
+                                .kceh(data.getKceh())
+                                .orderNum(data.getOrderNum())
+                                .orderPos(data.getOrderPos())
                                 .orderReq(List.of())
                                 .specifications(prepareSpecs(requestMessage))
                                 .chemical(prepareChemicalSpecs(requestMessage))
                                 .mechanicalPts(prepareMechanicalProperties(requestMessage))
-                                // данных нет для ЦТС
                                 .mechanical(List.of())
                                 .metallographic(List.of())
                                 .build())
