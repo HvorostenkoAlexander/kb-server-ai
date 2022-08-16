@@ -93,23 +93,19 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
     }
 
     private RecordCommons toCommonRecord(AttestationDto attestation) {
-        NormSpecData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormSpecData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
-        }
-
         return RecordCommons.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(TypeCode.STRING.getValue())
                 .setSpecTypeName(TypeCode.STRING.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(norm)
+                .setNorms(NormSpecData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNote(detectNote(attestation))
                 .setDefectSuggestion(detectDefectSuggestion(attestation))
@@ -117,23 +113,19 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
     }
 
     private RecordChemical toChemicalRecord(AttestationDto attestation) {
-        NormChemData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormChemData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
-        }
-
         return RecordChemical.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(TypeCode.STRING.getValue())
                 .setSpecTypeName(TypeCode.STRING.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(norm)
+                .setNorms(NormChemData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNote(detectNote(attestation))
                 .setDefectSuggestion(detectDefectSuggestion(attestation))
@@ -200,23 +192,19 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
     }
 
     private RecordMettallographicSpecifications toMetallSpecifications(AttestationDto attestation) {
-        NormMetallData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormMetallData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
-        }
-
         return RecordMettallographicSpecifications.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(TypeCode.STRING.getValue())
                 .setSpecTypeName(TypeCode.STRING.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(norm)
+                .setNorms(NormMetallData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNote(detectNote(attestation))
                 .setDefectSuggestion(detectDefectSuggestion(attestation))
@@ -224,23 +212,19 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
     }
 
     private RecordMechanicalSpecifications toMechanicalSpecifications(AttestationDto attestation) {
-        NormMechData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormMechData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
-        }
-
         return RecordMechanicalSpecifications.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(TypeCode.STRING.getValue())
                 .setSpecTypeName(TypeCode.STRING.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(norm)
+                .setNorms(NormMechData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNote(detectNote(attestation))
                 .setDefectSuggestion(detectDefectSuggestion(attestation))
