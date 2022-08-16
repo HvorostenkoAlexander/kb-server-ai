@@ -36,37 +36,31 @@ class VerificationResultTest {
                                 attestation.getGroup().equals(Group.MEH) ||
                                 attestation.getGroup().equals(Group.MET))
                 ).collect(Collectors.toList());
-        int commonCount = commonAttestation.size();
 
         List<AttestationDto> chemicalAttestation = product.getRequests().get(0).getAttestations().stream()
                 .filter(attestation -> attestation.getGroup().equals(Group.HIM))
                 .collect(Collectors.toList());
-        int chemCount = chemicalAttestation.size();
 
         List<AttestationDto> mechAttestation = product.getRequests().get(0).getAttestations().stream()
                 .filter(attestation -> attestation.getGroup().equals(Group.MEH))
                 .collect(Collectors.toList());
-        int mechCount = mechAttestation.size();
 
         List<AttestationDto> metallAttestation = product.getRequests().get(0).getAttestations().stream()
                 .filter(attestation -> attestation.getGroup().equals(Group.MET))
                 .collect(Collectors.toList());
-        int metCount = metallAttestation.size();
 
         VerificationResults results = adapter.adapt(product, true);
 
-        long resultMech = results.getData().getMechanical().stream()
-                .map(l -> l.getSpecifications().size()).mapToLong(l -> l).sum();
-        long resultMet = results.getData().getMetallographic().stream()
-                .map(l -> l.getSpecifications().size()).mapToLong(l -> l).sum();
-        long resultChem = results.getData().getChemical().size();
-        long resultComon = results.getData().getCommons().size();
+        final var resultMech = results.getData().getMechanical().stream()
+                .map(l -> l.getSpecifications().size()).mapToInt(i -> i).sum();
+        final var resultMet = results.getData().getMetallographic().stream()
+                .map(l -> l.getSpecifications().size()).mapToInt(i -> i).sum();
 
         assertNotNull(results);
-        assertEquals(commonCount, resultComon);
-        assertEquals(chemCount, resultChem);
-        assertEquals(mechCount, resultMech);
-        assertEquals(metCount, resultMet);
+        assertEquals(commonAttestation.size(), results.getData().getCommons().size());
+        assertEquals(chemicalAttestation.size(), results.getData().getChemical().size());
+        assertEquals(mechAttestation.size(), resultMech);
+        assertEquals(metallAttestation.size(), resultMet);
     }
 
 }
