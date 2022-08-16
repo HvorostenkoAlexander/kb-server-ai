@@ -69,7 +69,7 @@ public class CcmPtsRequest {
         @NotNull
         @Valid
         private Geometry geometry; // Геометрия
-        private Long orderNum; // Номер заказа
+        private Integer orderNum; // Номер заказа
         private Integer orderPos; // Позиция заказа
         private Integer unionId; // Идентификатор упаковки бунтов
         private List<@Valid Bundle> bundles; // Список бунтов входящих в одну связку

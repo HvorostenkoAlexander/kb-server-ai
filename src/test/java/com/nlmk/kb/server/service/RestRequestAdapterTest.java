@@ -125,10 +125,10 @@ class RestRequestAdapterTest {
                         .pk(new Pk("0001020210329001515440422", "11"))
                         .data(DataField.builder()
                                 .primeId("0001020210329001515440422")
-                                .nplv(2106684).hnum(25217).roll("1")
+                                .nplv(2106684L).hnum(25217L).roll("1")
                                 .length(3000.0).thickness(30.0).width(300.0)
                                 .weightNet(140.0).bundleWeight(180.0)
-                                .kceh(11)
+                                .kceh(11L)
                                 .specifications(List.of(
                                         Specs.builder()
                                                 .specCode(SpecCode.STEEL_MARK.getValue())

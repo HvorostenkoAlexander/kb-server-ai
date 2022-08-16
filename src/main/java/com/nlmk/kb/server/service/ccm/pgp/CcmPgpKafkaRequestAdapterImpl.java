@@ -1,7 +1,6 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
 import com.nlmk.attestation.product.api.pam.*;
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -24,183 +23,251 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
 
-        final var dateRequest = converter.parseToDate(sequenceToString(requestMessagePgp.getTs()));
+        final var dateRequest = converter.parseToDate(requestMessagePgp.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
-        return AttestationRequest.builder()
-                .value(Value.builder()
-                        .ts(dateRequest)
-                        .op(requestMessagePgp.getOp().toString())
-                        .pk(toPamPk(requestMessagePgp.getPk()))
-                        .data(toPamDataField(requestMessagePgp.getData()))
-                        .build())
+        final var value = Value.builder()
+                .ts(dateRequest)
+                .op(requestMessagePgp.getOp().toString());
+
+        if (requestMessagePgp.getPk() != null) {
+            value.pk(toPamPk(requestMessagePgp.getPk()));
+        }
+        if (requestMessagePgp.getData() != null) {
+            value.data(toPamDataField(requestMessagePgp.getData()));
+        }
+
+        return com.nlmk.attestation.product.api.pam.AttestationRequest.builder()
+                .value(value.build())
                 .build();
     }
 
     private static Pk toPamPk(RecordPk recordPk) {
-        if (recordPk == null) {
-            return null;
-        }
-
         Pk pk = new Pk();
-        pk.setId(sequenceToString(recordPk.getId()));
-        pk.setSystemCode(sequenceToString(recordPk.getSystemCode()));
+        if (recordPk.getId() != null) {
+            pk.setId(recordPk.getId().toString());
+        }
+        if (recordPk.getSystemCode() != null) {
+            pk.setSystemCode(recordPk.getSystemCode().toString());
+        }
         return pk;
     }
 
     private static DataField toPamDataField(RecordData recordData) {
-        if (recordData == null) {
-            return null;
-        }
-
+        // установка значений полей, значения в которых не null согласно AVRO-схеме
         // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
-        return DataField.builder()
+        final var dataFieldBuilder = DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
-                .nplv(recordData.getNplv())
-                .hnum(recordData.getHnum())
-                .roll(sequenceToString(recordData.getRoll()))
-                .length(parseFloat(recordData.getLength()))
-                .thickness(parseFloat(recordData.getThickness()))
-                .width(parseFloat(recordData.getWidth()))
-                .weightNet(parseFloat(recordData.getWeightNet()))
-                .bundleWeight(parseFloat(recordData.getBundleWeight()))
-                .kceh(recordData.getKceh())
+                .roll(recordData.getRoll().toString())
+                .thickness(toDouble(recordData.getThickness()))
+                .width(toDouble(recordData.getWidth()))
+                .weightNet(toDouble(recordData.getWeightNet()))
+                .kceh((long) recordData.getKceh())
                 .orderNum(recordData.getOrderNum())
-                .orderPos(recordData.getOrderPos())
-                .orderReq(List.of())
-                .specifications(
-                        recordData.getSpecifications().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamSpecs)
-                                .collect(Collectors.toList())
-                ).chemical(
-                        recordData.getChemical() == null
-                                ? null
-                                : recordData.getChemical().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamChemicalSpec)
-                                .collect(Collectors.toList())
-                ).mechanical(
-                        recordData.getMechanical() == null
-                                ? null
-                                : recordData.getMechanical().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalSpec)
-                                .collect(Collectors.toList())
-                ).metallographic(
-                        recordData.getMetallographic() == null
-                                ? null
-                                : recordData.getMetallographic().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicSpec)
-                                .collect(Collectors.toList())
-                ).build();
-    }
+                .orderReq(List.of());
 
-    private static Specs toPamSpecs(RecordSpecifications specifications) {
-        return Specs.builder()
-                .specCode(specifications.getSpecCode())
-                .specName(sequenceToString(specifications.getSpecName()))
-                .specTypeCode(specifications.getSpecTypeCode())
-                .specValue(sequenceToString(specifications.getSpecValue()))
-                .specFormat(sequenceToString(specifications.getSpecFormat()))
-                .specMeasure(sequenceToString(specifications.getSpecMeasure()))
-                .build();
-    }
-
-    private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
-        return ChemicalSpec.builder()
-                .chemCode(recordChemical.getChemCode())
-                .chemName(sequenceToString(recordChemical.getChemName()))
-                .chemValue(sequenceToString(recordChemical.getChemValue()))
-                .chemFormat(sequenceToString(recordChemical.getChemFormat()))
-                .build();
-    }
-
-    private static MechanicalSpec toPamMechanicalSpec(RecordMechanical mechanical) {
-        return MechanicalSpec.builder()
-                .hnum(mechanical.getHnum())
-                .protNum(mechanical.getProtNum())
-                .sampleNum(mechanical.getSampleNum())
-                .signAnalysis(mechanical.getSignAnalysis())
-                .protDate(sequenceToString(mechanical.getProtDate()))
-                .mechData(
-                        mechanical.getMechData() == null
-                                ? null
-                                : mechanical.getMechData().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalData)
-                                .collect(Collectors.toList())
-                ).build();
-    }
-
-    private static MechanicalData toPamMechanicalData(RecordMechData data) {
-        return MechanicalData.builder()
-                .mechAnalysisId(data.getMechAnalysisId())
-                .mechAnalysisData(
-                        data.getMechAnalysisData() == null
-                                ? null
-                                : data.getMechAnalysisData().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalAnalysisData)
-                                .collect(Collectors.toList())
-                ).build();
-    }
-
-    private static MechanicalAnalysisData toPamMechanicalAnalysisData(RecordMechAnalysisData analysis) {
-        return MechanicalAnalysisData.builder()
-                .mechCode(analysis.getMechCode())
-                .mechName(sequenceToString(analysis.getMechName()))
-                .mechTypeCode(analysis.getMechTypeCode())
-                .mechFormat(sequenceToString(analysis.getMechFormat()))
-                .mechValue(sequenceToString(analysis.getMechValue()))
-                .mechMeasure(sequenceToString(analysis.getMechMeasure()))
-                .build();
-    }
-
-    private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic metallographic) {
-        return MetallographicSpec.builder()
-                .hnum(metallographic.getHnum())
-                .protNum(metallographic.getProtNum())
-                .protDate(sequenceToString(metallographic.getProtDate()))
-                .signAnalysis(metallographic.getSignAnalysis())
-                .metgrapData(
-                        metallographic.getMetgrapData() == null
-                                ? null
-                                : metallographic.getMetgrapData().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicData)
-                                .collect(Collectors.toList())
-                ).build();
-    }
-
-    private static MetallographicData toPamMetallographicData(RecordMetgrapData data) {
-        return MetallographicData.builder()
-                .metgrapAnalysisId(data.getMetgrapAnalysisId())
-                .metgrapAnalysisData(data.getMetgrapAnalysisData() == null
-                        ? null
-                        : data.getMetgrapAnalysisData().stream()
-                        .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicAnalysisData)
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    private static MetallographicAnalysisData toPamMetallographicAnalysisData(RecordMetgrapAnalysisData analysis) {
-        return MetallographicAnalysisData.builder()
-                .metgrapCode(analysis.getMetgrapCode())
-                .metgrapName(sequenceToString(analysis.getMetgrapName()))
-                .metgrapFormat(sequenceToString(analysis.getMetgrapFormat()))
-                .metgrapValue(sequenceToString(analysis.getMetgrapValue()))
-                .metgrapTypeCode(analysis.getMetgrapTypeCode())
-                .metgrapMeasure(sequenceToString(analysis.getMetgrapMeasure()))
-                .build();
-    }
-
-    private static Double parseFloat(Float f) {
-        if (f == null) {
-            return null;
+        if (recordData.getOrderPos() != null) {
+            dataFieldBuilder.orderPos(recordData.getOrderPos().longValue());
         }
+        if (recordData.getNplv() != null) {
+            dataFieldBuilder.nplv(recordData.getNplv().longValue());
+        }
+        if (recordData.getHnum() != null) {
+            dataFieldBuilder.hnum(recordData.getHnum().longValue());
+        }
+        if (recordData.getLength() != null) {
+            dataFieldBuilder.length(toDouble(recordData.getLength()));
+        }
+        if (recordData.getBundleWeight() != null) {
+            dataFieldBuilder.bundleWeight(toDouble(recordData.getBundleWeight()));
+        }
+        dataFieldBuilder.specifications(
+                recordData.getSpecifications().stream()
+                        .map(CcmPgpKafkaRequestAdapterImpl::toPamSpecs)
+                        .collect(Collectors.toList())
+        );
+        if (recordData.getChemical() != null) {
+            dataFieldBuilder.chemical(
+                    recordData.getChemical().stream()
+                            .map(CcmPgpKafkaRequestAdapterImpl::toPamChemicalSpec)
+                            .collect(Collectors.toList())
+            );
+        }
+        if (recordData.getMechanical() != null) {
+            dataFieldBuilder.mechanical(
+                    recordData.getMechanical().stream()
+                            .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalSpec)
+                            .collect(Collectors.toList())
+            );
+        }
+        if (recordData.getMetallographic() != null) {
+            dataFieldBuilder.metallographic(
+                    recordData.getMetallographic().stream()
+                            .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicSpec)
+                            .collect(Collectors.toList())
+            );
+        }
+        return dataFieldBuilder.build();
+    }
+
+    private static Double toDouble(Float f) {
         return Double.parseDouble(Float.toString(f));
     }
 
-    private static String sequenceToString(CharSequence sequence) {
-        if (sequence == null) {
-            return null;
+    private static Specs toPamSpecs(RecordSpecifications specifications) {
+        // установка значений полей, значения в которых не null согласно AVRO-схеме
+        final var specs = Specs.builder()
+                .specCode(specifications.getSpecCode())
+                .specName(specifications.getSpecName().toString())
+                .specTypeCode(specifications.getSpecTypeCode());
+
+        if (specifications.getSpecValue() != null) {
+            specs.specValue(specifications.getSpecValue().toString());
         }
-        return sequence.toString();
+        if (specifications.getSpecFormat() != null) {
+            specs.specFormat(specifications.getSpecFormat().toString());
+        }
+        if (specifications.getSpecMeasure() != null) {
+            specs.specMeasure(specifications.getSpecMeasure().toString());
+        }
+        return specs.build();
+    }
+
+    private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
+        final var chemicalSpec = ChemicalSpec.builder()
+                .chemCode(recordChemical.getChemCode())
+                .chemName(recordChemical.getChemName().toString());
+
+        if (recordChemical.getChemValue() != null) {
+            chemicalSpec.chemValue(recordChemical.getChemValue().toString());
+        }
+        if (recordChemical.getChemFormat() != null) {
+            chemicalSpec.chemFormat(recordChemical.getChemFormat().toString());
+        }
+        return chemicalSpec.build();
+    }
+
+    private static MechanicalSpec toPamMechanicalSpec(RecordMechanical recordMechanical) {
+        final var mechanicalSpec = MechanicalSpec.builder();
+
+        if (recordMechanical.getTestArrayId() != null) {
+            mechanicalSpec.testArrayId(recordMechanical.getTestArrayId());
+        }
+        if (recordMechanical.getHnum() != null) {
+            mechanicalSpec.hnum(recordMechanical.getHnum());
+        }
+        if (recordMechanical.getProtId() != null) {
+            mechanicalSpec.protId(recordMechanical.getProtId());
+        }
+        if (recordMechanical.getProtNum() != null) {
+            mechanicalSpec.protNum(recordMechanical.getProtNum());
+        }
+        if (recordMechanical.getSampleId() != null) {
+            mechanicalSpec.sampleId(recordMechanical.getSampleId());
+        }
+        if (recordMechanical.getProbeCode() != null) {
+            mechanicalSpec.probeCode(recordMechanical.getProbeCode());
+        }
+        if (recordMechanical.getSampleNum() != null) {
+            mechanicalSpec.sampleNum(recordMechanical.getSampleNum());
+        }
+        if (recordMechanical.getSignAnalysis() != null) {
+            mechanicalSpec.signAnalysis(recordMechanical.getSignAnalysis());
+        }
+        if (recordMechanical.getFormationListNum() != null) {
+            mechanicalSpec.formationListNum(recordMechanical.getFormationListNum());
+        }
+        if (recordMechanical.getProbeName() != null) {
+            mechanicalSpec.probeName(recordMechanical.getProbeName().toString());
+        }
+        if (recordMechanical.getFormationListId() != null) {
+            mechanicalSpec.formationListId(recordMechanical.getFormationListId().toString());
+        }
+        mechanicalSpec.mechData(
+                recordMechanical.getMechData().stream()
+                        .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalData)
+                        .collect(Collectors.toList())
+        );
+        return mechanicalSpec.build();
+    }
+
+    private static MechanicalData toPamMechanicalData(RecordMechData recordMechData) {
+        final var mechanicalData = MechanicalData.builder()
+                .mechCode(recordMechData.getMechCode())
+                .mechName(recordMechData.getMechName().toString())
+                .mechTypeCode(recordMechData.getMechTypeCode());
+
+        if (recordMechData.getMechFormat() != null) {
+            mechanicalData.mechFormat(recordMechData.getMechFormat().toString());
+        }
+        if (recordMechData.getMechValue() != null) {
+            mechanicalData.mechValue(recordMechData.getMechValue().toString());
+        }
+        if (recordMechData.getMechMeasure() != null) {
+            mechanicalData.mechMeasure(recordMechData.getMechMeasure().toString());
+        }
+        return mechanicalData.build();
+    }
+
+    private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic recordMetallographic) {
+        final var mtlSpec = MetallographicSpec.builder();
+
+        if (recordMetallographic.getTestArrayId() != null) {
+            mtlSpec.testArrayId(recordMetallographic.getTestArrayId());
+        }
+        if (recordMetallographic.getProtId() != null) {
+            mtlSpec.protId(recordMetallographic.getProtId());
+        }
+        if (recordMetallographic.getProtNum() != null) {
+            mtlSpec.protNum(recordMetallographic.getProtNum());
+        }
+        if (recordMetallographic.getSampleId() != null) {
+            mtlSpec.sampleId(recordMetallographic.getSampleId());
+        }
+        if (recordMetallographic.getProbeName() != null) {
+            mtlSpec.probeName(recordMetallographic.getProbeName().toString());
+        }
+        if (recordMetallographic.getProbeCode() != null) {
+            mtlSpec.probeCode(recordMetallographic.getProbeCode());
+        }
+        if (recordMetallographic.getSampleNum() != null) {
+            mtlSpec.sampleNum(recordMetallographic.getSampleNum());
+        }
+        if (recordMetallographic.getSignAnalysis() != null) {
+            mtlSpec.signAnalysis(recordMetallographic.getSignAnalysis());
+        }
+        if (recordMetallographic.getFormationListId() != null) {
+            mtlSpec.formationListId(recordMetallographic.getFormationListId().toString());
+        }
+        if (recordMetallographic.getFormationListNum() != null) {
+            mtlSpec.formationListNum(recordMetallographic.getFormationListNum());
+        }
+
+        mtlSpec.metgrapData(
+                recordMetallographic.getMetgrapData().stream()
+                        .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicData)
+                        .collect(Collectors.toList())
+        );
+
+        return mtlSpec.build();
+    }
+
+    private static MetallographicData toPamMetallographicData(RecordMetgrapData recordMetgrapData) {
+        final var mtlData = MetallographicData.builder()
+                .metgrapCode(recordMetgrapData.getMetgrapCode())
+                .metgrapName(recordMetgrapData.getMetgrapName().toString())
+                .metgrapTypeCode(Integer.toString(recordMetgrapData.getMetgrapTypeCode()));
+
+        if (recordMetgrapData.getMetgrapFormat() != null) {
+            mtlData.metgrapFormat(recordMetgrapData.getMetgrapFormat().toString());
+        }
+        if (recordMetgrapData.getMetgrapValue() != null) {
+            mtlData.metgrapValue(recordMetgrapData.getMetgrapValue().toString());
+        }
+        if (recordMetgrapData.getMetgrapMeasure() != null) {
+            mtlData.metgrapMeasure(recordMetgrapData.getMetgrapMeasure().toString());
+        }
+        return mtlData.build();
     }
 
 }
