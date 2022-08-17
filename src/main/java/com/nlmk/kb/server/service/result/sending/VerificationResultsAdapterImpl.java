@@ -36,8 +36,8 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
 
         List<AttestationDto> attestations = List.of();
         String primeId = null;
-        long kceh = 0L;
-        int mismatch = Status.WAITING_FOR_DATA.getValue();
+        var kceh = 0;
+        var mismatch = Status.WAITING_FOR_DATA.getValue();
         String ts = null;
         if (product.getRequests() != null && !product.getRequests().isEmpty()) {
             attestations = product.getRequests().get(0).getAttestations();
@@ -53,29 +53,6 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
             }
         }
 
-        List<RecordCommons> commonSpec = new ArrayList<>();
-        List<RecordChemical> chemicalSpec = new ArrayList<>();
-        List<RecordMechanical> mechanicalSpec = new ArrayList<>();
-        List<RecordMettallographic> metallographSpec = new ArrayList<>();
-
-        if (attestations != null) {
-            commonSpec = attestations.stream()
-                    .filter(att -> !(Group.HIM.equals(att.getGroup())
-                            || Group.MEH.equals(att.getGroup())
-                            || Group.MET.equals(att.getGroup()))
-                    ).map(this::toCommonRecord)
-                    .collect(Collectors.toList());
-
-            chemicalSpec = attestations.stream()
-                    .filter(att -> Group.HIM.equals(att.getGroup()))
-                    .map(this::toChemicalRecord)
-                    .collect(Collectors.toList());
-
-            mechanicalSpec = this.toMechanicalRecordList(attestations);
-
-            metallographSpec = this.toMettallographicRecordList(attestations);
-        }
-
         return VerificationResults.newBuilder()
                 .setTs(ts)
                 .setPk(recordPk)
@@ -84,12 +61,25 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                         .setPrimeId(primeId)
                         .setKceh(kceh)
                         .setMismatch(mismatch)
-                        .setCommons(commonSpec)
-                        .setChemical(chemicalSpec)
-                        .setMechanical(mechanicalSpec)
-                        .setMetallographic(metallographSpec)
+                        .setCommons(toCommonRecordList(attestations))
+                        .setChemical(toChemicalRecordList(attestations))
+                        .setMechanical(toMechanicalRecordList(attestations))
+                        .setMetallographic(toMettallographicRecordList(attestations))
                         .build()
                 ).build();
+    }
+
+    private List<RecordCommons> toCommonRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
+        }
+
+        return attestations.stream()
+                .filter(att -> !(Group.HIM.equals(att.getGroup())
+                        || Group.MEH.equals(att.getGroup())
+                        || Group.MET.equals(att.getGroup()))
+                ).map(this::toCommonRecord)
+                .collect(Collectors.toList());
     }
 
     private RecordCommons toCommonRecord(AttestationDto attestation) {
@@ -110,6 +100,17 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .setNote(detectNote(attestation))
                 .setDefectSuggestion(detectDefectSuggestion(attestation))
                 .build();
+    }
+
+    private List<RecordChemical> toChemicalRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
+        }
+
+        return attestations.stream()
+                .filter(att -> Group.HIM.equals(att.getGroup()))
+                .map(this::toChemicalRecord)
+                .collect(Collectors.toList());
     }
 
     private RecordChemical toChemicalRecord(AttestationDto attestation) {
@@ -133,6 +134,10 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
     }
 
     private List<RecordMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
+        }
+
         List<AttestationDto> metallAttestation = attestations.stream()
                 .filter(att -> Group.MET.equals(att.getGroup()))
                 .collect(Collectors.toList());
@@ -145,6 +150,10 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
     }
 
     private List<RecordMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
+        }
+
         List<AttestationDto> mechAttestation = attestations.stream()
                 .filter(att -> Group.MEH.equals(att.getGroup()))
                 .collect(Collectors.toList());
