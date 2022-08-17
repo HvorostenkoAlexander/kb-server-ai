@@ -42,10 +42,10 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
             return null;
         }
 
-        Pk pk = new Pk();
-        pk.setId(sequenceToString(recordPk.getId()));
-        pk.setSystemCode(sequenceToString(recordPk.getSystemCode()));
-        return pk;
+        return Pk.builder()
+                .systemCode(sequenceToString(recordPk.getSystemCode()))
+                .id(sequenceToString(recordPk.getId()))
+                .build();
     }
 
     private static DataField toPamDataField(RecordData recordData) {

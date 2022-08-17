@@ -122,7 +122,7 @@ class RestRequestAdapterTest {
                 .value(Value.builder()
                         .ts(new Date(1000000000_000L)) // для теста!
                         .op("I")
-                        .pk(new Pk("0001020210329001515440422", "11"))
+                        .pk(Pk.builder().systemCode("11").id("0001020210329001515440422").build())
                         .data(DataField.builder()
                                 .primeId("0001020210329001515440422")
                                 .nplv(2106684).hnum(25217).roll("1")

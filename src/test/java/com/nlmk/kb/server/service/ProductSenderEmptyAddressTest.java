@@ -56,7 +56,7 @@ class ProductSenderEmptyAddressTest {
                         .requests(List.of(
                                 RequestDto.builder()
                                         .id(10L).primeID("100").status(Status.NOT_MATCHED)
-                                        .orderNum(12345L).orderPos(4L)
+                                        .orderNum(12345L).orderPos(4)
                                         .attestationTs(new Date(1_000_000_000L))
                                         .attestations(List.of(
                                                 AttestationDto.builder().code(5).value("50")

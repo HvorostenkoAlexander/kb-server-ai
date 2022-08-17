@@ -34,8 +34,8 @@ public class KcehConditionFilterImpl implements CommonConditionFilter {
         return Optional.of(product);
     }
 
-    private Long getKcehCondition(String condition) {
-        Long kceh = null;
+    private Integer getKcehCondition(String condition) {
+        Integer kceh = null;
 
         if (StringUtils.isBlank(condition)) {
             log.warn("Не установлены условия для фильтрации. condition.isBlank() : [{}]", condition);
@@ -58,7 +58,7 @@ public class KcehConditionFilterImpl implements CommonConditionFilter {
         }
         if (StringUtils.isNumeric(rawData[1])) {
             try {
-                kceh = Long.parseLong(rawData[1]);
+                kceh = Integer.parseInt(rawData[1]);
             } catch (NumberFormatException nfe) {
                 log.warn(nfe.toString());
                 log.warn("Не корректные значения для kceh: [{}]", condition);
