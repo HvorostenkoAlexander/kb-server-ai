@@ -97,7 +97,7 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                                     .build())
                             .note(detectNote(attestation))
                             .defectSuggestion(detectDefectSuggestion(attestation))
-                            .parameters(prepareParameters())
+                            .parameters(prepareParameters(attestation))
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -114,9 +114,42 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                 .build();
     }
 
-    private List<CcmPtsResponse.Parameter> prepareParameters() {
-        // fixme
-        return List.of();
+    private List<CcmPtsResponse.Parameter> prepareParameters(AttestationDto attestation) {
+        if (attestation == null || attestation.getParams() == null) {
+            return List.of();
+        }
+
+        final var list = new ArrayList<CcmPtsResponse.Parameter>();
+
+        if (attestation.getParams().getKnctrator() != null) {
+            list.add(CcmPtsResponse.Parameter.builder()
+                    .code(SpecCode.CONCENTRATOR.getValue())
+                    .name(SpecCode.CONCENTRATOR.getDesc())
+                    .value(attestation.getParams().getKnctrator())
+                    .typeCode(SpecCode.CONCENTRATOR.getTypeCode())
+                    .typeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getTemp() != null) {
+            list.add(CcmPtsResponse.Parameter.builder()
+                    .code(SpecCode.TEMPERATURE.getValue())
+                    .name(SpecCode.TEMPERATURE.getDesc())
+                    .value(attestation.getParams().getTemp())
+                    .typeCode(SpecCode.TEMPERATURE.getTypeCode())
+                    .typeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getAnalysisId() != null) {
+            list.add(CcmPtsResponse.Parameter.builder()
+                    .code(SpecCode.ANALYSIS_ID.getValue())
+                    .name(SpecCode.ANALYSIS_ID.getDesc())
+                    .value(attestation.getParams().getAnalysisId().toString())
+                    .typeCode(SpecCode.ANALYSIS_ID.getTypeCode())
+                    .typeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                    .build());
+        }
+
+        return list;
     }
 
     private String detectNote(AttestationDto attestation) {
