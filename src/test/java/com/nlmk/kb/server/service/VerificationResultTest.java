@@ -9,6 +9,7 @@ import nlmk.l3.apcs.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ class VerificationResultTest {
     private final VerificationResultsAdapter adapter = new VerificationResultsAdapterImpl();
 
     @Test
-    void simpleVerificationProduct() throws Exception {
+    void simpleVerificationProduct() throws IOException {
         ProductDto product = new ObjectMapper()
                 //.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                 .readValue(
