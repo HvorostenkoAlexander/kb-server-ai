@@ -23,7 +23,7 @@ class KcehConditionFilterTest {
 
     @Test
     void testOk() {
-        final var validProduct = createProductWithKceh(11L);
+        final var validProduct = createProductWithKceh(11);
 
         final var product = conditionFilter.filter(validProduct, "kceh=11");
 
@@ -34,7 +34,7 @@ class KcehConditionFilterTest {
 
     @Test
     void testEmptyProductOk() {
-        final var validProduct = createProductWithKceh(11L);
+        final var validProduct = createProductWithKceh(11);
 
         final var product = conditionFilter.filter(validProduct, "kceh=0");
 
@@ -56,7 +56,7 @@ class KcehConditionFilterTest {
 
     @Test
     void testConditionKcehNull() {
-        final var validProduct = createProductWithKceh(11L);
+        final var validProduct = createProductWithKceh(11);
 
         final var product = conditionFilter.filter(validProduct, null);
 
@@ -67,7 +67,7 @@ class KcehConditionFilterTest {
 
     @Test
     void testNoFilter() {
-        final var validProduct = createProductWithKceh(1L);
+        final var validProduct = createProductWithKceh(1);
 
         final var product = conditionFilter.filter(validProduct, "kceh=123XXX");
 
@@ -76,7 +76,7 @@ class KcehConditionFilterTest {
         Assertions.assertEquals(1, product.get().getRequests().size());
     }
 
-    private ProductDto createProductWithKceh(Long kceh) {
+    private ProductDto createProductWithKceh(Integer kceh) {
         return ProductDto.builder()
                 .name("p1").referenceId("ref1").referenceCode("code1").createdAt(new Date(1_100_000_000L))
                 .requests(List.of(

@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
@@ -81,32 +82,90 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                 .filter(f -> group.equals(f.getGroup()))
                 .map(attestation -> {
                     final var specCode = SpecCode.fromValue(attestation.getCode());
+                    // пропускаем: format, measure
+                    // пока нет данных: docId, docName
                     return CcmPtsResponse.AttestationValue.builder()
-                            // skip: format, measure, defectSuggestion
-                            // no data: docId, docName, parameters
                             .code(specCode.getValue())
                             .name(specCode.getDesc())
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
-                            .normLimits(CcmPtsResponse.NormLimit.builder()
-                                    // или диапазон
-                                    .valueMin(attestation.getMin())
-                                    .valueMax(attestation.getMax())
-                                    // или одиночное значение
-                                    .listAccValues(attestation.getEqual() == null ? null : List.of(
-                                            CcmPtsResponse.AccValue.builder().value(attestation.getEqual()).build()
-                                    ))
-                                    .build())
+                            .normLimits(prepareNormLimit(attestation))
                             .mismatch(CcmPtsResponse.Mismatch.builder()
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)
                                     .name(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
                                     .build())
-                            .note(attestation.getComment())
-                            .parameters(List.of())
+                            .note(detectNote(attestation))
+                            .defectSuggestion(detectDefectSuggestion(attestation))
+                            .parameters(prepareParameters(attestation))
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    private CcmPtsResponse.NormLimit prepareNormLimit(AttestationDto attestation) {
+        // в объекте AttestationDto ждем либо Equal, либо Min и (или) Max
+        return CcmPtsResponse.NormLimit.builder()
+                .valueMin(attestation.getMin())
+                .valueMax(attestation.getMax())
+                .listAccValues(attestation.getEqual() == null ? null : List.of(
+                        CcmPtsResponse.AccValue.builder().value(attestation.getEqual()).build()
+                ))
+                .build();
+    }
+
+    private List<CcmPtsResponse.Parameter> prepareParameters(AttestationDto attestation) {
+        if (attestation == null || attestation.getParams() == null) {
+            return List.of();
+        }
+
+        final var list = new ArrayList<CcmPtsResponse.Parameter>();
+
+        if (attestation.getParams().getKnctrator() != null) {
+            list.add(CcmPtsResponse.Parameter.builder()
+                    .code(SpecCode.CONCENTRATOR.getValue())
+                    .name(SpecCode.CONCENTRATOR.getDesc())
+                    .value(attestation.getParams().getKnctrator())
+                    .typeCode(SpecCode.CONCENTRATOR.getTypeCode())
+                    .typeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getTemp() != null) {
+            list.add(CcmPtsResponse.Parameter.builder()
+                    .code(SpecCode.TEMPERATURE.getValue())
+                    .name(SpecCode.TEMPERATURE.getDesc())
+                    .value(attestation.getParams().getTemp())
+                    .typeCode(SpecCode.TEMPERATURE.getTypeCode())
+                    .typeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getAnalysisId() != null) {
+            list.add(CcmPtsResponse.Parameter.builder()
+                    .code(SpecCode.ANALYSIS_ID.getValue())
+                    .name(SpecCode.ANALYSIS_ID.getDesc())
+                    .value(attestation.getParams().getAnalysisId().toString())
+                    .typeCode(SpecCode.ANALYSIS_ID.getTypeCode())
+                    .typeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                    .build());
+        }
+
+        return list;
+    }
+
+    private String detectNote(AttestationDto attestation) {
+        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
+                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
+            return null;
+        }
+        return attestation.getComment();
+    }
+
+    private String detectDefectSuggestion(AttestationDto attestation) {
+        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
+                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
+            return attestation.getComment();
+        }
+        return null;
     }
 
 }

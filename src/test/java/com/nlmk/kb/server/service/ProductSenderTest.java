@@ -100,7 +100,7 @@ class ProductSenderTest {
         product.setReferenceId("100");
         product.setRequests(List.of(
                 RequestDto.builder()
-                        .id(10L).primeID("100").status(Status.NOT_MATCHED).orderNum(12345L).orderPos(4L)
+                        .id(10L).primeID("100").status(Status.NOT_MATCHED).orderNum(12345L).orderPos(4)
                         .attestations(List.of()) // нет результата аттестации
                         .build()
         ));

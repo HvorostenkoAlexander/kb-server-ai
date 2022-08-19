@@ -8,15 +8,19 @@ import nlmk.l3.apcs.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class VerificationResultsAdapterImpl implements VerificationResultsAdapter {
+
+    private final ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(() -> {
+        final var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf;
+    });
 
     @Override
     public VerificationResults adapt(ProductDto product, boolean isNew) {
@@ -24,179 +28,166 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
         Assert.notEmpty(product.getRequests(), "The product.getRequests() must contain elements.");
         Assert.notEmpty(product.getRequests().get(0).getAttestations(), "The product.getRequests().get(0).getAttestations() must contain elements.");
 
-        EnumOp op = EnumOp.U;
-        if (isNew) {
-            op = EnumOp.I;
-        }
-
-        final var recordPk = RecordPk.newBuilder()
-                .setId(product.getId())
-                .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
-                .build();
-
-        List<AttestationDto> attestations = List.of();
-        String primeId = null;
-        long kceh = 0L;
-        int mismatch = 2;
+        var kceh = 0;
+        var mismatch = Status.WAITING_FOR_DATA.getValue();
         String ts = null;
-        if (product.getRequests() != null && !product.getRequests().isEmpty()) {
-            attestations = product.getRequests().get(0).getAttestations();
-            primeId = product.getRequests().get(0).getPrimeID();
-            if (product.getRequests().get(0).getKceh() != null) {
-                kceh = product.getRequests().get(0).getKceh();
-            }
-            if (product.getRequests().get(0).getStatus() != null) {
-                mismatch = product.getRequests().get(0).getStatus().getValue();
-            }
-            if (product.getRequests().get(0).getAttestationTs() != null) {
-                ts = product.getRequests().get(0).getAttestationTs().toString();
-            }
+
+        final var attestations = product.getRequests().get(0).getAttestations();
+        final var primeId = product.getRequests().get(0).getPrimeID();
+
+        if (product.getRequests().get(0).getKceh() != null) {
+            kceh = product.getRequests().get(0).getKceh();
         }
-
-        List<RecordCommons> commonSpec = new ArrayList<>();
-        List<RecordChemical> chemicalSpec = new ArrayList<>();
-        List<RecordMechanical> mechanicalSpec = new ArrayList<>();
-        List<RecordMettallographic> metallographSpec = new ArrayList<>();
-
-        if (attestations != null) {
-            commonSpec = attestations.stream()
-                    .filter(att -> !(Group.HIM.equals(att.getGroup())
-                            || Group.MEH.equals(att.getGroup())
-                            || Group.MET.equals(att.getGroup()))
-                    ).map(this::toRecordSpecifications)
-                    .collect(Collectors.toList());
-
-            chemicalSpec = attestations.stream()
-                    .filter(att -> Group.HIM.equals(att.getGroup()))
-                    .map(this::toChemicalSpecifications)
-                    .collect(Collectors.toList());
-
-            mechanicalSpec = this.toMechanicalSpecList(attestations);
-
-            metallographSpec = this.toMetallographSpecList(attestations);
+        if (product.getRequests().get(0).getStatus() != null) {
+            mismatch = product.getRequests().get(0).getStatus().getValue();
         }
-
-        RecordData recordData = RecordData.newBuilder()
-                .setPrimeId(primeId)
-                .setKceh(kceh)
-                .setMismatch(mismatch)
-                .setCommons(commonSpec)
-                .setChemical(chemicalSpec)
-                .setMechanical(mechanicalSpec)
-                .setMetallographic(metallographSpec)
-                .build();
+        if (product.getRequests().get(0).getAttestationTs() != null) {
+            ts = dateFormat.get().format(product.getRequests().get(0).getAttestationTs());
+            dateFormat.remove();
+        }
 
         return VerificationResults.newBuilder()
                 .setTs(ts)
-                .setPk(recordPk)
-                .setOp(op)
-                .setData(recordData)
-                .build();
+                .setPk(RecordPk.newBuilder()
+                        .setId(product.getId())
+                        .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
+                        .build())
+                .setOp(isNew ? EnumOp.I : EnumOp.U)
+                .setData(RecordData.newBuilder()
+                        .setPrimeId(primeId)
+                        .setKceh(kceh)
+                        .setMismatch(mismatch)
+                        .setCommons(toCommonRecordList(attestations))
+                        .setChemical(toChemicalRecordList(attestations))
+                        .setMechanical(toMechanicalRecordList(attestations))
+                        .setMetallographic(toMettallographicRecordList(attestations))
+                        .build()
+                ).build();
     }
 
-    private RecordCommons toRecordSpecifications(AttestationDto attestation) {
-        NormSpecData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormSpecData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
+    private List<RecordCommons> toCommonRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
         }
 
-        String note = null;
-        String defectSuggestion = null;
+        return attestations.stream()
+                .filter(att -> !(Group.HIM.equals(att.getGroup())
+                        || Group.MEH.equals(att.getGroup())
+                        || Group.MET.equals(att.getGroup()))
+                ).map(this::toCommonRecord)
+                .collect(Collectors.toList());
+    }
 
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            defectSuggestion = attestation.getComment();
-        } else {
-            note = attestation.getComment();
-        }
+    private RecordCommons toCommonRecord(AttestationDto attestation) {
+        final var type = getTypeCodeByCodeValue(attestation.getCode());
 
         return RecordCommons.newBuilder()
                 .setSpecCode(attestation.getCode())
-                .setSpecTypeCode(TypeCode.STRING.getValue())
-                .setSpecTypeName(TypeCode.STRING.getDesc())
+                .setSpecTypeCode(type.getValue())
+                .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNote(attestation.getComment())
-                .setNorms(norm)
-                .setMismatch(attestation.getStatus().getValue())
-                .setNote(note)
-                .setDefectSuggestion(defectSuggestion)
+                .setNorms(NormSpecData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
+                .setNote(detectNote(attestation))
+                .setDefectSuggestion(detectDefectSuggestion(attestation))
                 .build();
     }
 
-    private RecordChemical toChemicalSpecifications(AttestationDto attestation) {
-        NormChemData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormChemData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
+    private List<RecordChemical> toChemicalRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
         }
 
-        String note = null;
-        String defectSuggestion = null;
+        return attestations.stream()
+                .filter(att -> Group.HIM.equals(att.getGroup()))
+                .map(this::toChemicalRecord)
+                .collect(Collectors.toList());
+    }
 
-        if (attestation.getStatus().getValue() == 4 || attestation.getStatus().getValue() == 5) {
-            defectSuggestion = attestation.getComment();
-        } else {
-            note = attestation.getComment();
-        }
+    private RecordChemical toChemicalRecord(AttestationDto attestation) {
+        final var type = getTypeCodeByCodeValue(attestation.getCode());
 
         return RecordChemical.newBuilder()
                 .setSpecCode(attestation.getCode())
-                .setSpecTypeCode(TypeCode.STRING.getValue())
-                .setSpecTypeName(TypeCode.STRING.getDesc())
+                .setSpecTypeCode(type.getValue())
+                .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNote(attestation.getComment())
-                .setNorms(norm)
-                .setMismatch(attestation.getStatus().getValue())
-                .setNote(note)
-                .setDefectSuggestion(defectSuggestion)
+                .setNorms(NormChemData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
+                .setNote(detectNote(attestation))
+                .setDefectSuggestion(detectDefectSuggestion(attestation))
                 .build();
     }
 
-    private List<RecordMettallographic> toMetallographSpecList(List<AttestationDto> attestations) {
-        List<AttestationDto> metallAttestation = attestations.stream()
+    private List<RecordMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
+        }
+
+        List<AttestationDto> mets = attestations.stream()
                 .filter(att -> Group.MET.equals(att.getGroup()))
                 .collect(Collectors.toList());
-
-        Map<String, List<AttestationDto>> metallAttestationByFormationListId = groupByFormationListId(metallAttestation);
-
-        return metallAttestationByFormationListId.keySet().stream()
-                .map(k -> {
-                    List<AttestationDto> attestationList = metallAttestationByFormationListId.get(k);
-                    return toRecordMetall(attestationList);
-                }).collect(Collectors.toList());
-    }
-
-    private Map<String, List<AttestationDto>> groupByFormationListId(List<AttestationDto> attestations) {
-        Map<String, List<AttestationDto>> attestationGroups = new HashMap<>();
-
-        for (AttestationDto a : attestations) {
-            String key = null;
-            if (a.getParams() != null) {
-                key = a.getParams().getFormationListId();
-            }
-
-            List<AttestationDto> groupList = attestationGroups.get(key);
-            if (groupList == null) {
-                groupList = new ArrayList<>();
-                attestationGroups.put(key, groupList);
-            }
-            groupList.add(a);
+        if (mets.isEmpty()) {
+            return List.of();
         }
-        return attestationGroups;
+
+        Map<Integer, List<AttestationDto>> signAnalysisGrouping = groupBySignAnalysis(mets);
+
+        return signAnalysisGrouping.keySet().stream()
+                .map(k -> toMettallographicRecord(k, signAnalysisGrouping.get(k)))
+                .collect(Collectors.toList());
     }
 
-    private Map<Integer, List<AttestationDto>> groupBySignAnalysys(List<AttestationDto> attestations) {
+    private List<RecordMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
+        if (attestations == null || attestations.isEmpty()) {
+            return List.of();
+        }
+
+        List<AttestationDto> mechs = attestations.stream()
+                .filter(att -> Group.MEH.equals(att.getGroup()))
+                .collect(Collectors.toList());
+        if (mechs.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Integer, List<AttestationDto>> signAnalysisGrouping = groupBySignAnalysis(mechs);
+
+        return signAnalysisGrouping.keySet().stream()
+                .map(k -> toMechanicalRecord(k, signAnalysisGrouping.get(k)))
+                .collect(Collectors.toList());
+    }
+
+    private RecordMettallographic toMettallographicRecord(Integer signAnalysis, List<AttestationDto> attestations) {
+        return RecordMettallographic.newBuilder()
+                .setSignAnalysis(signAnalysis)
+                .setSpecifications(attestations.stream()
+                        .map(this::toMettallographicSpecifications)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private RecordMechanical toMechanicalRecord(Integer signAnalysis, List<AttestationDto> attestations) {
+        return RecordMechanical.newBuilder()
+                .setSignAnalysis(signAnalysis)
+                .setSpecifications(attestations.stream()
+                        .map(this::toMechanicalSpecifications)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private Map<Integer, List<AttestationDto>> groupBySignAnalysis(List<AttestationDto> attestations) {
         Map<Integer, List<AttestationDto>> attestationGroups = new HashMap<>();
 
         for (AttestationDto a : attestations) {
@@ -205,120 +196,175 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 key = a.getParams().getSignAnalysis();
             }
 
-            List<AttestationDto> groupList = attestationGroups.get(key);
-            if (groupList == null) {
-                groupList = new ArrayList<>();
-                attestationGroups.put(key, groupList);
-            }
-            groupList.add(a);
+            attestationGroups.computeIfAbsent(key, k -> new ArrayList<>()).add(a);
         }
+
         return attestationGroups;
     }
 
-    private List<RecordMechanical> toMechanicalSpecList(List<AttestationDto> attestations) {
-        List<AttestationDto> mechAttestation = attestations.stream()
-                .filter(att -> Group.MEH.equals(att.getGroup()))
-                .collect(Collectors.toList());
-
-        Map<Integer, List<AttestationDto>> mechAttestationBySignAnalysis = groupBySignAnalysys(mechAttestation);
-
-        return mechAttestationBySignAnalysis.keySet().stream()
-                .map(k -> {
-                    List<AttestationDto> attestationList = mechAttestationBySignAnalysis.get(k);
-                    return toRecordMechanical(k, attestationList);
-                }).collect(Collectors.toList());
-    }
-
-    private RecordMettallographic toRecordMetall(List<AttestationDto> attestations) {
-        List<RecordMettallographicSpecifications> metallSpecifications = attestations.stream()
-                .map(this::toMetallSpecifications).collect(Collectors.toList());
-
-        Integer signAnalysis = null;
-        if (attestations.get(0).getParams() != null) {
-            signAnalysis = attestations.get(0).getParams().getSignAnalysis();
-        }
-
-        return RecordMettallographic.newBuilder()
-                .setSignAnalysis(signAnalysis)
-                .setSpecifications(metallSpecifications)
-                .build();
-    }
-
-    private RecordMechanical toRecordMechanical(Integer signAnalysis, List<AttestationDto> attestations) {
-        List<RecordMechanicalSpecifications> mechanicalSpecifications = attestations.stream()
-                .map(this::toMechanicalSpecifications).collect(Collectors.toList());
-
-        return RecordMechanical.newBuilder()
-                .setSignAnalysis(signAnalysis)
-                .setSpecifications(mechanicalSpecifications)
-                .build();
-    }
-
-    private RecordMettallographicSpecifications toMetallSpecifications(AttestationDto attestation) {
-        NormMetallData norm = null;
-
-        if (attestation.getEqual() != null) {
-            norm = NormMetallData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
-        }
-
-        String note = null;
-        String defectSuggestion = null;
-
-        if (attestation.getStatus().getValue() == 4 || attestation.getStatus().getValue() == 5) {
-            defectSuggestion = attestation.getComment();
-        } else {
-            note = attestation.getComment();
-        }
+    private RecordMettallographicSpecifications toMettallographicSpecifications(AttestationDto attestation) {
+        final var type = getTypeCodeByCodeValue(attestation.getCode());
 
         return RecordMettallographicSpecifications.newBuilder()
                 .setSpecCode(attestation.getCode())
-                .setSpecTypeCode(TypeCode.STRING.getValue())
-                .setSpecTypeName(TypeCode.STRING.getDesc())
+                .setSpecTypeCode(type.getValue())
+                .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNote(attestation.getComment())
-                .setNorms(norm)
-                .setMismatch(attestation.getStatus().getValue())
-                .setNote(note)
-                .setDefectSuggestion(defectSuggestion)
+                .setNorms(NormMetallData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
+                .setNote(detectNote(attestation))
+                .setDefectSuggestion(detectDefectSuggestion(attestation))
+                .setParameters(prepareMettallographicParameter(attestation))
                 .build();
     }
 
     private RecordMechanicalSpecifications toMechanicalSpecifications(AttestationDto attestation) {
-        NormMechData norm = null;
+        final var type = getTypeCodeByCodeValue(attestation.getCode());
 
-        if (attestation.getEqual() != null) {
-            norm = NormMechData.newBuilder()
-                    .setListAccValues(List.of(attestation.getEqual()))
-                    .setValueMax(attestation.getMax())
-                    .setValueMin(attestation.getMin())
-                    .build();
-        }
-
-        String note = null;
-        String defectSuggestion = null;
-
-        if (attestation.getStatus().getValue() == 4 || attestation.getStatus().getValue() == 5) {
-            defectSuggestion = attestation.getComment();
-        } else {
-            note = attestation.getComment();
-        }
         return RecordMechanicalSpecifications.newBuilder()
                 .setSpecCode(attestation.getCode())
-                .setSpecTypeCode(TypeCode.STRING.getValue())
-                .setSpecTypeName(TypeCode.STRING.getDesc())
+                .setSpecTypeCode(type.getValue())
+                .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNote(attestation.getComment())
-                .setNorms(norm)
-                .setMismatch(attestation.getStatus().getValue())
-                .setNote(note)
-                .setDefectSuggestion(defectSuggestion)
+                .setNorms(NormMechData.newBuilder()
+                        .setListAccValues(attestation.getEqual() == null
+                                ? null
+                                : List.of(attestation.getEqual()))
+                        .setValueMax(attestation.getMax())
+                        .setValueMin(attestation.getMin())
+                        .build())
+                .setNote(detectNote(attestation))
+                .setDefectSuggestion(detectDefectSuggestion(attestation))
+                .setParameters(prepareMechanicalParameter(attestation))
                 .build();
+    }
+
+    private String detectNote(AttestationDto attestation) {
+        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
+                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
+            return null;
+        }
+        return attestation.getComment();
+    }
+
+    private String detectDefectSuggestion(AttestationDto attestation) {
+        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
+                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
+            return attestation.getComment();
+        }
+        return null;
+    }
+
+    /**
+     * Преобразование значений объекта Params в список объектов RecordMettallographicParameter
+     *
+     * @param attestation результата Аттестации параметра
+     * @return список RecordMettallographicParameter
+     */
+    private List<RecordMettallographicParameter> prepareMettallographicParameter(AttestationDto attestation) {
+        if (attestation == null || attestation.getParams() == null) {
+            return List.of();
+        }
+
+        final var list = new ArrayList<RecordMettallographicParameter>();
+
+        if (attestation.getParams().getKnctrator() != null) {
+            list.add(RecordMettallographicParameter.newBuilder()
+                    .setCode(SpecCode.CONCENTRATOR.getValue())
+                    .setName(SpecCode.CONCENTRATOR.getDesc())
+                    .setValue(attestation.getParams().getKnctrator())
+                    .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
+                    .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getTemp() != null) {
+            list.add(RecordMettallographicParameter.newBuilder()
+                    .setCode(SpecCode.TEMPERATURE.getValue())
+                    .setName(SpecCode.TEMPERATURE.getDesc())
+                    .setValue(attestation.getParams().getTemp())
+                    .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
+                    .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getAnalysisId() != null) {
+            list.add(RecordMettallographicParameter.newBuilder()
+                    .setCode(SpecCode.ANALYSIS_ID.getValue())
+                    .setName(SpecCode.ANALYSIS_ID.getDesc())
+                    .setValue(attestation.getParams().getAnalysisId().toString())
+                    .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
+                    .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                    .build());
+        }
+
+        return list;
+    }
+
+    /**
+     * Преобразование значений объекта Params в список объектов RecordMechanicalParameter
+     *
+     * @param attestation результата Аттестации параметра
+     * @return список RecordMechanicalParameter
+     */
+    private List<RecordMechanicalParameter> prepareMechanicalParameter(AttestationDto attestation) {
+        if (attestation == null || attestation.getParams() == null) {
+            return List.of();
+        }
+
+        final var list = new ArrayList<RecordMechanicalParameter>();
+
+        if (attestation.getParams().getKnctrator() != null) {
+            list.add(RecordMechanicalParameter.newBuilder()
+                    .setCode(SpecCode.CONCENTRATOR.getValue())
+                    .setName(SpecCode.CONCENTRATOR.getDesc())
+                    .setValue(attestation.getParams().getKnctrator())
+                    .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
+                    .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getTemp() != null) {
+            list.add(RecordMechanicalParameter.newBuilder()
+                    .setCode(SpecCode.TEMPERATURE.getValue())
+                    .setName(SpecCode.TEMPERATURE.getDesc())
+                    .setValue(attestation.getParams().getTemp())
+                    .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
+                    .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                    .build());
+        }
+        if (attestation.getParams().getAnalysisId() != null) {
+            list.add(RecordMechanicalParameter.newBuilder()
+                    .setCode(SpecCode.ANALYSIS_ID.getValue())
+                    .setName(SpecCode.ANALYSIS_ID.getDesc())
+                    .setValue(attestation.getParams().getAnalysisId().toString())
+                    .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
+                    .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                    .build());
+        }
+
+        return list;
+    }
+
+    /**
+     * Получение корректного типа данных для указанного кода спецификации
+     *
+     * @param code значение кода Спецификации
+     * @return объект TypeCode
+     */
+    private TypeCode getTypeCodeByCodeValue(Integer code) {
+        if (code == null) {
+            return TypeCode.STRING;
+        }
+        try {
+            return SpecCode.fromValue(code).getTypeCode();
+        } catch (IllegalArgumentException e) {
+            return TypeCode.STRING;
+        }
     }
 
 }

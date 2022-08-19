@@ -122,13 +122,13 @@ class RestRequestAdapterTest {
                 .value(Value.builder()
                         .ts(new Date(1000000000_000L)) // для теста!
                         .op("I")
-                        .pk(new Pk("0001020210329001515440422", "11"))
+                        .pk(Pk.builder().systemCode("11").id("0001020210329001515440422").build())
                         .data(DataField.builder()
                                 .primeId("0001020210329001515440422")
-                                .nplv(2106684L).hnum(25217L).roll("1")
+                                .nplv(2106684).hnum(25217).roll("1")
                                 .length(3000.0).thickness(30.0).width(300.0)
                                 .weightNet(140.0).bundleWeight(180.0)
-                                .kceh(11L)
+                                .kceh(11)
                                 .specifications(List.of(
                                         Specs.builder()
                                                 .specCode(SpecCode.STEEL_MARK.getValue())

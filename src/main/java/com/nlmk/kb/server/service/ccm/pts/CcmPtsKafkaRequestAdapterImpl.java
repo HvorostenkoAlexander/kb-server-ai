@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -25,67 +26,66 @@ public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
         final var dateRequest = converter.parseToDate(requestMessagePts.getTs().toString());
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
-        final var value = Value.builder()
-                .ts(dateRequest)
-                .op(requestMessagePts.getOp().toString());
-
-        if (requestMessagePts.getPk() != null) {
-            value.pk(toPamPk(requestMessagePts.getPk()));
-        }
-        if (requestMessagePts.getData() != null) {
-            value.data(toPamDataField(requestMessagePts.getData()));
-        }
-
-        return com.nlmk.attestation.product.api.pam.AttestationRequest.builder()
-                .value(value.build())
+        return AttestationRequest.builder()
+                .value(Value.builder()
+                        .ts(dateRequest)
+                        .op(requestMessagePts.getOp().toString())
+                        .pk(toPamPk(requestMessagePts.getPk()))
+                        .data(toPamDataField(requestMessagePts.getData()))
+                        .build())
                 .build();
     }
 
     private static Pk toPamPk(RecordPk recordPk) {
-        Pk pk = new Pk();
-        if (recordPk.getId() != null) {
-            pk.setId(recordPk.getId().toString());
+        if (recordPk == null) {
+            return null;
         }
-        if (recordPk.getSystemCode() != null) {
-            pk.setSystemCode(recordPk.getSystemCode().toString());
-        }
-        return pk;
+
+        return Pk.builder()
+                .systemCode(sequenceToString(recordPk.getSystemCode()))
+                .id(sequenceToString(recordPk.getId()))
+                .build();
     }
 
     private static DataField toPamDataField(RecordData recordData) {
-        // установка значений полей, значения в которых не null согласно AVRO-схеме
-        final var dataFieldBuilder = DataField.builder()
+        if (recordData == null) {
+            return null;
+        }
+
+        // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
+        // пустые списки дял полей specifications, chemical, mechanical, metallographic
+        return DataField.builder()
                 .primeId(recordData.getPrimeId().toString())
+                .nplv(recordData.getNplv())
+                .hnum(recordData.getHnum())
                 .roll(recordData.getRoll().toString())
-                .thickness(toDouble(recordData.getThickness()))
-                .width(toDouble(recordData.getWidth()))
-                .weightNet(toDouble(recordData.getWeightNet()))
-                .kceh((long) recordData.getKceh())
+                .length(parseFloat(recordData.getLength()))
+                .thickness(parseFloat(recordData.getThickness()))
+                .width(parseFloat(recordData.getWidth()))
+                .weightNet(parseFloat(recordData.getWeightNet()))
+                .kceh(recordData.getKceh())
                 .orderNum((long) recordData.getOrderNum())
-                .orderPos((long) recordData.getOrderPos())
-                // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
+                .orderPos(recordData.getOrderPos())
                 .orderReq(List.of())
-                // этих полей нет, заглушка
                 .specifications(List.of())
                 .chemical(List.of())
                 .mechanical(List.of())
-                .metallographic(List.of());
-
-        if (recordData.getNplv() != null) {
-            dataFieldBuilder.nplv(recordData.getNplv().longValue());
-        }
-        if (recordData.getHnum() != null) {
-            dataFieldBuilder.hnum(recordData.getHnum().longValue());
-        }
-        if (recordData.getLength() != null) {
-            dataFieldBuilder.length(toDouble(recordData.getLength()));
-        }
-        // .. будут еще поля
-        return dataFieldBuilder.build();
+                .metallographic(List.of())
+                .build();
     }
 
-    private static Double toDouble(Float f) {
+    private static Double parseFloat(Float f) {
+        if (f == null) {
+            return null;
+        }
         return Double.parseDouble(Float.toString(f));
+    }
+
+    private static String sequenceToString(CharSequence sequence) {
+        if (sequence == null) {
+            return null;
+        }
+        return sequence.toString();
     }
 
 }
