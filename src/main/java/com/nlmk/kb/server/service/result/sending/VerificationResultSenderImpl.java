@@ -44,10 +44,11 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
         final var address = String.format(KAFKA_REST_PROXY_TEMPLATE, getKafkaHttpProxyAddress(), topic);
 
         try {
+            log.info("send, request to KAFKA: key [{}], value [{}]", key.getKey(), result);
             ResponseEntity<JsonNode> resp = getRestTemplate()
                     .exchange(address, HttpMethod.POST, buildHttpEntity(batchDto), JsonNode.class);
 
-            log.info("Response from KAFKA: [{}]", resp);
+            log.info("send, response from KAFKA: [{}]", resp);
         } catch (Exception e) {
             log.error("Ошибка отправки сообщения: {}", e.getMessage());
             throw new KafkaRestException(e);

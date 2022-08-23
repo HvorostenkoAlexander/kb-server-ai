@@ -38,7 +38,8 @@ public class SadimKafkaService {
     public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
                                   Acknowledgment ack) {
 
-        log.debug("SADIM message with partition: [{}]; offset: [{}];", consumerRecord.partition(), consumerRecord.offset());
+        log.info("receiveMessageReq (SADIM): topic [{}], partition [{}], offset [{}], key [{}]",
+                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
         String primeId;
 
         try {

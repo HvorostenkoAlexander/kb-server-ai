@@ -53,16 +53,13 @@ public class PdmKafkaService {
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> request, Acknowledgment ack) {
-        log.info("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
-                request.topic(),
-                request.partition(),
-                request.offset(),
-                request.key()
-        );
+    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
+                                  Acknowledgment ack) {
+        log.info("receiveMessageReq (PDM): topic [{}], partition [{}], offset [{}], key [{}]",
+                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
 
         try {
-            if (pdmMessageHandler.handleConsumerRecord(request)) {
+            if (pdmMessageHandler.handleConsumerRecord(consumerRecord)) {
                 ack.acknowledge();
             } else {
                 ack.nack(sleepTime);

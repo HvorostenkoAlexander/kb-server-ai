@@ -34,8 +34,8 @@ public class VerificationResultProducer implements ApcsAvro, MessageProducer {
 
     @Override
     public void produce(ProductDto product, boolean isNew, String topic) {
-        log.info("Отправка продукта: [{}] по схеме: [{}], класса VerificationResults в топик: [{}]",
-                product, getDescription(), topic);
+        log.info("send product: id [{}], referenceId [{}] by AVRO [{}] to topic [{}]",
+                product.getId(), product.getReferenceId(), getDescription(), topic);
 
         VerificationResults results = adapter.adapt(product, isNew);
         sender.send(results, topic);

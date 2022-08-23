@@ -48,7 +48,7 @@ public class CcmPtsKafkaService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("CCM PTS AttestationRequest: partition: {}; offset: {}; key: {}; timestamp: {}; request.ts:{}; request.op: {}; request.pk.id: {}; ", partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
+        log.info("receiveMessageReq (CCM PTS): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);

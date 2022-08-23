@@ -54,7 +54,7 @@ public class ProductSenderImpl implements ProductSender {
         log.info("send attestation result for product: id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
 
         for (ResultsConfigDto config : configs) {
-            log.info("send, config [{}]", config);
+            log.info("sending config [{}]", config);
             sending(config,
                     enabledSenders,
                     product,
