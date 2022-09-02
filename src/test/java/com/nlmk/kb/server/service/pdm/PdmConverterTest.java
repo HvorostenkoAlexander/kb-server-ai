@@ -1,14 +1,10 @@
-package com.nlmk.kb.server.util;
+package com.nlmk.kb.server.service.pdm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
-import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
-import com.nlmk.kb.server.service.pdm.PdmDtoConverterImpl;
-import com.nlmk.kb.server.service.pdm.PdmDictionaryCreatorImpl;
 import nlmk.l3.pdm.*;
 import org.junit.jupiter.api.Test;
 

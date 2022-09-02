@@ -19,7 +19,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
     private final CommonConverter converter;
 
     @Override
-    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(nlmk.l3.ccm.pgp.AttestationRequest requestMessagePgp) {
+    public AttestationRequest adapt(nlmk.l3.ccm.pgp.AttestationRequest requestMessagePgp) {
         Assert.notNull(requestMessagePgp, "requestMessagePgp is null");
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
@@ -37,7 +37,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static Pk toPamPk(RecordPk recordPk) {
+    private Pk toPamPk(RecordPk recordPk) {
         if (recordPk == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static DataField toPamDataField(RecordData recordData) {
+    private DataField toPamDataField(RecordData recordData) {
         if (recordData == null) {
             return null;
         }
@@ -70,30 +70,30 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .orderReq(List.of())
                 .specifications(
                         recordData.getSpecifications().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamSpecs)
+                                .map(this::toPamSpecs)
                                 .collect(Collectors.toList())
                 ).chemical(
                         recordData.getChemical() == null
                                 ? null
                                 : recordData.getChemical().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamChemicalSpec)
+                                .map(this::toPamChemicalSpec)
                                 .collect(Collectors.toList())
                 ).mechanical(
                         recordData.getMechanical() == null
                                 ? null
                                 : recordData.getMechanical().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalSpec)
+                                .map(this::toPamMechanicalSpec)
                                 .collect(Collectors.toList())
                 ).metallographic(
                         recordData.getMetallographic() == null
                                 ? null
                                 : recordData.getMetallographic().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicSpec)
+                                .map(this::toPamMetallographicSpec)
                                 .collect(Collectors.toList())
                 ).build();
     }
 
-    private static Specs toPamSpecs(RecordSpecifications specifications) {
+    private Specs toPamSpecs(RecordSpecifications specifications) {
         return Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(sequenceToString(specifications.getSpecName()))
@@ -104,7 +104,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
+    private ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
         return ChemicalSpec.builder()
                 .chemCode(recordChemical.getChemCode())
                 .chemName(sequenceToString(recordChemical.getChemName()))
@@ -113,7 +113,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static MechanicalSpec toPamMechanicalSpec(RecordMechanical mechanical) {
+    private MechanicalSpec toPamMechanicalSpec(RecordMechanical mechanical) {
         return MechanicalSpec.builder()
                 .hnum(mechanical.getHnum())
                 .protNum(mechanical.getProtNum())
@@ -124,24 +124,24 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                         mechanical.getMechData() == null
                                 ? null
                                 : mechanical.getMechData().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalData)
+                                .map(this::toPamMechanicalData)
                                 .collect(Collectors.toList())
                 ).build();
     }
 
-    private static MechanicalData toPamMechanicalData(RecordMechData data) {
+    private MechanicalData toPamMechanicalData(RecordMechData data) {
         return MechanicalData.builder()
                 .mechAnalysisId(data.getMechAnalysisId())
                 .mechAnalysisData(
                         data.getMechAnalysisData() == null
                                 ? null
                                 : data.getMechAnalysisData().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMechanicalAnalysisData)
+                                .map(this::toPamMechanicalAnalysisData)
                                 .collect(Collectors.toList())
                 ).build();
     }
 
-    private static MechanicalAnalysisData toPamMechanicalAnalysisData(RecordMechAnalysisData analysis) {
+    private MechanicalAnalysisData toPamMechanicalAnalysisData(RecordMechAnalysisData analysis) {
         return MechanicalAnalysisData.builder()
                 .mechCode(analysis.getMechCode())
                 .mechName(sequenceToString(analysis.getMechName()))
@@ -152,7 +152,7 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static MetallographicSpec toPamMetallographicSpec(RecordMetallographic metallographic) {
+    private MetallographicSpec toPamMetallographicSpec(RecordMetallographic metallographic) {
         return MetallographicSpec.builder()
                 .hnum(metallographic.getHnum())
                 .protNum(metallographic.getProtNum())
@@ -162,23 +162,23 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                         metallographic.getMetgrapData() == null
                                 ? null
                                 : metallographic.getMetgrapData().stream()
-                                .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicData)
+                                .map(this::toPamMetallographicData)
                                 .collect(Collectors.toList())
                 ).build();
     }
 
-    private static MetallographicData toPamMetallographicData(RecordMetgrapData data) {
+    private MetallographicData toPamMetallographicData(RecordMetgrapData data) {
         return MetallographicData.builder()
                 .metgrapAnalysisId(data.getMetgrapAnalysisId())
                 .metgrapAnalysisData(data.getMetgrapAnalysisData() == null
                         ? null
                         : data.getMetgrapAnalysisData().stream()
-                        .map(CcmPgpKafkaRequestAdapterImpl::toPamMetallographicAnalysisData)
+                        .map(this::toPamMetallographicAnalysisData)
                         .collect(Collectors.toList()))
                 .build();
     }
 
-    private static MetallographicAnalysisData toPamMetallographicAnalysisData(RecordMetgrapAnalysisData analysis) {
+    private MetallographicAnalysisData toPamMetallographicAnalysisData(RecordMetgrapAnalysisData analysis) {
         return MetallographicAnalysisData.builder()
                 .metgrapCode(analysis.getMetgrapCode())
                 .metgrapName(sequenceToString(analysis.getMetgrapName()))
@@ -187,20 +187,6 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .metgrapTypeCode(analysis.getMetgrapTypeCode())
                 .metgrapMeasure(sequenceToString(analysis.getMetgrapMeasure()))
                 .build();
-    }
-
-    private static Double parseFloat(Float f) {
-        if (f == null) {
-            return null;
-        }
-        return Double.parseDouble(Float.toString(f));
-    }
-
-    private static String sequenceToString(CharSequence sequence) {
-        if (sequence == null) {
-            return null;
-        }
-        return sequence.toString();
     }
 
 }

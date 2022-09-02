@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
+import com.nlmk.kb.server.service.ccm.CcmPtsRequestAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pts.*;
@@ -13,12 +14,12 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
+public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implements KafkaRequestAdapter<nlmk.l3.ccm.pts.AttestationRequest> {
 
     private final CommonConverter converter;
 
     @Override
-    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
+    public AttestationRequest adapt(nlmk.l3.ccm.pts.AttestationRequest requestMessagePts) {
         Assert.notNull(requestMessagePts, "requestMessagePts is null");
         Assert.notNull(requestMessagePts.getTs(), "requestMessagePts.getTs() is null");
         Assert.notNull(requestMessagePts.getOp(), "requestMessagePts.getOp() is null");
@@ -31,12 +32,12 @@ public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                         .ts(dateRequest)
                         .op(requestMessagePts.getOp().toString())
                         .pk(toPamPk(requestMessagePts.getPk()))
-                        .data(toPamDataField(requestMessagePts.getData()))
+                        .data(toPamDataField(requestMessagePts.getPk(), requestMessagePts.getData()))
                         .build())
                 .build();
     }
 
-    private static Pk toPamPk(RecordPk recordPk) {
+    private Pk toPamPk(RecordPk recordPk) {
         if (recordPk == null) {
             return null;
         }
@@ -47,45 +48,55 @@ public class CcmPtsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private static DataField toPamDataField(RecordData recordData) {
+    private DataField toPamDataField(RecordPk recordPk, RecordData recordData) {
+        String primeId = null;
+        if (recordPk != null) {
+            primeId = sequenceToString(recordPk.getId());
+        }
         if (recordData == null) {
             return null;
         }
 
-        // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
-        // пустые списки дял полей specifications, chemical, mechanical, metallographic
+        Integer hnum = null;
+        Integer nplv = null;
+        String roll = null;
+        if (recordData.getMarking() != null) {
+            hnum = recordData.getMarking().getHnum();
+            nplv = recordData.getMarking().getNplv();
+            roll = String.valueOf(recordData.getMarking().getRoll());
+        }
+
+        Double length = null;
+        Double thickness = null;
+        Double width = null;
+        if (recordData.getGeometry() != null) {
+            length = parseFloat(recordData.getGeometry().getLength());
+            thickness = parseFloat(recordData.getGeometry().getThickness());
+            width = parseFloat(recordData.getGeometry().getWidth());
+        }
+
+        // С версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP,
+        // так же пустые списки для mechanical, metallographic.
         return DataField.builder()
-                .primeId(recordData.getPrimeId().toString())
-                .nplv(recordData.getNplv())
-                .hnum(recordData.getHnum())
-                .roll(recordData.getRoll().toString())
-                .length(parseFloat(recordData.getLength()))
-                .thickness(parseFloat(recordData.getThickness()))
-                .width(parseFloat(recordData.getWidth()))
+                .primeId(primeId)
+                .nplv(nplv)
+                .hnum(hnum)
+                .roll(roll)
+                .length(length)
+                .thickness(thickness)
+                .width(width)
                 .weightNet(parseFloat(recordData.getWeightNet()))
+                .bundleWeight(super.calcBundleWeight(recordData))
                 .kceh(recordData.getKceh())
-                .orderNum((long) recordData.getOrderNum())
+                .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
+                .specifications(super.prepareSpecs(recordData))
+                .chemical(super.prepareChemicalSpecs(recordData))
+                .mechanicalPts(super.prepareMechanicalProperties(recordData))
                 .orderReq(List.of())
-                .specifications(List.of())
-                .chemical(List.of())
                 .mechanical(List.of())
                 .metallographic(List.of())
                 .build();
-    }
-
-    private static Double parseFloat(Float f) {
-        if (f == null) {
-            return null;
-        }
-        return Double.parseDouble(Float.toString(f));
-    }
-
-    private static String sequenceToString(CharSequence sequence) {
-        if (sequence == null) {
-            return null;
-        }
-        return sequence.toString();
     }
 
 }

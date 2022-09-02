@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
@@ -6,8 +6,7 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.AttestationMessageSender;
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.service.ccm.CcmCommonServiceImpl;
-import com.nlmk.kb.server.service.ccm.CcmMessageService;
+import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.sender.PamSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

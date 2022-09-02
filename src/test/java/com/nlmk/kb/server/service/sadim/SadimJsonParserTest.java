@@ -1,11 +1,10 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sadim;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.kb.server.service.sadim.SadimJsonElement;
-import com.nlmk.kb.server.service.sadim.SadimJsonParserImpl;
-import com.nlmk.kb.server.service.sadim.SadimJsonParser;
+import com.nlmk.kb.server.service.CommonConverter;
+import com.nlmk.kb.server.service.CommonConverterImpl;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.sadim.Sadim;

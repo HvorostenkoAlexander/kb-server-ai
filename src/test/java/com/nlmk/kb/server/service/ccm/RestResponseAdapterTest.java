@@ -1,11 +1,10 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.ccm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
-import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestResponseAdapterImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

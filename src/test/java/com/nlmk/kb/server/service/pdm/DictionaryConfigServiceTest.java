@@ -1,9 +1,8 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.entity.DictionaryConfig;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
-import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;

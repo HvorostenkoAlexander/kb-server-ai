@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import nlmk.l3.ccm.pts.RecordData;
+import nlmk.l3.ccm.pts.RecordGeometry;
+import nlmk.l3.ccm.pts.RecordMarking;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -137,25 +140,28 @@ class SendMessageToKafkaTest {
 
     @Test
     void sendCcmPtsMessage() {
-        nlmk.l3.ccm.pts.RecordData data = nlmk.l3.ccm.pts.RecordData.newBuilder()
-                .setPrimeId("42")
-                .setNplv(2106684) // <- meltNo
-                .setHnum(25217) // <-- lotNo
-                .setRoll("1-1")
-                .setThickness(2.65f)
-                .setWidth(1232.0f)
+        nlmk.l3.ccm.pts.RecordData data = RecordData.newBuilder()
+                .setMarking(RecordMarking.newBuilder()
+                        .setNplv(2106684) // <- meltNo
+                        .setHnum(25217) // <-- lotNo
+                        .setRoll(1)
+                        .build())
+                .setGeometry(RecordGeometry.newBuilder()
+                        .setThickness(2.65f)
+                        .setWidth(1232.0f)
+                        .build())
                 .setWeightNet(10.86f)
-                .setKceh(12)
-                .setOrderNum(40434341)
+                .setKceh(11)
+                .setOrderNum(40434341L)
                 .setOrderPos(4)
-                // .. будут еще поля
+                // .. будут еще поля fixme
                 .build();
 
         nlmk.l3.ccm.pts.AttestationRequest value = nlmk.l3.ccm.pts.AttestationRequest.newBuilder()
-                .setTs("2022-06-27T16:45:25.000+05:00")
+                .setTs("2022-09-02T14:36:25.000+05:00")
                 .setOp(nlmk.l3.ccm.pts.EnumOp.U)
                 .setPk(nlmk.l3.ccm.pts.RecordPk.newBuilder()
-                        .setId("42")
+                        .setId("42") // primeId
                         .setSystemCode("16")
                         .build())
                 .setData(data)

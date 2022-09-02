@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.ProductDto;
@@ -9,7 +9,6 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.ProductSenderException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
-import com.nlmk.kb.server.service.sender.ProductSender;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
