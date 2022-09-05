@@ -1,10 +1,8 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import nlmk.l3.ccm.pts.RecordBundles;
-import nlmk.l3.ccm.pts.RecordData;
-import nlmk.l3.ccm.pts.RecordGeometry;
-import nlmk.l3.ccm.pts.RecordMarking;
+import nlmk.l3.ccm.pts.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +15,26 @@ class CcmPtsRequestAdapterTest {
 
     private final Adapter adapter = new Adapter();
 
+    private RecordData prepareMinimalRecordData(Float weightNet) {
+        return RecordData.newBuilder()
+                .setWerks(1).setWerksName("1")
+                .setKceh(11).setKcehName("11")
+                .setUnitCode(2).setUnitName("2")
+                .setStorageCode(3).setStorageName("3")
+                .setMarking(RecordMarking.newBuilder()
+                        .setNplv(4).setHnum(5).setTnum(6).setRoll(7)
+                        .build())
+                .setWeightNet(weightNet != null ? weightNet : Float.NaN)
+                .setGeometry(RecordGeometry.newBuilder()
+                        .setThickness(10).setWidth(11)
+                        .build())
+                .setSpecifications(List.of())
+                .build();
+    }
+
     @Test
     void calcBundleWeight() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.calcBundleWeight("0.0"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.calcBundleWeight("x.y"));
         Assertions.assertNull(adapter.calcBundleWeight(null));
         Assertions.assertNull(adapter.calcBundleWeight(CcmPtsRequest.builder().build()));
         Assertions.assertEquals(Double.NaN, adapter.calcBundleWeight(prepareMinimalRecordData(null)));
@@ -51,21 +66,78 @@ class CcmPtsRequestAdapterTest {
         Assertions.assertEquals(30.5, adapter.calcBundleWeight(record));
     }
 
-    private RecordData prepareMinimalRecordData(Float weightNet) {
-        return RecordData.newBuilder()
-                .setWerks(1).setWerksName("1")
-                .setKceh(11).setKcehName("11")
-                .setUnitCode(2).setUnitName("2")
-                .setStorageCode(3).setStorageName("3")
-                .setMarking(RecordMarking.newBuilder()
-                        .setNplv(4).setHnum(5).setTnum(6).setRoll(7)
+    @Test
+    void prepareSpecs() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareSpecs("x.y"));
+        Assertions.assertEquals(List.of(), adapter.prepareSpecs(null));
+        Assertions.assertEquals(List.of(), adapter.prepareSpecs(CcmPtsRequest.builder().build()));
+        Assertions.assertEquals(List.of(), adapter.prepareSpecs(prepareMinimalRecordData(null)));
+
+        Assertions.assertEquals(List.of(), adapter.prepareSpecs(CcmPtsRequest.builder()
+                .data(CcmPtsRequest.Record.builder()
+                        .specifications(List.of())
                         .build())
-                .setWeightNet(weightNet != null ? weightNet : Float.NaN)
-                .setGeometry(RecordGeometry.newBuilder()
-                        .setThickness(10).setWidth(11)
+                .build()));
+
+        final var record = prepareMinimalRecordData(null);
+        record.setSpecifications(List.of());
+        Assertions.assertEquals(List.of(), adapter.prepareSpecs(record));
+
+        Assertions.assertEquals(List.of(
+                Specs.builder().specCode(1).specValue("1").build(),
+                Specs.builder().specCode(3).specValue("31").build(),
+                Specs.builder().specCode(3).specValue("32").build()
+        ), adapter.prepareSpecs(CcmPtsRequest.builder()
+                .data(CcmPtsRequest.Record.builder()
+                        .specifications(List.of(
+                                CcmPtsRequest.Specification.builder()
+                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE).specCode(1).specValue("1")
+                                        .build(),
+                                CcmPtsRequest.Specification.builder()
+                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.ENUMERABLE).specCode(2)
+                                        .build(),
+                                CcmPtsRequest.Specification.builder()
+                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.ENUMERABLE).specCode(3)
+                                        .listValues(List.of(
+                                                CcmPtsRequest.OneSpecValue.builder().value("31").build(),
+                                                CcmPtsRequest.OneSpecValue.builder().value("32").build()
+                                        ))
+                                        .build()
+                        ))
                         .build())
-                .setSpecifications(List.of())
-                .build();
+                .build()));
+
+        record.setSpecifications(List.of(
+                RecordSpecifications.newBuilder().setSpecCode(1).setSpecName("1").setSpecValue("1")
+                        .setSpecTypeCode(1).setSpecTypeName("1").setSpecTypeValue(1)
+                        .build(),
+                RecordSpecifications.newBuilder().setSpecCode(2).setSpecName("2").setSpecValue("2")
+                        .setSpecTypeCode(2).setSpecTypeName("2").setSpecTypeValue(2)
+                        .build(),
+                RecordSpecifications.newBuilder().setSpecCode(3).setSpecName("3").setSpecValue("3")
+                        .setSpecTypeCode(2).setSpecTypeName("2").setSpecTypeValue(2)
+                        .setListValues(List.of(
+                                RecordDataSpecificationsListValues.newBuilder().setValue("31").build(),
+                                RecordDataSpecificationsListValues.newBuilder().setValue("32").build()
+                        ))
+                        .build()
+        ));
+        Assertions.assertEquals(List.of(
+                Specs.builder().specCode(1).specName("1").specValue("1").specTypeCode(1).build(),
+                Specs.builder().specCode(3).specName("3").specValue("31").specTypeCode(2).build(),
+                Specs.builder().specCode(3).specName("3").specValue("32").specTypeCode(2).build()
+        ), adapter.prepareSpecs(record));
     }
 
+    @Test
+    void prepareChemicalSpecs() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareChemicalSpecs("x.y"));
+
+    }
+
+    @Test
+    void prepareMechanicalProperties() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareMechanicalProperties("x.y"));
+
+    }
 }

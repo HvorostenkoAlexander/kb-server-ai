@@ -122,8 +122,7 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      * Подготовка общей спецификации для CcmPtsRequest
      */
     private List<Specs> prepareSpecsForRequest(CcmPtsRequest requestMessage) {
-        if (requestMessage == null
-                || requestMessage.getData() == null
+        if (requestMessage.getData() == null
                 || requestMessage.getData().getSpecifications() == null
                 || requestMessage.getData().getSpecifications().isEmpty()) {
             return List.of();
@@ -161,12 +160,35 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      * Подготовка общей спецификации для nlmk.l3.ccm.pts.RecordData
      */
     private List<Specs> prepareSpecsForRecord(RecordData recordData) {
-        if (recordData == null) {
+        if (recordData.getSpecifications() == null
+                || recordData.getSpecifications().isEmpty()) {
             return List.of();
         }
 
-        // todo
-        return List.of();
+        final var specs = new ArrayList<Specs>();
+        recordData.getSpecifications().forEach(s -> {
+            if (s.getSpecTypeValue() == 1) { // 1 - простое
+                specs.add(Specs.builder()
+                        .specCode(s.getSpecCode())
+                        .specName(sequenceToString(s.getSpecName()))
+                        .specValue(sequenceToString(s.getSpecValue()))
+                        .specTypeCode(s.getSpecTypeCode())
+                        .specFormat(sequenceToString(s.getSpecFormat()))
+                        .specMeasure(sequenceToString(s.getSpecMeasure()))
+                        .build());
+            } else if (s.getSpecTypeValue() == 2 // 2 - перечислимое
+                    && s.getListValues() != null && !s.getListValues().isEmpty()) {
+                s.getListValues().forEach(v -> specs.add(Specs.builder()
+                        .specCode(s.getSpecCode())
+                        .specName(sequenceToString(s.getSpecName()))
+                        .specValue(sequenceToString(v.getValue()))
+                        .specTypeCode(s.getSpecTypeCode())
+                        .specFormat(sequenceToString(s.getSpecFormat()))
+                        .specMeasure(sequenceToString(s.getSpecMeasure()))
+                        .build()));
+            }
+        });
+        return specs;
     }
 
     /**
