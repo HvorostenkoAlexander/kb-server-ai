@@ -6,6 +6,7 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import nlmk.l3.ccm.pts.RecordBundles;
 import nlmk.l3.ccm.pts.RecordData;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Общие методы подготовки Запроса на Аттестацию
  */
-public abstract class CcmPtsRequestAdapter {
+public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
 
     /**
      * Расчёт массы связки
@@ -28,9 +29,9 @@ public abstract class CcmPtsRequestAdapter {
         final var clazz = data.getClass();
 
         if (clazz == CcmPtsRequest.class) {
-            return calcBundleWeight((CcmPtsRequest) data);
+            return calcBundleWeightForRequest((CcmPtsRequest) data);
         } else if (clazz == RecordData.class) {
-            return calcBundleWeight((RecordData) data);
+            return calcBundleWeightForRecord((RecordData) data);
         }
 
         throw new IllegalArgumentException(String.format("calcBundleWeight, class [%s] not found", clazz));
@@ -39,43 +40,64 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Расчёт массы связки для CcmPtsRequest
      */
-    private Double calcBundleWeight(CcmPtsRequest requestMessage) {
-        if (requestMessage == null
-                || requestMessage.getData() == null
-                || (requestMessage.getData().getWeightNet() == null
-                && (requestMessage.getData().getBundles() == null || requestMessage.getData().getBundles().isEmpty()))) {
+    private Double calcBundleWeightForRequest(CcmPtsRequest requestMessage) {
+        if (requestMessage.getData() == null) {
             return null;
         }
 
-        var weightEM = 0.0;
-        if (requestMessage.getData().getWeightNet() != null) {
-            weightEM = requestMessage.getData().getWeightNet();
+        if (requestMessage.getData().getBundles() == null) {
+            return calcBundleWeight(requestMessage.getData().getWeightNet(), List.of());
         }
 
-        if (requestMessage.getData().getBundles() == null || requestMessage.getData().getBundles().isEmpty()) {
+        return calcBundleWeight(
+                requestMessage.getData().getWeightNet(),
+                requestMessage.getData().getBundles().stream()
+                        .map(CcmPtsRequest.Bundle::getStripWeight)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Расчёт массы связки для nlmk.l3.ccm.pts.RecordData
+     */
+    private Double calcBundleWeightForRecord(RecordData recordData) {
+        if (recordData.getBundles() == null) {
+            return calcBundleWeight(super.parseFloat(recordData.getWeightNet()), List.of());
+        }
+
+        return calcBundleWeight(
+                super.parseFloat(recordData.getWeightNet()),
+                recordData.getBundles().stream()
+                        .map(RecordBundles::getStripWeight)
+                        .map(super::parseFloat)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Расчёт массы связки
+     *
+     * @param em      масса ЕМ
+     * @param bundles масса всех бунтов
+     * @return итоговая масса
+     */
+    private Double calcBundleWeight(Double em, List<Double> bundles) {
+        var weightEM = 0.0;
+        if (em != null) {
+            weightEM = em;
+        }
+
+        if (bundles == null || bundles.isEmpty()) {
             return weightEM;
         }
 
-        final var weightBundle = requestMessage.getData().getBundles().stream()
-                .map(CcmPtsRequest.Bundle::getStripWeight)
+        final var weightBundle = bundles.stream()
                 .filter(Objects::nonNull)
                 .reduce(Double::sum)
                 .orElse(0.0);
 
         // масса всех бунтов, входящих в одну связку, плюс масса ЕМ
         return weightBundle + weightEM;
-    }
-
-    /**
-     * Расчёт массы связки для nlmk.l3.ccm.pts.RecordData
-     */
-    private Double calcBundleWeight(RecordData recordData) {
-        if (recordData == null) {
-            return null;
-        }
-
-        // todo
-        return null;
     }
 
     /**
@@ -88,9 +110,9 @@ public abstract class CcmPtsRequestAdapter {
         final var clazz = data.getClass();
 
         if (clazz == CcmPtsRequest.class) {
-            return prepareSpecs((CcmPtsRequest) data);
+            return prepareSpecsForRequest((CcmPtsRequest) data);
         } else if (clazz == RecordData.class) {
-            return prepareSpecs((RecordData) data);
+            return prepareSpecsForRecord((RecordData) data);
         }
 
         throw new IllegalArgumentException(String.format("prepareSpecs, class [%s] not found", clazz));
@@ -99,7 +121,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Подготовка общей спецификации для CcmPtsRequest
      */
-    private List<Specs> prepareSpecs(CcmPtsRequest requestMessage) {
+    private List<Specs> prepareSpecsForRequest(CcmPtsRequest requestMessage) {
         if (requestMessage == null
                 || requestMessage.getData() == null
                 || requestMessage.getData().getSpecifications() == null
@@ -138,7 +160,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Подготовка общей спецификации для nlmk.l3.ccm.pts.RecordData
      */
-    private List<Specs> prepareSpecs(RecordData recordData) {
+    private List<Specs> prepareSpecsForRecord(RecordData recordData) {
         if (recordData == null) {
             return List.of();
         }
@@ -157,9 +179,9 @@ public abstract class CcmPtsRequestAdapter {
         final var clazz = data.getClass();
 
         if (clazz == CcmPtsRequest.class) {
-            return prepareChemicalSpecs((CcmPtsRequest) data);
+            return prepareChemicalSpecsForRequest((CcmPtsRequest) data);
         } else if (clazz == nlmk.l3.ccm.pts.RecordData.class) {
-            return prepareChemicalSpecs((RecordData) data);
+            return prepareChemicalSpecsForRecord((RecordData) data);
         }
 
         throw new IllegalArgumentException(String.format("prepareChemicalSpecs, class [%s] not found", clazz));
@@ -168,7 +190,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Подготовка спецификации по Химии для CcmPtsRequest
      */
-    private List<ChemicalSpec> prepareChemicalSpecs(CcmPtsRequest requestMessage) {
+    private List<ChemicalSpec> prepareChemicalSpecsForRequest(CcmPtsRequest requestMessage) {
         if (requestMessage == null
                 || requestMessage.getData() == null
                 || requestMessage.getData().getChemical() == null
@@ -189,7 +211,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Подготовка спецификации по Химии для nlmk.l3.ccm.pts.RecordData
      */
-    private List<ChemicalSpec> prepareChemicalSpecs(RecordData recordData) {
+    private List<ChemicalSpec> prepareChemicalSpecsForRecord(RecordData recordData) {
         if (recordData == null) {
             return List.of();
         }
@@ -208,9 +230,9 @@ public abstract class CcmPtsRequestAdapter {
         final var clazz = data.getClass();
 
         if (clazz == CcmPtsRequest.class) {
-            return prepareMechanicalProperties((CcmPtsRequest) data);
+            return prepareMechanicalPropertiesForRequest((CcmPtsRequest) data);
         } else if (clazz == nlmk.l3.ccm.pts.RecordData.class) {
-            return prepareMechanicalProperties((RecordData) data);
+            return prepareMechanicalPropertiesForRecord((RecordData) data);
         }
 
         throw new IllegalArgumentException(String.format("prepareMechanicalProperties, class [%s] not found", clazz));
@@ -219,7 +241,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Подготовка свойств Механики для ЦТС для CcmPtsRequest
      */
-    private List<PtsMechanicalProperty> prepareMechanicalProperties(CcmPtsRequest requestMessage) {
+    private List<PtsMechanicalProperty> prepareMechanicalPropertiesForRequest(CcmPtsRequest requestMessage) {
         if (requestMessage == null
                 || requestMessage.getData() == null
                 || requestMessage.getData().getProperties() == null
@@ -258,7 +280,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Подготовка свойств Механики для ЦТС для nlmk.l3.ccm.pts.RecordData
      */
-    private List<PtsMechanicalProperty> prepareMechanicalProperties(RecordData recordData) {
+    private List<PtsMechanicalProperty> prepareMechanicalPropertiesForRecord(RecordData recordData) {
         if (recordData == null) {
             return List.of();
         }

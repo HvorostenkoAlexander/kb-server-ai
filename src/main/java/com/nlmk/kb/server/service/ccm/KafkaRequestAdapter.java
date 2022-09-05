@@ -15,18 +15,4 @@ public interface KafkaRequestAdapter<T> {
      */
     com.nlmk.attestation.product.api.pam.AttestationRequest adapt(T requestMessage);
 
-    default Double parseFloat(Float f) {
-        if (f == null) {
-            return null;
-        }
-        return Double.parseDouble(Float.toString(f));
-    }
-
-    default String sequenceToString(CharSequence sequence) {
-        if (sequence == null) {
-            return null;
-        }
-        return sequence.toString();
-    }
-
 }

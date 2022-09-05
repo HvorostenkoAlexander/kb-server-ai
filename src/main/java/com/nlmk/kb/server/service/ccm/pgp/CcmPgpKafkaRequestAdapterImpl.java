@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm.pgp;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
+import com.nlmk.kb.server.service.ccm.CcmRequestAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pgp.*;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
+public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements KafkaRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
 
     private final CommonConverter converter;
 
