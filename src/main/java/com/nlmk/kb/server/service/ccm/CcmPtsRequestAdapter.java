@@ -213,14 +213,14 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      * Подготовка спецификации по Химии для CcmPtsRequest
      */
     private List<ChemicalSpec> prepareChemicalSpecsForRequest(CcmPtsRequest requestMessage) {
-        if (requestMessage == null
-                || requestMessage.getData() == null
+        if (requestMessage.getData() == null
                 || requestMessage.getData().getChemical() == null
                 || requestMessage.getData().getChemical().isEmpty()) {
             return List.of();
         }
 
         return requestMessage.getData().getChemical().stream()
+                .filter(c0 -> Objects.nonNull(c0.getListValues()))
                 .flatMap(c1 -> c1.getListValues().stream())
                 .map(c2 -> ChemicalSpec.builder()
                         .chemCode(c2.getCode())
@@ -234,12 +234,20 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      * Подготовка спецификации по Химии для nlmk.l3.ccm.pts.RecordData
      */
     private List<ChemicalSpec> prepareChemicalSpecsForRecord(RecordData recordData) {
-        if (recordData == null) {
+        if (recordData.getChemical() == null
+                || recordData.getChemical().isEmpty()) {
             return List.of();
         }
 
-        // todo
-        return List.of();
+        return recordData.getChemical().stream()
+                .filter(c0 -> Objects.nonNull(c0.getListValues()))
+                .flatMap(c1 -> c1.getListValues().stream())
+                .map(c2 -> ChemicalSpec.builder()
+                        .chemCode(c2.getCode())
+                        .chemName(sequenceToString(c2.getName()))
+                        .chemValue(c2.getValue() != null ? c2.getValue().toString() : null)
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**

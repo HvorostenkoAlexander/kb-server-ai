@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import nlmk.l3.ccm.pts.*;
@@ -132,7 +133,46 @@ class CcmPtsRequestAdapterTest {
     @Test
     void prepareChemicalSpecs() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareChemicalSpecs("x.y"));
+        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(null));
+        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(CcmPtsRequest.builder().build()));
+        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(prepareMinimalRecordData(null)));
 
+        Assertions.assertEquals(List.of(
+                ChemicalSpec.builder().build(),
+                ChemicalSpec.builder().chemCode(1).chemValue("1.2").build(),
+                ChemicalSpec.builder().chemCode(2).chemValue("2.3").build()
+        ), adapter.prepareChemicalSpecs(CcmPtsRequest.builder()
+                .data(CcmPtsRequest.Record.builder()
+                        .chemical(List.of(
+                                CcmPtsRequest.Chemical.builder().id(1).listValues(List.of(
+                                        CcmPtsRequest.OneChemicalValue.builder().build(),
+                                        CcmPtsRequest.OneChemicalValue.builder().code(1).value(1.2).build()
+                                )).build(),
+                                CcmPtsRequest.Chemical.builder().id(2).listValues(List.of(
+                                        CcmPtsRequest.OneChemicalValue.builder().code(2).value(2.3).build()
+                                )).build()
+                        ))
+                        .build())
+                .build()));
+
+        final var record = prepareMinimalRecordData(null);
+        record.setChemical(List.of());
+        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(record));
+
+        record.setChemical(List.of(
+                RecordChemical.newBuilder().setId(1).setListValues(List.of(
+                        RecordDataChemicalListValues.newBuilder().setCode(0).setName("0").build(),
+                        RecordDataChemicalListValues.newBuilder().setCode(1).setName("1").setValue(1.2f).build()
+                )).build(),
+                RecordChemical.newBuilder().setId(2).setListValues(List.of(
+                        RecordDataChemicalListValues.newBuilder().setCode(2).setName("2").setValue(2.3f).build()
+                )).build()
+        ));
+        Assertions.assertEquals(List.of(
+                ChemicalSpec.builder().chemCode(0).chemName("0").build(),
+                ChemicalSpec.builder().chemCode(1).chemName("1").chemValue("1.2").build(),
+                ChemicalSpec.builder().chemCode(2).chemName("2").chemValue("2.3").build()
+        ), adapter.prepareChemicalSpecs(record));
     }
 
     @Test
