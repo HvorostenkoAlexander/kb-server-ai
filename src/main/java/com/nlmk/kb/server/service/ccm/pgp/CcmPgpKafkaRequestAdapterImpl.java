@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.ccm.pgp;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.CcmRequestAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pgp.*;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements KafkaRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
+public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
 
     private final CommonConverter converter;
 
@@ -25,7 +25,7 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
 
-        final var dateRequest = converter.parseToDate(sequenceToString(requestMessagePgp.getTs()));
+        final var dateRequest = converter.parseToDate(AdapterUtils.sequenceToString(requestMessagePgp.getTs()));
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
         return AttestationRequest.builder()
@@ -44,8 +44,8 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
         }
 
         return Pk.builder()
-                .systemCode(sequenceToString(recordPk.getSystemCode()))
-                .id(sequenceToString(recordPk.getId()))
+                .systemCode(AdapterUtils.sequenceToString(recordPk.getSystemCode()))
+                .id(AdapterUtils.sequenceToString(recordPk.getId()))
                 .build();
     }
 
@@ -59,12 +59,12 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
                 .primeId(recordData.getPrimeId().toString())
                 .nplv(recordData.getNplv())
                 .hnum(recordData.getHnum())
-                .roll(sequenceToString(recordData.getRoll()))
-                .length(parseFloat(recordData.getLength()))
-                .thickness(parseFloat(recordData.getThickness()))
-                .width(parseFloat(recordData.getWidth()))
-                .weightNet(parseFloat(recordData.getWeightNet()))
-                .bundleWeight(parseFloat(recordData.getBundleWeight()))
+                .roll(AdapterUtils.sequenceToString(recordData.getRoll()))
+                .length(AdapterUtils.parseFloat(recordData.getLength()))
+                .thickness(AdapterUtils.parseFloat(recordData.getThickness()))
+                .width(AdapterUtils.parseFloat(recordData.getWidth()))
+                .weightNet(AdapterUtils.parseFloat(recordData.getWeightNet()))
+                .bundleWeight(AdapterUtils.parseFloat(recordData.getBundleWeight()))
                 .kceh(recordData.getKceh())
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
@@ -97,20 +97,20 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
     private Specs toPamSpecs(RecordSpecifications specifications) {
         return Specs.builder()
                 .specCode(specifications.getSpecCode())
-                .specName(sequenceToString(specifications.getSpecName()))
+                .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
                 .specTypeCode(specifications.getSpecTypeCode())
-                .specValue(sequenceToString(specifications.getSpecValue()))
-                .specFormat(sequenceToString(specifications.getSpecFormat()))
-                .specMeasure(sequenceToString(specifications.getSpecMeasure()))
+                .specValue(AdapterUtils.sequenceToString(specifications.getSpecValue()))
+                .specFormat(AdapterUtils.sequenceToString(specifications.getSpecFormat()))
+                .specMeasure(AdapterUtils.sequenceToString(specifications.getSpecMeasure()))
                 .build();
     }
 
     private ChemicalSpec toPamChemicalSpec(RecordChemical recordChemical) {
         return ChemicalSpec.builder()
                 .chemCode(recordChemical.getChemCode())
-                .chemName(sequenceToString(recordChemical.getChemName()))
-                .chemValue(sequenceToString(recordChemical.getChemValue()))
-                .chemFormat(sequenceToString(recordChemical.getChemFormat()))
+                .chemName(AdapterUtils.sequenceToString(recordChemical.getChemName()))
+                .chemValue(AdapterUtils.sequenceToString(recordChemical.getChemValue()))
+                .chemFormat(AdapterUtils.sequenceToString(recordChemical.getChemFormat()))
                 .build();
     }
 
@@ -120,7 +120,7 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
                 .protNum(mechanical.getProtNum())
                 .sampleNum(mechanical.getSampleNum())
                 .signAnalysis(mechanical.getSignAnalysis())
-                .protDate(sequenceToString(mechanical.getProtDate()))
+                .protDate(AdapterUtils.sequenceToString(mechanical.getProtDate()))
                 .mechData(
                         mechanical.getMechData() == null
                                 ? null
@@ -145,11 +145,11 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
     private MechanicalAnalysisData toPamMechanicalAnalysisData(RecordMechAnalysisData analysis) {
         return MechanicalAnalysisData.builder()
                 .mechCode(analysis.getMechCode())
-                .mechName(sequenceToString(analysis.getMechName()))
+                .mechName(AdapterUtils.sequenceToString(analysis.getMechName()))
                 .mechTypeCode(analysis.getMechTypeCode())
-                .mechFormat(sequenceToString(analysis.getMechFormat()))
-                .mechValue(sequenceToString(analysis.getMechValue()))
-                .mechMeasure(sequenceToString(analysis.getMechMeasure()))
+                .mechFormat(AdapterUtils.sequenceToString(analysis.getMechFormat()))
+                .mechValue(AdapterUtils.sequenceToString(analysis.getMechValue()))
+                .mechMeasure(AdapterUtils.sequenceToString(analysis.getMechMeasure()))
                 .build();
     }
 
@@ -157,7 +157,7 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
         return MetallographicSpec.builder()
                 .hnum(metallographic.getHnum())
                 .protNum(metallographic.getProtNum())
-                .protDate(sequenceToString(metallographic.getProtDate()))
+                .protDate(AdapterUtils.sequenceToString(metallographic.getProtDate()))
                 .signAnalysis(metallographic.getSignAnalysis())
                 .metgrapData(
                         metallographic.getMetgrapData() == null
@@ -182,11 +182,11 @@ public class CcmPgpKafkaRequestAdapterImpl extends CcmRequestAdapter implements 
     private MetallographicAnalysisData toPamMetallographicAnalysisData(RecordMetgrapAnalysisData analysis) {
         return MetallographicAnalysisData.builder()
                 .metgrapCode(analysis.getMetgrapCode())
-                .metgrapName(sequenceToString(analysis.getMetgrapName()))
-                .metgrapFormat(sequenceToString(analysis.getMetgrapFormat()))
-                .metgrapValue(sequenceToString(analysis.getMetgrapValue()))
+                .metgrapName(AdapterUtils.sequenceToString(analysis.getMetgrapName()))
+                .metgrapFormat(AdapterUtils.sequenceToString(analysis.getMetgrapFormat()))
+                .metgrapValue(AdapterUtils.sequenceToString(analysis.getMetgrapValue()))
                 .metgrapTypeCode(analysis.getMetgrapTypeCode())
-                .metgrapMeasure(sequenceToString(analysis.getMetgrapMeasure()))
+                .metgrapMeasure(AdapterUtils.sequenceToString(analysis.getMetgrapMeasure()))
                 .build();
     }
 

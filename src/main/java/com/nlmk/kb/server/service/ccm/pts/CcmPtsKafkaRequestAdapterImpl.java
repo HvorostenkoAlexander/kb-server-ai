@@ -5,6 +5,7 @@ import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.CcmPtsRequestAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pts.*;
 import org.springframework.stereotype.Component;
@@ -43,15 +44,15 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
         }
 
         return Pk.builder()
-                .systemCode(sequenceToString(recordPk.getSystemCode()))
-                .id(sequenceToString(recordPk.getId()))
+                .systemCode(AdapterUtils.sequenceToString(recordPk.getSystemCode()))
+                .id(AdapterUtils.sequenceToString(recordPk.getId()))
                 .build();
     }
 
     private DataField toPamDataField(RecordPk recordPk, RecordData recordData) {
         String primeId = null;
         if (recordPk != null) {
-            primeId = sequenceToString(recordPk.getId());
+            primeId = AdapterUtils.sequenceToString(recordPk.getId());
         }
         if (recordData == null) {
             return null;
@@ -70,9 +71,9 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
         Double thickness = null;
         Double width = null;
         if (recordData.getGeometry() != null) {
-            length = parseFloat(recordData.getGeometry().getLength());
-            thickness = parseFloat(recordData.getGeometry().getThickness());
-            width = parseFloat(recordData.getGeometry().getWidth());
+            length = AdapterUtils.parseFloat(recordData.getGeometry().getLength());
+            thickness = AdapterUtils.parseFloat(recordData.getGeometry().getThickness());
+            width = AdapterUtils.parseFloat(recordData.getGeometry().getWidth());
         }
 
         // С версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP,
@@ -85,7 +86,7 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
                 .length(length)
                 .thickness(thickness)
                 .width(width)
-                .weightNet(parseFloat(recordData.getWeightNet()))
+                .weightNet(AdapterUtils.parseFloat(recordData.getWeightNet()))
                 .bundleWeight(super.calcBundleWeight(recordData))
                 .kceh(recordData.getKceh())
                 .orderNum(recordData.getOrderNum())

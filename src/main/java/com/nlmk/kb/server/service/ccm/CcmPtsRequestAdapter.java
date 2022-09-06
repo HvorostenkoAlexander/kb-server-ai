@@ -6,6 +6,7 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.ccm.pts.RecordBundles;
 import nlmk.l3.ccm.pts.RecordData;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Общие методы подготовки Запроса на Аттестацию
  */
-public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
+public abstract class CcmPtsRequestAdapter {
 
     /**
      * Расчёт массы связки
@@ -62,14 +63,14 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      */
     private Double calcBundleWeightForRecord(RecordData recordData) {
         if (recordData.getBundles() == null) {
-            return calcBundleWeight(super.parseFloat(recordData.getWeightNet()), List.of());
+            return calcBundleWeight(AdapterUtils.parseFloat(recordData.getWeightNet()), List.of());
         }
 
         return calcBundleWeight(
-                super.parseFloat(recordData.getWeightNet()),
+                AdapterUtils.parseFloat(recordData.getWeightNet()),
                 recordData.getBundles().stream()
                         .map(RecordBundles::getStripWeight)
-                        .map(super::parseFloat)
+                        .map(AdapterUtils::parseFloat)
                         .collect(Collectors.toList())
         );
     }
@@ -170,21 +171,21 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
             if (s.getSpecTypeValue() == 1) { // 1 - простое
                 specs.add(Specs.builder()
                         .specCode(s.getSpecCode())
-                        .specName(sequenceToString(s.getSpecName()))
-                        .specValue(sequenceToString(s.getSpecValue()))
+                        .specName(AdapterUtils.sequenceToString(s.getSpecName()))
+                        .specValue(AdapterUtils.sequenceToString(s.getSpecValue()))
                         .specTypeCode(s.getSpecTypeCode())
-                        .specFormat(sequenceToString(s.getSpecFormat()))
-                        .specMeasure(sequenceToString(s.getSpecMeasure()))
+                        .specFormat(AdapterUtils.sequenceToString(s.getSpecFormat()))
+                        .specMeasure(AdapterUtils.sequenceToString(s.getSpecMeasure()))
                         .build());
             } else if (s.getSpecTypeValue() == 2 // 2 - перечислимое
                     && s.getListValues() != null && !s.getListValues().isEmpty()) {
                 s.getListValues().forEach(v -> specs.add(Specs.builder()
                         .specCode(s.getSpecCode())
-                        .specName(sequenceToString(s.getSpecName()))
-                        .specValue(sequenceToString(v.getValue()))
+                        .specName(AdapterUtils.sequenceToString(s.getSpecName()))
+                        .specValue(AdapterUtils.sequenceToString(v.getValue()))
                         .specTypeCode(s.getSpecTypeCode())
-                        .specFormat(sequenceToString(s.getSpecFormat()))
-                        .specMeasure(sequenceToString(s.getSpecMeasure()))
+                        .specFormat(AdapterUtils.sequenceToString(s.getSpecFormat()))
+                        .specMeasure(AdapterUtils.sequenceToString(s.getSpecMeasure()))
                         .build()));
             }
         });
@@ -244,7 +245,7 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
                 .flatMap(c1 -> c1.getListValues().stream())
                 .map(c2 -> ChemicalSpec.builder()
                         .chemCode(c2.getCode())
-                        .chemName(sequenceToString(c2.getName()))
+                        .chemName(AdapterUtils.sequenceToString(c2.getName()))
                         .chemValue(c2.getValue() != null ? c2.getValue().toString() : null)
                         .build())
                 .collect(Collectors.toList());
@@ -322,9 +323,9 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
                         list.add(PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType())
-                                .attrValue(sequenceToString(v.getAttrValue()))
-                                .attrFormat(sequenceToString(v.getAttrFormat()))
-                                .attrMeasure(sequenceToString(v.getAttrMeasure()))
+                                .attrValue(AdapterUtils.sequenceToString(v.getAttrValue()))
+                                .attrFormat(AdapterUtils.sequenceToString(v.getAttrFormat()))
+                                .attrMeasure(AdapterUtils.sequenceToString(v.getAttrMeasure()))
                                 .build());
                     }
                 });
