@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.result;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.*;

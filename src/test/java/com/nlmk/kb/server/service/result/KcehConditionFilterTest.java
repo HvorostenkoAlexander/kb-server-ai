@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.result;
 
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.TypeCode;

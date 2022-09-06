@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.ProductDto;
@@ -9,7 +9,6 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
-import com.nlmk.kb.server.service.sender.ProductSender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

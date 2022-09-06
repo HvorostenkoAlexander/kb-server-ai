@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import nlmk.l3.ccm.pts.*;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -137,25 +138,59 @@ class SendMessageToKafkaTest {
 
     @Test
     void sendCcmPtsMessage() {
-        nlmk.l3.ccm.pts.RecordData data = nlmk.l3.ccm.pts.RecordData.newBuilder()
-                .setPrimeId("42")
-                .setNplv(2106684) // <- meltNo
-                .setHnum(25217) // <-- lotNo
-                .setRoll("1-1")
-                .setThickness(2.65f)
-                .setWidth(1232.0f)
+        nlmk.l3.ccm.pts.RecordData data = RecordData.newBuilder()
+                .setWerks(1).setWerksName("1")
+                .setKceh(11).setKcehName("11")
+                .setUnitCode(2).setUnitName("2")
+                .setStorageCode(3).setStorageName("3")
                 .setWeightNet(10.86f)
-                .setKceh(12)
-                .setOrderNum(40434341)
-                .setOrderPos(4)
-                // .. будут еще поля
+                .setKceh(11)
+                .setOrderNum(1014L)
+                .setOrderPos(1)
+                .setMarking(RecordMarking.newBuilder()
+                        .setNplv(2106684) // <- meltNo
+                        .setHnum(25217) // <-- lotNo
+                        .setTnum(1)
+                        .setRoll(1)
+                        .build())
+                .setGeometry(RecordGeometry.newBuilder()
+                        .setThickness(2.65f)
+                        .setWidth(1232.0f)
+                        .build())
+                .setSpecifications(List.of())
+                .setBundles(List.of(
+                        RecordBundles.newBuilder()
+                                .setStripId("s1").setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
+                        RecordBundles.newBuilder()
+                                .setStripId("s2").setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
+                        RecordBundles.newBuilder()
+                                .setStripId("s3").setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
+                ))
+                .setProperties(List.of(
+                        RecordProperties.newBuilder()
+                                .setProbeCode(3).setProbeName("3").setTestDate("3")
+                                .setTypeCode(3).setTypeName("3")
+                                .setAnalyzes(List.of())
+                                .setAttestationList(List.of())
+                                .setListValues(List.of(
+                                        RecordDataPropertiesListValues.newBuilder()
+                                                .setAttrCode(3).setAttrValue("3").setAttrType(1)
+                                                .build(),
+                                        RecordDataPropertiesListValues.newBuilder()
+                                                .setAttrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
+                                                .setAttrType(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getTypeCode().getValue())
+                                                .setAttrValue("4")
+                                                .build()
+                                ))
+                                .build()
+                ))
                 .build();
 
         nlmk.l3.ccm.pts.AttestationRequest value = nlmk.l3.ccm.pts.AttestationRequest.newBuilder()
-                .setTs("2022-06-27T16:45:25.000+05:00")
+                .setTs("2022-09-02T14:36:25.000+05:00")
                 .setOp(nlmk.l3.ccm.pts.EnumOp.U)
                 .setPk(nlmk.l3.ccm.pts.RecordPk.newBuilder()
-                        .setId("42")
+                        .setId("42") // primeId
                         .setSystemCode("16")
                         .build())
                 .setData(data)

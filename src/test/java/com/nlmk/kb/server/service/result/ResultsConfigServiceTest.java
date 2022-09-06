@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.result;
 
 import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.entity.ResultsConfig;

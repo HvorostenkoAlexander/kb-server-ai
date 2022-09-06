@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.sap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.zorder.ZORDERS051;
@@ -6,8 +6,6 @@ import com.nlmk.kb.server.entity.SapMessage;
 import com.nlmk.kb.server.entity.SapMessageState;
 import com.nlmk.kb.server.exception.S3ClientException;
 import com.nlmk.kb.server.repository.SapMessageRepository;
-import com.nlmk.kb.server.service.sap.S3Service;
-import com.nlmk.kb.server.service.sap.SapMessageHandler;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import com.nlmk.s3.proxy.s3notification;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
