@@ -272,8 +272,7 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      * Подготовка свойств Механики для ЦТС для CcmPtsRequest
      */
     private List<PtsMechanicalProperty> prepareMechanicalPropertiesForRequest(CcmPtsRequest requestMessage) {
-        if (requestMessage == null
-                || requestMessage.getData() == null
+        if (requestMessage.getData() == null
                 || requestMessage.getData().getProperties() == null
                 || requestMessage.getData().getProperties().isEmpty()) {
             return List.of();
@@ -283,24 +282,21 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
 
         requestMessage.getData().getProperties().forEach(p -> {
             if (p.getListValues() != null && !p.getListValues().isEmpty()) {
-                final var oneProperty = new PtsMechanicalProperty();
+                final var list = new ArrayList<PtsPropertyValue>();
                 p.getListValues().forEach(v -> {
-                    if (v.getAttrCode() != null) {
-                        // только определенные коды для Механики
-                        if (SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue().equals(v.getAttrCode())) {
-                            oneProperty.setListValues(List.of(
-                                    PtsPropertyValue.builder()
-                                            .attrCode(v.getAttrCode())
-                                            .attrType(v.getAttrType().getValue())
-                                            .attrValue(v.getAttrValue())
-                                            .attrFormat(v.getAttrFormat())
-                                            .attrMeasure(v.getAttrMeasure())
-                                            .build()
-                            ));
-                        }
+                    if (allowMechanicalCode(v.getAttrCode())) {
+                        list.add(PtsPropertyValue.builder()
+                                .attrCode(v.getAttrCode())
+                                .attrType(v.getAttrType().getValue())
+                                .attrValue(v.getAttrValue())
+                                .attrFormat(v.getAttrFormat())
+                                .attrMeasure(v.getAttrMeasure())
+                                .build());
                     }
                 });
-                properties.add(oneProperty);
+                if (!list.isEmpty()) {
+                    properties.add(PtsMechanicalProperty.builder().listValues(list).build());
+                }
             }
         });
 
@@ -311,12 +307,41 @@ public abstract class CcmPtsRequestAdapter extends CcmRequestAdapter {
      * Подготовка свойств Механики для ЦТС для nlmk.l3.ccm.pts.RecordData
      */
     private List<PtsMechanicalProperty> prepareMechanicalPropertiesForRecord(RecordData recordData) {
-        if (recordData == null) {
+        if (recordData.getProperties() == null
+                || recordData.getProperties().isEmpty()) {
             return List.of();
         }
 
-        // todo
-        return List.of();
+        final var properties = new ArrayList<PtsMechanicalProperty>();
+
+        recordData.getProperties().forEach(p -> {
+            if (p.getListValues() != null && !p.getListValues().isEmpty()) {
+                final var list = new ArrayList<PtsPropertyValue>();
+                p.getListValues().forEach(v -> {
+                    if (allowMechanicalCode(v.getAttrCode())) {
+                        list.add(PtsPropertyValue.builder()
+                                .attrCode(v.getAttrCode())
+                                .attrType(v.getAttrType())
+                                .attrValue(sequenceToString(v.getAttrValue()))
+                                .attrFormat(sequenceToString(v.getAttrFormat()))
+                                .attrMeasure(sequenceToString(v.getAttrMeasure()))
+                                .build());
+                    }
+                });
+                if (!list.isEmpty()) {
+                    properties.add(PtsMechanicalProperty.builder().listValues(list).build());
+                }
+            }
+        });
+
+        return properties;
+    }
+
+    /**
+     * Только определенные коды для Механики
+     */
+    private boolean allowMechanicalCode(Integer code) {
+        return SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue().equals(code);
     }
 
 }

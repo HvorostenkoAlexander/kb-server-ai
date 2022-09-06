@@ -1,13 +1,18 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
+import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import nlmk.l3.ccm.pts.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class CcmPtsRequestAdapterTest {
 
@@ -31,6 +36,16 @@ class CcmPtsRequestAdapterTest {
                         .build())
                 .setSpecifications(List.of())
                 .build();
+    }
+
+    private List<CcmPtsRequest.OnePropValue> prepareMechanicalPropertiesValues() {
+        return Arrays.stream(SpecCode.values())
+                .map(sc -> CcmPtsRequest.OnePropValue.builder()
+                        .attrCode(sc.getValue())
+                        .attrValue(sc.getValue().toString())
+                        .attrType(sc.getTypeCode())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Test
@@ -178,6 +193,81 @@ class CcmPtsRequestAdapterTest {
     @Test
     void prepareMechanicalProperties() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareMechanicalProperties("x.y"));
+        Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(null));
+        Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(CcmPtsRequest.builder().build()));
+        Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(prepareMinimalRecordData(null)));
 
+        Assertions.assertEquals(List.of(
+                PtsMechanicalProperty.builder().listValues(List.of(
+                        PtsPropertyValue.builder().attrCode(1120).attrValue("1120").attrType(2).build()
+                )).build()
+        ), adapter.prepareMechanicalProperties(CcmPtsRequest.builder()
+                .data(CcmPtsRequest.Record.builder()
+                        .properties(List.of(
+                                CcmPtsRequest.OneProperty.builder()
+                                        .listValues(List.of())
+                                        .build(),
+                                CcmPtsRequest.OneProperty.builder()
+                                        .listValues(List.of(
+                                                CcmPtsRequest.OnePropValue.builder().build(),
+                                                CcmPtsRequest.OnePropValue.builder().attrCode(1).build(),
+                                                CcmPtsRequest.OnePropValue.builder().attrCode(2).build()
+                                        ))
+                                        .build(),
+                                CcmPtsRequest.OneProperty.builder()
+                                        // все возможные коды
+                                        .listValues(prepareMechanicalPropertiesValues())
+                                        .build()
+                        ))
+                        .build())
+                .build()));
+
+        final var record = prepareMinimalRecordData(null);
+        record.setProperties(List.of(
+                RecordProperties.newBuilder()
+                        .setProbeCode(1).setProbeName("1").setTestDate("1")
+                        .setTypeCode(1).setTypeName("1")
+                        .setAnalyzes(List.of())
+                        .setAttestationList(List.of())
+                        .setListValues(List.of())
+                        .build(),
+                RecordProperties.newBuilder()
+                        .setProbeCode(2).setProbeName("2").setTestDate("2")
+                        .setTypeCode(2).setTypeName("2")
+                        .setAnalyzes(List.of())
+                        .setAttestationList(List.of())
+                        .setListValues(List.of(
+                                RecordDataPropertiesListValues.newBuilder()
+                                        .setAttrCode(1).setAttrValue("1").setAttrType(1)
+                                        .build(),
+                                RecordDataPropertiesListValues.newBuilder()
+                                        .setAttrCode(1120).setAttrValue("2").setAttrType(1)
+                                        .build()
+                        ))
+                        .build(),
+                RecordProperties.newBuilder()
+                        .setProbeCode(3).setProbeName("3").setTestDate("3")
+                        .setTypeCode(3).setTypeName("3")
+                        .setAnalyzes(List.of())
+                        .setAttestationList(List.of())
+                        .setListValues(List.of(
+                                RecordDataPropertiesListValues.newBuilder()
+                                        .setAttrCode(3).setAttrValue("3").setAttrType(1)
+                                        .build(),
+                                RecordDataPropertiesListValues.newBuilder()
+                                        .setAttrCode(1120).setAttrValue("4").setAttrType(1)
+                                        .build()
+                        ))
+                        .build()
+        ));
+        Assertions.assertEquals(List.of(
+                PtsMechanicalProperty.builder().listValues(List.of(
+                        PtsPropertyValue.builder().attrCode(1120).attrValue("2").attrType(1).build()
+                )).build(),
+                PtsMechanicalProperty.builder().listValues(List.of(
+                        PtsPropertyValue.builder().attrCode(1120).attrValue("4").attrType(1).build()
+                )).build()
+        ), adapter.prepareMechanicalProperties(record));
     }
+
 }
