@@ -6,6 +6,6 @@ public interface MessageProducer {
 
     void produce(ProductDto product, boolean isNew , String topic);
 
-    String getType();
+    String getAvroName();
 
 }

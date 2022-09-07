@@ -37,7 +37,7 @@ public class ResultConfigServiceImpl implements ResultConfigService {
     }
 
     @Override
-    public ResultsConfigDto findById(Long id) {
+    public ResultsConfigDto findById(Integer id) {
         Assert.notNull(id, "id must not be null");
 
         final var vrcConfig = repository.findById(id).orElseThrow(
@@ -72,7 +72,7 @@ public class ResultConfigServiceImpl implements ResultConfigService {
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(Integer id) {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException erdae) {

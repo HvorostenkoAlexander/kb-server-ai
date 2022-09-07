@@ -20,32 +20,32 @@ public class VerificationResultPgpProducer implements ApcsAvro, MessageProducer 
     private final VerificationResultSender sender;
 
     @Override
-    public String getName() {
+    public String getSchemaName() {
         return SCHEMA.getName();
     }
 
     @Override
-    public String getDescription() {
+    public String getSchemaDoc() {
         return SCHEMA.getDoc();
     }
 
     @Override
-    public String getData() {
+    public String getSchemaData() {
         return SCHEMA.toString(false);
     }
 
     @Override
     public void produce(ProductDto product, boolean isNew, String topic) {
-        log.info("send product: id [{}], referenceId [{}] by AVRO [{}] to topic [{}]",
-                product.getId(), product.getReferenceId(), getDescription(), topic);
+        log.info("send product: id [{}], referenceId [{}] by AVRO name [{}] to topic [{}]",
+                product.getId(), product.getReferenceId(), getSchemaName(), topic);
 
         VerificationResults results = adapter.adapt(product, isNew);
         sender.send(results, topic);
     }
 
     @Override
-    public String getType() {
-        return getDescription();
+    public String getAvroName() {
+        return getSchemaName();
     }
 
 }

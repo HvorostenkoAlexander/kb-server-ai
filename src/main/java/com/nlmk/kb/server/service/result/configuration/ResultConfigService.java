@@ -12,7 +12,7 @@ public interface ResultConfigService {
 
     Page<ResultsConfigDto> findPyPage(PageRequest pageRequest);
 
-    ResultsConfigDto findById(Long id);
+    ResultsConfigDto findById(Integer id);
 
     ResultsConfigDto create(@NotNull @Valid ResultsConfigDto dto);
 
@@ -20,6 +20,6 @@ public interface ResultConfigService {
 
     List<ResultsConfigDto> getEnabledTopics();
 
-    void deleteById(long id);
+    void deleteById(Integer id);
 
 }

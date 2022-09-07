@@ -75,19 +75,19 @@ class ProductSenderTest {
         // для заданной AVRO схемы нет подходящей конфигурации (по имени схемы)
         Mockito.when(resultConfigService.getEnabledTopics())
                 .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(1L).topic("topic1").avroName("avro1").enabled(true).build(),
-                        ResultsConfigDto.builder().id(2L).topic("topic2").avroName("avro2").enabled(true).build()
+                        ResultsConfigDto.builder().id(1).topic("topic1").avroName("avro1").enabled(true).build(),
+                        ResultsConfigDto.builder().id(2).topic("topic2").avroName("avro2").enabled(true).build()
                 ));
         Assertions.assertThrows(ProductSenderException.class, () -> productSender.send(attResult));
 
         // конфигурация есть, но результат аттестации пустой
         Mockito.when(resultConfigService.getEnabledTopics())
                 .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(1L).topic("topic1").condition(null)
+                        ResultsConfigDto.builder().id(1).topic("topic1").condition(null)
                                 .avroName("avro1").enabled(true).build(),
-                        ResultsConfigDto.builder().id(2L).topic("topic2").condition(null)
+                        ResultsConfigDto.builder().id(2).topic("topic2").condition(null)
                                 // нужная конфигурация
-                                .avroName("Передача результатов аттестации APCS. Version: [1]. PGP").enabled(true).build()
+                                .avroName("VerificationResults").enabled(true).build()
                 ));
         Assertions.assertDoesNotThrow(() -> productSender.send(attResult));
         // передачи еще не было

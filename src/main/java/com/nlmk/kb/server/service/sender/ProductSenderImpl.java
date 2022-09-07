@@ -30,7 +30,7 @@ public class ProductSenderImpl implements ProductSender {
                              ResultConfigService configService,
                              CommonConditionFilter conditionFilter) {
         this.senders = allSenders.stream().collect(
-                toMap(MessageProducer::getType, Function.identity())
+                toMap(MessageProducer::getAvroName, Function.identity())
         );
         this.configService = configService;
         this.conditionFilter = conditionFilter;
@@ -68,11 +68,11 @@ public class ProductSenderImpl implements ProductSender {
                          ProductDto product,
                          boolean isNew) {
         var sender = enabledSenders.stream()
-                .filter(s -> s.getType().equals(config.getAvroName()))
+                .filter(s -> s.getAvroName().equals(config.getAvroName()))
                 .findFirst();
 
         if (sender.isEmpty()) {
-            log.warn("sending, для топика: [{}], не зарегистрирован отправитель с avroName: [{}]",
+            log.warn("sending, for topic [{}] not found sender with avroName [{}]",
                     config.getTopic(), config.getAvroName());
             return;
         }
@@ -97,7 +97,7 @@ public class ProductSenderImpl implements ProductSender {
         if (sendingProduct == null
                 || sendingProduct.getRequests() == null
                 || sendingProduct.getRequests().isEmpty()) {
-            log.warn("sending, в полученном результате нет сведений отвечающих условиям: [{}]", config.getCondition());
+            log.warn("sending, empty data after condition [{}]", config.getCondition());
             return;
         }
 
@@ -121,7 +121,7 @@ public class ProductSenderImpl implements ProductSender {
 
     private String getKceh(RequestDto request) {
         if (request.getKceh() != null) {
-            return MessageFormat.format("Значение request.kceh: {0}", request.getKceh());
+            return MessageFormat.format("value of request.kceh: {0}", request.getKceh());
         } else {
             return "null";
         }

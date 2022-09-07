@@ -38,7 +38,7 @@ public class ResultConfigControllerImpl implements ResultConfigController {
     }
 
     @Override
-    public ResultsConfigDto getResultConfigById(Long id) {
+    public ResultsConfigDto getResultConfigById(Integer id) {
         log.info("getResultConfigById, id: [{}]", id);
         return resultConfigService.findById(id);
     }
@@ -50,14 +50,14 @@ public class ResultConfigControllerImpl implements ResultConfigController {
     }
 
     @Override
-    public ResultsConfigDto putResultConfig(ResultsConfigDto dto, long id) {
+    public ResultsConfigDto putResultConfig(ResultsConfigDto dto, Integer id) {
         log.info("putResultConfig, dto: [{}], id: [{}]", dto, id);
         dto.setId(id);
         return resultConfigService.update(dto);
     }
 
     @Override
-    public Long deleteResultConfig(Long id) {
+    public Integer deleteResultConfig(Integer id) {
         log.info("deleteResultConfig, id: [{}]", id);
         resultConfigService.deleteById(id);
         return id;

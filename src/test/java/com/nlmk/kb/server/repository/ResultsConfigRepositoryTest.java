@@ -13,12 +13,20 @@ class ResultsConfigRepositoryTest {
 
     @Test
     void init() {
+        Assertions.assertEquals(2, repository.count());
         Assertions.assertTrue(repository.findByAvroName("-").isEmpty());
-
-        final var res = repository.findByAvroName("Передача результатов аттестации APCS. Version: [1]");
-        Assertions.assertEquals(1, res.size());
-        Assertions.assertTrue(res.get(0).isEnabled());
-        Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results.0", res.get(0).getTopic());
+        {
+            final var res = repository.findByAvroName("VerificationResults");
+            Assertions.assertEquals(1, res.size());
+            Assertions.assertTrue(res.get(0).isEnabled());
+            Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results.0", res.get(0).getTopic());
+        }
+        {
+            final var res = repository.findByAvroName("VerificationResultsPts");
+            Assertions.assertEquals(1, res.size());
+            Assertions.assertTrue(res.get(0).isEnabled());
+            Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results-pts.0", res.get(0).getTopic());
+        }
     }
 
 }

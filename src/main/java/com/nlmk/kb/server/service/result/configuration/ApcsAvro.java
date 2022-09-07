@@ -2,10 +2,10 @@ package com.nlmk.kb.server.service.result.configuration;
 
 public interface ApcsAvro {
 
-    String getName();
+    String getSchemaName();
 
-    String getDescription();
+    String getSchemaDoc();
 
-    String getData();
+    String getSchemaData();
 
 }

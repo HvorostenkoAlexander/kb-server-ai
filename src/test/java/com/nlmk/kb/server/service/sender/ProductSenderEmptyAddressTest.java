@@ -43,9 +43,9 @@ class ProductSenderEmptyAddressTest {
         // конфигурация
         Mockito.when(resultConfigService.getEnabledTopics())
                 .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(2L).topic("topic2").condition(null)
+                        ResultsConfigDto.builder().id(2).topic("topic2").condition(null)
                                 // нужная конфигурация
-                                .avroName("Передача результатов аттестации APCS. Version: [1]. PGP").enabled(true).build()
+                                .avroName("VerificationResults").enabled(true).build()
                 ));
 
         // минимально полный результат

@@ -35,7 +35,7 @@ public interface ResultConfigController {
 
     @GetMapping("/topics/{id}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    ResultsConfigDto getResultConfigById(@PathVariable Long id);
+    ResultsConfigDto getResultConfigById(@PathVariable Integer id);
 
     @PostMapping("/topics")
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -45,10 +45,10 @@ public interface ResultConfigController {
     @PutMapping("/topics/{id}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     ResultsConfigDto putResultConfig(@RequestBody @Valid ResultsConfigDto dto,
-                                     @PathVariable long id);
+                                     @PathVariable Integer id);
 
     @DeleteMapping("/topics/{id}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    Long deleteResultConfig(@PathVariable Long id);
+    Integer deleteResultConfig(@PathVariable Integer id);
 
 }
