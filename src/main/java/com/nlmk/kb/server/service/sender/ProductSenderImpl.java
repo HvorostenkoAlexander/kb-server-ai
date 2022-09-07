@@ -40,14 +40,14 @@ public class ProductSenderImpl implements ProductSender {
     public void send(ProductAttestationResultDto productAttestationResult) {
         final var configs = configService.getEnabledTopics();
         if (configs.isEmpty()) {
-            log.warn("В конфигурационной таблице не установлены топики для отправки сообщений в Kafka-Rest.");
+            log.warn("send, empty enabled topic config FOR sending result");
             return;
         }
 
         final var enabledSenders = getEnabledSenders(configs);
         if (enabledSenders.isEmpty()) {
-            log.error("Пустой список отправителей для активных топиков");
-            throw new ProductSenderException("Нет зарегистрированных отправителей для сообщений в активные топики.");
+            log.error("send, empty enabled sender list");
+            throw new ProductSenderException("send, empty enabled sender list");
         }
 
         final var product = productAttestationResult.getResult();

@@ -3,8 +3,8 @@ package com.nlmk.kb.server.service.result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.service.result.sending.VerificationResultsAdapter;
-import com.nlmk.kb.server.service.result.sending.VerificationResultsAdapterImpl;
+import com.nlmk.kb.server.service.result.sending.pgp.VerificationResultsPgpAdapter;
+import com.nlmk.kb.server.service.result.sending.pgp.VerificationResultsPgpAdapterImpl;
 import nlmk.l3.apcs.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class VerificationResultTest {
 
-    private final VerificationResultsAdapter adapter = new VerificationResultsAdapterImpl();
+    private final VerificationResultsPgpAdapter adapter = new VerificationResultsPgpAdapterImpl();
 
     @Test
     void simpleVerificationProduct() throws IOException {
@@ -67,7 +67,7 @@ class VerificationResultTest {
     @Test
     void verifyResult() {
         final var result = adapter.adapt(certifiedProduct(), false);
-        Assertions.assertEquals(expectedVerificationResults(), result);
+        Assertions.assertEquals(expectedVerificationResultsPgp(), result);
     }
 
     /**
@@ -125,83 +125,83 @@ class VerificationResultTest {
     }
 
     /**
-     * Ожидаемые результат
+     * Ожидаемые результат для цеха ЦГП
      */
-    private VerificationResults expectedVerificationResults() {
+    private VerificationResults expectedVerificationResultsPgp() {
         return VerificationResults.newBuilder()
                 .setTs("1970-01-12T13:46:40.000Z")
                 .setPk(RecordPk.newBuilder().setId(123L).setSystemCode("31").build())
                 .setOp(EnumOp.U)
-                .setData(RecordData.newBuilder()
+                .setData(RecordPgpData.newBuilder()
                         .setPrimeId("1234567890").setKceh(12L).setMismatch(Status.MATCHED.getValue())
                         .setCommons(List.of(
-                                RecordCommons.newBuilder()
+                                RecordPgpCommons.newBuilder()
                                         .setSpecCode(SpecCode.EDGE_CHARACTER.getValue())
                                         .setSpecTypeCode(SpecCode.EDGE_CHARACTER.getTypeCode().getValue())
                                         .setSpecTypeName(SpecCode.EDGE_CHARACTER.getTypeCode().getDesc())
                                         .setSpecValue("X").setMismatch(Status.MATCHED_MANUALLY.getValue())
                                         .setDefectSuggestion("Согласно требованиям заказа 2")
-                                        .setNorms(NormSpecData.newBuilder()
+                                        .setNorms(RecordPgpComNorms.newBuilder()
                                                 .setListAccValues(List.of("X"))
                                                 .build())
                                         .build()
                         ))
                         .setChemical(List.of(
-                                RecordChemical.newBuilder()
+                                RecordPgpChemical.newBuilder()
                                         .setSpecCode(SpecCode.MASS_FRACTION_H.getValue())
                                         .setSpecTypeCode(SpecCode.MASS_FRACTION_H.getTypeCode().getValue())
                                         .setSpecTypeName(SpecCode.MASS_FRACTION_H.getTypeCode().getDesc())
                                         .setSpecValue("1.5").setMismatch(Status.MATCHED.getValue())
                                         .setNote("Согласно ГОСТ 1")
-                                        .setNorms(NormChemData.newBuilder()
+                                        .setNorms(RecordPgpChemNorms.newBuilder()
                                                 .setValueMax(2.0)
                                                 .build())
                                         .build()
                         ))
                         .setMechanical(List.of(
-                                RecordMechanical.newBuilder()
+                                RecordPgpMechanical.newBuilder()
                                         .setSignAnalysis(10)
                                         .setSpecifications(List.of(
-                                                RecordMechanicalSpecifications.newBuilder()
+                                                RecordPgpMechSpecs.newBuilder()
                                                         .setSpecCode(SpecCode.TEMPORARY_RESISTANCE.getValue())
                                                         .setSpecTypeCode(SpecCode.TEMPORARY_RESISTANCE.getTypeCode().getValue())
                                                         .setSpecTypeName(SpecCode.TEMPORARY_RESISTANCE.getTypeCode().getDesc())
                                                         .setSpecValue("100").setMismatch(Status.MATCHED.getValue())
                                                         .setNote("Согласно ГОСТ 2")
-                                                        .setNorms(NormMechData.newBuilder()
+                                                        .setNorms(RecordPgpMechNorms.newBuilder()
                                                                 .setValueMin(90.0).setValueMax(110.0)
                                                                 .build())
                                                         .setParameters(List.of())
                                                         .build()
                                         )).build(),
-                                RecordMechanical.newBuilder()
+                                RecordPgpMechanical.newBuilder()
                                         .setSignAnalysis(11)
                                         .setSpecifications(List.of(
-                                                RecordMechanicalSpecifications.newBuilder()
+                                                RecordPgpMechSpecs.newBuilder()
                                                         .setSpecCode(SpecCode.IMPACT_WORK_1.getValue())
                                                         .setSpecTypeCode(SpecCode.IMPACT_WORK_1.getTypeCode().getValue())
                                                         .setSpecTypeName(SpecCode.IMPACT_WORK_1.getTypeCode().getDesc())
                                                         .setSpecValue("50").setMismatch(Status.MATCHED.getValue())
                                                         .setNote("Согласно ГОСТ 2")
-                                                        .setNorms(NormMechData.newBuilder()
+                                                        .setNorms(RecordPgpMechNorms.newBuilder()
                                                                 .setValueMin(40.0).setValueMax(70.0)
                                                                 .build())
                                                         .setParameters(List.of(
-                                                                RecordMechanicalParameter.newBuilder()
+                                                                RecordPgpMechParams.newBuilder()
                                                                         .setCode(SpecCode.CONCENTRATOR.getValue())
                                                                         .setName(SpecCode.CONCENTRATOR.getDesc())
                                                                         .setValue("V")
                                                                         .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
                                                                         .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
                                                                         .build(),
-                                                                RecordMechanicalParameter.newBuilder()
+                                                                RecordPgpMechParams.newBuilder()
                                                                         .setCode(SpecCode.TEMPERATURE.getValue())
                                                                         .setName(SpecCode.TEMPERATURE.getDesc())
                                                                         .setValue("20")
                                                                         .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
                                                                         .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
                                                                         .build(),
-                                                                RecordMechanicalParameter.newBuilder()
+                                                                RecordPgpMechParams.newBuilder()
                                                                         .setCode(SpecCode.ANALYSIS_ID.getValue())
                                                                         .setName(SpecCode.ANALYSIS_ID.getDesc())
                                                                         .setValue("3")
@@ -213,16 +213,16 @@ class VerificationResultTest {
                                         )).build()
                         ))
                         .setMetallographic(List.of(
-                                RecordMettallographic.newBuilder()
+                                RecordPgpMettallographic.newBuilder()
                                         .setSignAnalysis(12)
                                         .setSpecifications(List.of(
-                                                RecordMettallographicSpecifications.newBuilder()
+                                                RecordPgpMetSpecs.newBuilder()
                                                         .setSpecCode(SpecCode.SULPHIDES.getValue())
                                                         .setSpecTypeCode(SpecCode.SULPHIDES.getTypeCode().getValue())
                                                         .setSpecTypeName(SpecCode.SULPHIDES.getTypeCode().getDesc())
                                                         .setSpecValue("3.4")
                                                         .setMismatch(Status.MATCHED.getValue())
-                                                        .setNorms(NormMetallData.newBuilder()
+                                                        .setNorms(RecordPgpMetNorms.newBuilder()
                                                                 .setValueMin(3.0)
                                                                 .build())
                                                         .setNote("Согласно ГОСТ 3")
@@ -230,16 +230,16 @@ class VerificationResultTest {
                                                         .build()
                                         ))
                                         .build(),
-                                RecordMettallographic.newBuilder()
+                                RecordPgpMettallographic.newBuilder()
                                         .setSignAnalysis(13)
                                         .setSpecifications(List.of(
-                                                RecordMettallographicSpecifications.newBuilder()
+                                                RecordPgpMetSpecs.newBuilder()
                                                         .setSpecCode(SpecCode.SILICATES.getValue())
                                                         .setSpecTypeCode(SpecCode.SILICATES.getTypeCode().getValue())
                                                         .setSpecTypeName(SpecCode.SILICATES.getTypeCode().getDesc())
                                                         .setSpecValue("2.3")
                                                         .setMismatch(Status.MATCHED.getValue())
-                                                        .setNorms(NormMetallData.newBuilder()
+                                                        .setNorms(RecordPgpMetNorms.newBuilder()
                                                                 .setValueMax(3.0)
                                                                 .build())
                                                         .setNote("Согласно ГОСТ 3")

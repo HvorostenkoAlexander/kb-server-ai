@@ -1,5 +1,8 @@
 package com.nlmk.kb.server.util;
 
+import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
+
 public class AdapterUtils {
 
     private AdapterUtils() {
@@ -18,6 +21,23 @@ public class AdapterUtils {
             return null;
         }
         return sequence.toString();
+    }
+
+    /**
+     * Получение корректного типа данных для указанного кода спецификации
+     *
+     * @param code значение кода Спецификации
+     * @return объект TypeCode
+     */
+    public static TypeCode getTypeCodeByCodeValue(Integer code) {
+        if (code == null) {
+            return TypeCode.STRING;
+        }
+        try {
+            return SpecCode.fromValue(code).getTypeCode();
+        } catch (IllegalArgumentException e) {
+            return TypeCode.STRING;
+        }
     }
 
 }

@@ -87,7 +87,7 @@ class ProductSenderTest {
                                 .avroName("avro1").enabled(true).build(),
                         ResultsConfigDto.builder().id(2L).topic("topic2").condition(null)
                                 // нужная конфигурация
-                                .avroName("Передача результатов аттестации APCS. Version: [1]").enabled(true).build()
+                                .avroName("Передача результатов аттестации APCS. Version: [1]. PGP").enabled(true).build()
                 ));
         Assertions.assertDoesNotThrow(() -> productSender.send(attResult));
         // передачи еще не было
