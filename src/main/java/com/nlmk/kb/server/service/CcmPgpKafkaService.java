@@ -56,8 +56,7 @@ public class CcmPgpKafkaService {
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
                     || requestMessage.getRequest().getValue().getData() == null) {
-                log.warn("receiveMessageReq, SKIP send attestation request, partition {}, offset {}, key {}: wrong Op and Data",
-                        partition, offset, key);
+                log.warn("receiveMessageReq (CCM PGP), SKIP send attestation request, partition {}, offset {}, key {}: wrong Op and Data", partition, offset, key);
             } else {
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);

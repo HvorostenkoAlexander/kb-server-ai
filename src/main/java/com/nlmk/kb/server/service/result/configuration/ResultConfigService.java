@@ -18,6 +18,9 @@ public interface ResultConfigService {
 
     ResultsConfigDto update(@NotNull @Valid ResultsConfigDto dto);
 
+    /**
+     * Получение всех активных конфигураций
+     */
     List<ResultsConfigDto> getEnabledTopics();
 
     void deleteById(Integer id);

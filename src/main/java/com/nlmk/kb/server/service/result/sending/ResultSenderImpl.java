@@ -7,6 +7,7 @@ import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.ProductSenderException;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsPts;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,16 +17,16 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class VerificationResultSenderImpl extends BaseSender implements VerificationResultSender {
+public class ResultSenderImpl extends BaseSender implements ResultSenderPgp, ResultSenderPts {
 
-    public VerificationResultSenderImpl(@Value("${service-web-client.kafka-rest.address}")
+    public ResultSenderImpl(@Value("${service-web-client.kafka-rest.address}")
                                         String kafkaHttpProxyAddress,
-                                        @Value("${service-web-client.kafka-rest.login}")
+                            @Value("${service-web-client.kafka-rest.login}")
                                         String kafkaHttpProxyLogin,
-                                        @Value("${service-web-client.kafka-rest.password}")
+                            @Value("${service-web-client.kafka-rest.password}")
                                         String kafkaHttpProxyPassword,
-                                        RestTemplateBuilder restTemplateBuilder,
-                                        KafkaRestMessageAdapter kafkaRestMessageAdapter) {
+                            RestTemplateBuilder restTemplateBuilder,
+                            KafkaRestMessageAdapter kafkaRestMessageAdapter) {
         super(kafkaHttpProxyAddress, kafkaHttpProxyLogin, kafkaHttpProxyPassword, restTemplateBuilder, kafkaRestMessageAdapter);
     }
 
@@ -65,6 +66,11 @@ public class VerificationResultSenderImpl extends BaseSender implements Verifica
         final var schemaKey = "{\"type\": \"string\"}";
 
         return KafkaMessageKey.create(key, schemaKey);
+    }
+
+    @Override
+    public void send(VerificationResultsPts result, String topic) {
+        // todo
     }
 
 }

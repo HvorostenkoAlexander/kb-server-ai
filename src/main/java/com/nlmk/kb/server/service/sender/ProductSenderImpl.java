@@ -22,11 +22,11 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class ProductSenderImpl implements ProductSender {
 
-    private final Map<String, MessageProducer> senders;
+    private final Map<String, MessageProducer<?>> senders;
     private final ResultConfigService configService;
     private final CommonConditionFilter conditionFilter;
 
-    public ProductSenderImpl(List<MessageProducer> allSenders,
+    public ProductSenderImpl(List<MessageProducer<?>> allSenders,
                              ResultConfigService configService,
                              CommonConditionFilter conditionFilter) {
         this.senders = allSenders.stream().collect(
@@ -63,16 +63,21 @@ public class ProductSenderImpl implements ProductSender {
         }
     }
 
+    /**
+     * Отправка по одной активной конфигурации
+     */
     private void sending(ResultsConfigDto config,
-                         List<MessageProducer> enabledSenders,
+                         Set<MessageProducer<?>> enabledSenders,
                          ProductDto product,
                          boolean isNew) {
+        // свой отправитель: по AvroName и совпадению AvroName с именем типа MessageProducer (от ошибок в базе)
         var sender = enabledSenders.stream()
-                .filter(s -> s.getAvroName().equals(config.getAvroName()))
+                .filter(producer -> producer.getAvroName().equals(config.getAvroName()))
+                .filter(producer -> producer.getSendingType().getSimpleName().equals(config.getAvroName()))
                 .findFirst();
 
         if (sender.isEmpty()) {
-            log.warn("sending, for topic [{}] not found sender with avroName [{}]",
+            log.warn("sending, for topic [{}] not found sender with avroName [{}] (avroName and sendingType)",
                     config.getTopic(), config.getAvroName());
             return;
         }
@@ -105,18 +110,22 @@ public class ProductSenderImpl implements ProductSender {
         sender.get().produce(sendingProduct, isNew, config.getTopic());
     }
 
-    private List<MessageProducer> getEnabledSenders(List<ResultsConfigDto> configs) {
+    /**
+     * Уникальный список доступных отправителей для списка активных конфигураций
+     */
+    private Set<MessageProducer<?>> getEnabledSenders(List<ResultsConfigDto> configs) {
         if (configs == null || configs.isEmpty()) {
-            return List.of();
+            return Set.of();
         }
 
+        // поиск MessageProducer по AvroName
         return configs.stream()
                 .map(ResultsConfigDto::getAvroName)
-                .filter(a -> senders.get(a) != null)
+                .filter(avroName -> senders.get(avroName) != null)
                 .collect(toMap(k -> k, senders::get))
                 .values().stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private String getKceh(RequestDto request) {
