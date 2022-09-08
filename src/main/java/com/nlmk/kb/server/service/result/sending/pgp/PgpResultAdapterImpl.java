@@ -4,7 +4,6 @@ import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.service.result.sending.ResultAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -13,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> {
 

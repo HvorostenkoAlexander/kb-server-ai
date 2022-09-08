@@ -5,6 +5,7 @@ import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.service.result.sending.ResultAdapter;
 import com.nlmk.kb.server.service.result.sending.pgp.PgpResultAdapterImpl;
+import com.nlmk.kb.server.service.result.sending.pts.PtsResultAdapterImpl;
 import nlmk.l3.apcs.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,10 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class VerificationResultTest {
+class ResultAdapterTest {
 
-    private final ResultAdapter<VerificationResults> adapter = new PgpResultAdapterImpl();
+    private final ResultAdapter<VerificationResults> pgpAdapter = new PgpResultAdapterImpl();
+    private final ResultAdapter<VerificationResultsPts> ptsAdapter = new PtsResultAdapterImpl();
 
     @Test
     void simpleVerificationProduct() throws IOException {
@@ -50,7 +52,7 @@ class VerificationResultTest {
                 .filter(attestation -> attestation.getGroup().equals(Group.MET))
                 .collect(Collectors.toList());
 
-        VerificationResults results = adapter.adapt(product, true);
+        VerificationResults results = pgpAdapter.adapt(product, true);
 
         final var resultMech = results.getData().getMechanical().stream()
                 .map(l -> l.getSpecifications().size()).mapToInt(i -> i).sum();
@@ -65,9 +67,15 @@ class VerificationResultTest {
     }
 
     @Test
-    void verifyResult() {
-        final var result = adapter.adapt(certifiedProduct(), false);
+    void verifyPgpResult() {
+        final var result = pgpAdapter.adapt(certifiedProduct(), false);
         Assertions.assertEquals(expectedVerificationResultsPgp(), result);
+    }
+
+    @Test
+    void verifyPtsResult() {
+        final var result = ptsAdapter.adapt(certifiedProduct(), false);
+        Assertions.assertEquals(expectedVerificationResultsPts(), result);
     }
 
     /**
@@ -76,6 +84,7 @@ class VerificationResultTest {
     private ProductDto certifiedProduct() {
         return ProductDto.builder()
                 .id(123L)
+                .referenceCode("100")
                 .requests(List.of(
                         RequestDto.builder()
                                 .attestationTs(new Date(1_000_000_000L))
@@ -125,7 +134,7 @@ class VerificationResultTest {
     }
 
     /**
-     * Ожидаемые результат для цеха ЦГП
+     * Ожидаемый результат для цеха ЦГП
      */
     private VerificationResults expectedVerificationResultsPgp() {
         return VerificationResults.newBuilder()
@@ -247,6 +256,25 @@ class VerificationResultTest {
                                                         .build()
                                         ))
                                         .build()
+                        ))
+                        .build())
+                .build();
+    }
+
+    private VerificationResultsPts expectedVerificationResultsPts() {
+        return VerificationResultsPts.newBuilder()
+                .setTs("1970-01-12T13:46:40.000Z")
+                .setPk(RecordPk.newBuilder().setId(123L).setSystemCode("31").build())
+                .setOp(EnumOp.U)
+                .setData(RecordPtsData.newBuilder()
+                        .setPrimeSystemCode("100")
+                        .setPrimeId("1234567890")
+                        .setMismatch(RecordPtsMismatch.newBuilder()
+                                .setCode(Status.MATCHED.getValue())
+                                .setName(Status.MATCHED.getDesc())
+                                .build())
+                        .setAttestationList(List.of(
+                                //todo
                         ))
                         .build())
                 .build();

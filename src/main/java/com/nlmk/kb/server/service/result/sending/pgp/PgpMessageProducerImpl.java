@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MessageProducerPgpImpl implements ApcsAvro, MessageProducer<VerificationResults> {
+public class PgpMessageProducerImpl implements ApcsAvro, MessageProducer<VerificationResults> {
 
     private static final Schema SCHEMA = VerificationResults.SCHEMA$;
     private final ResultAdapter<VerificationResults> adapter;
@@ -37,10 +37,10 @@ public class MessageProducerPgpImpl implements ApcsAvro, MessageProducer<Verific
 
     @Override
     public void produce(ProductDto product, boolean isNew, String topic) {
-        log.info("send product: id [{}], referenceId [{}] by AVRO name [{}] to topic [{}]",
+        log.info("produce product: id [{}], referenceId [{}] by AVRO name [{}] to topic [{}]",
                 product.getId(), product.getReferenceId(), getSchemaName(), topic);
 
-        VerificationResults results = adapter.adapt(product, isNew);
+        final var results = adapter.adapt(product, isNew);
         sender.send(results, topic);
     }
 
