@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.result.sending.pgp;
 
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.kb.server.service.result.sending.ResultAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.*;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class VerificationResultsPgpAdapterImpl implements VerificationResultsPgpAdapter {
+public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> {
 
     private final ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(() -> {
         final var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");

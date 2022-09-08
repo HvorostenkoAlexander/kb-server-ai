@@ -39,18 +39,8 @@ class ProductSenderEmptyAddressTest {
         dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
-    @Test
-    void sendProduct() throws Exception {
-        // конфигурация
-        Mockito.when(resultConfigService.getEnabledTopics())
-                .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(2).topic("topic2").condition(null)
-                                // нужная конфигурация
-                                .avroName("VerificationResults").enabled(true).build()
-                ));
-
-        // минимально полный результат
-        final var attResult = ProductAttestationResultDto.builder()
+    private ProductAttestationResultDto prepareMinimal() {
+        return ProductAttestationResultDto.builder()
                 .result(ProductDto.builder()
                         .id(100L).referenceId("100").referenceCode("1")
                         .requests(List.of(
@@ -67,10 +57,26 @@ class ProductSenderEmptyAddressTest {
                         ))
                         .build()).newProduct(false)
                 .build();
+    }
 
-        final var e = Assertions.assertThrows(KafkaRestConfigException.class,
-                () -> productSender.send(attResult, VerificationResults.class));
-        Assertions.assertEquals("Не установлен адрес сервера kafka-rest. Передача данных невозможна.", e.getMessage());
+    @Test
+    void sendProductPgp() throws Exception {
+        // нужная конфигурация
+        Mockito.when(resultConfigService.getEnabledTopics())
+                .thenReturn(List.of(
+                        ResultsConfigDto.builder().id(12).topic("topic12").condition(null)
+                                .avroName("VerificationResults").enabled(true).build(),
+                        ResultsConfigDto.builder().id(11).topic("topic11").condition(null)
+                                .avroName("VerificationResultsPts").enabled(true).build()
+                ));
+
+        // минимально полный результат
+        final var attResult = prepareMinimal();
+        {
+            final var e = Assertions.assertThrows(KafkaRestConfigException.class,
+                    () -> productSender.send(attResult, VerificationResults.class));
+            Assertions.assertEquals("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending", e.getMessage());
+        }
     }
 
 }

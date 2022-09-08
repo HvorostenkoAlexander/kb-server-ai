@@ -3,8 +3,8 @@ package com.nlmk.kb.server.service.result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.service.result.sending.pgp.VerificationResultsPgpAdapter;
-import com.nlmk.kb.server.service.result.sending.pgp.VerificationResultsPgpAdapterImpl;
+import com.nlmk.kb.server.service.result.sending.ResultAdapter;
+import com.nlmk.kb.server.service.result.sending.pgp.PgpResultAdapterImpl;
 import nlmk.l3.apcs.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class VerificationResultTest {
 
-    private final VerificationResultsPgpAdapter adapter = new VerificationResultsPgpAdapterImpl();
+    private final ResultAdapter<VerificationResults> adapter = new PgpResultAdapterImpl();
 
     @Test
     void simpleVerificationProduct() throws IOException {

@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
 import com.nlmk.kb.server.service.result.sending.MessageProducer;
 import com.nlmk.kb.server.service.result.sending.ResultSenderPgp;
+import com.nlmk.kb.server.service.result.sending.ResultAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class MessageProducerPgpImpl implements ApcsAvro, MessageProducer<VerificationResults> {
 
     private static final Schema SCHEMA = VerificationResults.SCHEMA$;
-    private final VerificationResultsPgpAdapter adapter;
+    private final ResultAdapter<VerificationResults> adapter;
     private final ResultSenderPgp sender;
 
     @Override

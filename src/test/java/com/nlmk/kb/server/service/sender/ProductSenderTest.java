@@ -63,7 +63,7 @@ class ProductSenderTest {
     }
 
     @Test
-    void sendProduct() throws Exception {
+    void sendProductPgp() throws Exception {
         // результат аттестации сначала пустой
         final var product = ProductDto.builder().build();
         final var attResult = ProductAttestationResultDto.builder()
