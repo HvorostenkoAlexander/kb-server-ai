@@ -1,6 +1,10 @@
 package com.nlmk.kb.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.Kceh;
+import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.attestation.zorder.ZORDERS051E1EDK01;
@@ -58,6 +62,8 @@ class KbControllerTest {
     @MockBean
     private AttestationMessageService attestationMessageService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     void sendingSapMessage() throws Exception {
         var E1EDK01 = new ZORDERS051E1EDK01();
@@ -105,34 +111,53 @@ class KbControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isOk());
-
-        mvc.perform(MockMvcRequestBuilders.post(url)
-                        .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        doThrow(ProductSenderException.class).when(productSender).send(any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.post(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ProductAttestationResultDto.builder().build())))
+                .andExpect(status().isBadRequest());
+
+        final var content = objectMapper.writeValueAsString(
+                ProductAttestationResultDto.builder()
+                        .result(ProductDto.builder().build())
+                        .kceh(Kceh.PGP)
+                        .build()
+        );
+
+        mvc.perform(MockMvcRequestBuilders.post(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk());
+
+        doThrow(ProductSenderException.class).when(productSender).send(any(), any());
+        mvc.perform(MockMvcRequestBuilders.post(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andExpect(status().isInternalServerError());
 
-        doThrow(KafkaRestConfigException.class).when(productSender).send(any());
+        doThrow(KafkaRestConfigException.class).when(productSender).send(any(), any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                        .content(content))
                 .andExpect(status().isServiceUnavailable());
 
-        doThrow(KafkaRestException.class).when(productSender).send(any());
+        doThrow(KafkaRestException.class).when(productSender).send(any(), any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                        .content(content))
                 .andExpect(status().isBadGateway());
     }
 

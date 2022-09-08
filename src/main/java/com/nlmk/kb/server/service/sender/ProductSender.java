@@ -11,7 +11,8 @@ public interface ProductSender {
      * Отправка результата Аттестации ЕП
      *
      * @param productAttestationResult объект результата Аттестации ЕП
+     * @param sendingType              отправляемый тип
      */
-    void send(ProductAttestationResultDto productAttestationResult);
+    void send(ProductAttestationResultDto productAttestationResult, Class<?> sendingType);
 
 }

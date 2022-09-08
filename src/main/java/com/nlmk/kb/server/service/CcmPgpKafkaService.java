@@ -6,6 +6,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.sender.ProductSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.l3.ccm.pgp.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,7 +66,7 @@ public class CcmPgpKafkaService {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
                 // отправка ответа с результатами аттестации
-                attestationResultSender.send(attResult.get());
+                attestationResultSender.send(attResult.get(), VerificationResults.class);
             }
             ack.acknowledge();
         } catch (DateTimeParseException e) {

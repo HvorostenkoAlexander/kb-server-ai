@@ -37,7 +37,7 @@ public class ProductSenderImpl implements ProductSender {
     }
 
     @Override
-    public void send(ProductAttestationResultDto productAttestationResult) {
+    public void send(ProductAttestationResultDto productAttestationResult, Class<?> sendingType) {
         final var configs = configService.getEnabledTopics();
         if (configs.isEmpty()) {
             log.warn("send, empty enabled topic config FOR sending result");
@@ -54,12 +54,15 @@ public class ProductSenderImpl implements ProductSender {
         log.info("send attestation result for product: id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
 
         for (ResultsConfigDto config : configs) {
-            log.info("sending config [{}]", config);
-            sending(config,
-                    enabledSenders,
-                    product,
-                    productAttestationResult.isNewProduct()
-            );
+            // только конфигурация своего типа!
+            if (config.getAvroName().equals(sendingType.getSimpleName())) {
+                log.info("sending config [{}]", config);
+                sending(config,
+                        enabledSenders,
+                        product,
+                        productAttestationResult.isNewProduct()
+                );
+            }
         }
     }
 

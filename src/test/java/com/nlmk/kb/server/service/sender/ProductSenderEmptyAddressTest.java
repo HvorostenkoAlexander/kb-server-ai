@@ -9,6 +9,7 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
+import nlmk.l3.apcs.VerificationResults;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -67,7 +68,8 @@ class ProductSenderEmptyAddressTest {
                         .build()).newProduct(false)
                 .build();
 
-        final var e = Assertions.assertThrows(KafkaRestConfigException.class, () -> productSender.send(attResult));
+        final var e = Assertions.assertThrows(KafkaRestConfigException.class,
+                () -> productSender.send(attResult, VerificationResults.class));
         Assertions.assertEquals("Не установлен адрес сервера kafka-rest. Передача данных невозможна.", e.getMessage());
     }
 

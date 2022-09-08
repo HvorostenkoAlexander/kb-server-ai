@@ -6,6 +6,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.sender.ProductSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.apcs.VerificationResultsPts;
 import nlmk.l3.ccm.pts.EnumOp;
 import nlmk.l3.ccm.pts.AttestationRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,7 +66,7 @@ public class CcmPtsKafkaService {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
                 // отправка ответа с результатами аттестации
-                attestationResultSender.send(attResult.get());
+                attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
             }
             ack.acknowledge();
         } catch (DateTimeParseException e) {
