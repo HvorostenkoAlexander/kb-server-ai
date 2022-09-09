@@ -1,17 +1,19 @@
 package com.nlmk.kb.server.service.result.sending.pts;
 
 import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.service.result.sending.ResultAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.apcs.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPts> {
@@ -66,8 +68,80 @@ public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPt
             return List.of();
         }
 
-        // todo
-        return List.of();
+        final var attestations = new ArrayList<RecordPtsAttList>();
+
+        // объединение групп характеристик
+        Arrays.stream(Group.values()).forEach(group -> {
+            final var oneGroupValues = prepareAttestationValue(attestationList, group);
+            if (!oneGroupValues.isEmpty()) {
+                attestations.add(
+                        RecordPtsAttList.newBuilder()
+                                .setGroupCode(group.getCode())
+                                .setGroupName(group.name())
+                                .setListValues(oneGroupValues)
+                                .build()
+                );
+            }
+        });
+
+        return attestations;
+    }
+
+    private List<RecordPtsAttListValues> prepareAttestationValue(List<AttestationDto> attResult, Group group) {
+        return attResult.stream()
+                .filter(attestation -> group.equals(attestation.getGroup()))
+                .filter(attestation -> Objects.nonNull(attestation.getCode()))
+                .map(attestation -> {
+                    final var specCode = SpecCode.fromValue(attestation.getCode());
+                    // пропускаем: format, measure
+                    // пока нет данных: docId, docName
+                    return RecordPtsAttListValues.newBuilder()
+                            .setCode(specCode.getValue())
+                            .setName(specCode.getDesc())
+                            .setTypeCode(specCode.getTypeCode().getValue())
+                            .setTypeName(specCode.getTypeCode().getDesc())
+                            .setValue(attestation.getValue())
+                            .setDocId(-1)
+                            .setDocName("-")
+                            .setNormLimits(prepareNormLimit(attestation))
+                            .setMismatch(RecordPtsAttListMismatch.newBuilder()
+                                    .setCode(attestation.getStatus() != null ? attestation.getStatus().getValue() : -1)
+                                    .setName(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
+                                    .build())
+                            .setNote(AdapterUtils.detectNote(attestation))
+                            .setDefectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
+                            .setParameters(prepareParameters(attestation))
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    private RecordPtsAttListNorms prepareNormLimit(AttestationDto attestation) {
+        // в объекте AttestationDto ждем либо Equal, либо Min и (или) Max
+        return RecordPtsAttListNorms.newBuilder()
+                .setValueMin(attestation.getMin())
+                .setValueMax(attestation.getMax())
+                .setListAccValues(attestation.getEqual() == null ? null : List.of(
+                        RecordPtsAttListNormsValues.newBuilder().setValue(attestation.getEqual()).build()
+                ))
+                .build();
+    }
+
+    private List<RecordPtsAttListParams> prepareParameters(AttestationDto attestation) {
+        final var map = AdapterUtils.prepareParameters(attestation);
+        if (map.isEmpty()) {
+            return List.of();
+        }
+
+        return map.entrySet().stream()
+                .map(p -> RecordPtsAttListParams.newBuilder()
+                        .setCode(p.getKey().getValue())
+                        .setName(p.getKey().getDesc())
+                        .setValue(p.getValue())
+                        .setTypeCode(p.getKey().getTypeCode().getValue())
+                        .setTypeName(p.getKey().getTypeCode().getDesc())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

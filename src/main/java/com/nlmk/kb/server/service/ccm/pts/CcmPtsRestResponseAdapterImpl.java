@@ -10,10 +10,7 @@ import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,7 +76,8 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
 
     private List<CcmPtsResponse.AttestationValue> prepareAttestationValue(List<AttestationDto> attResult, Group group) {
         return attResult.stream()
-                .filter(f -> group.equals(f.getGroup()))
+                .filter(attestation -> group.equals(attestation.getGroup()))
+                .filter(attestation -> Objects.nonNull(attestation.getCode()))
                 .map(attestation -> {
                     final var specCode = SpecCode.fromValue(attestation.getCode());
                     // пропускаем: format, measure
@@ -90,6 +88,8 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
+                            .docId(-1)
+                            .docName("-")
                             .normLimits(prepareNormLimit(attestation))
                             .mismatch(CcmPtsResponse.Mismatch.builder()
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)

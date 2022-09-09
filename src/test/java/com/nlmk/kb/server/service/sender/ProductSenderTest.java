@@ -10,6 +10,7 @@ import com.nlmk.kb.server.exception.ProductSenderException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
 import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsPts;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -63,7 +64,7 @@ class ProductSenderTest {
     }
 
     @Test
-    void sendProductPgp() throws Exception {
+    void sendProduct() throws Exception {
         // результат аттестации сначала пустой
         final var product = ProductDto.builder().build();
         final var attResult = ProductAttestationResultDto.builder()
@@ -86,9 +87,11 @@ class ProductSenderTest {
                 .thenReturn(List.of(
                         ResultsConfigDto.builder().id(1).topic("topic1").condition(null)
                                 .avroName("avro1").enabled(true).build(),
+                        // нужная конфигурация
                         ResultsConfigDto.builder().id(2).topic("topic2").condition(null)
-                                // нужная конфигурация
-                                .avroName("VerificationResults").enabled(true).build()
+                                .avroName("VerificationResults").enabled(true).build(),
+                        ResultsConfigDto.builder().id(3).topic("topic3").condition(null)
+                                .avroName("VerificationResultsPts").enabled(true).build()
                 ));
         Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
         // передачи еще не было
@@ -121,16 +124,32 @@ class ProductSenderTest {
         // отправка еще раз
         product.getRequests().get(0).setAttestationTs(new Date(1_000_000_000L));
 
-        mockKafkaRest.enqueue(new MockResponse()
-                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setResponseCode(HttpStatus.OK.value()));
+        {
+            // VerificationResults
+            mockKafkaRest.enqueue(new MockResponse()
+                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .setResponseCode(HttpStatus.OK.value()));
 
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
+            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
 
-        RecordedRequest request = mockKafkaRest.takeRequest();
-        Assertions.assertEquals("POST", request.getMethod());
-        Assertions.assertEquals("/topics/topic2", request.getPath());
-        Assertions.assertEquals(1, mockKafkaRest.getRequestCount());
+            RecordedRequest request = mockKafkaRest.takeRequest();
+            Assertions.assertEquals("POST", request.getMethod());
+            Assertions.assertEquals("/topics/topic2", request.getPath());
+            Assertions.assertEquals(1, mockKafkaRest.getRequestCount());
+        }
+        {
+            // VerificationResultsPts
+            mockKafkaRest.enqueue(new MockResponse()
+                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .setResponseCode(HttpStatus.OK.value()));
+
+            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsPts.class));
+
+            RecordedRequest request = mockKafkaRest.takeRequest();
+            Assertions.assertEquals("POST", request.getMethod());
+            Assertions.assertEquals("/topics/topic3", request.getPath());
+            Assertions.assertEquals(2, mockKafkaRest.getRequestCount());
+        }
     }
 
 }
