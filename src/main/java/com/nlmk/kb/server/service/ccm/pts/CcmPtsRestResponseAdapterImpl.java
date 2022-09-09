@@ -3,11 +3,11 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
-import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -95,8 +95,8 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)
                                     .name(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
                                     .build())
-                            .note(detectNote(attestation))
-                            .defectSuggestion(detectDefectSuggestion(attestation))
+                            .note(AdapterUtils.detectNote(attestation))
+                            .defectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
                             .parameters(prepareParameters(attestation))
                             .build();
                 })
@@ -115,57 +115,20 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
     }
 
     private List<CcmPtsResponse.Parameter> prepareParameters(AttestationDto attestation) {
-        if (attestation == null || attestation.getParams() == null) {
+        final var map = AdapterUtils.prepareParameters(attestation);
+        if (map.isEmpty()) {
             return List.of();
         }
 
-        final var list = new ArrayList<CcmPtsResponse.Parameter>();
-
-        if (attestation.getParams().getKnctrator() != null) {
-            list.add(CcmPtsResponse.Parameter.builder()
-                    .code(SpecCode.CONCENTRATOR.getValue())
-                    .name(SpecCode.CONCENTRATOR.getDesc())
-                    .value(attestation.getParams().getKnctrator())
-                    .typeCode(SpecCode.CONCENTRATOR.getTypeCode())
-                    .typeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getTemp() != null) {
-            list.add(CcmPtsResponse.Parameter.builder()
-                    .code(SpecCode.TEMPERATURE.getValue())
-                    .name(SpecCode.TEMPERATURE.getDesc())
-                    .value(attestation.getParams().getTemp())
-                    .typeCode(SpecCode.TEMPERATURE.getTypeCode())
-                    .typeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getAnalysisId() != null) {
-            list.add(CcmPtsResponse.Parameter.builder()
-                    .code(SpecCode.ANALYSIS_ID.getValue())
-                    .name(SpecCode.ANALYSIS_ID.getDesc())
-                    .value(attestation.getParams().getAnalysisId().toString())
-                    .typeCode(SpecCode.ANALYSIS_ID.getTypeCode())
-                    .typeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
-                    .build());
-        }
-
-        return list;
-    }
-
-    private String detectNote(AttestationDto attestation) {
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            return null;
-        }
-        return attestation.getComment();
-    }
-
-    private String detectDefectSuggestion(AttestationDto attestation) {
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            return attestation.getComment();
-        }
-        return null;
+        return map.entrySet().stream()
+                .map(p -> CcmPtsResponse.Parameter.builder()
+                        .code(p.getKey().getValue())
+                        .name(p.getKey().getDesc())
+                        .value(p.getValue())
+                        .typeCode(p.getKey().getTypeCode())
+                        .typeName(p.getKey().getTypeCode().getDesc())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

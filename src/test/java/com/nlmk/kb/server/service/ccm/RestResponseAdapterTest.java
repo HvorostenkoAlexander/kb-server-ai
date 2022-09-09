@@ -130,20 +130,21 @@ class RestResponseAdapterTest {
                                                                 .name(Status.MATCHED.getDesc())
                                                                 .build())
                                                         .note("Согласно ГОСТ 3")
+                                                        // порядок элементов определяет AdapterUtils.prepareParameters()
                                                         .parameters(List.of(
-                                                                CcmPtsResponse.Parameter.builder()
-                                                                        .code(SpecCode.CONCENTRATOR.getValue())
-                                                                        .name(SpecCode.CONCENTRATOR.getDesc())
-                                                                        .value("V")
-                                                                        .typeCode(SpecCode.CONCENTRATOR.getTypeCode())
-                                                                        .typeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                                                                        .build(),
                                                                 CcmPtsResponse.Parameter.builder()
                                                                         .code(SpecCode.TEMPERATURE.getValue())
                                                                         .name(SpecCode.TEMPERATURE.getDesc())
                                                                         .value("30")
                                                                         .typeCode(SpecCode.TEMPERATURE.getTypeCode())
                                                                         .typeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                                                                        .build(),
+                                                                CcmPtsResponse.Parameter.builder()
+                                                                        .code(SpecCode.CONCENTRATOR.getValue())
+                                                                        .name(SpecCode.CONCENTRATOR.getDesc())
+                                                                        .value("V")
+                                                                        .typeCode(SpecCode.CONCENTRATOR.getTypeCode())
+                                                                        .typeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
                                                                         .build(),
                                                                 CcmPtsResponse.Parameter.builder()
                                                                         .code(SpecCode.ANALYSIS_ID.getValue())

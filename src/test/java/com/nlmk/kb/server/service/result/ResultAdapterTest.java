@@ -195,20 +195,21 @@ class ResultAdapterTest {
                                                         .setNorms(RecordPgpMechNorms.newBuilder()
                                                                 .setValueMin(40.0).setValueMax(70.0)
                                                                 .build())
+                                                        // порядок элементов определяет AdapterUtils.prepareParameters()
                                                         .setParameters(List.of(
-                                                                RecordPgpMechParams.newBuilder()
-                                                                        .setCode(SpecCode.CONCENTRATOR.getValue())
-                                                                        .setName(SpecCode.CONCENTRATOR.getDesc())
-                                                                        .setValue("V")
-                                                                        .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
-                                                                        .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                                                                        .build(),
                                                                 RecordPgpMechParams.newBuilder()
                                                                         .setCode(SpecCode.TEMPERATURE.getValue())
                                                                         .setName(SpecCode.TEMPERATURE.getDesc())
                                                                         .setValue("20")
                                                                         .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
                                                                         .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                                                                        .build(),
+                                                                RecordPgpMechParams.newBuilder()
+                                                                        .setCode(SpecCode.CONCENTRATOR.getValue())
+                                                                        .setName(SpecCode.CONCENTRATOR.getDesc())
+                                                                        .setValue("V")
+                                                                        .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
                                                                         .build(),
                                                                 RecordPgpMechParams.newBuilder()
                                                                         .setCode(SpecCode.ANALYSIS_ID.getValue())
@@ -261,6 +262,9 @@ class ResultAdapterTest {
                 .build();
     }
 
+    /**
+     * Ожидаемый результат для цеха ЦТС
+     */
     private VerificationResultsPts expectedVerificationResultsPts() {
         return VerificationResultsPts.newBuilder()
                 .setTs("1970-01-12T13:46:40.000Z")
