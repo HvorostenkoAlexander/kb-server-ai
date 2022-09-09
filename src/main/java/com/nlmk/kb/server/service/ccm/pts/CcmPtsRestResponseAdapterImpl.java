@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.DocId;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
@@ -88,8 +89,8 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
-                            .docId(-1)
-                            .docName("-")
+                            .docId(DocId.ORDER.getValue())
+                            .docName(DocId.ORDER.getDesc())
                             .normLimits(prepareNormLimit(attestation))
                             .mismatch(CcmPtsResponse.Mismatch.builder()
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)

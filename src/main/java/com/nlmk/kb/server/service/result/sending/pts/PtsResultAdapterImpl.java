@@ -1,9 +1,6 @@
 package com.nlmk.kb.server.service.result.sending.pts;
 
-import com.nlmk.attestation.product.api.AttestationDto;
-import com.nlmk.attestation.product.api.Group;
-import com.nlmk.attestation.product.api.ProductDto;
-import com.nlmk.attestation.product.api.Status;
+import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.service.result.sending.ResultAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
@@ -101,8 +98,8 @@ public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPt
                             .setTypeCode(specCode.getTypeCode().getValue())
                             .setTypeName(specCode.getTypeCode().getDesc())
                             .setValue(attestation.getValue())
-                            .setDocId(-1)
-                            .setDocName("-")
+                            .setDocId(DocId.ORDER.getValue())
+                            .setDocName(DocId.ORDER.getDesc())
                             .setNormLimits(prepareNormLimit(attestation))
                             .setMismatch(RecordPtsAttListMismatch.newBuilder()
                                     .setCode(attestation.getStatus() != null ? attestation.getStatus().getValue() : -1)
