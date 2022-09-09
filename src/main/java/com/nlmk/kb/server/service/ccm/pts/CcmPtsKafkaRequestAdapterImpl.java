@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.CcmPtsRequestAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;

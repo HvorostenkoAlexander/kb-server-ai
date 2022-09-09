@@ -16,11 +16,12 @@ import java.util.TimeZone;
 @Service
 public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPts> {
 
-    private final ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(() -> {
-        final var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return sdf;
-    });
+    private final SimpleDateFormat dateFormatter;
+
+    public PtsResultAdapterImpl() {
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     @Override
     public VerificationResultsPts adapt(ProductDto product, boolean isNew) {
@@ -38,8 +39,7 @@ public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPt
             mismatch = product.getRequests().get(0).getStatus();
         }
         if (product.getRequests().get(0).getAttestationTs() != null) {
-            ts = dateFormat.get().format(product.getRequests().get(0).getAttestationTs());
-            dateFormat.remove();
+            ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
         }
 
         return VerificationResultsPts.newBuilder()

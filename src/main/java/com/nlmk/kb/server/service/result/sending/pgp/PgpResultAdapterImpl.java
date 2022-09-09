@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> {
 
-    private final ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(() -> {
-        final var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return sdf;
-    });
+    private final SimpleDateFormat dateFormatter;
+
+    public PgpResultAdapterImpl() {
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     @Override
     public VerificationResults adapt(ProductDto product, boolean isNew) {
@@ -41,8 +42,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
             mismatch = product.getRequests().get(0).getStatus().getValue();
         }
         if (product.getRequests().get(0).getAttestationTs() != null) {
-            ts = dateFormat.get().format(product.getRequests().get(0).getAttestationTs());
-            dateFormat.remove();
+            ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
         }
 
         return VerificationResults.newBuilder()

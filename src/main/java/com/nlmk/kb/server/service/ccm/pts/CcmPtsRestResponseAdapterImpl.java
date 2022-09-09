@@ -62,13 +62,13 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
 
         // объединение групп характеристик
         Arrays.stream(Group.values()).forEach(group -> {
-            final var oneGroup = prepareAttestationValue(request.getAttestations(), group);
-            if (!oneGroup.isEmpty()) {
+            final var oneGroupValues = prepareAttestationValue(request.getAttestations(), group);
+            if (!oneGroupValues.isEmpty()) {
                 attestations.add(
                         CcmPtsResponse.Attestation.builder()
                                 .groupCode(group.getCode())
                                 .groupName(group.name())
-                                .listValues(prepareAttestationValue(request.getAttestations(), group))
+                                .listValues(oneGroupValues)
                                 .build()
                 );
             }
