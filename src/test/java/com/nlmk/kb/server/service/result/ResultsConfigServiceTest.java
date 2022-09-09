@@ -49,7 +49,7 @@ class ResultsConfigServiceTest {
     void findByPageTest() {
         final var result = service.findPyPage(PageRequest.of(0, 10));
         assertNotNull(result);
-        assertEquals(2, result.stream().toArray().length);
+        assertEquals(2 + 1, result.stream().toArray().length);
     }
 
     @Test
@@ -69,7 +69,7 @@ class ResultsConfigServiceTest {
     void findByIdNotFound() {
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.findById(-111L)
+                () -> service.findById(-111)
         );
 
         assertNotNull(iae);
@@ -151,7 +151,7 @@ class ResultsConfigServiceTest {
 
         IllegalArgumentException iae = null;
         try {
-            service.deleteById(-111L);
+            service.deleteById(-111);
         } catch (IllegalArgumentException ex) {
             iae = ex;
         }

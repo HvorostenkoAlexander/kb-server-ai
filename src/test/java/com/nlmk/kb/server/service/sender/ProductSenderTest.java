@@ -9,6 +9,8 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.ProductSenderException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
+import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsPts;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -70,26 +72,28 @@ class ProductSenderTest {
                 .build();
 
         Mockito.when(resultConfigService.getEnabledTopics()).thenReturn(List.of());
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult));
+        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
 
         // для заданной AVRO схемы нет подходящей конфигурации (по имени схемы)
         Mockito.when(resultConfigService.getEnabledTopics())
                 .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(1L).topic("topic1").avroName("avro1").enabled(true).build(),
-                        ResultsConfigDto.builder().id(2L).topic("topic2").avroName("avro2").enabled(true).build()
+                        ResultsConfigDto.builder().id(1).topic("topic1").avroName("avro1").enabled(true).build(),
+                        ResultsConfigDto.builder().id(2).topic("topic2").avroName("avro2").enabled(true).build()
                 ));
-        Assertions.assertThrows(ProductSenderException.class, () -> productSender.send(attResult));
+        Assertions.assertThrows(ProductSenderException.class, () -> productSender.send(attResult, VerificationResults.class));
 
         // конфигурация есть, но результат аттестации пустой
         Mockito.when(resultConfigService.getEnabledTopics())
                 .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(1L).topic("topic1").condition(null)
+                        ResultsConfigDto.builder().id(1).topic("topic1").condition(null)
                                 .avroName("avro1").enabled(true).build(),
-                        ResultsConfigDto.builder().id(2L).topic("topic2").condition(null)
-                                // нужная конфигурация
-                                .avroName("Передача результатов аттестации APCS. Version: [1]").enabled(true).build()
+                        // нужная конфигурация
+                        ResultsConfigDto.builder().id(2).topic("topic2").condition(null)
+                                .avroName("VerificationResults").enabled(true).build(),
+                        ResultsConfigDto.builder().id(3).topic("topic3").condition(null)
+                                .avroName("VerificationResultsPts").enabled(true).build()
                 ));
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult));
+        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
         // передачи еще не было
         Assertions.assertEquals(0, mockKafkaRest.getRequestCount());
 
@@ -104,7 +108,7 @@ class ProductSenderTest {
                         .build()
         ));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> productSender.send(attResult));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> productSender.send(attResult, VerificationResults.class));
         // передачи еще не было
         Assertions.assertEquals(0, mockKafkaRest.getRequestCount());
 
@@ -113,23 +117,39 @@ class ProductSenderTest {
                 AttestationDto.builder().code(5).value("50").status(Status.NOT_MATCHED).equal("100").build()
         ));
         // требования AVRO схемы не выполнены
-        Assertions.assertThrows(AvroRuntimeException.class, () -> productSender.send(attResult));
+        Assertions.assertThrows(AvroRuntimeException.class, () -> productSender.send(attResult, VerificationResults.class));
         // передачи еще не было
         Assertions.assertEquals(0, mockKafkaRest.getRequestCount());
 
         // отправка еще раз
         product.getRequests().get(0).setAttestationTs(new Date(1_000_000_000L));
 
-        mockKafkaRest.enqueue(new MockResponse()
-                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .setResponseCode(HttpStatus.OK.value()));
+        {
+            // VerificationResults
+            mockKafkaRest.enqueue(new MockResponse()
+                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .setResponseCode(HttpStatus.OK.value()));
 
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult));
+            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
 
-        RecordedRequest request = mockKafkaRest.takeRequest();
-        Assertions.assertEquals("POST", request.getMethod());
-        Assertions.assertEquals("/topics/topic2", request.getPath());
-        Assertions.assertEquals(1, mockKafkaRest.getRequestCount());
+            RecordedRequest request = mockKafkaRest.takeRequest();
+            Assertions.assertEquals("POST", request.getMethod());
+            Assertions.assertEquals("/topics/topic2", request.getPath());
+            Assertions.assertEquals(1, mockKafkaRest.getRequestCount());
+        }
+        {
+            // VerificationResultsPts
+            mockKafkaRest.enqueue(new MockResponse()
+                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .setResponseCode(HttpStatus.OK.value()));
+
+            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsPts.class));
+
+            RecordedRequest request = mockKafkaRest.takeRequest();
+            Assertions.assertEquals("POST", request.getMethod());
+            Assertions.assertEquals("/topics/topic3", request.getPath());
+            Assertions.assertEquals(2, mockKafkaRest.getRequestCount());
+        }
     }
 
 }

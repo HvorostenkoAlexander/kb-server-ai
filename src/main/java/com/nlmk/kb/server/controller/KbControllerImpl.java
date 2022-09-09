@@ -7,6 +7,7 @@ import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
+import com.nlmk.kb.server.exception.ProductSenderException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
@@ -17,6 +18,8 @@ import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsPts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -151,7 +154,17 @@ public class KbControllerImpl implements KbController {
     @Override
     public void postProductAttestationResult(ProductAttestationResultDto attestationResult) {
         log.info("postProductAttestationResult, ProductAttestationResultDto [{}]", attestationResult);
-        attestationResultSender.send(attestationResult);
+        switch (attestationResult.getKceh()) {
+            case PGP: {
+                attestationResultSender.send(attestationResult, VerificationResults.class);
+                break;
+            }
+            case PTS: {
+                attestationResultSender.send(attestationResult, VerificationResultsPts.class);
+                break;
+            }
+            default: throw new ProductSenderException("Wrong Kceh Value for send result");
+        }
     }
 
 }

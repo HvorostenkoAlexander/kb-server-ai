@@ -14,19 +14,15 @@ import javax.persistence.*;
 public class ResultsConfig {
 
     @Id
-    @Column(nullable = false, name = "id")
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, name = "topic")
+    private Integer id;
+    @Column(nullable = false)
     private String topic;
-
-    @Column(nullable = false, name = "avro")
-    private String avroName;
-
+    @Column(nullable = false)
+    private String avroName; // Наименование головного объекта Avro-схемы
     private String condition;
-
-    @Column(nullable = false, name = "is_enabled")
+    @Column(nullable = false)
     private boolean enabled;
 
 }

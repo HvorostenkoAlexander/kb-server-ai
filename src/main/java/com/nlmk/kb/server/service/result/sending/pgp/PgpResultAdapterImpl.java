@@ -1,9 +1,9 @@
-package com.nlmk.kb.server.service.result.sending;
+package com.nlmk.kb.server.service.result.sending.pgp;
 
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.attestation.product.api.specification.TypeCode;
-import lombok.extern.slf4j.Slf4j;
+import com.nlmk.kb.server.service.result.sending.ResultAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.apcs.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -12,15 +12,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
-public class VerificationResultsAdapterImpl implements VerificationResultsAdapter {
+public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> {
 
-    private final ThreadLocal<SimpleDateFormat> dateFormat = ThreadLocal.withInitial(() -> {
-        final var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return sdf;
-    });
+    private final SimpleDateFormat dateFormatter;
+
+    public PgpResultAdapterImpl() {
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     @Override
     public VerificationResults adapt(ProductDto product, boolean isNew) {
@@ -42,8 +42,7 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
             mismatch = product.getRequests().get(0).getStatus().getValue();
         }
         if (product.getRequests().get(0).getAttestationTs() != null) {
-            ts = dateFormat.get().format(product.getRequests().get(0).getAttestationTs());
-            dateFormat.remove();
+            ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
         }
 
         return VerificationResults.newBuilder()
@@ -53,7 +52,7 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                         .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                         .build())
                 .setOp(isNew ? EnumOp.I : EnumOp.U)
-                .setData(RecordData.newBuilder()
+                .setData(RecordPgpData.newBuilder()
                         .setPrimeId(primeId)
                         .setKceh(kceh)
                         .setMismatch(mismatch)
@@ -65,7 +64,7 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 ).build();
     }
 
-    private List<RecordCommons> toCommonRecordList(List<AttestationDto> attestations) {
+    private List<RecordPgpCommons> toCommonRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -78,28 +77,28 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .collect(Collectors.toList());
     }
 
-    private RecordCommons toCommonRecord(AttestationDto attestation) {
-        final var type = getTypeCodeByCodeValue(attestation.getCode());
+    private RecordPgpCommons toCommonRecord(AttestationDto attestation) {
+        final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordCommons.newBuilder()
+        return RecordPgpCommons.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(NormSpecData.newBuilder()
+                .setNorms(RecordPgpComNorms.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
-                .setNote(detectNote(attestation))
-                .setDefectSuggestion(detectDefectSuggestion(attestation))
+                .setNote(AdapterUtils.detectNote(attestation))
+                .setDefectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
                 .build();
     }
 
-    private List<RecordChemical> toChemicalRecordList(List<AttestationDto> attestations) {
+    private List<RecordPgpChemical> toChemicalRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -110,28 +109,28 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .collect(Collectors.toList());
     }
 
-    private RecordChemical toChemicalRecord(AttestationDto attestation) {
-        final var type = getTypeCodeByCodeValue(attestation.getCode());
+    private RecordPgpChemical toChemicalRecord(AttestationDto attestation) {
+        final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordChemical.newBuilder()
+        return RecordPgpChemical.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(NormChemData.newBuilder()
+                .setNorms(RecordPgpChemNorms.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
-                .setNote(detectNote(attestation))
-                .setDefectSuggestion(detectDefectSuggestion(attestation))
+                .setNote(AdapterUtils.detectNote(attestation))
+                .setDefectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
                 .build();
     }
 
-    private List<RecordMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
+    private List<RecordPgpMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -150,7 +149,7 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .collect(Collectors.toList());
     }
 
-    private List<RecordMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
+    private List<RecordPgpMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -169,8 +168,8 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .collect(Collectors.toList());
     }
 
-    private RecordMettallographic toMettallographicRecord(Integer signAnalysis, List<AttestationDto> attestations) {
-        return RecordMettallographic.newBuilder()
+    private RecordPgpMettallographic toMettallographicRecord(Integer signAnalysis, List<AttestationDto> attestations) {
+        return RecordPgpMettallographic.newBuilder()
                 .setSignAnalysis(signAnalysis)
                 .setSpecifications(attestations.stream()
                         .map(this::toMettallographicSpecifications)
@@ -178,8 +177,8 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
                 .build();
     }
 
-    private RecordMechanical toMechanicalRecord(Integer signAnalysis, List<AttestationDto> attestations) {
-        return RecordMechanical.newBuilder()
+    private RecordPgpMechanical toMechanicalRecord(Integer signAnalysis, List<AttestationDto> attestations) {
+        return RecordPgpMechanical.newBuilder()
                 .setSignAnalysis(signAnalysis)
                 .setSpecifications(attestations.stream()
                         .map(this::toMechanicalSpecifications)
@@ -202,169 +201,88 @@ public class VerificationResultsAdapterImpl implements VerificationResultsAdapte
         return attestationGroups;
     }
 
-    private RecordMettallographicSpecifications toMettallographicSpecifications(AttestationDto attestation) {
-        final var type = getTypeCodeByCodeValue(attestation.getCode());
+    private RecordPgpMetSpecs toMettallographicSpecifications(AttestationDto attestation) {
+        final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordMettallographicSpecifications.newBuilder()
+        return RecordPgpMetSpecs.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(NormMetallData.newBuilder()
+                .setNorms(RecordPgpMetNorms.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
-                .setNote(detectNote(attestation))
-                .setDefectSuggestion(detectDefectSuggestion(attestation))
+                .setNote(AdapterUtils.detectNote(attestation))
+                .setDefectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
                 .setParameters(prepareMettallographicParameter(attestation))
                 .build();
     }
 
-    private RecordMechanicalSpecifications toMechanicalSpecifications(AttestationDto attestation) {
-        final var type = getTypeCodeByCodeValue(attestation.getCode());
+    private RecordPgpMechSpecs toMechanicalSpecifications(AttestationDto attestation) {
+        final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordMechanicalSpecifications.newBuilder()
+        return RecordPgpMechSpecs.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(NormMechData.newBuilder()
+                .setNorms(RecordPgpMechNorms.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
-                .setNote(detectNote(attestation))
-                .setDefectSuggestion(detectDefectSuggestion(attestation))
+                .setNote(AdapterUtils.detectNote(attestation))
+                .setDefectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
                 .setParameters(prepareMechanicalParameter(attestation))
                 .build();
     }
 
-    private String detectNote(AttestationDto attestation) {
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            return null;
-        }
-        return attestation.getComment();
-    }
-
-    private String detectDefectSuggestion(AttestationDto attestation) {
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            return attestation.getComment();
-        }
-        return null;
-    }
-
     /**
      * Преобразование значений объекта Params в список объектов RecordMettallographicParameter
-     *
-     * @param attestation результата Аттестации параметра
-     * @return список RecordMettallographicParameter
      */
-    private List<RecordMettallographicParameter> prepareMettallographicParameter(AttestationDto attestation) {
-        if (attestation == null || attestation.getParams() == null) {
+    private List<RecordPgpMetParams> prepareMettallographicParameter(AttestationDto attestation) {
+        final var map = AdapterUtils.prepareParameters(attestation);
+        if (map.isEmpty()) {
             return List.of();
         }
 
-        final var list = new ArrayList<RecordMettallographicParameter>();
-
-        if (attestation.getParams().getKnctrator() != null) {
-            list.add(RecordMettallographicParameter.newBuilder()
-                    .setCode(SpecCode.CONCENTRATOR.getValue())
-                    .setName(SpecCode.CONCENTRATOR.getDesc())
-                    .setValue(attestation.getParams().getKnctrator())
-                    .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
-                    .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getTemp() != null) {
-            list.add(RecordMettallographicParameter.newBuilder()
-                    .setCode(SpecCode.TEMPERATURE.getValue())
-                    .setName(SpecCode.TEMPERATURE.getDesc())
-                    .setValue(attestation.getParams().getTemp())
-                    .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
-                    .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getAnalysisId() != null) {
-            list.add(RecordMettallographicParameter.newBuilder()
-                    .setCode(SpecCode.ANALYSIS_ID.getValue())
-                    .setName(SpecCode.ANALYSIS_ID.getDesc())
-                    .setValue(attestation.getParams().getAnalysisId().toString())
-                    .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
-                    .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
-                    .build());
-        }
-
-        return list;
+        return map.entrySet().stream()
+                .map(p -> RecordPgpMetParams.newBuilder()
+                        .setCode(p.getKey().getValue())
+                        .setName(p.getKey().getDesc())
+                        .setValue(p.getValue())
+                        .setTypeCode(p.getKey().getTypeCode().getValue())
+                        .setTypeName(p.getKey().getTypeCode().getDesc())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**
      * Преобразование значений объекта Params в список объектов RecordMechanicalParameter
-     *
-     * @param attestation результата Аттестации параметра
-     * @return список RecordMechanicalParameter
      */
-    private List<RecordMechanicalParameter> prepareMechanicalParameter(AttestationDto attestation) {
-        if (attestation == null || attestation.getParams() == null) {
+    private List<RecordPgpMechParams> prepareMechanicalParameter(AttestationDto attestation) {
+        final var map = AdapterUtils.prepareParameters(attestation);
+        if (map.isEmpty()) {
             return List.of();
         }
 
-        final var list = new ArrayList<RecordMechanicalParameter>();
-
-        if (attestation.getParams().getKnctrator() != null) {
-            list.add(RecordMechanicalParameter.newBuilder()
-                    .setCode(SpecCode.CONCENTRATOR.getValue())
-                    .setName(SpecCode.CONCENTRATOR.getDesc())
-                    .setValue(attestation.getParams().getKnctrator())
-                    .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
-                    .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getTemp() != null) {
-            list.add(RecordMechanicalParameter.newBuilder()
-                    .setCode(SpecCode.TEMPERATURE.getValue())
-                    .setName(SpecCode.TEMPERATURE.getDesc())
-                    .setValue(attestation.getParams().getTemp())
-                    .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
-                    .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getAnalysisId() != null) {
-            list.add(RecordMechanicalParameter.newBuilder()
-                    .setCode(SpecCode.ANALYSIS_ID.getValue())
-                    .setName(SpecCode.ANALYSIS_ID.getDesc())
-                    .setValue(attestation.getParams().getAnalysisId().toString())
-                    .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
-                    .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
-                    .build());
-        }
-
-        return list;
-    }
-
-    /**
-     * Получение корректного типа данных для указанного кода спецификации
-     *
-     * @param code значение кода Спецификации
-     * @return объект TypeCode
-     */
-    private TypeCode getTypeCodeByCodeValue(Integer code) {
-        if (code == null) {
-            return TypeCode.STRING;
-        }
-        try {
-            return SpecCode.fromValue(code).getTypeCode();
-        } catch (IllegalArgumentException e) {
-            return TypeCode.STRING;
-        }
+        return map.entrySet().stream()
+                .map(p -> RecordPgpMechParams.newBuilder()
+                        .setCode(p.getKey().getValue())
+                        .setName(p.getKey().getDesc())
+                        .setValue(p.getValue())
+                        .setTypeCode(p.getKey().getTypeCode().getValue())
+                        .setTypeName(p.getKey().getTypeCode().getDesc())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

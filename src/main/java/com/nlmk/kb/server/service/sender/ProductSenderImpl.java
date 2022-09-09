@@ -22,57 +22,65 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class ProductSenderImpl implements ProductSender {
 
-    private final Map<String, MessageProducer> senders;
+    private final Map<String, MessageProducer<?>> senders;
     private final ResultConfigService configService;
     private final CommonConditionFilter conditionFilter;
 
-    public ProductSenderImpl(List<MessageProducer> allSenders,
+    public ProductSenderImpl(List<MessageProducer<?>> allSenders,
                              ResultConfigService configService,
                              CommonConditionFilter conditionFilter) {
         this.senders = allSenders.stream().collect(
-                toMap(MessageProducer::getType, Function.identity())
+                toMap(MessageProducer::getAvroName, Function.identity())
         );
         this.configService = configService;
         this.conditionFilter = conditionFilter;
     }
 
     @Override
-    public void send(ProductAttestationResultDto productAttestationResult) {
+    public void send(ProductAttestationResultDto productAttestationResult, Class<?> sendingType) {
         final var configs = configService.getEnabledTopics();
         if (configs.isEmpty()) {
-            log.warn("В конфигурационной таблице не установлены топики для отправки сообщений в Kafka-Rest.");
+            log.warn("send, empty enabled topic config FOR sending result");
             return;
         }
 
         final var enabledSenders = getEnabledSenders(configs);
         if (enabledSenders.isEmpty()) {
-            log.error("Пустой список отправителей для активных топиков");
-            throw new ProductSenderException("Нет зарегистрированных отправителей для сообщений в активные топики.");
+            log.error("send, empty enabled sender list");
+            throw new ProductSenderException("send, empty enabled sender list");
         }
 
         final var product = productAttestationResult.getResult();
         log.info("send attestation result for product: id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
 
         for (ResultsConfigDto config : configs) {
-            log.info("sending config [{}]", config);
-            sending(config,
-                    enabledSenders,
-                    product,
-                    productAttestationResult.isNewProduct()
-            );
+            // только конфигурация своего типа!
+            if (config.getAvroName().equals(sendingType.getSimpleName())) {
+                log.info("sending config [{}]", config);
+                sending(config,
+                        enabledSenders,
+                        product,
+                        productAttestationResult.isNewProduct()
+                );
+            }
         }
     }
 
+    /**
+     * Отправка по одной активной конфигурации
+     */
     private void sending(ResultsConfigDto config,
-                         List<MessageProducer> enabledSenders,
+                         Set<MessageProducer<?>> enabledSenders,
                          ProductDto product,
                          boolean isNew) {
+        // свой отправитель: по AvroName и совпадению AvroName с именем типа MessageProducer (от ошибок в базе)
         var sender = enabledSenders.stream()
-                .filter(s -> s.getType().equals(config.getAvroName()))
+                .filter(producer -> producer.getAvroName().equals(config.getAvroName()))
+                .filter(producer -> producer.getSendingType().getSimpleName().equals(config.getAvroName()))
                 .findFirst();
 
         if (sender.isEmpty()) {
-            log.warn("sending, для топика: [{}], не зарегистрирован отправитель с avroName: [{}]",
+            log.warn("sending, for topic [{}] not found sender with avroName [{}] (avroName and sendingType)",
                     config.getTopic(), config.getAvroName());
             return;
         }
@@ -97,7 +105,7 @@ public class ProductSenderImpl implements ProductSender {
         if (sendingProduct == null
                 || sendingProduct.getRequests() == null
                 || sendingProduct.getRequests().isEmpty()) {
-            log.warn("sending, в полученном результате нет сведений отвечающих условиям: [{}]", config.getCondition());
+            log.warn("sending, empty data after condition [{}]", config.getCondition());
             return;
         }
 
@@ -105,23 +113,27 @@ public class ProductSenderImpl implements ProductSender {
         sender.get().produce(sendingProduct, isNew, config.getTopic());
     }
 
-    private List<MessageProducer> getEnabledSenders(List<ResultsConfigDto> configs) {
+    /**
+     * Уникальный список доступных отправителей для списка активных конфигураций
+     */
+    private Set<MessageProducer<?>> getEnabledSenders(List<ResultsConfigDto> configs) {
         if (configs == null || configs.isEmpty()) {
-            return List.of();
+            return Set.of();
         }
 
+        // поиск MessageProducer по AvroName
         return configs.stream()
                 .map(ResultsConfigDto::getAvroName)
-                .filter(a -> senders.get(a) != null)
+                .filter(avroName -> senders.get(avroName) != null)
                 .collect(toMap(k -> k, senders::get))
                 .values().stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private String getKceh(RequestDto request) {
         if (request.getKceh() != null) {
-            return MessageFormat.format("Значение request.kceh: {0}", request.getKceh());
+            return MessageFormat.format("value of request.kceh: {0}", request.getKceh());
         } else {
             return "null";
         }

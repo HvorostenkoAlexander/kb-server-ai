@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.ccm;
+package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.pam.ChemicalSpec;
 import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;

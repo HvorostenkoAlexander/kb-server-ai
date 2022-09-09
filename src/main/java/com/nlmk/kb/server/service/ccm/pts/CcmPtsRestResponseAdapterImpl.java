@@ -1,19 +1,17 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.DocId;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
-import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -62,13 +60,13 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
 
         // объединение групп характеристик
         Arrays.stream(Group.values()).forEach(group -> {
-            final var oneGroup = prepareAttestationValue(request.getAttestations(), group);
-            if (!oneGroup.isEmpty()) {
+            final var oneGroupValues = prepareAttestationValue(request.getAttestations(), group);
+            if (!oneGroupValues.isEmpty()) {
                 attestations.add(
                         CcmPtsResponse.Attestation.builder()
                                 .groupCode(group.getCode())
                                 .groupName(group.name())
-                                .listValues(prepareAttestationValue(request.getAttestations(), group))
+                                .listValues(oneGroupValues)
                                 .build()
                 );
             }
@@ -79,7 +77,8 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
 
     private List<CcmPtsResponse.AttestationValue> prepareAttestationValue(List<AttestationDto> attResult, Group group) {
         return attResult.stream()
-                .filter(f -> group.equals(f.getGroup()))
+                .filter(attestation -> group.equals(attestation.getGroup()))
+                .filter(attestation -> Objects.nonNull(attestation.getCode()))
                 .map(attestation -> {
                     final var specCode = SpecCode.fromValue(attestation.getCode());
                     // пропускаем: format, measure
@@ -90,13 +89,15 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
+                            .docId(DocId.ORDER.getValue())
+                            .docName(DocId.ORDER.getDesc())
                             .normLimits(prepareNormLimit(attestation))
                             .mismatch(CcmPtsResponse.Mismatch.builder()
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)
                                     .name(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
                                     .build())
-                            .note(detectNote(attestation))
-                            .defectSuggestion(detectDefectSuggestion(attestation))
+                            .note(AdapterUtils.detectNote(attestation))
+                            .defectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
                             .parameters(prepareParameters(attestation))
                             .build();
                 })
@@ -115,57 +116,20 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
     }
 
     private List<CcmPtsResponse.Parameter> prepareParameters(AttestationDto attestation) {
-        if (attestation == null || attestation.getParams() == null) {
+        final var map = AdapterUtils.prepareParameters(attestation);
+        if (map.isEmpty()) {
             return List.of();
         }
 
-        final var list = new ArrayList<CcmPtsResponse.Parameter>();
-
-        if (attestation.getParams().getKnctrator() != null) {
-            list.add(CcmPtsResponse.Parameter.builder()
-                    .code(SpecCode.CONCENTRATOR.getValue())
-                    .name(SpecCode.CONCENTRATOR.getDesc())
-                    .value(attestation.getParams().getKnctrator())
-                    .typeCode(SpecCode.CONCENTRATOR.getTypeCode())
-                    .typeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getTemp() != null) {
-            list.add(CcmPtsResponse.Parameter.builder()
-                    .code(SpecCode.TEMPERATURE.getValue())
-                    .name(SpecCode.TEMPERATURE.getDesc())
-                    .value(attestation.getParams().getTemp())
-                    .typeCode(SpecCode.TEMPERATURE.getTypeCode())
-                    .typeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
-                    .build());
-        }
-        if (attestation.getParams().getAnalysisId() != null) {
-            list.add(CcmPtsResponse.Parameter.builder()
-                    .code(SpecCode.ANALYSIS_ID.getValue())
-                    .name(SpecCode.ANALYSIS_ID.getDesc())
-                    .value(attestation.getParams().getAnalysisId().toString())
-                    .typeCode(SpecCode.ANALYSIS_ID.getTypeCode())
-                    .typeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
-                    .build());
-        }
-
-        return list;
-    }
-
-    private String detectNote(AttestationDto attestation) {
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            return null;
-        }
-        return attestation.getComment();
-    }
-
-    private String detectDefectSuggestion(AttestationDto attestation) {
-        if (Status.NOT_MATCHED_WITH_RECOMMENDATIONS == attestation.getStatus()
-                || Status.MATCHED_MANUALLY == attestation.getStatus()) {
-            return attestation.getComment();
-        }
-        return null;
+        return map.entrySet().stream()
+                .map(p -> CcmPtsResponse.Parameter.builder()
+                        .code(p.getKey().getValue())
+                        .name(p.getKey().getDesc())
+                        .value(p.getValue())
+                        .typeCode(p.getKey().getTypeCode())
+                        .typeName(p.getKey().getTypeCode().getDesc())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

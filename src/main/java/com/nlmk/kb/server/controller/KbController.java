@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -97,6 +98,6 @@ public interface KbController {
             description = "Отправка сообщения закончилась ошибкой", content = @Content)
     @ApiResponse(responseCode = "503",
             description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
-    void postProductAttestationResult(@RequestBody ProductAttestationResultDto attestationResult);
+    void postProductAttestationResult(@RequestBody @Valid ProductAttestationResultDto attestationResult);
 
 }

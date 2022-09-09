@@ -9,6 +9,8 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
+import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsPts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,18 +40,8 @@ class ProductSenderEmptyAddressTest {
         dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
-    @Test
-    void sendProduct() throws Exception {
-        // конфигурация
-        Mockito.when(resultConfigService.getEnabledTopics())
-                .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(2L).topic("topic2").condition(null)
-                                // нужная конфигурация
-                                .avroName("Передача результатов аттестации APCS. Version: [1]").enabled(true).build()
-                ));
-
-        // минимально полный результат
-        final var attResult = ProductAttestationResultDto.builder()
+    private ProductAttestationResultDto prepareMinimal() {
+        return ProductAttestationResultDto.builder()
                 .result(ProductDto.builder()
                         .id(100L).referenceId("100").referenceCode("1")
                         .requests(List.of(
@@ -66,9 +58,38 @@ class ProductSenderEmptyAddressTest {
                         ))
                         .build()).newProduct(false)
                 .build();
+    }
 
-        final var e = Assertions.assertThrows(KafkaRestConfigException.class, () -> productSender.send(attResult));
-        Assertions.assertEquals("Не установлен адрес сервера kafka-rest. Передача данных невозможна.", e.getMessage());
+    private List<ResultsConfigDto> prepareConfig() {
+        return List.of(
+                ResultsConfigDto.builder().id(12).topic("topic12").condition(null)
+                        .avroName("VerificationResults").enabled(true).build(),
+                ResultsConfigDto.builder().id(11).topic("topic11").condition(null)
+                        .avroName("VerificationResultsPts").enabled(true).build()
+        );
+    }
+
+    @Test
+    void sendProductPgp() {
+        // нужная конфигурация
+        Mockito.when(resultConfigService.getEnabledTopics()).thenReturn(prepareConfig());
+        // минимально полный результат
+        final var attResult = prepareMinimal();
+
+        final var e = Assertions.assertThrows(KafkaRestConfigException.class,
+                () -> productSender.send(attResult, VerificationResults.class));
+        Assertions.assertEquals("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending", e.getMessage());
+    }
+
+    @Test
+    void sendProductPts() {
+        // нужная конфигурация
+        Mockito.when(resultConfigService.getEnabledTopics()).thenReturn(prepareConfig());
+        // минимально полный результат
+        final var attResult = prepareMinimal();
+
+        final var e = Assertions.assertThrows(KafkaRestConfigException.class, () -> productSender.send(attResult, VerificationResultsPts.class));
+        Assertions.assertEquals("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending", e.getMessage());
     }
 
 }
