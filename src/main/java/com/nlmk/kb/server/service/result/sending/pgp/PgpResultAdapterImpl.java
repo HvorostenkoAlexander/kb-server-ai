@@ -52,7 +52,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                         .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                         .build())
                 .setOp(isNew ? EnumOp.I : EnumOp.U)
-                .setData(RecordPgpData.newBuilder()
+                .setData(RecordData.newBuilder()
                         .setPrimeId(primeId)
                         .setKceh(kceh)
                         .setMismatch(mismatch)
@@ -64,7 +64,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 ).build();
     }
 
-    private List<RecordPgpCommons> toCommonRecordList(List<AttestationDto> attestations) {
+    private List<RecordCommons> toCommonRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -77,16 +77,16 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .collect(Collectors.toList());
     }
 
-    private RecordPgpCommons toCommonRecord(AttestationDto attestation) {
+    private RecordCommons toCommonRecord(AttestationDto attestation) {
         final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordPgpCommons.newBuilder()
+        return RecordCommons.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(RecordPgpComNorms.newBuilder()
+                .setNorms(NormSpecData.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
@@ -98,7 +98,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .build();
     }
 
-    private List<RecordPgpChemical> toChemicalRecordList(List<AttestationDto> attestations) {
+    private List<RecordChemical> toChemicalRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -109,16 +109,16 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .collect(Collectors.toList());
     }
 
-    private RecordPgpChemical toChemicalRecord(AttestationDto attestation) {
+    private RecordChemical toChemicalRecord(AttestationDto attestation) {
         final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordPgpChemical.newBuilder()
+        return RecordChemical.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(RecordPgpChemNorms.newBuilder()
+                .setNorms(NormChemData.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
@@ -130,7 +130,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .build();
     }
 
-    private List<RecordPgpMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
+    private List<RecordMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -149,7 +149,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .collect(Collectors.toList());
     }
 
-    private List<RecordPgpMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
+    private List<RecordMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
         if (attestations == null || attestations.isEmpty()) {
             return List.of();
         }
@@ -168,8 +168,8 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .collect(Collectors.toList());
     }
 
-    private RecordPgpMettallographic toMettallographicRecord(Integer signAnalysis, List<AttestationDto> attestations) {
-        return RecordPgpMettallographic.newBuilder()
+    private RecordMettallographic toMettallographicRecord(Integer signAnalysis, List<AttestationDto> attestations) {
+        return RecordMettallographic.newBuilder()
                 .setSignAnalysis(signAnalysis)
                 .setSpecifications(attestations.stream()
                         .map(this::toMettallographicSpecifications)
@@ -177,8 +177,8 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .build();
     }
 
-    private RecordPgpMechanical toMechanicalRecord(Integer signAnalysis, List<AttestationDto> attestations) {
-        return RecordPgpMechanical.newBuilder()
+    private RecordMechanical toMechanicalRecord(Integer signAnalysis, List<AttestationDto> attestations) {
+        return RecordMechanical.newBuilder()
                 .setSignAnalysis(signAnalysis)
                 .setSpecifications(attestations.stream()
                         .map(this::toMechanicalSpecifications)
@@ -201,16 +201,16 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
         return attestationGroups;
     }
 
-    private RecordPgpMetSpecs toMettallographicSpecifications(AttestationDto attestation) {
+    private RecordMettallographicSpecifications toMettallographicSpecifications(AttestationDto attestation) {
         final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordPgpMetSpecs.newBuilder()
+        return RecordMettallographicSpecifications.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(RecordPgpMetNorms.newBuilder()
+                .setNorms(NormMetallData.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
@@ -223,16 +223,16 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .build();
     }
 
-    private RecordPgpMechSpecs toMechanicalSpecifications(AttestationDto attestation) {
+    private RecordMechanicalSpecifications toMechanicalSpecifications(AttestationDto attestation) {
         final var type = AdapterUtils.getTypeCodeByCodeValue(attestation.getCode());
 
-        return RecordPgpMechSpecs.newBuilder()
+        return RecordMechanicalSpecifications.newBuilder()
                 .setSpecCode(attestation.getCode())
                 .setSpecTypeCode(type.getValue())
                 .setSpecTypeName(type.getDesc())
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
-                .setNorms(RecordPgpMechNorms.newBuilder()
+                .setNorms(NormMechData.newBuilder()
                         .setListAccValues(attestation.getEqual() == null
                                 ? null
                                 : List.of(attestation.getEqual()))
@@ -248,14 +248,14 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
     /**
      * Преобразование значений объекта Params в список объектов RecordMettallographicParameter
      */
-    private List<RecordPgpMetParams> prepareMettallographicParameter(AttestationDto attestation) {
+    private List<RecordMettallographicParameter> prepareMettallographicParameter(AttestationDto attestation) {
         final var map = AdapterUtils.prepareParameters(attestation);
         if (map.isEmpty()) {
             return List.of();
         }
 
         return map.entrySet().stream()
-                .map(p -> RecordPgpMetParams.newBuilder()
+                .map(p -> RecordMettallographicParameter.newBuilder()
                         .setCode(p.getKey().getValue())
                         .setName(p.getKey().getDesc())
                         .setValue(p.getValue())
@@ -268,14 +268,14 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
     /**
      * Преобразование значений объекта Params в список объектов RecordMechanicalParameter
      */
-    private List<RecordPgpMechParams> prepareMechanicalParameter(AttestationDto attestation) {
+    private List<RecordMechanicalParameter> prepareMechanicalParameter(AttestationDto attestation) {
         final var map = AdapterUtils.prepareParameters(attestation);
         if (map.isEmpty()) {
             return List.of();
         }
 
         return map.entrySet().stream()
-                .map(p -> RecordPgpMechParams.newBuilder()
+                .map(p -> RecordMechanicalParameter.newBuilder()
                         .setCode(p.getKey().getValue())
                         .setName(p.getKey().getDesc())
                         .setValue(p.getValue())
