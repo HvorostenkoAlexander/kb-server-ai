@@ -43,7 +43,7 @@ public class NsiSenderImpl implements NsiSender {
                 log.info(OPERATION_RESPONSE_TEMPLATE, operation, response, request);
                 break;
             }
-            case U: {
+            case U:
                 log.info("put to NSI: " + request);
                 response = restTemplate
                         .exchange(nsiUrlDict + urlDictionary,
@@ -52,8 +52,7 @@ public class NsiSenderImpl implements NsiSender {
                                 Long.class);
                 log.info(OPERATION_RESPONSE_TEMPLATE, operation, response, request);
                 break;
-            }
-            case D: {
+            case D:
                 log.info("delete from NSI: " + request);
                 try {
                     response = restTemplate
@@ -72,10 +71,8 @@ public class NsiSenderImpl implements NsiSender {
                     throw hcee;
                 }
                 break;
-            }
-            default: {
+            default:
                 throw new IllegalArgumentException("not supported operation: " + operation);
-            }
         }
         return response;
     }

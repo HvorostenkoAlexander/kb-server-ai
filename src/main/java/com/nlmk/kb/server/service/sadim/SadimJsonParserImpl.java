@@ -43,92 +43,75 @@ public class SadimJsonParserImpl implements SadimJsonParser {
                 }
 
                 switch (field) {
-                    case TIME_ROLLING: {
+                    case TIME_ROLLING:
                         jParser.nextToken();
                         sadimDate = jParser.getText();
                         break;
-                    }
-                    case PRIME_ID: {
+                    case PRIME_ID:
                         jParser.nextToken();
                         paramBuilder.primeId(jParser.getText());
                         break;
-                    }
-                    case T12_MIN: {
+                    case T12_MIN:
                         jParser.nextToken();
                         paramBuilder.t12Min(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case T12_MAX: {
+                    case T12_MAX:
                         jParser.nextToken();
                         paramBuilder.t12Max(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case TCM_MIN: {
+                    case TCM_MIN:
                         jParser.nextToken();
                         paramBuilder.tcmMin(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case TCM_MAX: {
+                    case TCM_MAX:
                         jParser.nextToken();
                         paramBuilder.tcmMax(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case PBI: {
+                    case PBI:
                         jParser.nextToken();
                         paramBuilder.pbi(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case PROF_FACT: {
+                    case PROF_FACT:
                         jParser.nextToken();
                         paramBuilder.profFact(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case WEDGE_FACT: {
+                    case WEDGE_FACT:
                         jParser.nextToken();
                         paramBuilder.wedgeFact(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case SQC_CRIT_MAX: {
+                    case SQC_CRIT_MAX:
                         jParser.nextToken();
                         paramBuilder.sqcCritMax(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case PH_1SGP: {
+                    case PH_1SGP:
                         jParser.nextToken();
                         paramBuilder.ph1sgp(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case PH_12SGP: {
+                    case PH_12SGP:
                         jParser.nextToken();
                         paramBuilder.ph12sgp(jParser.getText());
                         break;
-                    }
-                    case PH_23SGP: {
+                    case PH_23SGP:
                         jParser.nextToken();
                         paramBuilder.ph23sgp(converter.parseToDouble(jParser.getText()));
                         break;
-                    }
-                    case ESTIMATE: {
+                    case ESTIMATE:
                         jParser.nextToken();
                         paramBuilder.estimate(converter.parseToInteger(jParser.getText()));
                         break;
-                    }
-                    case LOT_NO: {
+                    case LOT_NO:
                         jParser.nextToken();
                         paramBuilder.lotNo(converter.parseToInteger(jParser.getText()));
                         break;
-                    }
-                    case MELT_NO: {
+                    case MELT_NO:
                         jParser.nextToken();
                         paramBuilder.meltNo(converter.parseToInteger(jParser.getText()));
                         break;
-                    }
-                    case LCL_THCKNG: {
+                    case LCL_THCKNG:
                         if (jParser.getCurrentToken() == JsonToken.START_OBJECT) {
                             paramBuilder.lclThckng(getStringFromLclThckngSadim(jParser));
                         }
                         break;
-                    }
                     default:
                 }
             }
