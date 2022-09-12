@@ -81,6 +81,7 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
 
         try {
             psmSender.postZorder(zorder);
+            message.setOrderNum(zorder.getIDOC().getE1EDK01().getBELNR());
             message.setState(SapMessageState.DONE);
             repository.save(message);
             log.info("handleConsumerRecord. Sent to PSM: [{}]", message.getPath());
