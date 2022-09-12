@@ -44,19 +44,21 @@ public class SapMessage {
     @Column(nullable = false)
     private String path;
 
-    @Column(name = "processor_version", nullable = false)
+    @Column(nullable = false)
     private String processorVersion;
 
-    @Column(name = "server", nullable = false)
+    @Column(nullable = false)
     private String server;
 
     @Column(name = "`order`")
     private String order;
 
+    private String orderNum;
+
     @Column(name = "ts_timestamp", nullable = false)
     private Date ts;
 
-    @Column(name = "state", nullable = false)
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SapMessageState state;
 }
