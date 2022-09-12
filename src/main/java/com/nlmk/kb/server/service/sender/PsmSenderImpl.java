@@ -37,7 +37,7 @@ public class PsmSenderImpl implements PsmSender {
         final var headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        final String zorderJson = objectMapper.writeValueAsString(zorder);
+        final byte[] zorderJson = objectMapper.writeValueAsBytes(zorder);
 
         final var request = new HttpEntity<>(zorderJson, headers);
 
