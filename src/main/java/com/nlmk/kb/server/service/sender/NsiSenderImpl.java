@@ -33,7 +33,7 @@ public class NsiSenderImpl implements NsiSender {
         ResponseEntity<Long> response;
 
         switch (operation) {
-            case I: {
+            case I:
                 log.info("post to NSI: " + request);
                 response = restTemplate
                         .exchange(nsiUrlDict + urlDictionary,
@@ -42,7 +42,6 @@ public class NsiSenderImpl implements NsiSender {
                                 Long.class);
                 log.info(OPERATION_RESPONSE_TEMPLATE, operation, response, request);
                 break;
-            }
             case U:
                 log.info("put to NSI: " + request);
                 response = restTemplate
