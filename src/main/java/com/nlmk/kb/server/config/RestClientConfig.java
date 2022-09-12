@@ -48,6 +48,7 @@ public class RestClientConfig {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(10000); //timeout in milliseconds
         requestFactory.setReadTimeout(10000); //timeout in milliseconds
+        requestFactory.setBufferRequestBody(false);
         return requestFactory;
     }
 }
