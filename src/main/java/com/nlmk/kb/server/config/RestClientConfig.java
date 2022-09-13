@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.web.client.RestTemplate;
 
+@Deprecated
 @Configuration
 public class RestClientConfig {
 

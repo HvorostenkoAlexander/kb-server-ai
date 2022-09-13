@@ -46,7 +46,8 @@ public abstract class BaseSender {
         this.restTemplate = restTemplateBuilder
                 .messageConverters(new MappingJackson2HttpMessageConverter())
                 .setConnectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT))
-                .setReadTimeout(Duration.ofMillis(DEFAULT_READ_TIMEOUT)).build();
+                .setReadTimeout(Duration.ofMillis(DEFAULT_READ_TIMEOUT))
+                .build();
     }
 
     protected HttpEntity<MessagesBatchDto> buildHttpEntity(MessagesBatchDto batchDto) {
