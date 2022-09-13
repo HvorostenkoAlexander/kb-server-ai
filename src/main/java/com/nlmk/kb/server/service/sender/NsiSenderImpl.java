@@ -1,15 +1,21 @@
 package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.kb.server.entity.pdm.PdmOp;
+import com.nlmk.kb.server.exception.NsiSenderException;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -17,13 +23,47 @@ public class NsiSenderImpl implements NsiSender {
 
     private static final String OPERATION_RESPONSE_TEMPLATE = "operation [{}], NSI response [{}], request [{}]";
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
+    private final int webClientTimeout;
     private final String nsiUrlDict;
+    private final RestTemplate restTemplate;
 
-    public NsiSenderImpl(RestTemplate restTemplate,
-                         @Value("${service-web-client.nsi-server.url}") String nsiUrlDict) {
-        this.restTemplate = restTemplate;
+    public NsiSenderImpl(@Value("${service-web-client.nsi-server.url}") String nsiUrlDict,
+                         @Value("${service-web-client.timeout:2500}") int timeout,
+                         @Qualifier("defaultWebClient") WebClient webClient,
+                         RestTemplate restTemplate) {
+        this.webClient = webClient;
+        this.webClientTimeout = timeout;
         this.nsiUrlDict = nsiUrlDict;
+        this.restTemplate = restTemplate;
+    }
+
+    @Override
+    public <T> Long exchange(T body, String urlDictionary, PdmOp operation) {
+
+        final var result = webClient.method(operation.getHttpMethod())
+                .uri(nsiUrlDict + urlDictionary)
+                .accept(MediaType.APPLICATION_JSON)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .headers(SenderUtils::addRequestId)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(Long.class)
+                .onErrorResume(WebClientResponseException.class, ex -> {
+                    if (operation == PdmOp.D
+                            && ex.getRawStatusCode() == HttpStatus.NOT_FOUND.value()) {
+                        log.warn(OPERATION_RESPONSE_TEMPLATE, operation, 0L, body);
+                        return Mono.just(0L);
+                    }
+                    return Mono.error(ex);
+                })
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> Mono.error(
+                        new NsiSenderException(String.format("exchange, send error, message [%s]", e.getMessage()))
+                ))
+                .block();
+        log.info(OPERATION_RESPONSE_TEMPLATE, operation, result, body);
+        return result;
     }
 
     @Override

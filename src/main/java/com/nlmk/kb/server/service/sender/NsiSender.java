@@ -6,6 +6,14 @@ import org.springframework.http.ResponseEntity;
 
 public interface NsiSender {
 
+    /**
+     * Отправка данных в заданный справочник НСИ
+     */
+    <T> Long exchange(T body,
+                      final String urlDictionary,
+                      final PdmOp operation);
+
+    @Deprecated
     ResponseEntity<Long> exchange(HttpEntity<?> request,
                                   final String urlDictionary,
                                   final PdmOp operation);
