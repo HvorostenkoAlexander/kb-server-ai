@@ -2,14 +2,13 @@ package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
-import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.PamSenderException;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -17,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Slf4j
-@Service
+@Component
 public class PamSenderImpl implements PamSender {
 
     private final WebClient webClient;
@@ -40,27 +39,25 @@ public class PamSenderImpl implements PamSender {
             throw new PamSenderException("AttestationRequest is NULL");
         }
 
-        log.info("postAttestationRequest, for primeId [{}]", attestationRequest.getValue().getData().getPrimeId());
+        final var primeId = SenderUtils.getPrimeId(attestationRequest);
+        log.info("postAttestationRequest, primeId [{}]", primeId);
 
-        return webClient.post()
+        final var response = webClient.post()
                 .uri(pamAttestation)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
-                .headers(headers -> headers.add(KbConstants.REQUEST_ID_HEADER, selectRequestId()))
+                .headers(SenderUtils::addRequestId)
                 .bodyValue(attestationRequest)
                 .retrieve()
                 .bodyToMono(ProductAttestationResultDto.class)
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new PamSenderException(String.format("postAttestationRequest, send error, message [%s]", e.getMessage()))
+                        new PamSenderException(String.format("postAttestationRequest, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
                 ))
                 .block();
-    }
 
-    private String selectRequestId() {
-        final var requestIdKafka = MDC.get(KbConstants.KAFKA_ID);
-        final var requestIdRest = MDC.get(KbConstants.REQUEST_ID_KEY);
-        return (requestIdKafka != null) ? requestIdKafka : requestIdRest;
+        log.info("postAttestationRequest, primeId [{}], PAM response [{}]", primeId, response);
+        return response;
     }
 
 }

@@ -4,81 +4,86 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
-import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.PsmSenderException;
-import com.nlmk.kb.server.util.RestTemplateUtils;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @Slf4j
 @Component
 public class PsmSenderImpl implements PsmSender {
 
-    private final RestTemplate restTemplate;
-    private final String psmUrl;
-    private final ObjectMapper objectMapper;
+    private final WebClient webClient;
+    private final int webClientTimeout;
+    private final String psmSapOrder;
+    private final String psmSadim;
 
-    public PsmSenderImpl(RestTemplate restTemplate,
-                         ObjectMapper objectMapper,
-                         @Value("${service-web-client.psm-server.url}") String psmUrl) {
-        this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
-        this.psmUrl = psmUrl;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public PsmSenderImpl(@Value("${service-web-client.psm-server.url}") String psmUrl,
+                         @Value("${service-web-client.timeout:2500}") int timeout,
+                         @Qualifier("defaultWebClient") WebClient webClient) {
+        this.webClient = webClient;
+        this.webClientTimeout = timeout;
+        this.psmSapOrder = psmUrl + "/sap/order";
+        this.psmSadim = psmUrl + "/sadim";
     }
 
     @Override
     public Integer postZorder(ZORDERS051 zorder) throws JsonProcessingException {
-        log.info("post to PSM zorder: {}", zorder);
-
-        final var headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
+        log.info("postZorder [{}]", zorder);
         final byte[] zorderJson = objectMapper.writeValueAsBytes(zorder);
 
-        final var request = new HttpEntity<>(zorderJson, headers);
+        final var response = webClient.post()
+                .uri(psmSapOrder)
+                .accept(MediaType.APPLICATION_JSON)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .headers(SenderUtils::addRequestId)
+                .bodyValue(zorderJson)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> Mono.error(
+                        new PsmSenderException(String.format("postZorder, send error, message [%s]", e.getMessage()))
+                ))
+                .block();
 
-        ResponseEntity<Integer> response = restTemplate.exchange(
-                psmUrl + "/sap/order",
-                HttpMethod.POST,
-                request,
-                Integer.class);
-
-        log.info("response from PSM: [{}], request: [{}]", response, request);
-        return response.getBody();
+        log.info("postZorder, PSM response [{}], JSON length [{}] byte", response, zorderJson.length);
+        return response;
     }
 
     @Override
-    public void postSadimMessage(SadimMessageDto dto) {
-        final var primeId = getPrimeId(dto);
-        log.info("postSadimMessage, for primeId [{}], message [{}]", primeId, dto);
-        HttpHeaders headers = RestTemplateUtils.prepareHeaders(MDC.get(KbConstants.KAFKA_ID));
+    public void postSadimMessage(SadimMessageDto sadimMessage) {
+        final var primeId = SenderUtils.getPrimeId(sadimMessage);
+        log.info("postSadimMessage, primeId [{}], message [{}]", primeId, sadimMessage);
 
-        try {
-            ResponseEntity<Object> response = restTemplate.exchange(
-                    psmUrl + "/sadim",
-                    HttpMethod.POST,
-                    new HttpEntity<>(dto, headers),
-                    Object.class);
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                log.info("postSadimMessage, for primeId [{}] is OK", primeId);
-                return;
-            }
-
-            throw new PsmSenderException(String.format("postSadimMessage, for primeId [%s], PSM return code [%d]", primeId, response.getStatusCode().value()));
-        } catch (Exception e) {
-            throw new PsmSenderException(String.format("postSadimMessage, for primeId [%s], error [%s]", primeId, e.getMessage()));
-        }
-    }
-
-    private String getPrimeId(SadimMessageDto dto) {
-        if (dto == null || dto.getParam() == null) {
-            return null;
-        }
-        return dto.getParam().getPrimeId();
+        webClient.post()
+                .uri(psmSadim)
+                .accept(MediaType.APPLICATION_JSON)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .headers(SenderUtils::addRequestId)
+                .bodyValue(sadimMessage)
+                .exchangeToMono(response -> {
+                    final var code = response.statusCode();
+                    if (code == HttpStatus.CREATED) {
+                        log.info("postSadimMessage, primeId [{}], response OK", primeId);
+                        return Mono.empty();
+                    }
+                    return Mono.error(new PsmSenderException(String.format("PSM return code [%d]", code.value())));
+                })
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> Mono.error(
+                        new PsmSenderException(String.format("postSadimMessage, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
+                ))
+                .block();
     }
 
 }

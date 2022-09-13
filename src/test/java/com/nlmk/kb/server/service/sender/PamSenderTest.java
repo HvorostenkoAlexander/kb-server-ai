@@ -66,7 +66,7 @@ class PamSenderTest {
         // передачи не было
         assertEquals(0, mockWebServer.getRequestCount());
 
-        attestationRequest.setValue(Value.builder().data(DataField.builder().build()).build());
+        attestationRequest.setValue(Value.builder().data(DataField.builder().primeId("p100").build()).build());
 
         {
             mockWebServer.enqueue(new MockResponse()
@@ -75,7 +75,7 @@ class PamSenderTest {
             );
             final var response = Assertions.assertThrows(PamSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
             Assertions.assertEquals(String.format(
-                    "postAttestationRequest, send error, message [%d Bad Request from POST http://localhost:%d/attestation]",
+                    "postAttestationRequest, primeId [p100], send error, message [%d Bad Request from POST http://localhost:%d/attestation]",
                     HttpStatus.BAD_REQUEST.value(), mockWebServer.getPort()), response.getMessage());
             mockWebServer.takeRequest();
         }
@@ -102,7 +102,7 @@ class PamSenderTest {
             final var res = Assertions.assertThrows(PamSenderException.class, () ->
                     pamSender.postAttestationRequest(attestationRequest));
             mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS); // timeout 100 < 1000
-            Assertions.assertEquals("postAttestationRequest, send error, message [Did not observe any item or terminal signal within 1000ms in 'flatMap' (and no fallback has been configured)]", res.getMessage());
+            Assertions.assertEquals("postAttestationRequest, primeId [p100], send error, message [Did not observe any item or terminal signal within 1000ms in 'flatMap' (and no fallback has been configured)]", res.getMessage());
         }
     }
 

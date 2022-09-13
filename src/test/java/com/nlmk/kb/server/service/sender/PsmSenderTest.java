@@ -57,10 +57,9 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.BAD_REQUEST.value())
         );
 
-        final ZORDERS051 zorders051 = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);
+        final var zorders051 = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);
 
-        assertThrows(HttpClientErrorException.class, () -> psmSender.postZorder(zorders051));
-
+        assertThrows(PsmSenderException.class, () -> psmSender.postZorder(zorders051));
         mockWebServer.takeRequest();
 
         mockWebServer.enqueue(new MockResponse()
@@ -92,7 +91,7 @@ class PsmSenderTest {
                 .build();
 
         final var response1 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
-        assertEquals("postSadimMessage, for primeId [pi100], error [400 Client Error: [no body]]", response1.getMessage());
+        assertEquals("postSadimMessage, primeId [pi100], send error, message [PSM return code [400]]", response1.getMessage());
         mockWebServer.takeRequest();
 
         mockWebServer.enqueue(new MockResponse()
@@ -110,7 +109,7 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.UNAUTHORIZED.value())
         );
         final var response3 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
-        assertEquals("postSadimMessage, for primeId [pi100], error [401 Client Error: [no body]]", response3.getMessage());
+        assertEquals("postSadimMessage, primeId [pi100], send error, message [PSM return code [401]]", response3.getMessage());
         mockWebServer.takeRequest();
 
         mockWebServer.enqueue(new MockResponse()
@@ -118,7 +117,7 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.FORBIDDEN.value())
         );
         final var response4 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
-        assertEquals("postSadimMessage, for primeId [pi100], error [403 Client Error: [no body]]", response4.getMessage());
+        assertEquals("postSadimMessage, primeId [pi100], send error, message [PSM return code [403]]", response4.getMessage());
         mockWebServer.takeRequest();
     }
 
