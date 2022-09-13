@@ -3,13 +3,13 @@ package com.nlmk.kb.server.exception;
 /**
  * Класс исключения для ошибок отправки результатов Аттестации
  */
-public class ProductSenderException extends RuntimeException {
+public class AttestationResultSenderException extends RuntimeException {
 
-    public ProductSenderException(String message) {
+    public AttestationResultSenderException(String message) {
         super(message);
     }
 
-    public ProductSenderException(Throwable cause) {
+    public AttestationResultSenderException(Throwable cause) {
         super(cause);
     }
 

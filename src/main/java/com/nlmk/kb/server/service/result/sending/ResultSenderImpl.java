@@ -5,7 +5,7 @@ import com.nlmk.kb.server.api.MessagesBatchDto;
 import com.nlmk.kb.server.entity.KafkaMessageKey;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.exception.KafkaRestException;
-import com.nlmk.kb.server.exception.ProductSenderException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.RecordPk;
 import nlmk.l3.apcs.VerificationResults;
@@ -34,7 +34,7 @@ public class ResultSenderImpl extends BaseSender implements ResultSenderPgp, Res
 
     private void checkBeforeSend(Object result, String topic) {
         if (result == null || StringUtils.isBlank(topic)) {
-            throw new ProductSenderException("checkBeforeSend, empty result OR topic");
+            throw new AttestationResultSenderException("checkBeforeSend, empty result OR topic");
         }
         if (StringUtils.isBlank(getKafkaHttpProxyAddress())) {
             throw new KafkaRestConfigException("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending");
@@ -44,7 +44,7 @@ public class ResultSenderImpl extends BaseSender implements ResultSenderPgp, Res
     private KafkaMessageKey generateKey(RecordPk pk) {
         if (pk == null) {
             log.warn("generateKey, result.getPk() is null");
-            throw new ProductSenderException("generateKey, gen key error: result.getPk() is NULL");
+            throw new AttestationResultSenderException("generateKey, gen key error: result.getPk() is NULL");
         }
 
         final var key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());

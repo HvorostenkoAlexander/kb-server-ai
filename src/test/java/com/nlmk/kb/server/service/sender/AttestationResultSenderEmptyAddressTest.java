@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
-class ProductSenderEmptyAddressTest {
+class AttestationResultSenderEmptyAddressTest {
 
     @Autowired
-    private ProductSender productSender;
+    private AttestationResultSender productSender;
     @Autowired
     private KcehConditionFilterImpl kcehConditionFilter;
     @MockBean

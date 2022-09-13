@@ -7,13 +7,13 @@ import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
-import com.nlmk.kb.server.exception.ProductSenderException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
-import com.nlmk.kb.server.service.sender.ProductSender;
+import com.nlmk.kb.server.service.sender.AttestationResultSender;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class KbControllerImpl implements KbController {
     private final CcmCommonService ccmCommonService;
     private final S3Service s3Service;
     private final PsmSender psmSender;
-    private final ProductSender attestationResultSender;
+    private final AttestationResultSender attestationResultSender;
     private final AttestationMessageService attestationMessageService;
 
     @Override
@@ -163,7 +163,7 @@ public class KbControllerImpl implements KbController {
                 attestationResultSender.send(attestationResult, VerificationResultsPts.class);
                 break;
             }
-            default: throw new ProductSenderException("Wrong Kceh Value for send result");
+            default: throw new AttestationResultSenderException("Wrong Kceh Value for send result");
         }
     }
 

@@ -17,7 +17,7 @@ import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
-import com.nlmk.kb.server.service.sender.ProductSender;
+import com.nlmk.kb.server.service.sender.AttestationResultSender;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ class KbControllerTest {
     @MockBean
     private PsmSender psmSender;
     @MockBean
-    private ProductSender productSender;
+    private AttestationResultSender productSender;
     @MockBean
     private AttestationMessageService attestationMessageService;
 
@@ -139,7 +139,7 @@ class KbControllerTest {
                         .content(content))
                 .andExpect(status().isOk());
 
-        doThrow(ProductSenderException.class).when(productSender).send(any(), any());
+        doThrow(AttestationResultSenderException.class).when(productSender).send(any(), any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)

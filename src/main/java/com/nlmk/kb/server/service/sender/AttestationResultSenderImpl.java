@@ -4,7 +4,7 @@ import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ResultsConfigDto;
-import com.nlmk.kb.server.exception.ProductSenderException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.result.sending.CommonConditionFilter;
 import com.nlmk.kb.server.service.result.sending.MessageProducer;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
@@ -20,15 +20,15 @@ import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 @Service
-public class ProductSenderImpl implements ProductSender {
+public class AttestationResultSenderImpl implements AttestationResultSender {
 
     private final Map<String, MessageProducer<?>> senders;
     private final ResultConfigService configService;
     private final CommonConditionFilter conditionFilter;
 
-    public ProductSenderImpl(List<MessageProducer<?>> allSenders,
-                             ResultConfigService configService,
-                             CommonConditionFilter conditionFilter) {
+    public AttestationResultSenderImpl(List<MessageProducer<?>> allSenders,
+                                       ResultConfigService configService,
+                                       CommonConditionFilter conditionFilter) {
         this.senders = allSenders.stream().collect(
                 toMap(MessageProducer::getAvroName, Function.identity())
         );
@@ -47,7 +47,7 @@ public class ProductSenderImpl implements ProductSender {
         final var enabledSenders = getEnabledSenders(configs);
         if (enabledSenders.isEmpty()) {
             log.error("send, empty enabled sender list");
-            throw new ProductSenderException("send, empty enabled sender list");
+            throw new AttestationResultSenderException("send, empty enabled sender list");
         }
 
         final var product = productAttestationResult.getResult();

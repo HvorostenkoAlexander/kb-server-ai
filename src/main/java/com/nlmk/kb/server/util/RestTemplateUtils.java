@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.Objects;
 import java.util.UUID;
 
+@Deprecated
 public class RestTemplateUtils {
 
     private RestTemplateUtils() {

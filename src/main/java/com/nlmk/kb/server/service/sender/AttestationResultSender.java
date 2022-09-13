@@ -5,7 +5,7 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 /**
  * Отправка результата Аттестации в другие сервисы
  */
-public interface ProductSender {
+public interface AttestationResultSender {
 
     /**
      * Отправка результата Аттестации ЕП

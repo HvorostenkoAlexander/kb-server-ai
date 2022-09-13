@@ -22,12 +22,12 @@ public class WebClientConfig {
     private static final int MAX_IN_MEMORY_SIZE = 2 * 1024 * 1024;
 
     @Bean
-    public WebClient webClient(OAuth2AuthorizedClientManager authorizedClientManager) {
+    public WebClient defaultWebClient(OAuth2AuthorizedClientManager authorizedClientManager) {
 
         var oauth2Client = new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
         oauth2Client.setDefaultClientRegistrationId(CLIENT_REGISTRATION_ID);
 
-        return getWebClient(oauth2Client);
+        return getDefaultWebClient(oauth2Client);
     }
 
     @Bean
@@ -46,7 +46,7 @@ public class WebClientConfig {
         return authorizedClientManager;
     }
 
-    private WebClient getWebClient(ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client) {
+    private WebClient getDefaultWebClient(ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client) {
         return WebClient.builder()
                 .defaultHeaders(headers -> headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                 .apply(oauth2Client.oauth2Configuration())
