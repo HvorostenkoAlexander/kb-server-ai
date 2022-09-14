@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class MicrostructureMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class MicrostructureMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public MicrostructureMessageSender(@Value("${kafka.pdm.topic.microstructure}") String type,
                                        NsiSender commonSender,

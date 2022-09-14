@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class TolLengthMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class TolLengthMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public TolLengthMessageSender(@Value("${kafka.pdm.topic.tol-length}") String type,
                                   PdmDtoConverter pdmDtoConverter,

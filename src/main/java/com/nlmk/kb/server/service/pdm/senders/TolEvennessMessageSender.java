@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class TolEvennessMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class TolEvennessMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public TolEvennessMessageSender(@Value("${kafka.pdm.topic.tol-evenness}") String type,
                                     PdmDtoConverter pdmDtoConverter,

@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class TolThickMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class TolThickMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public TolThickMessageSender(@Value("${kafka.pdm.topic.tol-thick}") String type,
                                  PdmDtoConverter pdmDtoConverter,

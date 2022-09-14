@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class ResultSenderImpl extends BaseSender implements ResultSenderPgp, ResultSenderPts {
+public class ResultSenderImpl extends BaseResultSender implements ResultSenderPgp, ResultSenderPts {
 
     public ResultSenderImpl(@Value("${service-web-client.kafka-rest.address}")
                             String kafkaHttpProxyAddress,

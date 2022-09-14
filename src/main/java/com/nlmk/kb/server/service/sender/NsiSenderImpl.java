@@ -40,6 +40,9 @@ public class NsiSenderImpl implements NsiSender {
 
     @Override
     public <T> Long exchange(T body, String urlDictionary, PdmOp operation) {
+        if (body == null) {
+            throw new NsiSenderException("Body is NULL");
+        }
 
         final var result = webClient.method(operation.getHttpMethod())
                 .uri(nsiUrlDict + urlDictionary)
@@ -52,7 +55,6 @@ public class NsiSenderImpl implements NsiSender {
                 .onErrorResume(WebClientResponseException.class, ex -> {
                     if (operation == PdmOp.D
                             && ex.getRawStatusCode() == HttpStatus.NOT_FOUND.value()) {
-                        log.warn(OPERATION_RESPONSE_TEMPLATE, operation, 0L, body);
                         return Mono.just(0L);
                     }
                     return Mono.error(ex);
@@ -62,6 +64,7 @@ public class NsiSenderImpl implements NsiSender {
                         new NsiSenderException(String.format("exchange, send error, message [%s]", e.getMessage()))
                 ))
                 .block();
+
         log.info(OPERATION_RESPONSE_TEMPLATE, operation, result, body);
         return result;
     }

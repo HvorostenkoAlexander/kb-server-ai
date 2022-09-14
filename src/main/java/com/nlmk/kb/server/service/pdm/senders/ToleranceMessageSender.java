@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class ToleranceMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class ToleranceMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public ToleranceMessageSender(PdmDtoConverter pdmDtoConverter,
                                   @Value("${kafka.pdm.topic.asap-tol-links}") String type,

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
-public class PhysMechPropAnisSteelSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class PhysMechPropAnisSteelSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public PhysMechPropAnisSteelSender(@Value("${kafka.pdm.topic.phys-mech-prop-anis-steel}") String type,
                                        PdmDtoConverter pdmDtoConverter,

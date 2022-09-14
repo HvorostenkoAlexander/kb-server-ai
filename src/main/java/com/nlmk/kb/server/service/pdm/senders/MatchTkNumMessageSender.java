@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class MatchTkNumMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class MatchTkNumMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public MatchTkNumMessageSender(@Value("${kafka.pdm.topic.match-tk-num}") String type,
                                    PdmDtoConverter pdmDtoConverter,

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
-public class AsapMechPropertiesDtSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class AsapMechPropertiesDtSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public AsapMechPropertiesDtSender(@Value("${kafka.pdm.topic.asap-mech-properties-dt}") String type,
                                       PdmDtoConverter pdmDtoConverter,

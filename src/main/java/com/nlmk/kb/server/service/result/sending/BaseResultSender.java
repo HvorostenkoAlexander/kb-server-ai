@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.Collections;
 
 @Getter
-public abstract class BaseSender {
+public abstract class BaseResultSender {
 
     private final String kafkaHttpProxyAddress;
     private final String kafkaHttpProxyLogin;
@@ -29,11 +29,11 @@ public abstract class BaseSender {
     protected static final Long DEFAULT_CONNECT_TIMEOUT = 30000L;
     protected static final Long DEFAULT_READ_TIMEOUT = 30000L;
 
-    protected BaseSender(String kafkaHttpProxyAddress,
-                         String kafkaHttpProxyLogin,
-                         String kafkaHttpProxyPassword,
-                         RestTemplateBuilder restTemplateBuilder,
-                         KafkaRestMessageAdapter kafkaRestMessageAdapter) {
+    protected BaseResultSender(String kafkaHttpProxyAddress,
+                               String kafkaHttpProxyLogin,
+                               String kafkaHttpProxyPassword,
+                               RestTemplateBuilder restTemplateBuilder,
+                               KafkaRestMessageAdapter kafkaRestMessageAdapter) {
         this.kafkaHttpProxyAddress = kafkaHttpProxyAddress;
         this.kafkaHttpProxyLogin = kafkaHttpProxyLogin;
         this.kafkaHttpProxyPassword = kafkaHttpProxyPassword;

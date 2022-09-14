@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class CeqMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class CeqMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public CeqMessageSender(@Value("${kafka.pdm.topic.ceq}") String type,
                             NsiSender commonSender,

@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class AsapMechPropertiesMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class AsapMechPropertiesMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public AsapMechPropertiesMessageSender(@Value("${kafka.pdm.topic.asap-mech-properties}") String type,
                                            NsiSender commonSender,

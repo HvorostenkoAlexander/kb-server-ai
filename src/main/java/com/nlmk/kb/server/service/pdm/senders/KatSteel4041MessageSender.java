@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class KatSteel4041MessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class KatSteel4041MessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public KatSteel4041MessageSender(@Value("${kafka.pdm.topic.kat-steel-4041}") String type,
                                      PdmDtoConverter pdmDtoConverter,

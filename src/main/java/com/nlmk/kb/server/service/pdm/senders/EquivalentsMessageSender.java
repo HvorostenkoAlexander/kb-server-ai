@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 
 @Slf4j
 @Service
-public class EquivalentsMessageSender extends BaseCreator implements MessageSender, PdmMessageCreator {
+public class EquivalentsMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
 
     public EquivalentsMessageSender(@Value("${kafka.pdm.topic.equivalents}") String type,
                                     PdmDtoConverter pdmDtoConverter,
