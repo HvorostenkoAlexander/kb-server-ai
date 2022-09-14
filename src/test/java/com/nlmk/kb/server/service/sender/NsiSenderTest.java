@@ -12,13 +12,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 
@@ -45,87 +43,6 @@ class NsiSenderTest {
     @AfterAll
     static void tearDown() throws IOException {
         mockWebServer.shutdown();
-    }
-
-    @Test
-    void exchangeRestTemplate() throws Exception {
-        // на примере объекта CEqDto
-        final var urlDictionary = "/nsi/dict/nsd_ceq";
-
-        {
-            mockWebServer.enqueue(new MockResponse()
-                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .setResponseCode(HttpStatus.BAD_REQUEST.value())
-            );
-            final var response = Assertions.assertThrows(
-                    HttpClientErrorException.BadRequest.class,
-                    () -> nsiSender.exchange(null, urlDictionary, PdmOp.I)
-            );
-            Assertions.assertEquals("400 Client Error: [no body]", response.getMessage());
-            mockWebServer.takeRequest();
-        }
-
-        final var entity = new HttpEntity<>(CEqDto.builder().build(), new HttpHeaders());
-
-        {
-            mockWebServer.enqueue(new MockResponse()
-                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .setResponseCode(HttpStatus.OK.value())
-                    .setBody("123")
-            );
-            final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(entity, urlDictionary, PdmOp.I)
-            );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response.getBody());
-            RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("POST", request.getMethod());
-            assertEquals(urlDictionary, request.getPath());
-        }
-        {
-            mockWebServer.enqueue(new MockResponse()
-                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .setResponseCode(HttpStatus.OK.value())
-                    .setBody("123")
-            );
-            final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(entity, urlDictionary, PdmOp.U)
-            );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response.getBody());
-            RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("PUT", request.getMethod());
-            assertEquals(urlDictionary, request.getPath());
-        }
-        {
-            mockWebServer.enqueue(new MockResponse()
-                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .setResponseCode(HttpStatus.OK.value())
-                    .setBody("123")
-            );
-            final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(entity, urlDictionary, PdmOp.D)
-            );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response.getBody());
-            RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("DELETE", request.getMethod());
-            assertEquals(urlDictionary, request.getPath());
-        }
-        {
-            mockWebServer.enqueue(new MockResponse()
-                    .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .setResponseCode(HttpStatus.NOT_FOUND.value())
-            );
-            final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(entity, urlDictionary, PdmOp.D)
-            );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(0L, response.getBody());
-            RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("DELETE", request.getMethod());
-            assertEquals(urlDictionary, request.getPath());
-        }
     }
 
     @Test
@@ -167,7 +84,7 @@ class NsiSenderTest {
                     () -> nsiSender.exchange(dto, urlDictionary, PdmOp.I)
             );
             Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response);
+            Assertions.assertEquals(123L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("POST", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -182,7 +99,7 @@ class NsiSenderTest {
                     () -> nsiSender.exchange(dto, urlDictionary, PdmOp.U)
             );
             Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response);
+            Assertions.assertEquals(123L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("PUT", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -197,7 +114,7 @@ class NsiSenderTest {
                     () -> nsiSender.exchange(dto, urlDictionary, PdmOp.D)
             );
             Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response);
+            Assertions.assertEquals(123L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("DELETE", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -211,7 +128,7 @@ class NsiSenderTest {
                     () -> nsiSender.exchange(dto, urlDictionary, PdmOp.D)
             );
             Assertions.assertNotNull(response);
-            Assertions.assertEquals(0L, response);
+            Assertions.assertEquals(0L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("DELETE", request.getMethod());
             assertEquals(urlDictionary, request.getPath());

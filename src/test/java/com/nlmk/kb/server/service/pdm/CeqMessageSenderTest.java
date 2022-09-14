@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.service.pdm;
 
-import com.nlmk.attestation.product.api.nsi.CEqDto;
 import com.nlmk.kb.server.entity.DictionaryConfig;
 import com.nlmk.kb.server.entity.pdm.Data;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -58,13 +56,11 @@ class CeqMessageSenderTest {
                 .enabled(true)
                 .build());
 
-        Mockito.when(nsiSender.exchange(Mockito.any(HttpEntity.class), Mockito.any(), Mockito.any()))
-                .thenReturn(ResponseEntity.ok(123L));
-        Mockito.when(nsiSender.exchange(Mockito.any(CEqDto.class), Mockito.any(), Mockito.any()))
-                .thenReturn(321L);
+        Mockito.when(nsiSender.exchange(Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(ResponseEntity.ok(321L));
 
         final var response = Assertions.assertDoesNotThrow(() -> ceqMessageSender.send(message));
-        Assertions.assertEquals(123L, response.getBody());
+        Assertions.assertEquals(321L, response.getBody());
     }
 
 }

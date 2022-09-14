@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -26,20 +24,17 @@ public class NsiSenderImpl implements NsiSender {
     private final WebClient webClient;
     private final int webClientTimeout;
     private final String nsiUrlDict;
-    private final RestTemplate restTemplate;
 
     public NsiSenderImpl(@Value("${service-web-client.nsi-server.url}") String nsiUrlDict,
                          @Value("${service-web-client.timeout:2500}") int timeout,
-                         @Qualifier("defaultWebClient") WebClient webClient,
-                         RestTemplate restTemplate) {
+                         @Qualifier("defaultWebClient") WebClient webClient) {
         this.webClient = webClient;
         this.webClientTimeout = timeout;
         this.nsiUrlDict = nsiUrlDict;
-        this.restTemplate = restTemplate;
     }
 
     @Override
-    public <T> Long exchange(T body, String urlDictionary, PdmOp operation) {
+    public <T> ResponseEntity<Long> exchange(T body, String urlDictionary, PdmOp operation) {
         if (body == null) {
             throw new NsiSenderException("Body is NULL");
         }
@@ -66,57 +61,7 @@ public class NsiSenderImpl implements NsiSender {
                 .block();
 
         log.info(OPERATION_RESPONSE_TEMPLATE, operation, result, body);
-        return result;
-    }
-
-    @Override
-    public ResponseEntity<Long> exchange(HttpEntity<?> request,
-                                         final String urlDictionary,
-                                         final PdmOp operation) {
-        ResponseEntity<Long> response;
-
-        switch (operation) {
-            case I:
-                log.info("post to NSI: " + request);
-                response = restTemplate
-                        .exchange(nsiUrlDict + urlDictionary,
-                                HttpMethod.POST,
-                                request,
-                                Long.class);
-                log.info(OPERATION_RESPONSE_TEMPLATE, operation, response, request);
-                break;
-            case U:
-                log.info("put to NSI: " + request);
-                response = restTemplate
-                        .exchange(nsiUrlDict + urlDictionary,
-                                HttpMethod.PUT,
-                                request,
-                                Long.class);
-                log.info(OPERATION_RESPONSE_TEMPLATE, operation, response, request);
-                break;
-            case D:
-                log.info("delete from NSI: " + request);
-                try {
-                    response = restTemplate
-                            .exchange(nsiUrlDict + urlDictionary,
-                                    HttpMethod.DELETE,
-                                    request,
-                                    Long.class);
-                    log.info(OPERATION_RESPONSE_TEMPLATE, operation, response, request);
-                } catch (HttpClientErrorException hcee) {
-                    if (hcee.getRawStatusCode() == HttpStatus.NOT_FOUND.value()) {
-                        response = new ResponseEntity<>(0L, HttpStatus.NOT_FOUND);
-                        log.warn("response from NSI: [{}], request: [{}]", response, request);
-
-                        return response;
-                    }
-                    throw hcee;
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("not supported operation: " + operation);
-        }
-        return response;
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
