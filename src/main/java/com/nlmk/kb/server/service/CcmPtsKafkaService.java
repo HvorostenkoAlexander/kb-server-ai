@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
-import com.nlmk.kb.server.service.sender.AttestationResultSender;
+import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResultsPts;

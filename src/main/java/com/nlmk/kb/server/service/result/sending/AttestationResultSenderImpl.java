@@ -1,12 +1,10 @@
-package com.nlmk.kb.server.service.sender;
+package com.nlmk.kb.server.service.result.sending;
 
 import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
-import com.nlmk.kb.server.service.result.sending.CommonConditionFilter;
-import com.nlmk.kb.server.service.result.sending.MessageProducer;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
