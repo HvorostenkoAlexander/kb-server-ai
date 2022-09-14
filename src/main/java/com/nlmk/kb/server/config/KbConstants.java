@@ -17,4 +17,8 @@ public class KbConstants {
 
     public static final String THROW_EXC_MESSAGE_TEMPLATE = "переброс: {0}";
 
+    public static final String KAFKA_REST_PROXY_TEMPLATE = "%s/topics/%s";
+    public static final String KAFKA_REST_CONTENT_TYPE_HEADER = "application/vnd.kafka.avro.v2+json";
+    public static final String KAFKA_REST_ACCEPT_HEADER = "application/vnd.kafka.v2+json";
+
 }

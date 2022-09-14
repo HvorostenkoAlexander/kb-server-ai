@@ -6,6 +6,7 @@ import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ResultsConfigDto;
+import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
@@ -50,8 +51,6 @@ class AttestationResultSenderBasicAuthTest {
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
         dpr.add("service-web-client.kafka-rest.address", () -> "http://localhost:" + mockKafkaRest.getPort());
-        dpr.add("service-web-client.kafka-rest.login", () -> "kb-user");
-        dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
     @BeforeAll
@@ -82,7 +81,10 @@ class AttestationResultSenderBasicAuthTest {
                     return new MockResponse().setResponseCode(HttpStatus.UNAUTHORIZED.value());
                 }
 
-                return new MockResponse().setResponseCode(HttpStatus.OK.value());
+                return new MockResponse()
+                        .setHeader(HttpHeaders.CONTENT_TYPE, KbConstants.KAFKA_REST_CONTENT_TYPE_HEADER)
+                        .setResponseCode(HttpStatus.OK.value())
+                        .setBody("{}");
             }
         });
     }

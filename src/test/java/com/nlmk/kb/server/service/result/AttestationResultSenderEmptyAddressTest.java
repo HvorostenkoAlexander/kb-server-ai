@@ -37,8 +37,6 @@ class AttestationResultSenderEmptyAddressTest {
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
         dpr.add("service-web-client.kafka-rest.address", () -> ""); // !
-        dpr.add("service-web-client.kafka-rest.login", () -> "kb-user");
-        dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
     private ProductAttestationResultDto prepareMinimal() {

@@ -49,8 +49,6 @@ class AttestationResultSenderTest {
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
         dpr.add("service-web-client.kafka-rest.address", () -> "http://localhost:" + mockKafkaRest.getPort());
-        dpr.add("service-web-client.kafka-rest.login", () -> "kb-user");
-        dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
     @BeforeAll

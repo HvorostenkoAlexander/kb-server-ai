@@ -11,40 +11,46 @@ import nlmk.l3.apcs.RecordPk;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsPts;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
+
+import static com.nlmk.kb.server.config.KbConstants.*;
 
 @Slf4j
 @Service
 public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
 
     private final String kafkaHttpProxyAddress;
-    private final RestTemplate restTemplate;
     private final KafkaRestMessageAdapter kafkaRestMessageAdapter;
+    private final WebClient webClient;
+    private final int webClientTimeout;
 
-    private static final String KAFKA_REST_PROXY_TEMPLATE = "%s/topics/%s";
-    private static final String CONTENT_TYPE_HEADER = "application/vnd.kafka.avro.v2+json";
-    private static final String ACCEPT_HEADER = "application/vnd.kafka.v2+json";
+    private final RestTemplate restTemplate;
     private static final Long DEFAULT_CONNECT_TIMEOUT = 30000L;
     private static final Long DEFAULT_READ_TIMEOUT = 30000L;
 
     public ResultSenderImpl(@Value("${service-web-client.kafka-rest.address}") String kafkaHttpProxyAddress,
                             @Value("${service-web-client.kafka-rest.login}") String kafkaHttpProxyLogin,
                             @Value("${service-web-client.kafka-rest.password}") String kafkaHttpProxyPassword,
-                            RestTemplateBuilder restTemplateBuilder,
-                            KafkaRestMessageAdapter kafkaRestMessageAdapter) {
+                            @Value("${service-web-client.timeout:2500}") int timeout,
+                            @Qualifier("basicAuthWebClient") WebClient webClient,
+                            KafkaRestMessageAdapter kafkaRestMessageAdapter,
+                            RestTemplateBuilder restTemplateBuilder) {
+        this.webClient = webClient;
+        this.webClientTimeout = timeout;
         this.kafkaHttpProxyAddress = kafkaHttpProxyAddress;
         this.kafkaRestMessageAdapter = kafkaRestMessageAdapter;
 
@@ -58,13 +64,6 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
                 .setConnectTimeout(Duration.ofMillis(DEFAULT_CONNECT_TIMEOUT))
                 .setReadTimeout(Duration.ofMillis(DEFAULT_READ_TIMEOUT))
                 .build();
-    }
-
-    private HttpEntity<MessagesBatchDto> buildHttpEntity(MessagesBatchDto batchDto) {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.put(HttpHeaders.ACCEPT, Collections.singletonList(ACCEPT_HEADER));
-        headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(CONTENT_TYPE_HEADER));
-        return new HttpEntity<>(batchDto, headers);
     }
 
     private void checkBeforeSend(Object result, String topic) {
@@ -111,6 +110,26 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
     }
 
     private void sending(MessagesBatchDto batchDto, String topic) {
+        final var response = webClient.post()
+                .uri(String.format(KAFKA_REST_PROXY_TEMPLATE, kafkaHttpProxyAddress, topic))
+                .acceptCharset(StandardCharsets.UTF_8)
+                .header(HttpHeaders.ACCEPT, KAFKA_REST_ACCEPT_HEADER)
+                .header(HttpHeaders.CONTENT_TYPE, KAFKA_REST_CONTENT_TYPE_HEADER)
+                .bodyValue(batchDto)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> {
+                    log.error("sending, sending error: [{}]", e.getMessage());
+                    return Mono.error(new KafkaRestException(e));
+                })
+                .block();
+        log.info("sending, response from KAFKA: [{}]", response);
+    }
+
+    //
+
+    private void sendingRestTemplate(MessagesBatchDto batchDto, String topic) {
         try {
             ResponseEntity<JsonNode> resp = restTemplate.exchange(
                     String.format(KAFKA_REST_PROXY_TEMPLATE, kafkaHttpProxyAddress, topic),
@@ -124,6 +143,13 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
             log.error("sending, sending error: [{}]", e.getMessage());
             throw new KafkaRestException(e);
         }
+    }
+
+    private HttpEntity<MessagesBatchDto> buildHttpEntity(MessagesBatchDto batchDto) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.put(HttpHeaders.ACCEPT, Collections.singletonList(KAFKA_REST_ACCEPT_HEADER));
+        headers.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(KAFKA_REST_CONTENT_TYPE_HEADER));
+        return new HttpEntity<>(batchDto, headers);
     }
 
 }
