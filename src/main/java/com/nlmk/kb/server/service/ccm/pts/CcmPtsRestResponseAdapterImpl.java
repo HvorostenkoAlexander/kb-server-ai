@@ -1,7 +1,6 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.AttestationDto;
-import com.nlmk.attestation.product.api.DocId;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
@@ -82,15 +81,14 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
                 .map(attestation -> {
                     final var specCode = SpecCode.fromValue(attestation.getCode());
                     // пропускаем: format, measure
-                    // пока нет данных: docId, docName
                     return CcmPtsResponse.AttestationValue.builder()
                             .code(specCode.getValue())
                             .name(specCode.getDesc())
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
-                            .docId(DocId.ORDER.getValue())
-                            .docName(DocId.ORDER.getDesc())
+                            .docId(attestation.getDocId() != null ? attestation.getDocId().getValue() : null)
+                            .docName(attestation.getDocId() != null ? attestation.getDocId().getDesc() : null)
                             .normLimits(prepareNormLimit(attestation))
                             .mismatch(CcmPtsResponse.Mismatch.builder()
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)

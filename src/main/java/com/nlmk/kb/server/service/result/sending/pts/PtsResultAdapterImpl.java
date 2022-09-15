@@ -91,15 +91,14 @@ public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPt
                 .map(attestation -> {
                     final var specCode = SpecCode.fromValue(attestation.getCode());
                     // пропускаем: format, measure
-                    // пока нет данных: docId, docName
                     return RecordPtsAttListValues.newBuilder()
                             .setCode(specCode.getValue())
                             .setName(specCode.getDesc())
                             .setTypeCode(specCode.getTypeCode().getValue())
                             .setTypeName(specCode.getTypeCode().getDesc())
                             .setValue(attestation.getValue())
-                            .setDocId(DocId.ORDER.getValue())
-                            .setDocName(DocId.ORDER.getDesc())
+                            .setDocId(attestation.getDocId() != null ? attestation.getDocId().getValue() : -1)
+                            .setDocName(attestation.getDocId() != null ? attestation.getDocId().getDesc() : "")
                             .setNormLimits(prepareNormLimit(attestation))
                             .setMismatch(RecordPtsAttListMismatch.newBuilder()
                                     .setCode(attestation.getStatus() != null ? attestation.getStatus().getValue() : -1)
