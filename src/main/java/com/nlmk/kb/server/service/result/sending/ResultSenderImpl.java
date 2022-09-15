@@ -6,6 +6,8 @@ import com.nlmk.kb.server.entity.KafkaMessageKey;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.service.result.sending.pgp.ResultSenderPgp;
+import com.nlmk.kb.server.service.result.sending.pts.ResultSenderPts;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.RecordPk;
 import nlmk.l3.apcs.VerificationResults;
@@ -45,7 +47,7 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
     public ResultSenderImpl(@Value("${service-web-client.kafka-rest.address}") String kafkaHttpProxyAddress,
                             @Value("${service-web-client.kafka-rest.login}") String kafkaHttpProxyLogin,
                             @Value("${service-web-client.kafka-rest.password}") String kafkaHttpProxyPassword,
-                            @Value("${service-web-client.timeout:2500}") int timeout,
+                            @Value("${service-web-client.timeout:5000}") int timeout,
                             @Qualifier("basicAuthWebClient") WebClient webClient,
                             KafkaRestMessageAdapter kafkaRestMessageAdapter,
                             RestTemplateBuilder restTemplateBuilder) {
@@ -117,7 +119,7 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
                 .header(HttpHeaders.CONTENT_TYPE, KAFKA_REST_CONTENT_TYPE_HEADER)
                 .bodyValue(batchDto)
                 .retrieve()
-                .bodyToMono(JsonNode.class)
+                .bodyToMono(String.class)// vs JsonNode
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> {
                     log.error("sending, sending error: [{}]", e.getMessage());
@@ -126,8 +128,6 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
                 .block();
         log.info("sending, response from KAFKA: [{}]", response);
     }
-
-    //
 
     private void sendingRestTemplate(MessagesBatchDto batchDto, String topic) {
         try {

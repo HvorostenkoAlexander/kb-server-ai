@@ -26,7 +26,7 @@ public class NsiSenderImpl implements NsiSender {
     private final String nsiUrlDict;
 
     public NsiSenderImpl(@Value("${service-web-client.nsi-server.url}") String nsiUrlDict,
-                         @Value("${service-web-client.timeout:2500}") int timeout,
+                         @Value("${service-web-client.timeout:5000}") int timeout,
                          @Qualifier("defaultWebClient") WebClient webClient) {
         this.webClient = webClient;
         this.webClientTimeout = timeout;

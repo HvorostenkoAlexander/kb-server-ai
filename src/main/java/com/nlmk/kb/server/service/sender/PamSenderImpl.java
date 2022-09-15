@@ -24,7 +24,7 @@ public class PamSenderImpl implements PamSender {
     private final String pamAttestation;
 
     public PamSenderImpl(@Value("${service-web-client.pam-server.url}") String pamUrl,
-                         @Value("${service-web-client.timeout:2500}") int timeout,
+                         @Value("${service-web-client.timeout:5000}") int timeout,
                          @Qualifier("defaultWebClient") WebClient webClient) {
         this.webClient = webClient;
         this.webClientTimeout = timeout;

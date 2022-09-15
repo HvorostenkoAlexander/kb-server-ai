@@ -29,7 +29,7 @@ public class PsmSenderImpl implements PsmSender {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public PsmSenderImpl(@Value("${service-web-client.psm-server.url}") String psmUrl,
-                         @Value("${service-web-client.timeout:2500}") int timeout,
+                         @Value("${service-web-client.timeout:5000}") int timeout,
                          @Qualifier("defaultWebClient") WebClient webClient) {
         this.webClient = webClient;
         this.webClientTimeout = timeout;

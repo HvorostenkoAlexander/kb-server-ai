@@ -4,7 +4,6 @@ import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
 import com.nlmk.kb.server.service.result.sending.MessageProducer;
 import com.nlmk.kb.server.service.result.sending.ResultAdapter;
-import com.nlmk.kb.server.service.result.sending.ResultSenderPts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResultsPts;
