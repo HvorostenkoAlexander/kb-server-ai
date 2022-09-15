@@ -153,7 +153,7 @@ class KbControllerTest {
                         .content(content))
                 .andExpect(status().isServiceUnavailable());
 
-        doThrow(KafkaRestException.class).when(productSender).send(any(), any());
+        doThrow(RemoteServiceSenderException.class).when(productSender).send(any(), any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)

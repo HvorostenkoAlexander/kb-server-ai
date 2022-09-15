@@ -2,7 +2,7 @@ package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.nsi.CEqDto;
 import com.nlmk.kb.server.entity.pdm.PdmOp;
-import com.nlmk.kb.server.exception.NsiSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -52,10 +52,10 @@ class NsiSenderTest {
 
         {
             final var response = Assertions.assertThrows(
-                    NsiSenderException.class,
+                    RemoteServiceSenderException.class,
                     () -> nsiSender.exchange((CEqDto) null, urlDictionary, PdmOp.I)
             );
-            Assertions.assertEquals("Body is NULL", response.getMessage());
+            Assertions.assertEquals("NsiSender, Body is NULL", response.getMessage());
         }
 
         final var dto = CEqDto.builder().build();
@@ -66,11 +66,11 @@ class NsiSenderTest {
                     .setResponseCode(HttpStatus.BAD_REQUEST.value())
             );
             final var response = Assertions.assertThrows(
-                    NsiSenderException.class,
+                    RemoteServiceSenderException.class,
                     () -> nsiSender.exchange(dto, urlDictionary, PdmOp.I)
             );
             Assertions.assertEquals(String.format(
-                    "exchange, send error, message [%d Bad Request from POST http://localhost:%d/nsi/dict/nsd_ceq]",
+                    "NsiSender, exchange, send error, message [%d Bad Request from POST http://localhost:%d/nsi/dict/nsd_ceq]",
                     HttpStatus.BAD_REQUEST.value(), mockWebServer.getPort()), response.getMessage());
             mockWebServer.takeRequest();
         }

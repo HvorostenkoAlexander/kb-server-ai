@@ -2,8 +2,8 @@ package com.nlmk.kb.server.controller;
 
 import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
-import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,9 +61,9 @@ public class KbExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
     }
 
-    @ExceptionHandler(KafkaRestException.class)
-    public ResponseEntity<String> handleKafkaRestException(KafkaRestException ex) {
-        log.error("handleKafkaRestException: {}", ex.getMessage());
+    @ExceptionHandler(RemoteServiceSenderException.class)
+    public ResponseEntity<String> handleRemoteServiceSenderException(RemoteServiceSenderException ex) {
+        log.error("handleRemoteServiceSenderException: {}", ex.getMessage());
         // ошибка отправки
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_GATEWAY);
     }

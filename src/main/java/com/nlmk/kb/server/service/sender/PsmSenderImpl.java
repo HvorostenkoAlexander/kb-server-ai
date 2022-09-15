@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
-import com.nlmk.kb.server.exception.PsmSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,7 +52,7 @@ public class PsmSenderImpl implements PsmSender {
                 .bodyToMono(Integer.class)
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new PsmSenderException(String.format("postZorder, send error, message [%s]", e.getMessage()))
+                        new RemoteServiceSenderException(String.format("PsmSender, postZorder, send error, message [%s]", e.getMessage()))
                 ))
                 .block();
 
@@ -77,11 +77,11 @@ public class PsmSenderImpl implements PsmSender {
                         log.info("postSadimMessage, primeId [{}], response OK", primeId);
                         return Mono.empty();
                     }
-                    return Mono.error(new PsmSenderException(String.format("PSM return code [%d]", code.value())));
+                    return Mono.error(new RemoteServiceSenderException(String.format("PSM return code [%d]", code.value())));
                 })
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new PsmSenderException(String.format("postSadimMessage, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
+                        new RemoteServiceSenderException(String.format("PsmSender, postSadimMessage, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
                 ))
                 .block();
     }

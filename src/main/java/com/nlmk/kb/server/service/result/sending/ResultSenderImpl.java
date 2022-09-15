@@ -3,8 +3,8 @@ package com.nlmk.kb.server.service.result.sending;
 import com.nlmk.kb.server.api.MessagesBatchDto;
 import com.nlmk.kb.server.entity.KafkaMessageKey;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
-import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.result.sending.pgp.ResultSenderPgp;
 import com.nlmk.kb.server.service.result.sending.pts.ResultSenderPts;
 import lombok.extern.slf4j.Slf4j;
@@ -96,10 +96,10 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
                 .retrieve()
                 .bodyToMono(String.class)// vs JsonNode
                 .timeout(Duration.ofMillis(webClientTimeout))
-                .onErrorResume(e -> {
-                    log.error("sending, sending error: [{}]", e.getMessage());
-                    return Mono.error(new KafkaRestException(e));
-                })
+                .onErrorResume(e -> Mono.error(
+                        new RemoteServiceSenderException(
+                                String.format("ResultSenderImpl, sending, sending error: [%s]", e.getMessage())
+                        )))
                 .block();
         log.info("sending, response from KAFKA: [{}]", response);
     }

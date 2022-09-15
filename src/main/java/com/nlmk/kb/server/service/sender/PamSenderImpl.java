@@ -2,7 +2,7 @@ package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
-import com.nlmk.kb.server.exception.PamSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +36,7 @@ public class PamSenderImpl implements PamSender {
         if (attestationRequest == null
                 || attestationRequest.getValue() == null
                 || attestationRequest.getValue().getData() == null) {
-            throw new PamSenderException("AttestationRequest is NULL");
+            throw new RemoteServiceSenderException("PamSender, AttestationRequest is NULL");
         }
 
         final var primeId = SenderUtils.getPrimeId(attestationRequest);
@@ -52,7 +52,7 @@ public class PamSenderImpl implements PamSender {
                 .bodyToMono(ProductAttestationResultDto.class)
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new PamSenderException(String.format("postAttestationRequest, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
+                        new RemoteServiceSenderException(String.format("PamSender, postAttestationRequest, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
                 ))
                 .block();
 

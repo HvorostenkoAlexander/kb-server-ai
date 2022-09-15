@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.kb.server.entity.pdm.PdmOp;
-import com.nlmk.kb.server.exception.NsiSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +36,7 @@ public class NsiSenderImpl implements NsiSender {
     @Override
     public <T> ResponseEntity<Long> exchange(T body, String urlDictionary, PdmOp operation) {
         if (body == null) {
-            throw new NsiSenderException("Body is NULL");
+            throw new RemoteServiceSenderException("NsiSender, Body is NULL");
         }
 
         final var result = webClient.method(operation.getHttpMethod())
@@ -56,7 +56,7 @@ public class NsiSenderImpl implements NsiSender {
                 })
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new NsiSenderException(String.format("exchange, send error, message [%s]", e.getMessage()))
+                        new RemoteServiceSenderException(String.format("NsiSender, exchange, send error, message [%s]", e.getMessage()))
                 ))
                 .block();
 

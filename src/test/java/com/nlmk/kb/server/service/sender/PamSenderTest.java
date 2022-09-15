@@ -6,7 +6,7 @@ import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.pam.Value;
-import com.nlmk.kb.server.exception.PamSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -56,13 +56,13 @@ class PamSenderTest {
 
     @Test
     void postAttestationRequest() throws Exception {
-        Assertions.assertThrows(PamSenderException.class, () -> pamSender.postAttestationRequest(null));
+        Assertions.assertThrows(RemoteServiceSenderException.class, () -> pamSender.postAttestationRequest(null));
 
         final var attestationRequest = AttestationRequest.builder().build();
-        Assertions.assertThrows(PamSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
+        Assertions.assertThrows(RemoteServiceSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
 
         attestationRequest.setValue(Value.builder().build());
-        Assertions.assertThrows(PamSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
+        Assertions.assertThrows(RemoteServiceSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
         // передачи не было
         assertEquals(0, mockWebServer.getRequestCount());
 
@@ -73,9 +73,9 @@ class PamSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.BAD_REQUEST.value())
             );
-            final var response = Assertions.assertThrows(PamSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
+            final var response = Assertions.assertThrows(RemoteServiceSenderException.class, () -> pamSender.postAttestationRequest(attestationRequest));
             Assertions.assertEquals(String.format(
-                    "postAttestationRequest, primeId [p100], send error, message [%d Bad Request from POST http://localhost:%d/attestation]",
+                    "PamSender, postAttestationRequest, primeId [p100], send error, message [%d Bad Request from POST http://localhost:%d/attestation]",
                     HttpStatus.BAD_REQUEST.value(), mockWebServer.getPort()), response.getMessage());
             mockWebServer.takeRequest();
         }
@@ -99,10 +99,10 @@ class PamSenderTest {
         {
             mockWebServer.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE));
 
-            final var res = Assertions.assertThrows(PamSenderException.class, () ->
+            final var res = Assertions.assertThrows(RemoteServiceSenderException.class, () ->
                     pamSender.postAttestationRequest(attestationRequest));
             mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS); // timeout 100 < 1000
-            Assertions.assertEquals("postAttestationRequest, primeId [p100], send error, message [Did not observe any item or terminal signal within 1000ms in 'flatMap' (and no fallback has been configured)]", res.getMessage());
+            Assertions.assertEquals("PamSender, postAttestationRequest, primeId [p100], send error, message [Did not observe any item or terminal signal within 1000ms in 'flatMap' (and no fallback has been configured)]", res.getMessage());
         }
     }
 

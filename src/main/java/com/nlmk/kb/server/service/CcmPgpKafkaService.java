@@ -85,14 +85,14 @@ public class CcmPgpKafkaService {
             log.warn("receiveMessageReq, AttestationResultSenderException", e);
             ack.nack(sleepTime);
             throw new AttestationResultSenderException(String.format(EXC_MESS, e));
-        } catch (PamSenderException e) {
-            log.warn("receiveMessageReq, PamSenderException", e);
+        } catch (RemoteServiceSenderException e) {
+            log.warn("receiveMessageReq, RemoteServiceSenderException", e);
             ack.nack(sleepTime);
-            throw new PamSenderException(String.format(EXC_MESS, e));
+            throw new RemoteServiceSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPgpKafkaException(String.format(EXC_MESS, e), e);
+            throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
         }
     }
 

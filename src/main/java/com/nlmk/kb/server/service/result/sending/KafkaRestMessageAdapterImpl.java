@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.api.MessageValueDto;
 import com.nlmk.kb.server.api.MessagesBatchDto;
 import com.nlmk.kb.server.entity.KafkaMessageKey;
-import com.nlmk.kb.server.exception.KafkaRestException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -44,8 +44,7 @@ public class KafkaRestMessageAdapterImpl implements KafkaRestMessageAdapter {
                     specificRecord.getSchema().toString(),
                     List.of(new MessageValueDto(key, value)));
         } catch (IOException e) {
-            log.warn("adapt, ошибка создания MessageValueDto");
-            throw new KafkaRestException(e);
+            throw new RemoteServiceSenderException("KafkaRestMessageAdapter, adapt, create MessageValueDto error");
         }
     }
 

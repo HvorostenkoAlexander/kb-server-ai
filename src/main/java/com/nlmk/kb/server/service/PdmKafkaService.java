@@ -2,7 +2,7 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.PdmKafkaException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.service.pdm.PdmMessageHandler;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +71,7 @@ public class PdmKafkaService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new PdmKafkaException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 
