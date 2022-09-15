@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service.pdm;
 import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.entity.DictionaryConfig;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Slf4j
 @SpringBootTest
 class DictionaryConfigServiceTest {
 
@@ -42,13 +40,11 @@ class DictionaryConfigServiceTest {
                 .enabled(true)
                 .build();
         repository.save(validEntity);
-        log.info("START validEntity:{}", validEntity);
     }
 
     @AfterEach
     void tearDown() {
         repository.deleteById(validEntity.getId());
-        log.info("FINISH");
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.sender;
+package com.nlmk.kb.server.service.result;
 
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.ProductDto;
@@ -6,8 +6,9 @@ import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ResultsConfigDto;
-import com.nlmk.kb.server.exception.ProductSenderException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
+import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsPts;
@@ -34,10 +35,10 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
-class ProductSenderTest {
+class AttestationResultSenderTest {
 
     @Autowired
-    private ProductSender productSender;
+    private AttestationResultSender productSender;
     @Autowired
     private KcehConditionFilterImpl kcehConditionFilter;
     @MockBean
@@ -48,8 +49,6 @@ class ProductSenderTest {
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
         dpr.add("service-web-client.kafka-rest.address", () -> "http://localhost:" + mockKafkaRest.getPort());
-        dpr.add("service-web-client.kafka-rest.login", () -> "kb-user");
-        dpr.add("service-web-client.kafka-rest.password", () -> "qwe123");
     }
 
     @BeforeAll
@@ -80,7 +79,7 @@ class ProductSenderTest {
                         ResultsConfigDto.builder().id(1).topic("topic1").avroName("avro1").enabled(true).build(),
                         ResultsConfigDto.builder().id(2).topic("topic2").avroName("avro2").enabled(true).build()
                 ));
-        Assertions.assertThrows(ProductSenderException.class, () -> productSender.send(attResult, VerificationResults.class));
+        Assertions.assertThrows(AttestationResultSenderException.class, () -> productSender.send(attResult, VerificationResults.class));
 
         // конфигурация есть, но результат аттестации пустой
         Mockito.when(resultConfigService.getEnabledTopics())

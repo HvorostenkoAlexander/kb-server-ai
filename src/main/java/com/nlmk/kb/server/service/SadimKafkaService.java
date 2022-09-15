@@ -1,9 +1,9 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.exception.SadimJsonProcessingException;
-import com.nlmk.kb.server.exception.SadimKafkaException;
-import com.nlmk.kb.server.exception.PsmSenderException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.sadim.SadimMessageService;
 import io.micrometer.core.annotation.Timed;
@@ -53,14 +53,14 @@ public class SadimKafkaService {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
             throw new DateTimeParseException(String.format(EXC_MESS, e));
-        } catch (PsmSenderException e) {
-            log.warn("receiveMessageReq, PsmSenderException", e);
+        } catch (RemoteServiceSenderException e) {
+            log.warn("receiveMessageReq, RemoteServiceSenderException", e);
             ack.nack(sleepTime);
-            throw new PsmSenderException(String.format(EXC_MESS, e));
+            throw new RemoteServiceSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new SadimKafkaException(String.format(EXC_MESS, e));
+            throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
         }
 
         // нужна очередь ошибочных сообщений (dead letter queue, DLQ) и отдельный обработчик, чтобы не тормозить основную очередь.

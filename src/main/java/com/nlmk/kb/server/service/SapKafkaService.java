@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.SapKafkaException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.service.sap.SapMessageHandler;
 import com.nlmk.s3.proxy.s3notification;
 import io.micrometer.core.annotation.Timed;
@@ -49,7 +49,7 @@ public class SapKafkaService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new SapKafkaException("переброс: " + e);
+            throw new KafkaMessageProcessingException("переброс: " + e);
         }
     }
 

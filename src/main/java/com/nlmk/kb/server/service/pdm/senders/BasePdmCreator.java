@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-abstract class BaseCreator {
+abstract class BasePdmCreator {
 
     private final String type;
     private final PdmDtoConverter pdmDtoConverter;

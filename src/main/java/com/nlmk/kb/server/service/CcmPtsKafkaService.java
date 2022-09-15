@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service;
 import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
-import com.nlmk.kb.server.service.sender.ProductSender;
+import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResultsPts;
@@ -25,12 +25,12 @@ public class CcmPtsKafkaService {
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
-    private final ProductSender attestationResultSender;
+    private final AttestationResultSender attestationResultSender;
 
     public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
-                              ProductSender attestationResultSender) {
+                              AttestationResultSender attestationResultSender) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
@@ -81,14 +81,18 @@ public class CcmPtsKafkaService {
             log.warn("receiveMessageReq, KafkaRestConfigException", e);
             ack.acknowledge();
             throw new KafkaRestConfigException(String.format(EXC_MESS, e));
-        } catch (ProductSenderException e) {
-            log.warn("receiveMessageReq, ProductSenderException", e);
+        } catch (AttestationResultSenderException e) {
+            log.warn("receiveMessageReq, AttestationResultSenderException", e);
             ack.nack(sleepTime);
-            throw new ProductSenderException(String.format(EXC_MESS, e));
+            throw new AttestationResultSenderException(String.format(EXC_MESS, e));
+        } catch (RemoteServiceSenderException e) {
+            log.warn("receiveMessageReq, RemoteServiceSenderException", e);
+            ack.nack(sleepTime);
+            throw new RemoteServiceSenderException(String.format(EXC_MESS, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new CcmPtsKafkaException(String.format(EXC_MESS, e), e);
+            throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
         }
     }
 

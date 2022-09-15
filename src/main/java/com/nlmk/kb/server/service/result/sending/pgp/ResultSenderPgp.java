@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.result.sending;
+package com.nlmk.kb.server.service.result.sending.pgp;
 
 import nlmk.l3.apcs.VerificationResults;
 

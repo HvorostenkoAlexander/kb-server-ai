@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.sender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
-import com.nlmk.kb.server.exception.PsmSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 
@@ -57,10 +56,9 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.BAD_REQUEST.value())
         );
 
-        final ZORDERS051 zorders051 = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);
+        final var zorders051 = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);
 
-        assertThrows(HttpClientErrorException.class, () -> psmSender.postZorder(zorders051));
-
+        assertThrows(RemoteServiceSenderException.class, () -> psmSender.postZorder(zorders051));
         mockWebServer.takeRequest();
 
         mockWebServer.enqueue(new MockResponse()
@@ -91,8 +89,8 @@ class PsmSenderTest {
                 .param(SadimMessageDto.ParamDto.builder().primeId("pi100").build())
                 .build();
 
-        final var response1 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
-        assertEquals("postSadimMessage, for primeId [pi100], error [400 Client Error: [no body]]", response1.getMessage());
+        final var response1 = assertThrows(RemoteServiceSenderException.class, () -> psmSender.postSadimMessage(dto));
+        assertEquals("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [400]]", response1.getMessage());
         mockWebServer.takeRequest();
 
         mockWebServer.enqueue(new MockResponse()
@@ -109,16 +107,16 @@ class PsmSenderTest {
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setResponseCode(HttpStatus.UNAUTHORIZED.value())
         );
-        final var response3 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
-        assertEquals("postSadimMessage, for primeId [pi100], error [401 Client Error: [no body]]", response3.getMessage());
+        final var response3 = assertThrows(RemoteServiceSenderException.class, () -> psmSender.postSadimMessage(dto));
+        assertEquals("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [401]]", response3.getMessage());
         mockWebServer.takeRequest();
 
         mockWebServer.enqueue(new MockResponse()
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setResponseCode(HttpStatus.FORBIDDEN.value())
         );
-        final var response4 = assertThrows(PsmSenderException.class, () -> psmSender.postSadimMessage(dto));
-        assertEquals("postSadimMessage, for primeId [pi100], error [403 Client Error: [no body]]", response4.getMessage());
+        final var response4 = assertThrows(RemoteServiceSenderException.class, () -> psmSender.postSadimMessage(dto));
+        assertEquals("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [403]]", response4.getMessage());
         mockWebServer.takeRequest();
     }
 

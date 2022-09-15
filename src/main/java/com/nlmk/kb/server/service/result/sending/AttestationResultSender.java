@@ -1,11 +1,11 @@
-package com.nlmk.kb.server.service.sender;
+package com.nlmk.kb.server.service.result.sending;
 
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 
 /**
  * Отправка результата Аттестации в другие сервисы
  */
-public interface ProductSender {
+public interface AttestationResultSender {
 
     /**
      * Отправка результата Аттестации ЕП
