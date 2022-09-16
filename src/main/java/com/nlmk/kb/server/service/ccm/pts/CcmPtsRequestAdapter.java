@@ -1,16 +1,15 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.ChemicalSpec;
-import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
-import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
-import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.ccm.pts.RecordBundles;
 import nlmk.l3.ccm.pts.RecordData;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -19,6 +18,14 @@ import java.util.stream.Collectors;
  * Общие методы подготовки Запроса на Аттестацию
  */
 public abstract class CcmPtsRequestAdapter {
+
+    private static final List<Integer> allowedAnalysisCodes =
+            Arrays.stream(
+                    ("560;567;562;568;563;564;569;" +
+                            "529;540;546;549;542;544;552;553;528;541;547;550;543;545;548;551;533;532;536;537;538;539"
+                    ).split(";"))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toUnmodifiableList());
 
     /**
      * Расчёт массы связки
@@ -282,22 +289,45 @@ public abstract class CcmPtsRequestAdapter {
         final var properties = new ArrayList<PtsMechanicalProperty>();
 
         requestMessage.getData().getProperties().forEach(p -> {
-            if (p.getListValues() != null && !p.getListValues().isEmpty()) {
-                final var list = new ArrayList<PtsPropertyValue>();
-                p.getListValues().forEach(v -> {
-                    if (allowMechanicalCode(v.getAttrCode())) {
-                        list.add(PtsPropertyValue.builder()
+
+            List<PtsPropertyValue> listValues = null;
+            List<PtsPropertyAnalyzis> listAnalysis = null;
+
+            if (!CollectionUtils.isEmpty(p.getListValues())) {
+                listValues = p.getListValues().stream()
+                        .filter(v -> allowMechanicalCode(v.getAttrCode()))
+                        .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType().getValue())
                                 .attrValue(v.getAttrValue())
                                 .attrFormat(v.getAttrFormat())
                                 .attrMeasure(v.getAttrMeasure())
-                                .build());
-                    }
-                });
-                if (!list.isEmpty()) {
-                    properties.add(PtsMechanicalProperty.builder().listValues(list).build());
-                }
+                                .build())
+                        .collect(Collectors.toUnmodifiableList());
+            }
+            if (!CollectionUtils.isEmpty(p.getAnalyzes())) {
+                listAnalysis = p.getAnalyzes().stream()
+                        .map(a -> PtsPropertyAnalyzis.builder()
+                                .samplingPlaceCode(a.getSamplingPlaceCode())
+                                .samplingPlaceName(a.getSamplingPlaceName())
+                                .analysisValue(a.getAnalysisValue().getValue())
+                                .listValues(
+                                        a.getListValues().stream()
+                                                .filter(v -> allowMechanicalAnalysisCode(v.getAttrCode()))
+                                                .map(v -> PtsPropertyValue.builder()
+                                                        .attrCode(v.getAttrCode())
+                                                        .attrType(v.getAttrType().getValue())
+                                                        .attrValue(v.getAttrValue())
+                                                        .attrFormat(v.getAttrFormat())
+                                                        .attrMeasure(v.getAttrMeasure())
+                                                        .build())
+                                                .collect(Collectors.toUnmodifiableList())
+                                )
+                                .build())
+                        .collect(Collectors.toUnmodifiableList());
+            }
+            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalysis)) {
+                properties.add(PtsMechanicalProperty.builder().listValues(listValues).analyzes(listAnalysis).build());
             }
         });
 
@@ -316,22 +346,45 @@ public abstract class CcmPtsRequestAdapter {
         final var properties = new ArrayList<PtsMechanicalProperty>();
 
         recordData.getProperties().forEach(p -> {
-            if (p.getListValues() != null && !p.getListValues().isEmpty()) {
-                final var list = new ArrayList<PtsPropertyValue>();
-                p.getListValues().forEach(v -> {
-                    if (allowMechanicalCode(v.getAttrCode())) {
-                        list.add(PtsPropertyValue.builder()
+
+            List<PtsPropertyValue> listValues = null;
+            List<PtsPropertyAnalyzis> listAnalysis = null;
+
+            if (!CollectionUtils.isEmpty(p.getListValues())) {
+                listValues = p.getListValues().stream()
+                        .filter(v -> allowMechanicalCode(v.getAttrCode()))
+                        .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType())
                                 .attrValue(AdapterUtils.sequenceToString(v.getAttrValue()))
                                 .attrFormat(AdapterUtils.sequenceToString(v.getAttrFormat()))
                                 .attrMeasure(AdapterUtils.sequenceToString(v.getAttrMeasure()))
-                                .build());
-                    }
-                });
-                if (!list.isEmpty()) {
-                    properties.add(PtsMechanicalProperty.builder().listValues(list).build());
-                }
+                                .build())
+                        .collect(Collectors.toUnmodifiableList());
+            }
+            if (!CollectionUtils.isEmpty(p.getAnalyzes())) {
+                listAnalysis = p.getAnalyzes().stream()
+                        .map(a -> PtsPropertyAnalyzis.builder()
+                                .samplingPlaceCode(a.getSamplingPlaceCode())
+                                .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
+                                .analysisValue(a.getAnalysisValue())
+                                .listValues(
+                                        a.getListValues().stream()
+                                                .filter(v -> allowMechanicalAnalysisCode(v.getAttrCode()))
+                                                .map(v -> PtsPropertyValue.builder()
+                                                        .attrCode(v.getAttrCode())
+                                                        .attrType(v.getAttrType())
+                                                        .attrValue(AdapterUtils.sequenceToString(v.getAttrValue()))
+                                                        .attrFormat(AdapterUtils.sequenceToString(v.getAttrFormat()))
+                                                        .attrMeasure(AdapterUtils.sequenceToString(v.getAttrMeasure()))
+                                                        .build())
+                                                .collect(Collectors.toUnmodifiableList())
+                                )
+                                .build())
+                        .collect(Collectors.toUnmodifiableList());
+            }
+            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalysis)) {
+                properties.add(PtsMechanicalProperty.builder().listValues(listValues).analyzes(listAnalysis).build());
             }
         });
 
@@ -345,4 +398,10 @@ public abstract class CcmPtsRequestAdapter {
         return SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue().equals(code);
     }
 
+    /**
+     * Только используемые в аттестации коды для Анализов
+     */
+    private boolean allowMechanicalAnalysisCode(Integer code) {
+        return code != null && allowedAnalysisCodes.contains(code);
+    }
 }
