@@ -89,7 +89,10 @@ class RestRequestAdapterTest {
                                                         .analysisValue(CcmPtsRequest.AnalysisValue.BEST)
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OnePropValue.builder()
-                                                                        .attrCode(64)
+                                                                        .attrCode(562)
+                                                                        .attrType(TypeCode.NUMBER).build(),
+                                                                CcmPtsRequest.OnePropValue.builder()
+                                                                        .attrCode(99999)    // not allowed
                                                                         .attrType(TypeCode.NUMBER).build()
                                                         )).build()
                                         ))
@@ -150,6 +153,16 @@ class RestRequestAdapterTest {
                                 .metallographic(List.of())
                                 .mechanicalPts(List.of(
                                         PtsMechanicalProperty.builder()
+                                                .analyzes(List.of(
+                                                        PtsPropertyAnalyzis.builder()
+                                                                .samplingPlaceCode(62).samplingPlaceName("s63")
+                                                                .analysisValue(CcmPtsRequest.AnalysisValue.BEST.getValue())
+                                                                .listValues(List.of(
+                                                                        PtsPropertyValue.builder()
+                                                                                .attrCode(562)
+                                                                                .attrType(TypeCode.NUMBER.getValue()).build()
+                                                                )).build()
+                                                ))
                                                 .listValues(List.of(
                                                         PtsPropertyValue.builder()
                                                                 .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())

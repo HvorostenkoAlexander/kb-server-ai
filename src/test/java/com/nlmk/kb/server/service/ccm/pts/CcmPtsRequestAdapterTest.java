@@ -1,9 +1,6 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.ChemicalSpec;
-import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
-import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
-import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import nlmk.l3.ccm.pts.*;
@@ -197,17 +194,60 @@ class CcmPtsRequestAdapterTest {
         Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(CcmPtsRequest.builder().build()));
         Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(prepareMinimalRecordData(null)));
 
-        Assertions.assertEquals(List.of(
-                PtsMechanicalProperty.builder().listValues(List.of(
-                        PtsPropertyValue.builder().attrCode(1120).attrValue("1120").attrType(2).build()
-                )).build()
-        ), adapter.prepareMechanicalProperties(CcmPtsRequest.builder()
+        var expected = List.of(
+                PtsMechanicalProperty.builder()
+                        .analyzes(List.of(
+                                PtsPropertyAnalyzis.builder()
+                                        .samplingPlaceCode(1)
+                                        .analysisValue(CcmPtsRequest.AnalysisValue.BEST.getValue())
+                                        .listValues(List.of())
+                                        .build()
+                        ))
+                        .listValues(List.of())
+                        .build(),
+                PtsMechanicalProperty.builder()
+                        .listValues(List.of(
+                                PtsPropertyValue.builder().attrCode(1120).attrValue("1120").attrType(2).build()
+                        ))
+                        .analyzes(List.of(
+                                PtsPropertyAnalyzis.builder()
+                                        .samplingPlaceCode(2)
+                                        .analysisValue(CcmPtsRequest.AnalysisValue.WORST.getValue())
+                                        .listValues(
+                                                Arrays.stream(
+                                                                ("560;567;562;568;563;564;569;" +
+                                                                        "529;540;546;549;542;544;552;553;528;541;547;550;543;545;548;551;533;532;536;537;538;539"
+                                                                ).split(";"))
+                                                        .sorted()
+                                                        .map(sc -> PtsPropertyValue.builder()
+                                                                .attrCode(Integer.parseInt(sc))
+                                                                .attrValue(sc)
+                                                                .attrType(SpecCode.fromValue(Integer.parseInt(sc)).getTypeCode().getValue())
+                                                                .build())
+                                                        .collect(Collectors.toUnmodifiableList())
+                                        ).build()
+                        )).build()
+        );
+
+        var request = CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
                         .properties(List.of(
                                 CcmPtsRequest.OneProperty.builder()
+                                        .analyzes(List.of())
                                         .listValues(List.of())
                                         .build(),
                                 CcmPtsRequest.OneProperty.builder()
+                                        .analyzes(List.of(
+                                                CcmPtsRequest.OnePropAnalyze.builder()
+                                                        .samplingPlaceCode(1)
+                                                        .analysisValue(CcmPtsRequest.AnalysisValue.BEST)
+                                                        .listValues(List.of(
+                                                                CcmPtsRequest.OnePropValue.builder().build(),
+                                                                CcmPtsRequest.OnePropValue.builder().attrCode(11).build(),
+                                                                CcmPtsRequest.OnePropValue.builder().attrCode(12).build()
+                                                        ))
+                                                        .build()
+                                        ))
                                         .listValues(List.of(
                                                 CcmPtsRequest.OnePropValue.builder().build(),
                                                 CcmPtsRequest.OnePropValue.builder().attrCode(1).build(),
@@ -216,11 +256,22 @@ class CcmPtsRequestAdapterTest {
                                         .build(),
                                 CcmPtsRequest.OneProperty.builder()
                                         // все возможные коды
+                                        .analyzes(List.of(
+                                                CcmPtsRequest.OnePropAnalyze.builder()
+                                                        .samplingPlaceCode(2)
+                                                        .analysisValue(CcmPtsRequest.AnalysisValue.WORST)
+                                                        .listValues(prepareMechanicalPropertiesValues())
+                                                        .build()
+                                        ))
                                         .listValues(prepareMechanicalPropertiesValues())
                                         .build()
                         ))
                         .build())
-                .build()));
+                .build();
+
+        var result = adapter.prepareMechanicalProperties(request);
+
+        Assertions.assertEquals(expected, result);
 
         final var record = prepareMinimalRecordData(null);
         record.setProperties(List.of(
@@ -234,8 +285,26 @@ class CcmPtsRequestAdapterTest {
                 RecordProperties.newBuilder()
                         .setProbeCode(2).setProbeName("2").setTestDate("2")
                         .setTypeCode(2).setTypeName("2")
-                        .setAnalyzes(List.of())
                         .setAttestationList(List.of())
+                        .setAnalyzes(List.of(
+                               RecordAnalyzes.newBuilder()
+                                       .setSamplingPlaceCode(111)
+                                       .setSamplingPlaceName("1111")
+                                       .setAnalysisValue(1)
+                                       .setListValues(List.of(
+                                               RecordDataPropertiesAnalyzesListValues.newBuilder()
+                                                       .setAttrCode(540)
+                                                       .setAttrType(2)
+                                                       .setAttrValue("11111")
+                                                       .build(),
+                                               RecordDataPropertiesAnalyzesListValues.newBuilder()
+                                                       .setAttrCode(99999)
+                                                       .setAttrType(2)
+                                                       .setAttrValue("99999")
+                                                       .build()
+                                       ))
+                                       .build()
+                        ))
                         .setListValues(List.of(
                                 RecordDataPropertiesListValues.newBuilder()
                                         .setAttrCode(1).setAttrValue("1").setAttrType(1)
@@ -260,14 +329,26 @@ class CcmPtsRequestAdapterTest {
                         ))
                         .build()
         ));
-        Assertions.assertEquals(List.of(
-                PtsMechanicalProperty.builder().listValues(List.of(
+
+        var expected2 = List.of(
+                PtsMechanicalProperty.builder()
+                        .analyzes(List.of(PtsPropertyAnalyzis.builder()
+                                .samplingPlaceCode(111)
+                                .samplingPlaceName("1111")
+                                .analysisValue(1)
+                                .listValues(List.of(
+                                        PtsPropertyValue.builder().attrCode(540).attrType(2).attrValue("11111").build()
+                                ))
+                                .build()))
+                        .listValues(List.of(
                         PtsPropertyValue.builder().attrCode(1120).attrValue("2").attrType(1).build()
                 )).build(),
                 PtsMechanicalProperty.builder().listValues(List.of(
                         PtsPropertyValue.builder().attrCode(1120).attrValue("4").attrType(1).build()
                 )).build()
-        ), adapter.prepareMechanicalProperties(record));
+        );
+
+        Assertions.assertEquals(expected2, adapter.prepareMechanicalProperties(record));
     }
 
 }
