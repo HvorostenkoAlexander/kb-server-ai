@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
-import nlmk.l3.ccm.pts.*;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -138,7 +138,7 @@ class SendMessageToKafkaTest {
 
     @Test
     void sendCcmPtsMessage() {
-        nlmk.l3.ccm.pts.RecordData data = RecordData.newBuilder()
+        nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData data = RecordData.newBuilder()
                 .setWerks(1).setWerksName("1")
                 .setKceh(11).setKcehName("11")
                 .setUnitCode(2).setUnitName("2")
@@ -186,10 +186,10 @@ class SendMessageToKafkaTest {
                 ))
                 .build();
 
-        nlmk.l3.ccm.pts.AttestationRequest value = nlmk.l3.ccm.pts.AttestationRequest.newBuilder()
+        nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1 value = nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1.newBuilder()
                 .setTs("2022-09-02T14:36:25.000+05:00")
-                .setOp(nlmk.l3.ccm.pts.EnumOp.U)
-                .setPk(nlmk.l3.ccm.pts.RecordPk.newBuilder()
+                .setOp(nlmk.EnumOp.U)
+                .setPk(nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.PkType.newBuilder()
                         .setId("42") // primeId
                         .setSystemCode("16")
                         .build())

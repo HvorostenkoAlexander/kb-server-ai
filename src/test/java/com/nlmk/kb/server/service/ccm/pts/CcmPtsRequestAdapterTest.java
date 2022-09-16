@@ -3,7 +3,7 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import nlmk.l3.ccm.pts.*;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -4,8 +4,8 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.util.AdapterUtils;
-import nlmk.l3.ccm.pts.RecordBundles;
-import nlmk.l3.ccm.pts.RecordData;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -210,7 +210,7 @@ public abstract class CcmPtsRequestAdapter {
 
         if (clazz == CcmPtsRequest.class) {
             return prepareChemicalSpecsForRequest((CcmPtsRequest) data);
-        } else if (clazz == nlmk.l3.ccm.pts.RecordData.class) {
+        } else if (clazz == nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData.class) {
             return prepareChemicalSpecsForRecord((RecordData) data);
         }
 
@@ -269,7 +269,7 @@ public abstract class CcmPtsRequestAdapter {
 
         if (clazz == CcmPtsRequest.class) {
             return prepareMechanicalPropertiesForRequest((CcmPtsRequest) data);
-        } else if (clazz == nlmk.l3.ccm.pts.RecordData.class) {
+        } else if (clazz == nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData.class) {
             return prepareMechanicalPropertiesForRecord((RecordData) data);
         }
 

@@ -6,9 +6,9 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
-import nlmk.l3.ccm.pts.EnumOp;
-import nlmk.l3.ccm.pts.AttestationRequest;
+import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -24,12 +24,12 @@ public class CcmPtsKafkaService {
     private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-    private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
+    private final CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
 
     public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
+                              CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
@@ -46,7 +46,7 @@ public class CcmPtsKafkaService {
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload AttestationRequest request,
+                                  @Payload DbAttestationRequestVer1 request,
                                   Acknowledgment ack) {
 
         log.info("receiveMessageReq (CCM PTS): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
