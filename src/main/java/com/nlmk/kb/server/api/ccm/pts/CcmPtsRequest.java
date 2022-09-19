@@ -2,6 +2,7 @@ package com.nlmk.kb.server.api.ccm.pts;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.nlmk.attestation.product.api.pam.AnalysisValue;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import lombok.*;
 
@@ -182,6 +183,12 @@ public class CcmPtsRequest {
     @AllArgsConstructor
     public static class OneProperty {
         @NotNull
+        private Integer probeCode; // Код вида пробы
+        @NotNull
+        private String probeName; // Наименование вида пробы
+        @NotNull
+        private String testDate; // Дата и время испытания YYYY-MM-DD"T"HH24:MI:SS+/-HH:MM
+        @NotNull
         private Integer typeCode; // Код типа испытания
         @NotBlank
         private String typeName; // Наименование типа испытания
@@ -205,26 +212,6 @@ public class CcmPtsRequest {
         private AnalysisValue analysisValue; // Результат (1-Худший, 2-Лучший)
         @NotEmpty
         private List<@Valid OnePropValue> listValues; // Список значений
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum AnalysisValue {
-
-        WORST(1, "Худший"),
-        BEST(2, "Лучший");
-
-        @JsonValue
-        private final Integer value;
-        private final String desc;
-
-        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        public static AnalysisValue fromValue(int value) {
-            return Arrays.stream(AnalysisValue.values())
-                    .filter(s -> s.getValue().equals(value))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown AnalysisValue value [%s]", value)));
-        }
     }
 
     @Data

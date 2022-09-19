@@ -327,7 +327,15 @@ public abstract class CcmPtsRequestAdapter {
                         .collect(Collectors.toUnmodifiableList());
             }
             if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalysis)) {
-                properties.add(PtsMechanicalProperty.builder().listValues(listValues).analyzes(listAnalysis).build());
+                properties.add(PtsMechanicalProperty.builder()
+                                .probeCode(p.getProbeCode())
+                                .probeName(p.getProbeName())
+                                .testDate(p.getTestDate())
+                                .typeCode(p.getTypeCode())
+                                .typeName(p.getTypeName())
+                        .listValues(listValues)
+                        .analyzes(listAnalysis)
+                        .build());
             }
         });
 
@@ -384,7 +392,15 @@ public abstract class CcmPtsRequestAdapter {
                         .collect(Collectors.toUnmodifiableList());
             }
             if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalysis)) {
-                properties.add(PtsMechanicalProperty.builder().listValues(listValues).analyzes(listAnalysis).build());
+                properties.add(PtsMechanicalProperty.builder()
+                        .probeCode(p.getProbeCode())
+                        .probeName(AdapterUtils.sequenceToString(p.getProbeName()))
+                        .testDate(AdapterUtils.sequenceToString(p.getTestDate()))
+                        .typeCode(p.getTypeCode())
+                        .typeName(AdapterUtils.sequenceToString(p.getTypeName()))
+                        .listValues(listValues)
+                        .analyzes(listAnalysis)
+                        .build());
             }
         });
 

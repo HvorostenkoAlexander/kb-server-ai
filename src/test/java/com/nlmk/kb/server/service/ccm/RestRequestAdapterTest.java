@@ -81,12 +81,11 @@ class RestRequestAdapterTest {
                         ))
                         .properties(List.of(
                                 CcmPtsRequest.OneProperty.builder()
-                                        .typeCode(60)
-                                        .typeName("t61")
+                                        .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                                         .analyzes(List.of(
                                                 CcmPtsRequest.OnePropAnalyze.builder()
                                                         .samplingPlaceCode(62).samplingPlaceName("s63")
-                                                        .analysisValue(CcmPtsRequest.AnalysisValue.BEST)
+                                                        .analysisValue(AnalysisValue.BEST)
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OnePropValue.builder()
                                                                         .attrCode(562)
@@ -153,10 +152,11 @@ class RestRequestAdapterTest {
                                 .metallographic(List.of())
                                 .mechanicalPts(List.of(
                                         PtsMechanicalProperty.builder()
+                                                .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                                                 .analyzes(List.of(
                                                         PtsPropertyAnalyzis.builder()
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
-                                                                .analysisValue(CcmPtsRequest.AnalysisValue.BEST.getValue())
+                                                                .analysisValue(AnalysisValue.BEST.getValue())
                                                                 .listValues(List.of(
                                                                         PtsPropertyValue.builder()
                                                                                 .attrCode(562)

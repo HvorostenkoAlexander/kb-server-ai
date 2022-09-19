@@ -196,10 +196,11 @@ class CcmPtsRequestAdapterTest {
 
         var expected = List.of(
                 PtsMechanicalProperty.builder()
+                        .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                         .analyzes(List.of(
                                 PtsPropertyAnalyzis.builder()
                                         .samplingPlaceCode(1)
-                                        .analysisValue(CcmPtsRequest.AnalysisValue.BEST.getValue())
+                                        .analysisValue(AnalysisValue.BEST.getValue())
                                         .listValues(List.of())
                                         .build()
                         ))
@@ -212,7 +213,7 @@ class CcmPtsRequestAdapterTest {
                         .analyzes(List.of(
                                 PtsPropertyAnalyzis.builder()
                                         .samplingPlaceCode(2)
-                                        .analysisValue(CcmPtsRequest.AnalysisValue.WORST.getValue())
+                                        .analysisValue(AnalysisValue.WORST.getValue())
                                         .listValues(
                                                 Arrays.stream(
                                                                 ("560;567;562;568;563;564;569;" +
@@ -237,10 +238,11 @@ class CcmPtsRequestAdapterTest {
                                         .listValues(List.of())
                                         .build(),
                                 CcmPtsRequest.OneProperty.builder()
+                                        .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                                         .analyzes(List.of(
                                                 CcmPtsRequest.OnePropAnalyze.builder()
                                                         .samplingPlaceCode(1)
-                                                        .analysisValue(CcmPtsRequest.AnalysisValue.BEST)
+                                                        .analysisValue(AnalysisValue.BEST)
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OnePropValue.builder().build(),
                                                                 CcmPtsRequest.OnePropValue.builder().attrCode(11).build(),
@@ -259,7 +261,7 @@ class CcmPtsRequestAdapterTest {
                                         .analyzes(List.of(
                                                 CcmPtsRequest.OnePropAnalyze.builder()
                                                         .samplingPlaceCode(2)
-                                                        .analysisValue(CcmPtsRequest.AnalysisValue.WORST)
+                                                        .analysisValue(AnalysisValue.WORST)
                                                         .listValues(prepareMechanicalPropertiesValues())
                                                         .build()
                                         ))
@@ -283,8 +285,8 @@ class CcmPtsRequestAdapterTest {
                         .setListValues(List.of())
                         .build(),
                 RecordProperties.newBuilder()
-                        .setProbeCode(2).setProbeName("2").setTestDate("2")
-                        .setTypeCode(2).setTypeName("2")
+                        .setProbeCode(70).setProbeName("p70").setTestDate("2022-09-16T14:22:33+03:00")
+                        .setTypeCode(60).setTypeName("t61")
                         .setAttestationList(List.of())
                         .setAnalyzes(List.of(
                                RecordAnalyzes.newBuilder()
@@ -332,6 +334,7 @@ class CcmPtsRequestAdapterTest {
 
         var expected2 = List.of(
                 PtsMechanicalProperty.builder()
+                        .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                         .analyzes(List.of(PtsPropertyAnalyzis.builder()
                                 .samplingPlaceCode(111)
                                 .samplingPlaceName("1111")
@@ -343,7 +346,9 @@ class CcmPtsRequestAdapterTest {
                         .listValues(List.of(
                         PtsPropertyValue.builder().attrCode(1120).attrValue("2").attrType(1).build()
                 )).build(),
-                PtsMechanicalProperty.builder().listValues(List.of(
+                PtsMechanicalProperty.builder()
+                        .typeCode(3).typeName("3").testDate("3").probeCode(3).probeName("3")
+                        .listValues(List.of(
                         PtsPropertyValue.builder().attrCode(1120).attrValue("4").attrType(1).build()
                 )).build()
         );

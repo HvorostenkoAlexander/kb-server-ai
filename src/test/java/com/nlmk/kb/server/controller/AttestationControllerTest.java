@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.pam.AnalysisValue;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.AttestationMessageService;
@@ -83,11 +84,12 @@ class AttestationControllerTest {
                                                 )).build()
                                 ))
                                 .properties(List.of(
-                                        CcmPtsRequest.OneProperty.builder().typeCode(60).typeName("t61")
+                                        CcmPtsRequest.OneProperty.builder()
+                                                .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                                                 .analyzes(List.of(
                                                         CcmPtsRequest.OnePropAnalyze.builder()
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
-                                                                .analysisValue(CcmPtsRequest.AnalysisValue.BEST)
+                                                                .analysisValue(AnalysisValue.BEST)
                                                                 .listValues(List.of(
                                                                         CcmPtsRequest.OnePropValue.builder()
                                                                                 .attrCode(64)
