@@ -97,8 +97,12 @@ public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPt
                             .setTypeCode(specCode.getTypeCode().getValue())
                             .setTypeName(specCode.getTypeCode().getDesc())
                             .setValue(attestation.getValue())
-                            .setDocId(attestation.getDocId() != null ? attestation.getDocId().getValue() : -1)
-                            .setDocName(attestation.getDocId() != null ? attestation.getDocId().getDesc() : "")
+                            .setDocId(attestation.getDocId() != null
+                                    ? attestation.getDocId().getValue()
+                                    : DocId.NOT_DEFINED.getValue())
+                            .setDocName(attestation.getDocId() != null
+                                    ? attestation.getDocId().getDesc()
+                                    : DocId.NOT_DEFINED.getDesc())
                             .setNormLimits(prepareNormLimit(attestation))
                             .setMismatch(RecordPtsAttListMismatch.newBuilder()
                                     .setCode(attestation.getStatus() != null ? attestation.getStatus().getValue() : -1)
