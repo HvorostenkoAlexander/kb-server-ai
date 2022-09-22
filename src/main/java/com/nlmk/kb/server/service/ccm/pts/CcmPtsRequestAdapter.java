@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
  */
 public abstract class CcmPtsRequestAdapter {
 
+    private static final List<Integer> allowedMechanicalCode = List.of(
+            SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue()
+    );
     private static final List<Integer> allowedAnalysisCodes =
             Arrays.stream(
                     ("560;567;562;568;563;564;569;" +
@@ -411,7 +414,7 @@ public abstract class CcmPtsRequestAdapter {
      * Только определенные коды для Механики
      */
     private boolean allowMechanicalCode(Integer code) {
-        return SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue().equals(code);
+        return code != null && allowedMechanicalCode.contains(code);
     }
 
     /**
