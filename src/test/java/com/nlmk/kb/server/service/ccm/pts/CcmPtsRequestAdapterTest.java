@@ -208,7 +208,10 @@ class CcmPtsRequestAdapterTest {
                         .build(),
                 PtsMechanicalProperty.builder()
                         .listValues(List.of(
-                                PtsPropertyValue.builder().attrCode(1120).attrValue("1120").attrType(2).build()
+                                PtsPropertyValue.builder().attrCode(1120).attrValue("1120").attrType(2).build(),
+                                PtsPropertyValue.builder().attrCode(3354).attrValue("3354").attrType(1).build(),
+                                PtsPropertyValue.builder().attrCode(3355).attrValue("3355").attrType(1).build(),
+                                PtsPropertyValue.builder().attrCode(3356).attrValue("3356").attrType(1).build()
                         ))
                         .analyzes(List.of(
                                 PtsPropertyAnalyzis.builder()

@@ -20,7 +20,10 @@ import java.util.stream.Collectors;
 public abstract class CcmPtsRequestAdapter {
 
     private static final List<Integer> allowedMechanicalCode = List.of(
-            SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue()
+            SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue(),
+            SpecCode.PERIODIC_TEST_AGING_FACTOR.getValue(),
+            SpecCode.PERIODIC_TEST_FILL_FACTOR.getValue(),
+            SpecCode.PERIODIC_TEST_ELECTRICAL_INSULATION.getValue()
     );
     private static final List<Integer> allowedAnalysisCodes =
             Arrays.stream(
