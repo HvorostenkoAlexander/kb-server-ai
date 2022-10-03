@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PdmConverterTest {
 
@@ -134,6 +135,78 @@ class PdmConverterTest {
         assertEquals("11ЮА",dto.getPrProdMark());
         assertEquals("ТУ 14-106-454-94",dto.getPrStandMark());
         assertEquals("4.00..8.00",dto.getPrThickUncoat().getSrcValue());
+        assertEquals("Тест",dto.getPrAnnotation());
+    }
+
+    @Test
+    void fromTolEvennessDtTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/TolEvennessDt.json"),
+                        SpTolEvennessDt.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTolEvennessDtDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("ДТ 37.06", dto.getDt());
+        assertEquals("IS 3024:2015",dto.getPrStandMark());
+        assertEquals("(150..*", dto.getPrWidthGood().getSrcValue());
+        assertEquals("", dto.getPrEvenness());
+        assertEquals(3.0, dto.getPrEvennessTolMax());
+        assertEquals(1.5, dto.getPrEvennessTolPerc());
+        assertEquals("Тест",dto.getPrAnnotation());
+    }
+
+    @Test
+    void fromTolThickDtTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/TolThickDt.json"),
+                        SpTolThickDt.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTolThickDtDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("100", dto.getRemoteId());
+        assertEquals("ДТ 157.00", dto.getDt());
+        assertEquals("0.35", dto.getPrThickUncoat().getSrcValue());
+        assertEquals("*..0.016", dto.getLongThickDif());
+        assertEquals("*..0.015", dto.getPrUnevenGauge());
+        assertEquals("Тест",dto.getPrAnnotation());
+    }
+
+    @Test
+    void fromTolWidthDtTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/TolWidthDt.json"),
+                        SpTolWidthDt.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTolWidthDtDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("15", dto.getRemoteId());
+        assertEquals("ДТ 37.06", dto.getDt());
+        assertEquals("IS 3024:2015",dto.getPrStandMark());
+        assertEquals("(1000..1020]",dto.getPrWidthGood().getSrcValue());
+        assertEquals(1.5, dto.getPrWidthTolMax());
+        assertEquals("*..0.9",dto.getSickleShape().getSrcValue());
+        assertEquals("*..0.025", dto.getBurr().getSrcValue());
         assertEquals("Тест",dto.getPrAnnotation());
     }
 
