@@ -154,11 +154,11 @@ class RestRequestAdapterTest {
                                         PtsMechanicalProperty.builder()
                                                 .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                                                 .analyzes(List.of(
-                                                        PtsPropertyAnalyzis.builder()
+                                                        PtsPropertyAnalyzes.builder()
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
                                                                 .analysisValue(AnalysisValue.BEST.getValue())
                                                                 .listValues(List.of(
-                                                                        PtsPropertyValue.builder()
+                                                                        PtsPropertyAnalyzesValue.builder()
                                                                                 .attrCode(562)
                                                                                 .attrType(TypeCode.NUMBER.getValue()).build()
                                                                 )).build()
@@ -167,7 +167,7 @@ class RestRequestAdapterTest {
                                                         PtsPropertyValue.builder()
                                                                 .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
                                                                 .attrType(TypeCode.NUMBER.getValue())
-                                                                .attrValue("12")
+                                                                .attrValue(List.of("12"))
                                                                 .build()
                                                 ))
                                                 .build()

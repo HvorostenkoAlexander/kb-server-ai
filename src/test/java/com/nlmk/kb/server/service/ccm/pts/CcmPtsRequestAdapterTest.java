@@ -72,9 +72,9 @@ class CcmPtsRequestAdapterTest {
 
         final var record = prepareMinimalRecordData(20.5f);
         record.setBundles(List.of(
-                RecordBundles.newBuilder().setStripId("s1").setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
-                RecordBundles.newBuilder().setStripId("s2").setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
-                RecordBundles.newBuilder().setStripId("s3").setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
+                RecordBundles.newBuilder().setStripId(1).setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
+                RecordBundles.newBuilder().setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
+                RecordBundles.newBuilder().setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
         ));
         Assertions.assertEquals(30.5, adapter.calcBundleWeight(record));
     }
@@ -198,7 +198,7 @@ class CcmPtsRequestAdapterTest {
                 PtsMechanicalProperty.builder()
                         .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
                         .analyzes(List.of(
-                                PtsPropertyAnalyzis.builder()
+                                PtsPropertyAnalyzes.builder()
                                         .samplingPlaceCode(1)
                                         .analysisValue(AnalysisValue.BEST.getValue())
                                         .listValues(List.of())
@@ -208,22 +208,21 @@ class CcmPtsRequestAdapterTest {
                         .build(),
                 PtsMechanicalProperty.builder()
                         .listValues(List.of(
-                                PtsPropertyValue.builder().attrCode(1120).attrValue("1120").attrType(2).build(),
-                                PtsPropertyValue.builder().attrCode(3354).attrValue("3354").attrType(1).build(),
-                                PtsPropertyValue.builder().attrCode(3355).attrValue("3355").attrType(1).build(),
-                                PtsPropertyValue.builder().attrCode(3356).attrValue("3356").attrType(1).build()
+                                PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("1120")).attrType(2).build(),
+                                PtsPropertyValue.builder().attrCode(3354).attrValue(List.of("3354")).attrType(1).build(),
+                                PtsPropertyValue.builder().attrCode(3355).attrValue(List.of("3355")).attrType(1).build(),
+                                PtsPropertyValue.builder().attrCode(3356).attrValue(List.of("3356")).attrType(1).build()
                         ))
                         .analyzes(List.of(
-                                PtsPropertyAnalyzis.builder()
+                                PtsPropertyAnalyzes.builder()
                                         .samplingPlaceCode(2)
                                         .analysisValue(AnalysisValue.WORST.getValue())
                                         .listValues(
-                                                Arrays.stream(
-                                                                ("560;567;562;568;563;564;569;" +
-                                                                        "529;540;546;549;542;544;552;553;528;541;547;550;543;545;548;551;533;532;536;537;538;539"
-                                                                ).split(";"))
+                                                Arrays.stream((
+                                                                "560;567;562;568;563;564;569;529;540;546;549;542;544;552;553;528;541;547;550;543;545;548;551;533;532;536;537;538;539"
+                                                        ).split(";"))
                                                         .sorted()
-                                                        .map(sc -> PtsPropertyValue.builder()
+                                                        .map(sc -> PtsPropertyAnalyzesValue.builder()
                                                                 .attrCode(Integer.parseInt(sc))
                                                                 .attrValue(sc)
                                                                 .attrType(SpecCode.fromValue(Integer.parseInt(sc)).getTypeCode().getValue())
@@ -292,30 +291,37 @@ class CcmPtsRequestAdapterTest {
                         .setTypeCode(60).setTypeName("t61")
                         .setAttestationList(List.of())
                         .setAnalyzes(List.of(
-                               RecordAnalyzes.newBuilder()
-                                       .setSamplingPlaceCode(111)
-                                       .setSamplingPlaceName("1111")
-                                       .setAnalysisValue(1)
-                                       .setListValues(List.of(
-                                               RecordDataPropertiesAnalyzesListValues.newBuilder()
-                                                       .setAttrCode(540)
-                                                       .setAttrType(2)
-                                                       .setAttrValue("11111")
-                                                       .build(),
-                                               RecordDataPropertiesAnalyzesListValues.newBuilder()
-                                                       .setAttrCode(99999)
-                                                       .setAttrType(2)
-                                                       .setAttrValue("99999")
-                                                       .build()
-                                       ))
-                                       .build()
+                                RecordAnalyzes.newBuilder()
+                                        .setSamplingPlaceCode(111)
+                                        .setSamplingPlaceName("1111")
+                                        .setAnalysisValue(1)
+                                        .setListValues(List.of(
+                                                RecordDataPropertiesAnalyzesListValues.newBuilder()
+                                                        .setAttrCode(540)
+                                                        .setAttrType(2)
+                                                        .setAttrValue("11111")
+                                                        .build(),
+                                                RecordDataPropertiesAnalyzesListValues.newBuilder()
+                                                        .setAttrCode(99999)
+                                                        .setAttrType(2)
+                                                        .setAttrValue("99999")
+                                                        .build()
+                                        ))
+                                        .build()
                         ))
                         .setListValues(List.of(
                                 RecordDataPropertiesListValues.newBuilder()
-                                        .setAttrCode(1).setAttrValue("1").setAttrType(1)
+                                        .setAttrCode(1)
+                                        .setAttrValue(List.of(
+                                                RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("1").build()
+                                        )).setAttrType(1)
                                         .build(),
                                 RecordDataPropertiesListValues.newBuilder()
-                                        .setAttrCode(1120).setAttrValue("2").setAttrType(1)
+                                        .setAttrCode(1120)
+                                        .setAttrValue(List.of(
+                                                RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("2").build()
+                                        ))
+                                        .setAttrType(1)
                                         .build()
                         ))
                         .build(),
@@ -326,10 +332,18 @@ class CcmPtsRequestAdapterTest {
                         .setAttestationList(List.of())
                         .setListValues(List.of(
                                 RecordDataPropertiesListValues.newBuilder()
-                                        .setAttrCode(3).setAttrValue("3").setAttrType(1)
+                                        .setAttrCode(3)
+                                        .setAttrValue(List.of(
+                                                RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("3").build()
+                                        ))
+                                        .setAttrType(1)
                                         .build(),
                                 RecordDataPropertiesListValues.newBuilder()
-                                        .setAttrCode(1120).setAttrValue("4").setAttrType(1)
+                                        .setAttrCode(1120)
+                                        .setAttrValue(List.of(
+                                                RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("4").build()
+                                        ))
+                                        .setAttrType(1)
                                         .build()
                         ))
                         .build()
@@ -338,22 +352,23 @@ class CcmPtsRequestAdapterTest {
         var expected2 = List.of(
                 PtsMechanicalProperty.builder()
                         .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
-                        .analyzes(List.of(PtsPropertyAnalyzis.builder()
-                                .samplingPlaceCode(111)
-                                .samplingPlaceName("1111")
-                                .analysisValue(1)
-                                .listValues(List.of(
-                                        PtsPropertyValue.builder().attrCode(540).attrType(2).attrValue("11111").build()
-                                ))
-                                .build()))
+                        .analyzes(List.of(
+                                PtsPropertyAnalyzes.builder()
+                                        .samplingPlaceCode(111)
+                                        .samplingPlaceName("1111")
+                                        .analysisValue(1)
+                                        .listValues(List.of(
+                                                PtsPropertyAnalyzesValue.builder().attrCode(540).attrType(2).attrValue("11111").build()
+                                        ))
+                                        .build()))
                         .listValues(List.of(
-                        PtsPropertyValue.builder().attrCode(1120).attrValue("2").attrType(1).build()
-                )).build(),
+                                PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("2")).attrType(1).build()
+                        )).build(),
                 PtsMechanicalProperty.builder()
                         .typeCode(3).typeName("3").testDate("3").probeCode(3).probeName("3")
                         .listValues(List.of(
-                        PtsPropertyValue.builder().attrCode(1120).attrValue("4").attrType(1).build()
-                )).build()
+                                PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("4")).attrType(1).build()
+                        )).build()
         );
 
         Assertions.assertEquals(expected2, adapter.prepareMechanicalProperties(record));

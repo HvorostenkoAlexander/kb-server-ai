@@ -160,11 +160,11 @@ class SendMessageToKafkaTest {
                 .setSpecifications(List.of())
                 .setBundles(List.of(
                         RecordBundles.newBuilder()
-                                .setStripId("s1").setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
+                                .setStripId(1).setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
                         RecordBundles.newBuilder()
-                                .setStripId("s2").setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
+                                .setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
                         RecordBundles.newBuilder()
-                                .setStripId("s3").setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
+                                .setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
                 ))
                 .setProperties(List.of(
                         RecordProperties.newBuilder()
@@ -174,13 +174,17 @@ class SendMessageToKafkaTest {
                                 .setAttestationList(List.of())
                                 .setListValues(List.of(
                                         RecordDataPropertiesListValues.newBuilder()
-                                                .setAttrCode(3).setAttrValue("3").setAttrType(1)
+                                                .setAttrCode(3)
+                                                .setAttrValue(List.of(
+                                                        RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("3").build()
+                                                )).setAttrType(1)
                                                 .build(),
                                         RecordDataPropertiesListValues.newBuilder()
                                                 .setAttrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
                                                 .setAttrType(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getTypeCode().getValue())
-                                                .setAttrValue("4")
-                                                .build()
+                                                .setAttrValue(List.of(
+                                                        RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("4").build()
+                                                )).build()
                                 ))
                                 .build()
                 ))

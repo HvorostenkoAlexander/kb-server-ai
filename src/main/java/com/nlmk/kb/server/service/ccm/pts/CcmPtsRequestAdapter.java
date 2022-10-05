@@ -6,6 +6,7 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesListValuesAttrValue;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -297,7 +298,7 @@ public abstract class CcmPtsRequestAdapter {
         requestMessage.getData().getProperties().forEach(p -> {
 
             List<PtsPropertyValue> listValues = null;
-            List<PtsPropertyAnalyzis> listAnalysis = null;
+            List<PtsPropertyAnalyzes> listAnalyzes = null;
 
             if (!CollectionUtils.isEmpty(p.getListValues())) {
                 listValues = p.getListValues().stream()
@@ -305,22 +306,22 @@ public abstract class CcmPtsRequestAdapter {
                         .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType().getValue())
-                                .attrValue(v.getAttrValue())
+                                .attrValue(v.getAttrValue() == null ? List.of() : List.of(v.getAttrValue()))
                                 .attrFormat(v.getAttrFormat())
                                 .attrMeasure(v.getAttrMeasure())
                                 .build())
                         .collect(Collectors.toUnmodifiableList());
             }
             if (!CollectionUtils.isEmpty(p.getAnalyzes())) {
-                listAnalysis = p.getAnalyzes().stream()
-                        .map(a -> PtsPropertyAnalyzis.builder()
+                listAnalyzes = p.getAnalyzes().stream()
+                        .map(a -> PtsPropertyAnalyzes.builder()
                                 .samplingPlaceCode(a.getSamplingPlaceCode())
                                 .samplingPlaceName(a.getSamplingPlaceName())
                                 .analysisValue(a.getAnalysisValue().getValue())
                                 .listValues(
                                         a.getListValues().stream()
                                                 .filter(v -> allowMechanicalAnalysisCode(v.getAttrCode()))
-                                                .map(v -> PtsPropertyValue.builder()
+                                                .map(v -> PtsPropertyAnalyzesValue.builder()
                                                         .attrCode(v.getAttrCode())
                                                         .attrType(v.getAttrType().getValue())
                                                         .attrValue(v.getAttrValue())
@@ -332,7 +333,7 @@ public abstract class CcmPtsRequestAdapter {
                                 .build())
                         .collect(Collectors.toUnmodifiableList());
             }
-            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalysis)) {
+            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalyzes)) {
                 properties.add(PtsMechanicalProperty.builder()
                                 .probeCode(p.getProbeCode())
                                 .probeName(p.getProbeName())
@@ -340,7 +341,7 @@ public abstract class CcmPtsRequestAdapter {
                                 .typeCode(p.getTypeCode())
                                 .typeName(p.getTypeName())
                         .listValues(listValues)
-                        .analyzes(listAnalysis)
+                        .analyzes(listAnalyzes)
                         .build());
             }
         });
@@ -362,7 +363,7 @@ public abstract class CcmPtsRequestAdapter {
         recordData.getProperties().forEach(p -> {
 
             List<PtsPropertyValue> listValues = null;
-            List<PtsPropertyAnalyzis> listAnalysis = null;
+            List<PtsPropertyAnalyzes> listAnalyzes = null;
 
             if (!CollectionUtils.isEmpty(p.getListValues())) {
                 listValues = p.getListValues().stream()
@@ -370,22 +371,22 @@ public abstract class CcmPtsRequestAdapter {
                         .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType())
-                                .attrValue(AdapterUtils.sequenceToString(v.getAttrValue()))
+                                .attrValue(prepareAttrValueList(v.getAttrValue()))
                                 .attrFormat(AdapterUtils.sequenceToString(v.getAttrFormat()))
                                 .attrMeasure(AdapterUtils.sequenceToString(v.getAttrMeasure()))
                                 .build())
                         .collect(Collectors.toUnmodifiableList());
             }
             if (!CollectionUtils.isEmpty(p.getAnalyzes())) {
-                listAnalysis = p.getAnalyzes().stream()
-                        .map(a -> PtsPropertyAnalyzis.builder()
+                listAnalyzes = p.getAnalyzes().stream()
+                        .map(a -> PtsPropertyAnalyzes.builder()
                                 .samplingPlaceCode(a.getSamplingPlaceCode())
                                 .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                                 .analysisValue(a.getAnalysisValue())
                                 .listValues(
                                         a.getListValues().stream()
                                                 .filter(v -> allowMechanicalAnalysisCode(v.getAttrCode()))
-                                                .map(v -> PtsPropertyValue.builder()
+                                                .map(v -> PtsPropertyAnalyzesValue.builder()
                                                         .attrCode(v.getAttrCode())
                                                         .attrType(v.getAttrType())
                                                         .attrValue(AdapterUtils.sequenceToString(v.getAttrValue()))
@@ -397,7 +398,7 @@ public abstract class CcmPtsRequestAdapter {
                                 .build())
                         .collect(Collectors.toUnmodifiableList());
             }
-            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalysis)) {
+            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalyzes)) {
                 properties.add(PtsMechanicalProperty.builder()
                         .probeCode(p.getProbeCode())
                         .probeName(AdapterUtils.sequenceToString(p.getProbeName()))
@@ -405,7 +406,7 @@ public abstract class CcmPtsRequestAdapter {
                         .typeCode(p.getTypeCode())
                         .typeName(AdapterUtils.sequenceToString(p.getTypeName()))
                         .listValues(listValues)
-                        .analyzes(listAnalysis)
+                        .analyzes(listAnalyzes)
                         .build());
             }
         });
@@ -426,4 +427,17 @@ public abstract class CcmPtsRequestAdapter {
     private boolean allowMechanicalAnalysisCode(Integer code) {
         return code != null && allowedAnalysisCodes.contains(code);
     }
+
+    private List<String> prepareAttrValueList(List<RecordDataPropertiesListValuesAttrValue> listValues) {
+        if (CollectionUtils.isEmpty(listValues)) {
+            return List.of();
+        }
+
+        return listValues.stream()
+                .filter(Objects::nonNull)
+                .map(v -> AdapterUtils.sequenceToString(v.getValue()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
 }
