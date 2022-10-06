@@ -62,8 +62,15 @@
                 <INST_ID>00000001</INST_ID>
                 <CHARC>SHOT_MIN</CHARC>
                 <CHARC_TXT>Ширина от, мм</CHARC_TXT>
-                <VALUE>1,250.0</VALUE>
+                <VALUE>1,250.0</VALUE><!-- ошибка в формате -->
                 <VALUE_TXT>1.250,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>SHOT_MAX</CHARC>
+                <CHARC_TXT>Ширина до, мм</CHARC_TXT>
+                <VALUE>1,234,567.8</VALUE><!-- ошибка в формате -->
+                <VALUE_TXT>1.234.567,8 мм</VALUE_TXT>
             </E1CUVAL>
             <E1CUVAL SEGMENT="1">
                 <INST_ID>00000001</INST_ID>
@@ -84,6 +91,50 @@
                 <CHARC_TXT>Характер кромки</CHARC_TXT>
                 <VALUE>НО</VALUE>
                 <VALUE_TXT>необрезная</VALUE_TXT>
+            </E1CUVAL>
+            <!-- значения с нарушением формата -->
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>TEXK</CHARC>
+                <CHARC_TXT>Технологическая карта(ТК), ВТК</CHARC_TXT>
+                <VALUE>-</VALUE>
+                <AUTHOR>4</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>RABPL</CHARC>
+                <CHARC_TXT>Номер РП.версия/маршрут</CHARC_TXT>
+                <VALUE>-</VALUE><!-- ошибка в формате -->
+                <VALUE_TXT>-</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>GROT</CHARC>
+                <CHARC_TXT>Группа отделки поверхности</CHARC_TXT>
+                <VALUE>-</VALUE><!-- ошибка в формате -->
+                <VALUE_TXT>Не требуется</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>ROUTE_TK</CHARC>
+                <CHARC_TXT>Маршрут из техкарты</CHARC_TXT>
+                <VALUE>-</VALUE><!-- ошибка в формате -->
+                <VALUE_TXT>не требуется</VALUE_TXT>
+                <AUTHOR>4</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>DLIN_MIN</CHARC>
+                <CHARC_TXT>Длина от, мм</CHARC_TXT>
+                <VALUE> 6,000 </VALUE><!-- ошибка в формате -->
+                <VALUE_TXT>6 000,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>DLIN_MAX</CHARC>
+                <CHARC_TXT>Длина до, мм</CHARC_TXT>
+                <VALUE>3,000.0</VALUE><!-- ошибка в формате -->
+                <VALUE_TXT>3 000,0 мм</VALUE_TXT>
             </E1CUVAL>
         </E1CUCFG>
         <E1EDS01 SEGMENT="1"/>
