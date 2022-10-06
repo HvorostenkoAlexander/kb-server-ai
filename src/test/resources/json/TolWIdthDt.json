@@ -1,0 +1,118 @@
+{
+  "ts": "2022-09-06T12:52:00.1201688+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "521665",
+    "id": "15"
+  },
+  "data": {
+    "specifications": [
+      {
+        "specCode": 955,
+        "specName": "Дополнительные требования",
+        "specTypeCode": 1,
+        "specValue": "ДТ 37.06",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1,
+        "specName": "Стандарт на продукцию",
+        "specTypeCode": 1,
+        "specValue": "IS 3024:2015",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 3,
+        "specName": "Марка на продукцию",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 591,
+        "specName": "Вид поставки",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 587,
+        "specName": "Ширина продукции",
+        "specTypeCode": 1,
+        "specValue": "(1000..1020]",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 416,
+        "specName": "Толщина продукции",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 592,
+        "specName": "Длина продукции",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 431,
+        "specName": "Характер кромки",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 593,
+        "specName": "Точность изготовления по ширине",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 234,
+        "specName": "Допуск по ширине (-)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 233,
+        "specName": "Допуск по ширине (+)",
+        "specTypeCode": 1,
+        "specValue": "1.5",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 594,
+        "specName": "Допуск по ширине в процентах (+)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "%"
+      },
+      {
+        "specCode": 1176,
+        "specName": "Серповидность",
+        "specTypeCode": 1,
+        "specValue": "*..0.9",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1037,
+        "specName": "Заусенец",
+        "specTypeCode": 1,
+        "specValue": "*..0.025",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Тест",
+        "specMeasure": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "ts": "2022-09-06T12:51:57.4785709+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "521662",
+    "id": "100"
+  },
+  "data": {
+    "specifications": [
+      {
+        "specCode": 3,
+        "specName": "Марка на продукцию",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1,
+        "specName": "Стандарт на продукцию",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 588,
+        "specName": "Точность изготовления по толщине",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 586,
+        "specName": "Толщина проката",
+        "specTypeCode": 1,
+        "specValue": "0.35",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 587,
+        "specName": "Ширина продукции",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 589,
+        "specName": "Допуск по толщине (-)",
+        "specTypeCode": 1,
+        "specValue": "0.020",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 590,
+        "specName": "Допуск по толщине (+)",
+        "specTypeCode": 1,
+        "specValue": "0.020",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1779,
+        "specName": "Продольная разнотолщинность",
+        "specTypeCode": 1,
+        "specValue": "*..0.016",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 985,
+        "specName": "Поперечная разнотолщинность",
+        "specTypeCode": 1,
+        "specValue": "*..0.015",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Тест",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 955,
+        "specName": "Дополнительные требования",
+        "specTypeCode": 1,
+        "specValue": "ДТ 157.00",
+        "specMeasure": ""
+      }
+    ]
+  }
+}

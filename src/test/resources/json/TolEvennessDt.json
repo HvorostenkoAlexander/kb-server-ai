@@ -1,0 +1,69 @@
+{
+  "ts": "2022-09-06T12:52:02.9824941+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "525447",
+    "id": "5"
+  },
+  "data": {
+    "specifications": [
+      {
+        "specCode": 955,
+        "specName": "Дополнительные требования",
+        "specTypeCode": 1,
+        "specValue": "ДТ 37.06",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1,
+        "specName": "Стандарт на продукцию",
+        "specTypeCode": 1,
+        "specValue": "IS 3024:2015",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 587,
+        "specName": "Ширина продукции",
+        "specTypeCode": 1,
+        "specValue": "(150..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 416,
+        "specName": "Толщина продукции",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 43,
+        "specName": "Плоскостность",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 598,
+        "specName": "Допуск по плоскостности (+)",
+        "specTypeCode": 1,
+        "specValue": "3.0",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 599,
+        "specName": "Допуск по плоскостности в процентах (+)",
+        "specTypeCode": 1,
+        "specValue": "1.5",
+        "specMeasure": "%"
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Тест",
+        "specMeasure": ""
+      }
+    ]
+  }
+}

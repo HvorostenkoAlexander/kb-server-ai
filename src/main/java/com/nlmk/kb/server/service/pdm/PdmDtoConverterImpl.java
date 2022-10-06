@@ -866,4 +866,79 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public TolEvennessDtDto toTolEvennessDtDto(PdmDictionary dictionary) {
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        return TolEvennessDtDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
+                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prEvenness(converter.getStringSpecValue(specs, EVENNESS))
+                .prEvennessTolMax(converter.parseToDouble(
+                        converter.getStringSpecValue(specs, EVENNESS_TOLERANCE)
+                ))
+                .prEvennessTolPerc(converter.parseToDouble(
+                        converter.getStringSpecValue(specs, EVENNESS_TOLERANCE_PERCENT)
+                ))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public TolThickDtDto toTolThickDtDto(PdmDictionary dictionary) {
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        return TolThickDtDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
+                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+
+                .rollingThickAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
+                .prThickTolMin(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_MIN))
+                .prThickTolMax(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_MAX))
+                .longThickDif(converter.getStringSpecValue(specs, LONG_THICK_DIFF))
+                .prUnevenGauge(converter.getStringSpecValue(specs, UNEVEN_GAUGE))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public TolWidthDtDto toTolWidthDtDto(PdmDictionary dictionary) {
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        return TolWidthDtDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
+                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prFormSap(converter.getStringSpecValue(specs, FORM_SAP))
+                .rollingWidthAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_WIDTH))
+
+                .prLengthGood(converter.getLimitSpecValue(specs, LENGTH_PRODUCT))
+                .prCrop(converter.getStringSpecValue(specs, EDGE_CHARACTER))
+                .prWidthTolMin(converter.parseToDouble(
+                        converter.getStringSpecValue(specs, WIDTH_TOLERANCE_MIN)
+                ))
+                .prWidthTolMax(converter.parseToDouble(
+                        converter.getStringSpecValue(specs, WIDTH_TOLERANCE_MAX)
+                ))
+                .prWidthTolPerc(converter.getStringSpecValue(specs, WHIDTH_TOLERANCE_PERCENT))
+                .sickleShape(converter.getLimitSpecValue(specs, SICKLE_SHAPE))
+                .burr(converter.getLimitSpecValue(specs, BURR))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
 }
