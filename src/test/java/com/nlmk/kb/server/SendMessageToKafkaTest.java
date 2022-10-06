@@ -330,6 +330,11 @@ class SendMessageToKafkaTest {
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("ДТ 37.06").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getValue())
+                                        .setSpecName(SpecCode.THICKNESS_OF_ROLLED_PRODUCTS.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("7.06").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
                                         .setSpecCode(SpecCode.WHIDTH_PRODUCT.getValue())
                                         .setSpecName(SpecCode.WHIDTH_PRODUCT.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
@@ -375,35 +380,45 @@ class SendMessageToKafkaTest {
                 .setData(nlmk.l3.pdm.Data.newBuilder()
                         .setSpecifications(List.of(
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
-                                        .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
-                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
-                                        .setSpecValue("IS 3024:2015").build(),
-                                nlmk.l3.pdm.Spec.newBuilder()
                                         .setSpecCode(SpecCode.ADDITIONAL_REQUIREMENTS.getValue())
                                         .setSpecName(SpecCode.ADDITIONAL_REQUIREMENTS.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("ДТ 157.00").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.UNEVEN_GAUGE.getValue())
-                                        .setSpecName(SpecCode.UNEVEN_GAUGE.getDesc())
+                                        .setSpecCode(SpecCode.THICKNESS_PRODUCTS.getValue())
+                                        .setSpecName(SpecCode.THICKNESS_PRODUCTS.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("2.65").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.WHIDTH_PRODUCT.getValue())
+                                        .setSpecName(SpecCode.WHIDTH_PRODUCT.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
-                                        .setSpecValue("*..0.015").build(),
+                                        .setSpecValue("(1000..1020]").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.MANUFACTURING_PRECISION_BY_THICKNESS.getValue())
+                                        .setSpecName(SpecCode.MANUFACTURING_PRECISION_BY_THICKNESS.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("1").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.THICKNESS_TOLERANCE_MIN.getValue())
+                                        .setSpecName(SpecCode.THICKNESS_TOLERANCE_MIN.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("1.1").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.THICKNESS_TOLERANCE_MAX.getValue())
+                                        .setSpecName(SpecCode.THICKNESS_TOLERANCE_MAX.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("1.1").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
                                         .setSpecCode(SpecCode.LONG_THICK_DIFF.getValue())
                                         .setSpecName(SpecCode.LONG_THICK_DIFF.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("*..0.016").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.THICKNESS_TOLERANCE_PERCENT_MAX.getValue())
-                                        .setSpecName(SpecCode.THICKNESS_TOLERANCE_PERCENT_MAX.getDesc())
-                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
-                                        .setSpecValue("0.020").build(),
-                                nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.THICKNESS_TOLERANCE_PERCENT_MIN.getValue())
-                                        .setSpecName(SpecCode.THICKNESS_TOLERANCE_PERCENT_MIN.getDesc())
-                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
-                                        .setSpecValue("0.020").build(),
+                                        .setSpecCode(SpecCode.UNEVEN_GAUGE.getValue())
+                                        .setSpecName(SpecCode.UNEVEN_GAUGE.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("*..0.015").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
                                         .setSpecCode(SpecCode.NOTE.getValue())
                                         .setSpecName(SpecCode.NOTE.getDesc())
@@ -455,25 +470,55 @@ class SendMessageToKafkaTest {
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("(1000..1020]").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.BURR.getValue())
-                                        .setSpecName(SpecCode.BURR.getDesc())
+                                        .setSpecCode(SpecCode.THICKNESS_PRODUCTS.getValue())
+                                        .setSpecName(SpecCode.THICKNESS_PRODUCTS.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
-                                        .setSpecValue("*..0.025").build(),
+                                        .setSpecValue("2.65").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.FORM_SAP.getValue())
+                                        .setSpecName(SpecCode.FORM_SAP.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("2").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.MANUFACTURING_PRECISION_BY_WIDTH.getValue())
+                                        .setSpecName(SpecCode.MANUFACTURING_PRECISION_BY_WIDTH.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("3").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.LENGTH_PRODUCT.getValue())
+                                        .setSpecName(SpecCode.LENGTH_PRODUCT.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("100.").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.EDGE_CHARACTER.getValue())
+                                        .setSpecName(SpecCode.EDGE_CHARACTER.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("1").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.WIDTH_TOLERANCE_MIN.getValue())
+                                        .setSpecName(SpecCode.WIDTH_TOLERANCE_MIN.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("3.5").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.WIDTH_TOLERANCE_MAX.getValue())
+                                        .setSpecName(SpecCode.WIDTH_TOLERANCE_MAX.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("3.6").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.WHIDTH_TOLERANCE_PERCENT.getValue())
+                                        .setSpecName(SpecCode.WHIDTH_TOLERANCE_PERCENT.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("6").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
                                         .setSpecCode(SpecCode.SICKLE_SHAPE.getValue())
                                         .setSpecName(SpecCode.SICKLE_SHAPE.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("*..0.9").build(),
-//                                nlmk.l3.pdm.Spec.newBuilder()
-//                                        .setSpecCode(SpecCode.THICKNESS_TOLERANCE_PERCENT_MAX.getValue())
-//                                        .setSpecName(SpecCode.THICKNESS_TOLERANCE_PERCENT_MAX.getDesc())
-//                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
-//                                        .setSpecValue("0.020").build(),
-//                                nlmk.l3.pdm.Spec.newBuilder()
-//                                        .setSpecCode(SpecCode.THICKNESS_TOLERANCE_PERCENT_MIN.getValue())
-//                                        .setSpecName(SpecCode.THICKNESS_TOLERANCE_PERCENT_MIN.getDesc())
-//                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
-//                                        .setSpecValue("0.020").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.BURR.getValue())
+                                        .setSpecName(SpecCode.BURR.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("*..0.025").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
                                         .setSpecCode(SpecCode.NOTE.getValue())
                                         .setSpecName(SpecCode.NOTE.getDesc())
