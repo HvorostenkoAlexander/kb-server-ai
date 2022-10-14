@@ -118,6 +118,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prThickTolMax(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_MAX))
                 .prThickTolMinPerc(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_PERCENT_MIN))
                 .prThickTolMaxPerc(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_PERCENT_MAX))
+                .prUnevenGauge(converter.getStringSpecValue(specs, UNEVEN_GAUGE))
+                .longThickDif(converter.getStringSpecValue(specs, LONG_THICK_DIFF))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }

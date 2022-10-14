@@ -210,4 +210,25 @@ class PdmConverterTest {
         assertEquals("Тест",dto.getPrAnnotation());
     }
 
+    @Test
+    void fromSpTolThickTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTolThick.json"),
+                        SpTolThick.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toThicknessTkLimitDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("7999", dto.getRemote_id());
+        assertEquals("(2.50..3.00]", dto.getPrThickGood().getSrcValue());
+        assertEquals("1.55", dto.getLongThickDif());
+        assertEquals("", dto.getPrUnevenGauge());
+        assertEquals("Тест",dto.getPrAnnotation());
+    }
 }
