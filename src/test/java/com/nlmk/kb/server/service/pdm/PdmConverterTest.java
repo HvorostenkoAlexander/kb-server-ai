@@ -139,6 +139,31 @@ class PdmConverterTest {
     }
 
     @Test
+    void fromTolEvennessTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTolEvenness.json"),
+                        SpTolEvenness.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toEvennessTkLimitDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("СТО 05757665-075-2019", dto.getStandSort());
+        assertEquals("(150..*", dto.getPrWidthGood().getSrcValue());
+        assertEquals("2", dto.getPrEvenness());
+        assertEquals(4.0, dto.getPrEvennessTolMax());
+        assertEquals(2.0, dto.getPrEvennessTolPerc());
+        assertEquals("РЛН",dto.getPrFormSap());
+        assertEquals("6",dto.getPrYield().getSrcValue());
+        assertEquals("Тест",dto.getPrAnnotation());
+    }
+
+    @Test
     void fromTolEvennessDtTest() throws Exception {
         final var obj = new ObjectMapper()
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
