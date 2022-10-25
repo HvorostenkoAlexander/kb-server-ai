@@ -319,6 +319,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .prEvenness(converter.getStringSpecValue(specs, EVENNESS))
                 .prYield(converter.getLimitSpecValue(specs, YIELD_POINT))
+                .prFormSap(converter.getStringSpecValue(specs, FORM_SAP))
                 .prEvennessTolMax(converter.parseToDouble(
                         converter.getStringSpecValue(specs, EVENNESS_TOLERANCE)
                 ))
