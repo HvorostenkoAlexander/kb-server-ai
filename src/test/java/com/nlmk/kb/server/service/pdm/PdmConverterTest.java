@@ -158,7 +158,7 @@ class PdmConverterTest {
         assertEquals("2", dto.getPrEvenness());
         assertEquals(4.0, dto.getPrEvennessTolMax());
         assertEquals(2.0, dto.getPrEvennessTolPerc());
-        assertEquals("РЛН",dto.getPrFormSap());
+        assertEquals("ЛНТ;РЛН;РСП",dto.getPrFormSap().getSrcValue());
         assertEquals("6",dto.getPrYield().getSrcValue());
         assertEquals("Тест",dto.getPrAnnotation());
     }
@@ -229,6 +229,7 @@ class PdmConverterTest {
         assertEquals("ДТ 37.06", dto.getDt());
         assertEquals("IS 3024:2015",dto.getPrStandMark());
         assertEquals("(1000..1020]",dto.getPrWidthGood().getSrcValue());
+        assertEquals("ЛНТ;РЛН;РСП",dto.getPrFormSap().getSrcValue());
         assertEquals(1.5, dto.getPrWidthTolMax());
         assertEquals("*..0.9",dto.getSickleShape().getSrcValue());
         assertEquals("*..0.025", dto.getBurr().getSrcValue());
