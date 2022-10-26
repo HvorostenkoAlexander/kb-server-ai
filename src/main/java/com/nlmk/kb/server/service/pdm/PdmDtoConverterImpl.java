@@ -319,7 +319,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .prEvenness(converter.getStringSpecValue(specs, EVENNESS))
                 .prYield(converter.getLimitSpecValue(specs, YIELD_POINT))
-                .prFormSap(converter.getStringSpecValue(specs, FORM_SAP))
+                .prFormSap(converter.getLimitSpecValue(specs, FORM_SAP))
                 .prEvennessTolMax(converter.parseToDouble(
                         converter.getStringSpecValue(specs, EVENNESS_TOLERANCE)
                 ))
@@ -926,7 +926,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
                 .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
-                .prFormSap(converter.getStringSpecValue(specs, FORM_SAP))
+                .prFormSap(converter.getLimitSpecValue(specs, FORM_SAP))
                 .rollingWidthAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_WIDTH))
 
                 .prLengthGood(converter.getLimitSpecValue(specs, LENGTH_PRODUCT))

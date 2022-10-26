@@ -33,7 +33,7 @@
         "specCode": 591,
         "specName": "Вид поставки",
         "specTypeCode": 1,
-        "specValue": "",
+        "specValue": "ЛНТ;РЛН;РСП",
         "specMeasure": ""
       },
       {
