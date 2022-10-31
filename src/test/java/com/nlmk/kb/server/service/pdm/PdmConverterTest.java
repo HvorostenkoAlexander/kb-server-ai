@@ -257,4 +257,29 @@ class PdmConverterTest {
         assertEquals("", dto.getPrUnevenGauge());
         assertEquals("Тест",dto.getPrAnnotation());
     }
+
+    @Test
+    void fromSpTolWidthTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTolWidth.json"),
+                        SpTolEvenness.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toWidthTkLimitDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("ТУ 14-1-3441-82", dto.getStandSort());
+        assertEquals("40.0;80.0", dto.getPrWidthGood().getSrcValue());
+        assertEquals("НО", dto.getPrCrop());
+        assertEquals(0.1, dto.getPrWidthTolMax());
+        assertEquals(0.2, dto.getPrWidthTolMin());
+        assertEquals("[200...*)",dto.getPrLengthGood().getSrcValue());
+        assertEquals("*..3",dto.getCrescent().getSrcValue());
+        assertEquals("*..0.015",dto.getBurr().getSrcValue());
+    }
 }
