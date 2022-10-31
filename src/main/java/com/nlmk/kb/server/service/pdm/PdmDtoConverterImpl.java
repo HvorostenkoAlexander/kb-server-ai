@@ -150,6 +150,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                         converter.getStringSpecValue(specs, WIDTH_TOLERANCE_MAX)
                 ))
                 .prWidthTolPerc(converter.getStringSpecValue(specs, WHIDTH_TOLERANCE_PERCENT))
+                .crescent(converter.getLimitSpecValue(specs, SICKLE_SHAPE))
+                .burr(converter.getLimitSpecValue(specs, ZAUSENEC))
                 .build();
     }
 
