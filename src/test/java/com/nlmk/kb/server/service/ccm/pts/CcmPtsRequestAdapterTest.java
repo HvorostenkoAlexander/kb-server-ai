@@ -3,20 +3,37 @@ package com.nlmk.kb.server.service.ccm.pts;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.config.AllowedCodesConfig;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
+@SpringBootTest
 class CcmPtsRequestAdapterTest {
 
+    @Autowired
+    AllowedCodesConfig allowedCodesConfig;
+
     private static class Adapter extends CcmPtsRequestAdapter {
+        protected Adapter(AllowedCodesConfig allowedCodesConfig) {
+            super(allowedCodesConfig);
+        }
     }
 
-    private final Adapter adapter = new Adapter();
+    private Adapter adapter;
+
+    @BeforeEach
+    void initAdapter() {
+        adapter = new Adapter(allowedCodesConfig);
+    }
 
     private RecordData prepareMinimalRecordData(Float weightNet) {
         return RecordData.newBuilder()

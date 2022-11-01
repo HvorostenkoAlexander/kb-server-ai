@@ -2,10 +2,10 @@ package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -13,10 +13,15 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implements KafkaRequestAdapter<nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1> {
 
     private final CommonConverter converter;
+
+    public CcmPtsKafkaRequestAdapterImpl(AllowedCodesConfig allowedCodesConfig,
+                                         CommonConverter converter) {
+        super(allowedCodesConfig);
+        this.converter = converter;
+    }
 
     @Override
     public AttestationRequest adapt(nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1 requestMessagePts) {

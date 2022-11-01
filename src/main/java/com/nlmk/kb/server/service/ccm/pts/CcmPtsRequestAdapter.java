@@ -1,38 +1,54 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.*;
-import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
+import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.util.AdapterUtils;
-import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
-import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
-import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesListValuesAttrValue;
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesListValuesAttrValue;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Общие методы подготовки Запроса на Аттестацию
  */
+@Slf4j
 public abstract class CcmPtsRequestAdapter {
 
-    private static final List<Integer> allowedMechanicalCode = List.of(
-            SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue(),
-            SpecCode.PERIODIC_TEST_AGING_FACTOR.getValue(),
-            SpecCode.PERIODIC_TEST_FILL_FACTOR.getValue(),
-            SpecCode.PERIODIC_TEST_ELECTRICAL_INSULATION.getValue()
-    );
-    private static final List<Integer> allowedAnalysisCodes =
-            Arrays.stream(
-                    ("560;567;562;568;563;564;569;" +
-                            "529;540;546;549;542;544;552;553;528;541;547;550;543;545;548;551;533;532;536;537;538;539"
-                    ).split(";"))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toUnmodifiableList());
+    private final List<Integer> allowedMechanicalCodes;
+    private final List<Integer> allowedAnalysisCodes;
+
+    protected CcmPtsRequestAdapter(AllowedCodesConfig allowedCodesConfig) {
+        log.info("CcmPtsRequestAdapter created with allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
+        log.info("CcmPtsRequestAdapter created with allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
+        var allowedMechanicalCodesProp = Optional.of(allowedCodesConfig.getAllowedMechanicalCodes());
+        var allowedAnalysisCodesProp = Optional.of(allowedCodesConfig.getAllowedAnalysisCodes());
+        if (allowedAnalysisCodesProp.isEmpty()) {
+            log.warn("Не указано property apcs-allowed.analysis.codes");
+        }
+        if (allowedMechanicalCodesProp.isEmpty()) {
+            log.warn("Не указано property apcs-allowed.mechanical.codes");
+        }
+        allowedMechanicalCodes = Arrays.stream(allowedMechanicalCodesProp.orElse(StringUtils.EMPTY).split(";"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toUnmodifiableList());
+        allowedAnalysisCodes = Arrays.stream(allowedAnalysisCodesProp.orElse(StringUtils.EMPTY).split(";"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toUnmodifiableList());
+    }
 
     /**
      * Расчёт массы связки
@@ -418,7 +434,7 @@ public abstract class CcmPtsRequestAdapter {
      * Только определенные коды для Механики
      */
     private boolean allowMechanicalCode(Integer code) {
-        return code != null && allowedMechanicalCode.contains(code);
+        return code != null && allowedMechanicalCodes.contains(code);
     }
 
     /**

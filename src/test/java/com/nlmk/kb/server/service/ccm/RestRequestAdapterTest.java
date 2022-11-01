@@ -1,29 +1,51 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.specification.TypeCode;
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AnalysisValue;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
+import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
+// ApplicationContext will be loaded from the OrderServiceConfig class
 class RestRequestAdapterTest {
 
+    @Autowired
+    AllowedCodesConfig allowedCodesConfig;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private final CommonConverter commonConverter = new CommonConverterImpl();
-    private final RestRequestAdapter<CcmPtsRequest> ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(commonConverter);
+    private RestRequestAdapter<CcmPtsRequest> ccmPtsAdapter;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+    @BeforeEach
+    void initAdapter() {
+        ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(allowedCodesConfig, commonConverter);
+    }
 
     @Test
     void adaptCcmPts() {

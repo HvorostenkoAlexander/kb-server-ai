@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +11,15 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implements RestRequestAdapter<CcmPtsRequest> {
 
     private final CommonConverter converter;
+
+    public CcmPtsRestRequestAdapterImpl(AllowedCodesConfig allowedCodesConfig,
+                                        CommonConverter converter) {
+        super(allowedCodesConfig);
+        this.converter = converter;
+    }
 
     @Override
     public AttestationRequest adapt(CcmPtsRequest requestMessage) {
