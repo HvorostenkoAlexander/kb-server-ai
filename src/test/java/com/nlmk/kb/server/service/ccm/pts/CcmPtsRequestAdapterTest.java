@@ -1,20 +1,36 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AnalysisValue;
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
+import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
-import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordAnalyzes;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordChemical;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataChemicalListValues;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesAnalyzesListValues;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesListValues;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesListValuesAttrValue;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataSpecificationsListValues;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordGeometry;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordMarking;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordProperties;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordSpecifications;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 @SpringBootTest
 class CcmPtsRequestAdapterTest {
