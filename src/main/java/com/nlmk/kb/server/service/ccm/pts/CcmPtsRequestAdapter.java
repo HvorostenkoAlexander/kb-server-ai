@@ -27,6 +27,9 @@ import org.springframework.util.CollectionUtils;
 @Slf4j
 public abstract class CcmPtsRequestAdapter {
 
+    /**
+     * Разделитель кодов для строк из конфигурации.
+     */
     private static final String DELIMITER = ";";
     private final List<Integer> allowedMechanicalCodes;
     private final List<Integer> allowedAnalysisCodes;
