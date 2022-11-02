@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
@@ -28,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 @Slf4j
 public abstract class CcmPtsRequestAdapter {
 
+    private static final String DELIMITER = ";";
     private final List<Integer> allowedMechanicalCodes;
     private final List<Integer> allowedAnalysisCodes;
 
@@ -43,7 +43,7 @@ public abstract class CcmPtsRequestAdapter {
             log.warn("Не указано property request.ccm.pts.allowedMechanicalCodes");
         }
         if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedAnalysisCodes())) {
-            allowedAnalysisCodes = Arrays.stream(allowedCodesConfig.getAllowedAnalysisCodes().split(";"))
+            allowedAnalysisCodes = Arrays.stream(allowedCodesConfig.getAllowedAnalysisCodes().split(DELIMITER))
                     .map(Integer::parseInt)
                     .collect(Collectors.toUnmodifiableList());
         } else {
