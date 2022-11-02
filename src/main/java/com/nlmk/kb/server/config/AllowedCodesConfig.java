@@ -4,18 +4,17 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 @Configuration
 @Getter
 public class AllowedCodesConfig {
 
-    private String allowedAnalysisCodes;
+    private final String allowedAnalysisCodes;
 
-    private String allowedMechanicalCodes;
+    private final String allowedMechanicalCodes;
 
-    public AllowedCodesConfig(@Value("${apcs-allowed.analysis.codes}") String allowedAnalysisCodes,
-                              @Value("${apcs-allowed.mechanical.codes}") String allowedMechanicalCodes) {
+    public AllowedCodesConfig(@Value("${request.ccm.pts.allowedAnalysisCodes}") String allowedAnalysisCodes,
+                              @Value("${request.ccm.pts.allowedMechanicalCodes}") String allowedMechanicalCodes) {
         this.allowedAnalysisCodes = allowedAnalysisCodes;
         this.allowedMechanicalCodes = allowedMechanicalCodes;
     }

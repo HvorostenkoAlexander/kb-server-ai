@@ -34,20 +34,22 @@ public abstract class CcmPtsRequestAdapter {
     protected CcmPtsRequestAdapter(AllowedCodesConfig allowedCodesConfig) {
         log.info("CcmPtsRequestAdapter created with allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
         log.info("CcmPtsRequestAdapter created with allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
-        var allowedMechanicalCodesProp = Optional.of(allowedCodesConfig.getAllowedMechanicalCodes());
-        var allowedAnalysisCodesProp = Optional.of(allowedCodesConfig.getAllowedAnalysisCodes());
-        if (allowedAnalysisCodesProp.isEmpty()) {
-            log.warn("Не указано property apcs-allowed.analysis.codes");
+        if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedMechanicalCodes())) {
+            allowedMechanicalCodes = Arrays.stream(allowedCodesConfig.getAllowedMechanicalCodes().split(";"))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toUnmodifiableList());
+        } else {
+            allowedMechanicalCodes = List.of();
+            log.warn("Не указано property request.ccm.pts.allowedMechanicalCodes");
         }
-        if (allowedMechanicalCodesProp.isEmpty()) {
-            log.warn("Не указано property apcs-allowed.mechanical.codes");
+        if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedAnalysisCodes())) {
+            allowedAnalysisCodes = Arrays.stream(allowedCodesConfig.getAllowedAnalysisCodes().split(";"))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toUnmodifiableList());
+        } else {
+            allowedAnalysisCodes = List.of();
+            log.warn("Не указано property request.ccm.pts.allowedAnalysisCodes");
         }
-        allowedMechanicalCodes = Arrays.stream(allowedMechanicalCodesProp.orElse(StringUtils.EMPTY).split(";"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toUnmodifiableList());
-        allowedAnalysisCodes = Arrays.stream(allowedAnalysisCodesProp.orElse(StringUtils.EMPTY).split(";"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
