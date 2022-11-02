@@ -38,7 +38,7 @@ public abstract class CcmPtsRequestAdapter {
         log.info("CcmPtsRequestAdapter создан для allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
         log.info("CcmPtsRequestAdapter создан для allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
         if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedMechanicalCodes())) {
-            allowedMechanicalCodes = Arrays.stream(allowedCodesConfig.getAllowedMechanicalCodes().split(";"))
+            allowedMechanicalCodes = Arrays.stream(allowedCodesConfig.getAllowedMechanicalCodes().split(DELIMITER))
                     .map(Integer::parseInt)
                     .collect(Collectors.toUnmodifiableList());
         } else {
