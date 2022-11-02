@@ -32,8 +32,8 @@ public abstract class CcmPtsRequestAdapter {
     private final List<Integer> allowedAnalysisCodes;
 
     protected CcmPtsRequestAdapter(AllowedCodesConfig allowedCodesConfig) {
-        log.info("CcmPtsRequestAdapter created with allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
-        log.info("CcmPtsRequestAdapter created with allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
+        log.info("CcmPtsRequestAdapter создан для allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
+        log.info("CcmPtsRequestAdapter создан для allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
         if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedMechanicalCodes())) {
             allowedMechanicalCodes = Arrays.stream(allowedCodesConfig.getAllowedMechanicalCodes().split(";"))
                     .map(Integer::parseInt)
