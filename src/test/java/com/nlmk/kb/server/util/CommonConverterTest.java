@@ -2,7 +2,7 @@ package com.nlmk.kb.server.util;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.impl.CommonConverterImpl;
+import com.nlmk.kb.server.service.CommonConverterImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CommonConverterTest {
+class CommonConverterTest {
 
-    private CommonConverter cct = new CommonConverterImpl();
+    private final CommonConverter cct = new CommonConverterImpl();
 
     @Test
     void testParseDouble() {
@@ -63,4 +63,5 @@ public class CommonConverterTest {
 
         System.out.println("ex: " + ex);
     }
+
 }
