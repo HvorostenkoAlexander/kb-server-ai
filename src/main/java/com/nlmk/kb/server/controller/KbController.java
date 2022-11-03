@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -34,12 +36,18 @@ public interface KbController {
 
     @GetMapping("/attestation_request")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    Page<CcmMessage> getAllByPage(@RequestParam(value = "pageNumber") int page,
-                                  @RequestParam(value = "pageSize") int size);
+    Page<CcmMessage> getAttestationRequestAllByPage(@RequestParam(value = "pageNumber") int page,
+                                                    @RequestParam(value = "pageSize") int size);
 
     @GetMapping("/attestation_request/{primeId}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    List<CcmMessage> getByPrimeId(@PathVariable String primeId);
+    @Deprecated(since = "1.33.0")
+    List<CcmMessage> getCcmMessageByPrimeId(@PathVariable String primeId);
+
+    @GetMapping("/attestation/request/{primeId}")
+    @Operation(summary = "Получения последнего запросов на Аттестацию для указанного primeId",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    AttestationRequest getAttestationRequestForPrimeId(@PathVariable String primeId);
 
     @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -90,6 +98,6 @@ public interface KbController {
             description = "Отправка сообщения закончилась ошибкой", content = @Content)
     @ApiResponse(responseCode = "503",
             description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
-    void postProductAttestationResult(@RequestBody ProductAttestationResultDto attestationResult);
+    void postProductAttestationResult(@RequestBody @Valid ProductAttestationResultDto attestationResult);
 
 }

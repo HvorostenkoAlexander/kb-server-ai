@@ -1,25 +1,32 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
-import com.nlmk.kb.server.service.sender.ProductSender;
+import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsPts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +42,8 @@ public class KbControllerImpl implements KbController {
     private final CcmCommonService ccmCommonService;
     private final S3Service s3Service;
     private final PsmSender psmSender;
-    private final ProductSender attestationResultSender;
+    private final AttestationResultSender attestationResultSender;
+    private final AttestationMessageService attestationMessageService;
 
     @Override
     public ResponseEntity<String> postLaunchReAttestation(String primeId) {
@@ -52,13 +60,42 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public Page<CcmMessage> getAllByPage(int page, int size) {
+    public Page<CcmMessage> getAttestationRequestAllByPage(int page, int size) {
+        log.info("getAttestationRequestAllByPage, page [{}], size [{}]", page, size);
         return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
     @Override
-    public List<CcmMessage> getByPrimeId(String primeId) {
+    public List<CcmMessage> getCcmMessageByPrimeId(String primeId) {
+        log.info("getCcmMessageByPrimeId, primeId [{}]", primeId);
         return ccmMessageService.findByPrimeId(primeId);
+    }
+
+    @Override
+    public AttestationRequest getAttestationRequestForPrimeId(String primeId) {
+        log.info("getAttestationRequestForPrimeId, primeId [{}]", primeId);
+
+        // запросы на Аттестацию в двух разных таблицах
+        final var ccmKafka = ccmMessageService.findLastMessage(primeId);
+        final var ccmRest = attestationMessageService.findLastAttestationMessage(primeId);
+
+        if (ccmKafka.isEmpty() && ccmRest.isEmpty()) {
+            throw new AttestationRequestNotFoundException(MessageFormat.format(
+                    "AttestationRequest for primeId [{0}] not found", primeId
+            ));
+        }
+
+        if (ccmKafka.isPresent() && ccmRest.isPresent()) {
+            // какое сообщение последнее?
+            if (ccmKafka.get().getKbReceiptTs().after(ccmRest.get().getReceiptTs())) {
+                return ccmKafka.get().getRequest();
+            }
+            return attestationMessageService.getAttestationRequestFromMessage(ccmRest.get());
+        } else if (ccmRest.isPresent()) {
+            return attestationMessageService.getAttestationRequestFromMessage(ccmRest.get());
+        }
+
+        return ccmKafka.get().getRequest();
     }
 
     @Override
@@ -117,7 +154,17 @@ public class KbControllerImpl implements KbController {
     @Override
     public void postProductAttestationResult(ProductAttestationResultDto attestationResult) {
         log.info("postProductAttestationResult, ProductAttestationResultDto [{}]", attestationResult);
-        attestationResultSender.send(attestationResult);
+        switch (attestationResult.getKceh()) {
+            case PGP: {
+                attestationResultSender.send(attestationResult, VerificationResults.class);
+                break;
+            }
+            case PTS: {
+                attestationResultSender.send(attestationResult, VerificationResultsPts.class);
+                break;
+            }
+            default: throw new AttestationResultSenderException("Wrong Kceh Value for send result");
+        }
     }
 
 }

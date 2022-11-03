@@ -10,7 +10,7 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 public interface RestResponseAdapter<T> {
 
     /**
-     * Адаптировать результат Аттестации <code>ProductAttestationResultDto</code> в ответ заданного типа <code>M</code>
+     * Адаптировать результат Аттестации <code>ProductAttestationResultDto</code> в ответ заданного типа <code>T</code>
      *
      * @param attResult результат Аттестации
      * @return экземпляр объекта заданного типа <code>T</code>

@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.SapKafkaException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.service.sap.SapMessageHandler;
 import com.nlmk.s3.proxy.s3notification;
 import io.micrometer.core.annotation.Timed;
@@ -31,16 +31,13 @@ public class SapKafkaService {
             topics = {"${kafka.sap.topic.s3.idoczordrs}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> request, Acknowledgment ack) {
-        log.info("SAP consumer record: topic: {}; partition: {}; offset: {}, key: {}",
-                request.topic(),
-                request.partition(),
-                request.offset(),
-                request.key()
-        );
+    public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
+                                  Acknowledgment ack) {
+        log.info("receiveMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
+                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
 
         try {
-            if (sapMessageHandler.handleConsumerRecord(request)) {
+            if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
                 ack.acknowledge();
             } else {
                 ack.nack(sleepTime);
@@ -52,7 +49,7 @@ public class SapKafkaService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new SapKafkaException("переброс: " + e);
+            throw new KafkaMessageProcessingException("переброс: " + e);
         }
     }
 

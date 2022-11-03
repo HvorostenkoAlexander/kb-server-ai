@@ -7,10 +7,7 @@ public interface PamSender {
 
     /**
      * Отправка запроса на Аттестацию
-     *
-     * @param request данные запроса на Аттестацию
-     * @return объект ответа результата Аттестации
      */
-    ProductAttestationResultDto postAttestationRequest(AttestationRequest request);
+    ProductAttestationResultDto postAttestationRequest(AttestationRequest attestationRequest);
 
 }

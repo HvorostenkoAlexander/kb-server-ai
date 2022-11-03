@@ -7,7 +7,8 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.AttestationMessageSender;
-import com.nlmk.kb.server.exception.RequestProcessingException;
+import com.nlmk.kb.server.exception.CcmRequestParsingException;
+import com.nlmk.kb.server.exception.CcmRequestProcessingException;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Optional;
 
@@ -73,7 +75,25 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
             return ccmPtsRestResponseAdapter.adapt(attResult);
         } catch (JsonProcessingException e) {
             log.error("ccmPtsRequestProcessing", e);
-            throw new RequestProcessingException(String.format("ccmPtsRequestProcessing, error for primeId [%s]", primeId));
+            throw new CcmRequestProcessingException(
+                    MessageFormat.format("ccmPtsRequestProcessing, error for primeId [{0}]", primeId)
+            );
+        }
+    }
+
+    @Override
+    public AttestationRequest getAttestationRequestFromMessage(AttestationMessage message) {
+        if (message == null) {
+            return null;
+        }
+
+        try {
+            return objectMapper.readValue(message.getRequest(), AttestationRequest.class);
+        } catch (JsonProcessingException e) {
+            log.error("getAttestationRequestFromMessage", e);
+            throw new CcmRequestParsingException(MessageFormat.format(
+                    "getAttestationRequestFromMessage, parsing error for primeId [{0}]", message.getPrimeId()
+            ));
         }
     }
 

@@ -2,7 +2,7 @@ package com.nlmk.kb.server.service;
 
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.PdmKafkaException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.service.pdm.PdmMessageHandler;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -49,20 +49,20 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.mech-properties}",
                     "${kafka.pdm.topic.chemical-properties}",
                     "${kafka.pdm.topic.asap-mech-properties-dt}",
-                    "${kafka.pdm.topic.phys-mech-prop-anis-steel}"
+                    "${kafka.pdm.topic.phys-mech-prop-anis-steel}",
+                    "${kafka.pdm.topic.tol-evenness-dt}",
+                    "${kafka.pdm.topic.tol-thick-dt}",
+                     "${kafka.pdm.topic.tol-width-dt}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> request, Acknowledgment ack) {
-        log.info("PDM consumer record: topic: {}; partition: {}; offset: {}, key: {}",
-                request.topic(),
-                request.partition(),
-                request.offset(),
-                request.key()
-        );
+    public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
+                                  Acknowledgment ack) {
+        log.info("receiveMessageReq (PDM): topic [{}], partition [{}], offset [{}], key [{}]",
+                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
 
         try {
-            if (pdmMessageHandler.handleConsumerRecord(request)) {
+            if (pdmMessageHandler.handleConsumerRecord(consumerRecord)) {
                 ack.acknowledge();
             } else {
                 ack.nack(sleepTime);
@@ -74,7 +74,7 @@ public class PdmKafkaService {
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new PdmKafkaException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 

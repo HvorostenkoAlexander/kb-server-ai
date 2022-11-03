@@ -12,14 +12,17 @@ public interface ResultConfigService {
 
     Page<ResultsConfigDto> findPyPage(PageRequest pageRequest);
 
-    ResultsConfigDto findById(Long id);
+    ResultsConfigDto findById(Integer id);
 
     ResultsConfigDto create(@NotNull @Valid ResultsConfigDto dto);
 
     ResultsConfigDto update(@NotNull @Valid ResultsConfigDto dto);
 
+    /**
+     * Получение всех активных конфигураций
+     */
     List<ResultsConfigDto> getEnabledTopics();
 
-    void deleteById(long id);
+    void deleteById(Integer id);
 
 }

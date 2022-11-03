@@ -1,24 +1,125 @@
 {
-  "ts": "2021-05-18T16:29:51.0543728+03:00",
+  "ts": "2022-09-06T12:50:58.3091603+03:00",
   "op": "I",
   "pk": {
     "systemCode": "30",
     "directoryId": "49552",
-    "Id": "3693"},
+    "id": "7999"
+  },
   "data": {
     "specifications": [
-      {"specCode": 5, "specName": "Стандарт на сортамент", "specTypeCode": 1, "specValue": "ASTM A 568M;ASTM A 568M-13", "specMeasure": ""},
-      {"specCode": 586, "specName": "Толщина проката", "specTypeCode": 1, "specValue": "*..2.00", "specMeasure": ""},
-      {"specCode": 587, "specName": "Ширина продукции", "specTypeCode": 1, "specValue": "(600..1200]", "specMeasure": ""},
-      {"specCode": 588, "specName": "Точность изготовления по толщине", "specTypeCode": 1, "specValue": "2/3", "specMeasure": ""},
-      {"specCode": 53, "specName": "Предел текучести", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 230, "specName": "Допуск по толщине (-)", "specTypeCode": 1, "specValue": "0.10", "specMeasure": ""},
-      {"specCode": 229, "specName": "Допуск по толщине (+)", "specTypeCode": 1, "specValue": "0.10", "specMeasure": ""},
-      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "ДТ 04", "specMeasure": ""},
-      {"specCode": 589, "specName": "Допуск по толщине в процентах (-)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 590, "specName": "Допуск по толщине в процентах (+)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 432, "specName": "Цех обработки", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 416, "specName": "Значения толщины", "specTypeCode": 1, "specValue": "Номинальная", "specMeasure": ""},
-      {"specCode": 491, "specName": "Класс прочности (по EN 10051)", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
-    ]}}
+      {
+        "specCode": 5,
+        "specName": "Стандарт на сортамент",
+        "specTypeCode": 1,
+        "specValue": "ТУ 14-1-3496-91",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 586,
+        "specName": "Толщина проката",
+        "specTypeCode": 1,
+        "specValue": "(2.50..3.00]",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 587,
+        "specName": "Ширина продукции",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 588,
+        "specName": "Точность изготовления по толщине",
+        "specTypeCode": 1,
+        "specValue": "П",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 53,
+        "specName": "Предел текучести",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 230,
+        "specName": "Допуск по толщине (-)",
+        "specTypeCode": 1,
+        "specValue": "0.03",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 229,
+        "specName": "Допуск по толщине (+)",
+        "specTypeCode": 1,
+        "specValue": "0.03",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Тест",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 589,
+        "specName": "Допуск по толщине в процентах (-)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 590,
+        "specName": "Допуск по толщине в процентах (+)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 3,
+        "specName": "Марка на продукцию",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 432,
+        "specName": "Цех обработки",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 416,
+        "specName": "Значения толщины",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 491,
+        "specName": "Класс прочности (по EN 10051)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1779,
+        "specName": "Продольная разнотолщинность",
+        "specTypeCode": 1,
+        "specValue": "1.55",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 985,
+        "specName": "Поперечная разнотолщинность",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мм"
+      }
+    ]
+  }
+}

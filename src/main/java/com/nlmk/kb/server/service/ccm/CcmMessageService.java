@@ -17,4 +17,12 @@ public interface CcmMessageService {
 
     CcmMessage update(CcmMessage ccmMessage);
 
+    /**
+     * Поиск последнего сообщения с запросом на Аттестацию
+     *
+     * @param primeId идентификатор Единицы Металла (Единицы Продукции)
+     * @return найденное сообщение или пусто
+     */
+    Optional<CcmMessage> findLastMessage(String primeId);
+
 }

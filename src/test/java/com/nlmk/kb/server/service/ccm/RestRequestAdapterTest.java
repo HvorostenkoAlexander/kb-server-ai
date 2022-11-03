@@ -1,0 +1,202 @@
+package com.nlmk.kb.server.service.ccm;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.pam.AnalysisValue;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
+import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
+import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
+import com.nlmk.kb.server.config.AllowedCodesConfig;
+import com.nlmk.kb.server.service.CommonConverter;
+import com.nlmk.kb.server.service.CommonConverterImpl;
+import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+// ApplicationContext will be loaded from the OrderServiceConfig class
+class RestRequestAdapterTest {
+
+    @Autowired
+    AllowedCodesConfig allowedCodesConfig;
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private final CommonConverter commonConverter = new CommonConverterImpl();
+    private RestRequestAdapter<CcmPtsRequest> ccmPtsAdapter;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+    @BeforeEach
+    void initAdapter() {
+        ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(allowedCodesConfig, commonConverter);
+    }
+
+    @Test
+    void adaptCcmPts() {
+        final var request = prepareRequestWithMandatoryData();
+        Assertions.assertTrue(validator.validate(request).isEmpty());
+        final var attestationRequest = Assertions.assertDoesNotThrow(() -> ccmPtsAdapter.adapt(prepareRequestWithMandatoryData()));
+        Assertions.assertEquals(prepareAttestationRequest(), attestationRequest);
+    }
+
+    @Test
+    @Disabled("get output JSON for test")
+    void printCcmPtsRequestAsJson() throws Exception {
+        final var mapper = new ObjectMapper();
+        final var request = prepareRequestWithMandatoryData();
+        Assertions.assertTrue(validator.validate(request).isEmpty());
+        System.out.println(mapper.writeValueAsString(request));
+    }
+
+    private CcmPtsRequest prepareRequestWithMandatoryData() {
+        return CcmPtsRequest.builder()
+                .ts(sdf.format(new Date(1000000000_000L))) // для теста!
+                .pk(CcmPtsRequest.Pk.builder().systemCode("11").id("0001020210329001515440422").build())
+                .data(CcmPtsRequest.Record.builder()
+                        .werks(10).werksName("w10")
+                        .kceh(11).kcehName("k11")
+                        .unitCode(12).unitName("u12")
+                        .storageCode(13).storageName("s13")
+                        .marking(CcmPtsRequest.Marking.builder()
+                                .nplv(2106684).hnum(25217).tnum(22).roll(1).build())
+                        .weightNet(140.0)
+                        .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(300.0).length(3000.0).build())
+                        .bundles(List.of(
+                                CcmPtsRequest.Bundle.builder().stripId("s40").stripNum(40)
+                                        .stripWidth(400.0).stripWeight(40.0).build()
+                        ))
+                        .specifications(List.of(
+                                CcmPtsRequest.Specification.builder()
+                                        .specCode(SpecCode.STEEL_MARK.getValue())
+                                        .specName(SpecCode.STEEL_MARK.getDesc())
+                                        .specTypeCode(TypeCode.STRING.getValue())
+                                        .specTypeName(TypeCode.STRING.getDesc())
+                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE) // !
+                                        .specValue("Ст3сп")
+                                        .listValues(List.of()).build()
+                        ))
+                        .chemical(List.of(
+                                CcmPtsRequest.Chemical.builder()
+                                        .id(1).listValues(List.of(
+                                                CcmPtsRequest.OneChemicalValue.builder()
+                                                        .code(SpecCode.MASS_FRACTION_B.getValue())
+                                                        .name(SpecCode.MASS_FRACTION_B.getDesc())
+                                                        .value(13.4)
+                                                        .build()
+                                        )).build()
+                        ))
+                        .properties(List.of(
+                                CcmPtsRequest.OneProperty.builder()
+                                        .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
+                                        .analyzes(List.of(
+                                                CcmPtsRequest.OnePropAnalyze.builder()
+                                                        .samplingPlaceCode(62).samplingPlaceName("s63")
+                                                        .analysisValue(AnalysisValue.BEST)
+                                                        .listValues(List.of(
+                                                                CcmPtsRequest.OnePropValue.builder()
+                                                                        .attrCode(562)
+                                                                        .attrType(TypeCode.NUMBER).build(),
+                                                                CcmPtsRequest.OnePropValue.builder()
+                                                                        .attrCode(99999)    // not allowed
+                                                                        .attrType(TypeCode.NUMBER).build()
+                                                        )).build()
+                                        ))
+                                        .attestationList(List.of(
+                                                CcmPtsRequest.OnePropAtt.builder()
+                                                        .typeCode(70).typeName("t71")
+                                                        .listValues(List.of(
+                                                                CcmPtsRequest.OneAttValue.builder()
+                                                                        .side(CcmPtsRequest.Side.BACK)
+                                                                        .attrCode(73).attrValue(74.0)
+                                                                        .build()
+                                                        )).build()
+                                        ))
+                                        .listValues(List.of(
+                                                CcmPtsRequest.OnePropValue.builder()
+                                                        .attrCode(SpecCode.AGING_FACTOR.getValue())
+                                                        .attrType(TypeCode.STRING).attrValue("af12")
+                                                        .build(),
+                                                CcmPtsRequest.OnePropValue.builder()
+                                                        .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
+                                                        .attrType(TypeCode.NUMBER).attrValue("12")
+                                                        .build()
+                                        )).build()
+                        ))
+                        .build())
+                .build();
+    }
+
+    private AttestationRequest prepareAttestationRequest() {
+        return AttestationRequest.builder()
+                .value(Value.builder()
+                        .ts(new Date(1000000000_000L)) // для теста!
+                        .op("I")
+                        .pk(Pk.builder().systemCode("11").id("0001020210329001515440422").build())
+                        .data(DataField.builder()
+                                .primeId("0001020210329001515440422")
+                                .nplv(2106684).hnum(25217).roll("1")
+                                .length(3000.0).thickness(30.0).width(300.0)
+                                .weightNet(140.0).bundleWeight(180.0)
+                                .kceh(11)
+                                .specifications(List.of(
+                                        Specs.builder()
+                                                .specCode(SpecCode.STEEL_MARK.getValue())
+                                                .specName(SpecCode.STEEL_MARK.getDesc())
+                                                .specTypeCode(TypeCode.STRING.getValue())
+                                                .specValue("Ст3сп")
+                                                .build()
+                                ))
+                                .chemical(List.of(
+                                        ChemicalSpec.builder()
+                                                .chemCode(SpecCode.MASS_FRACTION_B.getValue())
+                                                .chemName(SpecCode.MASS_FRACTION_B.getDesc())
+                                                .chemValue("13.4")
+                                                .build()
+                                ))
+                                .orderReq(List.of())
+                                .mechanical(List.of())
+                                .metallographic(List.of())
+                                .mechanicalPts(List.of(
+                                        PtsMechanicalProperty.builder()
+                                                .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")
+                                                .analyzes(List.of(
+                                                        PtsPropertyAnalyzes.builder()
+                                                                .samplingPlaceCode(62).samplingPlaceName("s63")
+                                                                .analysisValue(AnalysisValue.BEST.getValue())
+                                                                .listValues(List.of(
+                                                                        PtsPropertyAnalyzesValue.builder()
+                                                                                .attrCode(562)
+                                                                                .attrType(TypeCode.NUMBER.getValue()).build()
+                                                                )).build()
+                                                ))
+                                                .listValues(List.of(
+                                                        PtsPropertyValue.builder()
+                                                                .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
+                                                                .attrType(TypeCode.NUMBER.getValue())
+                                                                .attrValue(List.of("12"))
+                                                                .build()
+                                                ))
+                                                .build()
+                                ))
+                                .build())
+                        .build())
+                .build();
+    }
+
+}

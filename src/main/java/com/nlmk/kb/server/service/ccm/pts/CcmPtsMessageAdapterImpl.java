@@ -4,19 +4,19 @@ import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import lombok.RequiredArgsConstructor;
-import nlmk.l3.ccm.pts.AttestationRequest;
+import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
+public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<DbAttestationRequestVer1> {
 
-    private final KafkaRequestAdapter<AttestationRequest> adapter;
+    private final KafkaRequestAdapter<DbAttestationRequestVer1> adapter;
 
     @Override
-    public CcmMessage adapt(AttestationRequest requestMessage,
+    public CcmMessage adapt(DbAttestationRequestVer1 requestMessage,
                             String topic,
                             String key,
                             int partition,

@@ -46,4 +46,10 @@ public interface PdmDtoConverter {
 
     PhysMechPropAnisSteelStandDto toPhysMechPropAnisSteelStandDto(PdmDictionary dictionary);
 
+    TolEvennessDtDto toTolEvennessDtDto(PdmDictionary dictionary);
+
+    TolThickDtDto toTolThickDtDto(PdmDictionary dictionary);
+
+    TolWidthDtDto toTolWidthDtDto(PdmDictionary dictionary);
+
 }

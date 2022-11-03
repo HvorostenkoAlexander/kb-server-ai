@@ -19,9 +19,9 @@ public class AvroVersionServiceImpl implements AvroVersionService {
     public List<AvroVersion> findAll() {
         return apcsAvros.stream().map(a ->
                 AvroVersion.builder()
-                        .name(a.getName())
-                        .description(a.getDescription())
-                        .data(a.getData())
+                        .name(a.getSchemaName())
+                        .description(a.getSchemaDoc())
+                        .data(a.getSchemaData())
                         .build()
         ).collect(Collectors.toList());
     }

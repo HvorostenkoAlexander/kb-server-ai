@@ -5,6 +5,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public interface SapMessageHandler {
 
-    boolean handleConsumerRecord(ConsumerRecord<String, s3notification> record);
+    boolean handleConsumerRecord(ConsumerRecord<String, s3notification> consumerRecord);
 
 }

@@ -7,12 +7,10 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -61,13 +59,13 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
 
         // объединение групп характеристик
         Arrays.stream(Group.values()).forEach(group -> {
-            final var oneGroup = prepareAttestationValue(request.getAttestations(), group);
-            if (!oneGroup.isEmpty()) {
+            final var oneGroupValues = prepareAttestationValue(request.getAttestations(), group);
+            if (!oneGroupValues.isEmpty()) {
                 attestations.add(
                         CcmPtsResponse.Attestation.builder()
                                 .groupCode(group.getCode())
                                 .groupName(group.name())
-                                .listValues(prepareAttestationValue(request.getAttestations(), group))
+                                .listValues(oneGroupValues)
                                 .build()
                 );
             }
@@ -78,34 +76,57 @@ public class CcmPtsRestResponseAdapterImpl implements RestResponseAdapter<CcmPts
 
     private List<CcmPtsResponse.AttestationValue> prepareAttestationValue(List<AttestationDto> attResult, Group group) {
         return attResult.stream()
-                .filter(f -> group.equals(f.getGroup()))
+                .filter(attestation -> group.equals(attestation.getGroup()))
+                .filter(attestation -> Objects.nonNull(attestation.getCode()))
                 .map(attestation -> {
                     final var specCode = SpecCode.fromValue(attestation.getCode());
+                    // пропускаем: format, measure
                     return CcmPtsResponse.AttestationValue.builder()
-                            // skip: format, measure, defectSuggestion
-                            // no data: docId, docName, parameters
                             .code(specCode.getValue())
                             .name(specCode.getDesc())
                             .typeCode(specCode.getTypeCode())
                             .typeName(specCode.getTypeCode().getDesc())
                             .value(attestation.getValue())
-                            .normLimits(CcmPtsResponse.NormLimit.builder()
-                                    // или диапазон
-                                    .valueMin(attestation.getMin())
-                                    .valueMax(attestation.getMax())
-                                    // или одиночное значение
-                                    .listAccValues(attestation.getEqual() == null ? null : List.of(
-                                            CcmPtsResponse.AccValue.builder().value(attestation.getEqual()).build()
-                                    ))
-                                    .build())
+                            .docId(attestation.getDocId() != null ? attestation.getDocId().getValue() : null)
+                            .docName(attestation.getDocId() != null ? attestation.getDocId().getDesc() : null)
+                            .normLimits(prepareNormLimit(attestation))
                             .mismatch(CcmPtsResponse.Mismatch.builder()
                                     .code(attestation.getStatus() != null ? attestation.getStatus().getValue() : null)
                                     .name(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
                                     .build())
-                            .note(attestation.getComment())
-                            .parameters(List.of())
+                            .note(AdapterUtils.detectNote(attestation))
+                            .defectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
+                            .parameters(prepareParameters(attestation))
                             .build();
                 })
+                .collect(Collectors.toList());
+    }
+
+    private CcmPtsResponse.NormLimit prepareNormLimit(AttestationDto attestation) {
+        // в объекте AttestationDto ждем либо Equal, либо Min и (или) Max
+        return CcmPtsResponse.NormLimit.builder()
+                .valueMin(attestation.getMin())
+                .valueMax(attestation.getMax())
+                .listAccValues(attestation.getEqual() == null ? null : List.of(
+                        CcmPtsResponse.AccValue.builder().value(attestation.getEqual()).build()
+                ))
+                .build();
+    }
+
+    private List<CcmPtsResponse.Parameter> prepareParameters(AttestationDto attestation) {
+        final var map = AdapterUtils.prepareParameters(attestation);
+        if (map.isEmpty()) {
+            return List.of();
+        }
+
+        return map.entrySet().stream()
+                .map(p -> CcmPtsResponse.Parameter.builder()
+                        .code(p.getKey().getValue())
+                        .name(p.getKey().getDesc())
+                        .value(p.getValue())
+                        .typeCode(p.getKey().getTypeCode())
+                        .typeName(p.getKey().getTypeCode().getDesc())
+                        .build())
                 .collect(Collectors.toList());
     }
 

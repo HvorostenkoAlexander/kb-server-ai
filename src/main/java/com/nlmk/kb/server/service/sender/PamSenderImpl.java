@@ -2,47 +2,62 @@ package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
-import com.nlmk.kb.server.config.KbConstants;
-import com.nlmk.kb.server.util.RestTemplateUtils;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @Slf4j
-@Service
+@Component
 public class PamSenderImpl implements PamSender {
 
+    private final WebClient webClient;
+    private final int webClientTimeout;
     private final String pamAttestation;
-    private final RestTemplate restTemplate;
 
     public PamSenderImpl(@Value("${service-web-client.pam-server.url}") String pamUrl,
-                         RestTemplate restTemplate) {
+                         @Value("${service-web-client.timeout:5000}") int timeout,
+                         @Qualifier("defaultWebClient") WebClient webClient) {
+        this.webClient = webClient;
+        this.webClientTimeout = timeout;
         this.pamAttestation = pamUrl + "/attestation";
-        this.restTemplate = restTemplate;
     }
 
     @Override
-    public ProductAttestationResultDto postAttestationRequest(AttestationRequest request) {
-        Assert.notNull(request, "pamAttestationRequest is null");
+    public ProductAttestationResultDto postAttestationRequest(AttestationRequest attestationRequest) {
+        if (attestationRequest == null
+                || attestationRequest.getValue() == null
+                || attestationRequest.getValue().getData() == null) {
+            throw new RemoteServiceSenderException("PamSender, AttestationRequest is NULL");
+        }
 
-        log.info("postAttestationRequest, primeId: [{}]", request.getValue().getData().getPrimeId());
+        final var primeId = SenderUtils.getPrimeId(attestationRequest);
+        log.info("postAttestationRequest, primeId [{}]", primeId);
 
-        final var requestIdKafka = MDC.get(KbConstants.KAFKA_ID);
-        final var requestIdRest = MDC.get(KbConstants.REQUEST_ID_KEY);
-        final var requestId = (requestIdKafka != null) ? requestIdKafka : requestIdRest;
+        final var response = webClient.post()
+                .uri(pamAttestation)
+                .accept(MediaType.APPLICATION_JSON)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .headers(SenderUtils::addRequestId)
+                .bodyValue(attestationRequest)
+                .retrieve()
+                .bodyToMono(ProductAttestationResultDto.class)
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> Mono.error(
+                        new RemoteServiceSenderException(String.format("PamSender, postAttestationRequest, primeId [%s], send error, message [%s]", primeId, e.getMessage()))
+                ))
+                .block();
 
-        ResponseEntity<ProductAttestationResultDto> response = restTemplate.postForEntity(
-                pamAttestation,
-                new HttpEntity<>(request, RestTemplateUtils.prepareHeaders(requestId)),
-                ProductAttestationResultDto.class);
-        log.info("postAttestationRequest, PAM-server response: " + response.getBody());
-        return response.getBody();
+        log.info("postAttestationRequest, primeId [{}], PAM response [{}]", primeId, response);
+        return response;
     }
 
 }

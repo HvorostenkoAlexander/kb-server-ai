@@ -1,17 +1,23 @@
 package com.nlmk.kb.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.Kceh;
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.attestation.zorder.ZORDERS051E1EDK01;
 import com.nlmk.attestation.zorder.ZORDRSPORDERS05ZORDERS051;
-import com.nlmk.kb.server.exception.KafkaRestConfigException;
-import com.nlmk.kb.server.exception.KafkaRestException;
-import com.nlmk.kb.server.exception.ProductSenderException;
-import com.nlmk.kb.server.exception.S3ClientException;
+import com.nlmk.kb.server.entity.AttestationMessage;
+import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
-import com.nlmk.kb.server.service.sender.ProductSender;
+import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,6 +34,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Date;
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -39,17 +48,21 @@ class KbControllerTest {
     @Autowired
     private MockMvc mvc;
     @MockBean
-    S3Service s3Service;
+    private S3Service s3Service;
     @MockBean
-    CcmMessageService ccmMessageService;
+    private CcmMessageService ccmMessageService;
     @MockBean
-    PdmMessageService pdmMessageService;
+    private PdmMessageService pdmMessageService;
     @MockBean
-    CcmCommonService ccmCommonService;
+    private CcmCommonService ccmCommonService;
     @MockBean
-    PsmSender psmSender;
+    private PsmSender psmSender;
     @MockBean
-    ProductSender productSender;
+    private AttestationResultSender productSender;
+    @MockBean
+    private AttestationMessageService attestationMessageService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void sendingSapMessage() throws Exception {
@@ -98,35 +111,95 @@ class KbControllerTest {
 
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isOk());
-
-        mvc.perform(MockMvcRequestBuilders.post(url)
-                        .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
-        doThrow(ProductSenderException.class).when(productSender).send(any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(MockMvcRequestBuilders.post(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ProductAttestationResultDto.builder().build())))
+                .andExpect(status().isBadRequest());
+
+        final var content = objectMapper.writeValueAsString(
+                ProductAttestationResultDto.builder()
+                        .result(ProductDto.builder().build())
+                        .kceh(Kceh.PGP)
+                        .build()
+        );
+
+        mvc.perform(MockMvcRequestBuilders.post(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk());
+
+        doThrow(AttestationResultSenderException.class).when(productSender).send(any(), any());
+        mvc.perform(MockMvcRequestBuilders.post(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andExpect(status().isInternalServerError());
 
-        doThrow(KafkaRestConfigException.class).when(productSender).send(any());
+        doThrow(KafkaRestConfigException.class).when(productSender).send(any(), any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                        .content(content))
                 .andExpect(status().isServiceUnavailable());
 
-        doThrow(KafkaRestException.class).when(productSender).send(any());
+        doThrow(RemoteServiceSenderException.class).when(productSender).send(any(), any());
         mvc.perform(MockMvcRequestBuilders.post(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                        .content(content))
                 .andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void getAttestationRequestForPrimeId() throws Exception {
+        final var url = "/attestation/request/pi100";
+
+        when(ccmMessageService.findLastMessage(any())).thenReturn(Optional.empty());
+        when(attestationMessageService.findLastAttestationMessage(any())).thenReturn(Optional.empty());
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isNotFound());
+
+        when(ccmMessageService.findLastMessage(any())).thenReturn(Optional.of(
+                CcmMessage.builder().request(
+                        AttestationRequest.builder().value(Value.builder().build()).build()
+                ).kbReceiptTs(new Date(1_000_000_000L)).build()
+        ));
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").exists());
+
+        // выбор одного из двух
+        when(attestationMessageService.findLastAttestationMessage(any())).thenReturn(Optional.of(
+                AttestationMessage.builder().request("{}")
+                        .receiptTs(new Date(1_200_000_000L)).build()
+        ));
+        when(attestationMessageService.getAttestationRequestFromMessage(any()))
+                .thenReturn(AttestationRequest.builder().value(Value.builder().build()).build());
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").exists());
+
+        doThrow(CcmRequestParsingException.class).when(attestationMessageService)
+                .getAttestationRequestFromMessage(any());
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isBadRequest());
     }
 
 }

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ResultsConfigDto {
 
-    private Long id;
+    private Integer id;
     @NotBlank
     private String topic;
     @NotBlank

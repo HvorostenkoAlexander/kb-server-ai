@@ -1,20 +1,83 @@
 {
-  "ts": "2021-05-18T16:30:11.202505+03:00",
+  "ts": "2022-09-06T12:51:17.9991436+03:00",
   "op": "I",
   "pk": {
     "systemCode": "30",
     "directoryId": "49561",
-    "Id": "212"
+    "id": "662"
   },
   "data": {
     "specifications": [
-      {"specCode": 5, "specName": "Стандарт на сортамент", "specTypeCode": 1, "specValue": "ГОСТ 19904-90", "specMeasure": ""},
-      {"specCode": 587, "specName": "Ширина продукции", "specTypeCode": 1, "specValue": "0..1000", "specMeasure": ""},
-      {"specCode": 416, "specName": "Толщина продукции", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 598, "specName": "Допуск по плоскостности (+)", "specTypeCode": 1, "specValue": "4", "specMeasure": ""},
-      {"specCode": 53, "specName": "Предел текучести", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 599, "specName": "Допуск по плоскостности в процентах (+)", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 43, "specName": "Плоскостность", "specTypeCode": 1, "specValue": "ПО", "specMeasure": ""},
-      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
-      {"specCode": 490, "specName": "Временное сопротивление к разрыву, Н/мм2", "specTypeCode": 1, "specValue": "", "specMeasure": ""}
-    ]}}
+      {
+        "specCode": 5,
+        "specName": "Стандарт на сортамент",
+        "specTypeCode": 1,
+        "specValue": "СТО 05757665-075-2019",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 587,
+        "specName": "Ширина продукции",
+        "specTypeCode": 1,
+        "specValue": "(150..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 416,
+        "specName": "Толщина продукции",
+        "specTypeCode": 1,
+        "specValue": "0.27;0.30;0.35;0.50",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 598,
+        "specName": "Допуск по плоскостности (+)",
+        "specTypeCode": 1,
+        "specValue": "4",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 53,
+        "specName": "Предел текучести",
+        "specTypeCode": 1,
+        "specValue": "6",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 599,
+        "specName": "Допуск по плоскостности в процентах (+)",
+        "specTypeCode": 1,
+        "specValue": "2",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 43,
+        "specName": "Плоскостность",
+        "specTypeCode": 1,
+        "specValue": "2",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Тест",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 490,
+        "specName": "Временное сопротивление к разрыву, Н/мм2",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 591,
+        "specName": "Вид поставки",
+        "specTypeCode": 1,
+        "specValue": "ЛНТ;РЛН;РСП",
+        "specMeasure": ""
+      }
+    ]
+  }
+}
