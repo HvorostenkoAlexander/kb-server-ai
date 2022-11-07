@@ -1,7 +1,5 @@
 package com.nlmk.kb.server.service.ccm;
 
-import reactor.util.function.Tuple2;
-
 /**
  * Адаптер в тип <code>CcmMessage</code>
  *
@@ -19,17 +17,10 @@ public interface CcmMessageAdapter<T> {
      * @param offset         смещение сообщения Kafka
      * @return экземпляр объекта <code>CcmMessage</code>
      */
-/*    com.nlmk.kb.server.entity.CcmMessage adapt(T requestMessage,
+    com.nlmk.kb.server.entity.CcmMessage adapt(T requestMessage,
                                                String topic,
                                                String key,
                                                int partition,
-                                               int offset);*/
-
-    Tuple2<com.nlmk.kb.server.entity.CcmMessage, String> adapt(T requestMessage,
-                                                      String topic,
-                                                      String key,
-                                                      int partition,
-                                                      int offset);
-
+                                               int offset);
 
 }

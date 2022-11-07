@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsPts;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -173,11 +174,11 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public ResponseEntity<List<String>> getCcmSourceMessage(Long orderNum) {
+    public ResponseEntity<String> getCcmSourceMessage(Long orderNum) {
         log.info("getCcmSourceMessage, orderNum [{}]", orderNum);
         return ResponseEntity.ok(ccmMessageSourceService.findByRequestId(orderNum)
-                .stream().map(CcmMessageSource::getMessageSource).collect(
-                Collectors.toUnmodifiableList()));
+                .map(CcmMessageSource::getMessageSource)
+                .orElse("Not found"));
     }
 
 }

@@ -18,14 +18,14 @@ class CcmMessageSourceRepositoryTest {
         Assertions.assertDoesNotThrow(() -> repository.save(
                 CcmMessageSource.builder().requestId(1010L).messageSource("Test requestA 1010").build()));
         Assertions.assertDoesNotThrow(() -> repository.save(
-                CcmMessageSource.builder().requestId(1010L).messageSource("Test requestB 1010").build()));
+                CcmMessageSource.builder().requestId(1010L).messageSource("Test requestA 1010 2").build()));
         repository.flush();
-        Assertions.assertEquals(2L, repository.count());
+        Assertions.assertEquals(1L, repository.count());
 
         final var found = repository.findByRequestId(1010L);
         Assertions.assertFalse(found.isEmpty());
-        Assertions.assertEquals(1010L, found.stream().findFirst().get().getRequestId());
-        Assertions.assertEquals(2, found.size());
+        Assertions.assertEquals(1010L, found.get().getRequestId());
+        Assertions.assertTrue(found.get().getMessageSource().endsWith("1010 2"));
     }
 
 }

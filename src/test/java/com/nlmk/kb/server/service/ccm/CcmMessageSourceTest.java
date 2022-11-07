@@ -22,7 +22,6 @@ class CcmMessageSourceTest {
         var found = service.findByRequestId(1020L);
         Assertions.assertFalse(found.isEmpty());
         Assertions.assertEquals(1020L, found.stream().findFirst().get().getRequestId());
-        Assertions.assertEquals(1, found.size());
     }
 
 }

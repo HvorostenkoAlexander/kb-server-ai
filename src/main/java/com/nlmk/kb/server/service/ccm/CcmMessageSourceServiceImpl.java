@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm;
 import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class CcmMessageSourceServiceImpl implements CcmMessageSourceService {
     private final CcmMessageSourceRepository ccmMessageSourceRepository;
 
     @Override
-    public List<CcmMessageSource> findByRequestId(Long requestId) {
+    public Optional<CcmMessageSource> findByRequestId(Long requestId) {
         return ccmMessageSourceRepository.findByRequestId(requestId);
     }
 

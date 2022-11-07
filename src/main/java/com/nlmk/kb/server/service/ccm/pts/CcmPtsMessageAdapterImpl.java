@@ -2,17 +2,12 @@ package com.nlmk.kb.server.service.ccm.pts;
 
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
-import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
-import java.io.IOException;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +17,7 @@ public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<DbAttestation
     private final KafkaRequestAdapter<DbAttestationRequestVer1> adapter;
 
     @Override
-    public Tuple2<CcmMessage, String> adapt(DbAttestationRequestVer1 requestMessage,
+    public CcmMessage adapt(DbAttestationRequestVer1 requestMessage,
                                             String topic,
                                             String key,
                                             int partition,
@@ -42,16 +37,7 @@ public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<DbAttestation
         if (attestationRequest.getValue().getData() != null) {
             ccmMessageBuilder.primeId(attestationRequest.getValue().getData().getPrimeId());
         }
-        final var ccmMessage = ccmMessageBuilder.build();
-        return Tuples.of(ccmMessage, getSourceMessage(requestMessage));
-    }
-    private String getSourceMessage(DbAttestationRequestVer1 requestMessage) {
-        try {
-            return requestMessage.toByteBuffer().toString();
-        } catch (IOException e) {
-            log.error("Ошибка преобразования сообщения в строку");
-        }
-        return StringUtils.EMPTY;
+        return ccmMessageBuilder.build();
     }
 
 }

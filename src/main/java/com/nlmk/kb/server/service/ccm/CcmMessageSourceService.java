@@ -1,16 +1,16 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.kb.server.entity.CcmMessageSource;
-import java.util.List;
+import java.util.Optional;
 
 public interface CcmMessageSourceService {
 
     /**
      * Поиск исходного сообщения по orderNum
      * @param requestId orderNum запроса
-     * @return строка исходного сообщения
+     * @return {@link java.util.Optional} of {@link CcmMessageSource}
      */
-    List<CcmMessageSource> findByRequestId(Long requestId);
+    Optional<CcmMessageSource> findByRequestId(Long requestId);
 
     /**
      * Сохранить исходное сообщение

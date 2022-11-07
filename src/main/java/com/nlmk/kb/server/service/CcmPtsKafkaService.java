@@ -6,6 +6,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
@@ -57,8 +58,7 @@ public class CcmPtsKafkaService {
         log.info("receiveMessageReq (CCM PTS): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
-            final var adaptResult = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
-            final var requestMessage = adaptResult.getT1();
+            final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
 
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
@@ -71,8 +71,8 @@ public class CcmPtsKafkaService {
                         || attResult.get().getResult() == null) {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
-                if (StringUtils.isNotBlank(adaptResult.getT2()) && attResult.get().getResult().getLastRequestId() != null) {
-                    ccmMessageSourceService.save(attResult.get().getResult().getLastRequestId(), adaptResult.getT2());
+                if (attResult.get().getResult().getLastRequestId() != null) {
+                    ccmMessageSourceService.save(attResult.get().getResult().getLastRequestId(), getSourceMessage(request));
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
@@ -103,6 +103,15 @@ public class CcmPtsKafkaService {
             ack.nack(sleepTime);
             throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
         }
+    }
+
+    private String getSourceMessage(DbAttestationRequestVer1 requestMessage) {
+        try {
+            return requestMessage.toByteBuffer().toString();
+        } catch (IOException e) {
+            log.error("Ошибка преобразования сообщения в строку");
+        }
+        return StringUtils.EMPTY;
     }
 
 }

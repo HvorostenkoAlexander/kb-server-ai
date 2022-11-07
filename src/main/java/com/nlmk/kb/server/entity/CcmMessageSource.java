@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.entity;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Builder
@@ -20,14 +22,14 @@ import lombok.NoArgsConstructor;
 public class CcmMessageSource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, name = "id")
-    private Long id;
-
-    @Column(name = "request_id", nullable = false)
+    @Column(nullable = false)
     private Long requestId;
 
-    @Column(name = "message_source", nullable = false)
+    @Column(nullable = false)
     private String messageSource;
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
 }
