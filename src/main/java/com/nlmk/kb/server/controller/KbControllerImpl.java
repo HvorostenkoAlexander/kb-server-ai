@@ -6,16 +6,22 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
+import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
-import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
+import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
@@ -24,11 +30,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.text.MessageFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -44,6 +48,7 @@ public class KbControllerImpl implements KbController {
     private final PsmSender psmSender;
     private final AttestationResultSender attestationResultSender;
     private final AttestationMessageService attestationMessageService;
+    private final CcmMessageSourceService ccmMessageSourceService;
 
     @Override
     public ResponseEntity<String> postLaunchReAttestation(String primeId) {
@@ -165,6 +170,14 @@ public class KbControllerImpl implements KbController {
             }
             default: throw new AttestationResultSenderException("Wrong Kceh Value for send result");
         }
+    }
+
+    @Override
+    public ResponseEntity<List<String>> getCcmSourceMessage(Long orderNum) {
+        log.info("getCcmSourceMessage, orderNum [{}]", orderNum);
+        return ResponseEntity.ok(ccmMessageSourceService.findByRequestId(orderNum)
+                .stream().map(CcmMessageSource::getMessageSource).collect(
+                Collectors.toUnmodifiableList()));
     }
 
 }

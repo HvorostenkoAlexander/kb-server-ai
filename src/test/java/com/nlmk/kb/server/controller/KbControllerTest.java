@@ -15,6 +15,8 @@ import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
+import com.nlmk.kb.server.service.ccm.CcmMessageServiceImpl;
+import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
@@ -61,6 +63,8 @@ class KbControllerTest {
     private AttestationResultSender productSender;
     @MockBean
     private AttestationMessageService attestationMessageService;
+    @MockBean
+    private CcmMessageSourceService ccmMessageSourceService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

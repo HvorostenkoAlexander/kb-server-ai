@@ -1,14 +1,21 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.exception.AttestationResultException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
+import com.nlmk.kb.server.exception.KafkaRestConfigException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
+import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.l3.ccm.pgp.EnumOp;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -26,15 +33,18 @@ public class CcmPgpKafkaService {
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
+    private final CcmMessageSourceService ccmMessageSourceService;
 
     public CcmPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
-                              AttestationResultSender attestationResultSender) {
+                              AttestationResultSender attestationResultSender,
+                              CcmMessageSourceService ccmMessageSourceService) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
         this.attestationResultSender = attestationResultSender;
+        this.ccmMessageSourceService = ccmMessageSourceService;
     }
 
     @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
@@ -52,7 +62,8 @@ public class CcmPgpKafkaService {
         log.info("receiveMessageReq (CCM PGP): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
-            final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
+            final var adaptResult = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
+            final var requestMessage = adaptResult.getT1();
 
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
@@ -64,6 +75,9 @@ public class CcmPgpKafkaService {
                 if (attResult.isEmpty()
                         || attResult.get().getResult() == null) {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
+                }
+                if (StringUtils.isNotBlank(adaptResult.getT2()) && attResult.get().getResult().getLastRequestId() != null) {
+                    ccmMessageSourceService.save(attResult.get().getResult().getLastRequestId(), adaptResult.getT2());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResults.class);
