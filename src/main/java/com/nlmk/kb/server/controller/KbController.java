@@ -105,7 +105,7 @@ public interface KbController {
             description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
     void postProductAttestationResult(@RequestBody @Valid ProductAttestationResultDto attestationResult);
 
-    @GetMapping("/ccm_message")
+    @GetMapping("/ccm_source_message")
     @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
             security = {@SecurityRequirement(name = "bearer-key")})
     ResponseEntity<String> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);

@@ -12,7 +12,6 @@ import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
-import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import com.nlmk.kb.server.service.sap.S3Service;
@@ -21,12 +20,10 @@ import io.micrometer.core.annotation.Timed;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsPts;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -49,7 +46,6 @@ public class KbControllerImpl implements KbController {
     private final PsmSender psmSender;
     private final AttestationResultSender attestationResultSender;
     private final AttestationMessageService attestationMessageService;
-    private final CcmMessageSourceService ccmMessageSourceService;
 
     @Override
     public ResponseEntity<String> postLaunchReAttestation(String primeId) {
@@ -174,9 +170,9 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public ResponseEntity<String> getCcmSourceMessage(Long orderNum) {
-        log.info("getCcmSourceMessage, orderNum [{}]", orderNum);
-        return ResponseEntity.ok(ccmMessageSourceService.findByRequestId(orderNum)
+    public ResponseEntity<String> getCcmSourceMessage(Long requestId) {
+        log.info("getCcmSourceMessage, orderNum [{}]", requestId);
+        return ResponseEntity.ok(ccmMessageService.findSourceMessageByRequestId(requestId)
                 .map(CcmMessageSource::getMessageSource)
                 .orElse("Not found"));
     }

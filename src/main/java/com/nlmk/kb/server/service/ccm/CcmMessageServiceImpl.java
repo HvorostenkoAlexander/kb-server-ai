@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
+import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class CcmMessageServiceImpl implements CcmMessageService {
 
     private final CcmMessageRepository messageRepository;
+    private final CcmMessageSourceRepository ccmMessageSourceRepository;
 
     @Override
     @Transactional
@@ -77,6 +80,18 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     @Override
     public Optional<CcmMessage> findLastMessage(String primeId) {
         return messageRepository.findFirstByPrimeIdOrderByKbReceiptTsDesc(primeId);
+    }
+
+    @Override
+    public Optional<CcmMessageSource> findSourceMessageByRequestId(Long requestId) {
+        return ccmMessageSourceRepository.findByRequestId(requestId);
+    }
+
+    @Override
+    public void save(Long requestId, String ccmSourceMessageString) {
+        ccmMessageSourceRepository.save(CcmMessageSource.builder()
+                .requestId(requestId)
+                .messageSource(ccmSourceMessageString).build());
     }
 
 }

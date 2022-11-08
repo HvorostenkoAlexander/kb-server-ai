@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.entity.CcmMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -24,5 +25,19 @@ public interface CcmMessageService {
      * @return найденное сообщение или пусто
      */
     Optional<CcmMessage> findLastMessage(String primeId);
+
+    /**
+     * Поиск исходного сообщения по id запроса на аттестацию
+     * @param requestId orderNum запроса
+     * @return {@link java.util.Optional} of {@link CcmMessageSource}
+     */
+    Optional<CcmMessageSource> findSourceMessageByRequestId(Long requestId);
+
+    /**
+     * Сохранить исходное сообщение
+     * @param requestId orderNum запроса ccm_message таблицы
+     * @param ccmSourceMessageString строка исходное сообщение
+     */
+    void save(Long requestId, String ccmSourceMessageString);
 
 }

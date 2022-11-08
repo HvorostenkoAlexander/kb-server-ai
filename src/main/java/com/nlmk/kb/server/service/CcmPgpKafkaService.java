@@ -8,7 +8,7 @@ import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
-import com.nlmk.kb.server.service.ccm.CcmMessageSourceService;
+import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
@@ -34,18 +34,18 @@ public class CcmPgpKafkaService {
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
-    private final CcmMessageSourceService ccmMessageSourceService;
+    private final CcmMessageService ccmMessageService;
 
     public CcmPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
-                              CcmMessageSourceService ccmMessageSourceService) {
+                              CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
         this.attestationResultSender = attestationResultSender;
-        this.ccmMessageSourceService = ccmMessageSourceService;
+        this.ccmMessageService = ccmMessageService;
     }
 
     @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
@@ -77,7 +77,7 @@ public class CcmPgpKafkaService {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
                 if (attResult.get().getResult().getLastRequestId() != null) {
-                    ccmMessageSourceService.save(attResult.get().getResult().getLastRequestId(), getSourceMessage(request));
+                    ccmMessageService.save(attResult.get().getResult().getLastRequestId(), getSourceMessage(request));
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResults.class);
