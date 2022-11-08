@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class CcmPgpMessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
 
     private final KafkaRequestAdapter<AttestationRequest> adapter;
