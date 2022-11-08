@@ -1,17 +1,20 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.exception.AttestationResultException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
+import com.nlmk.kb.server.exception.KafkaRestConfigException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
 import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -71,8 +74,11 @@ public class CcmPtsKafkaService {
                         || attResult.get().getResult() == null) {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
-                if (attResult.get().getResult().getLastRequestId() != null) {
-                    ccmMessageService.save(attResult.get().getResult().getLastRequestId(), getSourceMessage(request));
+                if ((attResult.get().getResult().getRequests() != null)
+                        && !attResult.get().getResult().getRequests().isEmpty()
+                        && (null != attResult.get().getResult().getRequests().get(0).getId())) {
+                    var resultRequest = attResult.get().getResult().getRequests().get(0);
+                    ccmMessageService.save(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
@@ -103,15 +109,6 @@ public class CcmPtsKafkaService {
             ack.nack(sleepTime);
             throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
         }
-    }
-
-    private String getSourceMessage(DbAttestationRequestVer1 requestMessage) {
-        try {
-            return requestMessage.toByteBuffer().toString();
-        } catch (IOException e) {
-            log.error("Ошибка преобразования сообщения в строку");
-        }
-        return StringUtils.EMPTY;
     }
 
 }

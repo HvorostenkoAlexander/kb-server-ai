@@ -3,6 +3,7 @@ package com.nlmk.kb.server.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
+import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -108,5 +109,5 @@ public interface KbController {
     @GetMapping("/ccm_source_message")
     @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
             security = {@SecurityRequirement(name = "bearer-key")})
-    ResponseEntity<String> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
+    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
 }

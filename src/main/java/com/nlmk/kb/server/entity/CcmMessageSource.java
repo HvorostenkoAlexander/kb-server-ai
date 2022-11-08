@@ -3,8 +3,6 @@ package com.nlmk.kb.server.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,6 +22,9 @@ public class CcmMessageSource {
     @Id
     @Column(nullable = false)
     private Long requestId;
+
+    @Column(nullable = false)
+    private String primeId;
 
     @Column(nullable = false)
     private String messageSource;

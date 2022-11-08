@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
+import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.AttestationMessageService;
@@ -170,11 +170,9 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public ResponseEntity<String> getCcmSourceMessage(Long requestId) {
+    public ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(Long requestId) {
         log.info("getCcmSourceMessage, orderNum [{}]", requestId);
-        return ResponseEntity.ok(ccmMessageService.findSourceMessageByRequestId(requestId)
-                .map(CcmMessageSource::getMessageSource)
-                .orElse("Not found"));
+        return ResponseEntity.ok(ccmMessageService.findSourceMessageByRequestId(requestId).orElse(new CcmMessageSourceDto()));
     }
 
 }

@@ -1,9 +1,13 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.entity.CcmMessageSource;
+import com.nlmk.kb.server.mapper.CcmMessageSourceMapper;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,9 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,8 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
     private final CcmMessageRepository messageRepository;
     private final CcmMessageSourceRepository ccmMessageSourceRepository;
+
+    private final CcmMessageSourceMapper sourceMapper;
 
     @Override
     @Transactional
@@ -83,14 +86,15 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     }
 
     @Override
-    public Optional<CcmMessageSource> findSourceMessageByRequestId(Long requestId) {
-        return ccmMessageSourceRepository.findByRequestId(requestId);
+    public Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId) {
+        return ccmMessageSourceRepository.findByRequestId(requestId).map(src -> sourceMapper.toDto(src));
     }
 
     @Override
-    public void save(Long requestId, String ccmSourceMessageString) {
+    public void save(Long requestId, String primeId, String ccmSourceMessageString) {
         ccmMessageSourceRepository.save(CcmMessageSource.builder()
                 .requestId(requestId)
+                .primeId(primeId)
                 .messageSource(ccmSourceMessageString).build());
     }
 

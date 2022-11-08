@@ -16,16 +16,16 @@ class CcmMessageSourceRepositoryTest {
     void saveFind() {
         Assertions.assertEquals(0L, repository.count());
         Assertions.assertDoesNotThrow(() -> repository.save(
-                CcmMessageSource.builder().requestId(1010L).messageSource("Test requestA 1010").build()));
+                CcmMessageSource.builder().requestId(1010L).primeId("1111111111111").messageSource("{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}").build()));
         Assertions.assertDoesNotThrow(() -> repository.save(
-                CcmMessageSource.builder().requestId(1010L).messageSource("Test requestA 1010 2").build()));
+                CcmMessageSource.builder().requestId(1010L).primeId("1111111111111").messageSource("{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"C\"}").build()));
         repository.flush();
         Assertions.assertEquals(1L, repository.count());
 
         final var found = repository.findByRequestId(1010L);
         Assertions.assertFalse(found.isEmpty());
         Assertions.assertEquals(1010L, found.get().getRequestId());
-        Assertions.assertTrue(found.get().getMessageSource().endsWith("1010 2"));
+        Assertions.assertTrue(found.get().getMessageSource().endsWith("C\"}"));
     }
 
 }

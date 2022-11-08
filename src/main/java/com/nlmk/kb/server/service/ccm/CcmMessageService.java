@@ -1,12 +1,12 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.entity.CcmMessageSource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 public interface CcmMessageService {
 
@@ -31,13 +31,14 @@ public interface CcmMessageService {
      * @param requestId orderNum запроса
      * @return {@link java.util.Optional} of {@link CcmMessageSource}
      */
-    Optional<CcmMessageSource> findSourceMessageByRequestId(Long requestId);
+    Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId);
 
     /**
      * Сохранить исходное сообщение
      * @param requestId orderNum запроса ccm_message таблицы
+     * @param primeId primeId запроса ccm_message таблицы
      * @param ccmSourceMessageString строка исходное сообщение
      */
-    void save(Long requestId, String ccmSourceMessageString);
+    void save(Long requestId, String primeId, String ccmSourceMessageString);
 
 }
