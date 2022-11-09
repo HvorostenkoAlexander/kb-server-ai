@@ -22,6 +22,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -74,8 +75,7 @@ public class CcmPtsKafkaService {
                         || attResult.get().getResult() == null) {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
-                if ((attResult.get().getResult().getRequests() != null)
-                        && !attResult.get().getResult().getRequests().isEmpty()
+                if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && (null != attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
                     ccmMessageService.save(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());

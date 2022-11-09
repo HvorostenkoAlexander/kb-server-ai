@@ -5,13 +5,11 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<DbAttestationRequestVer1> {
 
     private final KafkaRequestAdapter<DbAttestationRequestVer1> adapter;
