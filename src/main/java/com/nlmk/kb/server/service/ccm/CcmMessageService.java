@@ -28,14 +28,14 @@ public interface CcmMessageService {
 
     /**
      * Поиск исходного сообщения по id запроса на аттестацию
-     * @param requestId orderNum запроса
+     * @param requestId requestId запроса
      * @return {@link java.util.Optional} of {@link CcmMessageSource}
      */
     Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId);
 
     /**
      * Сохранить исходное сообщение
-     * @param requestId orderNum запроса ccm_message таблицы
+     * @param requestId requestId запроса ccm_message таблицы
      * @param primeId primeId запроса ccm_message таблицы
      * @param ccmSourceMessageString строка исходное сообщение
      */
