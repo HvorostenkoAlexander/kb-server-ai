@@ -13,7 +13,7 @@ class CcmMessageServiceTest {
 
     @Test
     void saveFindTest() {
-        service.save(1020L, "1111111111", "{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}");
+        service.saveSourceMessage(1020L, "1111111111", "{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}");
         var found = service.findSourceMessageByRequestId(1020L);
         Assertions.assertFalse(found.isEmpty());
         Assertions.assertEquals(1020L, found.stream().findFirst().get().getRequestId());

@@ -91,7 +91,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     }
 
     @Override
-    public void save(Long requestId, String primeId, String ccmSourceMessageString) {
+    public void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString) {
         ccmMessageSourceRepository.save(CcmMessageSource.builder()
                 .requestId(requestId)
                 .primeId(primeId)

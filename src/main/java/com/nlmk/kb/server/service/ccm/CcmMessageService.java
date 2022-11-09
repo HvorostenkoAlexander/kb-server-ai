@@ -39,6 +39,6 @@ public interface CcmMessageService {
      * @param primeId primeId запроса ccm_message таблицы
      * @param ccmSourceMessageString строка исходное сообщение
      */
-    void save(Long requestId, String primeId, String ccmSourceMessageString);
+    void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString);
 
 }

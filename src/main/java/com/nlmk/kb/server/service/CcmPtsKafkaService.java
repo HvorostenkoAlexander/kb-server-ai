@@ -78,7 +78,7 @@ public class CcmPtsKafkaService {
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && (null != attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
-                    ccmMessageService.save(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
+                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
