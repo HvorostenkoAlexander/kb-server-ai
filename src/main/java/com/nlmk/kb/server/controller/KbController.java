@@ -3,6 +3,7 @@ package com.nlmk.kb.server.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
+import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,16 +11,21 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.Date;
+import java.util.List;
+import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Validated
 @ApiResponse(responseCode = "400",
@@ -100,4 +106,8 @@ public interface KbController {
             description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
     void postProductAttestationResult(@RequestBody @Valid ProductAttestationResultDto attestationResult);
 
+    @GetMapping("/ccm_source_message")
+    @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
 }

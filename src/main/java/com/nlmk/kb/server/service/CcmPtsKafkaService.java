@@ -1,8 +1,14 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.exception.AttestationResultException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
+import com.nlmk.kb.server.exception.KafkaRestConfigException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
+import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +22,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -26,15 +33,18 @@ public class CcmPtsKafkaService {
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
+    private final CcmMessageService ccmMessageService;
 
     public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter,
-                              AttestationResultSender attestationResultSender) {
+                              AttestationResultSender attestationResultSender,
+                              CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
         this.attestationResultSender = attestationResultSender;
+        this.ccmMessageService = ccmMessageService;
     }
 
     @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory",
@@ -64,6 +74,11 @@ public class CcmPtsKafkaService {
                 if (attResult.isEmpty()
                         || attResult.get().getResult() == null) {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
+                }
+                if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
+                        && (null != attResult.get().getResult().getRequests().get(0).getId())) {
+                    var resultRequest = attResult.get().getResult().getRequests().get(0);
+                    ccmMessageService.save(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
