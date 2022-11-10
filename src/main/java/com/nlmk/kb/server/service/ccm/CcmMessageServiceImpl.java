@@ -6,7 +6,6 @@ import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.mapper.CcmMessageSourceMapper;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,42 +30,25 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     @Transactional
     public Optional<CcmMessage> save(CcmMessage ccmMessage) {
 
-        if (messageRepository.existsByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+        var ids = messageRepository.findIdByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
                 ccmMessage.getPartition(),
-                ccmMessage.getOffset())
-        ) {
-            log.info("the message with topic: [{}]; partition: {}; offset: {} is already present in the database. ",
-                    ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
+                ccmMessage.getOffset());
 
-            if (messageRepository.countByTopicAndPartitionAndOffset(
-                    ccmMessage.getTopic(),
-                    ccmMessage.getPartition(),
-                    ccmMessage.getOffset()) > 1) {
-                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию с характеристиками" +
-                                " topic: {}," +
-                                " partition: {}," +
-                                " offset: {}",
-                        ccmMessage.getTopic(),
-                        ccmMessage.getPartition(),
-                        ccmMessage.getOffset()
-                );
-            }
-            messageRepository.updateAllByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
-                    ccmMessage.getPartition(),
-                    ccmMessage.getOffset(),
-                    ccmMessage.getKey(),
-                    ccmMessage.getKbSendingTs(),
-                    ccmMessage.getKbReceiptTs(),
-                    ccmMessage.getStatus(),
-                    ccmMessage.getNote(),
-                    ccmMessage.getPrimeId(),
-                    ccmMessage.getRequest());
+        /*
+        INFO: в списке всегда возможно одно значение
+         - @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
+         имеющаяся запись обновляется без чтения, потому что возможен устаревший формат json request
+        */
+        if (!ids.isEmpty()) {
+            log.info("CCM сообщение для topic: [{}]; partition: {}; offset: {} уже есть в базе данных таблицы ccm_message.",
+                    ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
+            ccmMessage.setId(ids.get(0));
         }
 
-        messageRepository.save(ccmMessage);
-        log.info("Successfully saved ccmMessage with attestation request.primeId: {}", ccmMessage.getPrimeId());
+        var saved = messageRepository.save(ccmMessage);
+        log.info("ccmMessage аттестации успешно сохранено для primeId: {}", saved.getPrimeId());
 
-        return Optional.ofNullable(ccmMessage);
+        return Optional.of(saved);
     }
 
     @Override
@@ -93,7 +75,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
     @Override
     public Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId) {
-        return ccmMessageSourceRepository.findByRequestId(requestId).map(src -> sourceMapper.toDto(src));
+        return ccmMessageSourceRepository.findByRequestId(requestId).map(sourceMapper::toDto);
     }
 
     @Override
