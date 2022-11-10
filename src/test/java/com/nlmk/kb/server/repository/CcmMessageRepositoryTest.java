@@ -1,15 +1,15 @@
 package com.nlmk.kb.server.repository;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.kb.server.entity.CcmMessage;
+import java.util.Date;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.Date;
-import java.util.List;
 
 @DataJpaTest
 class CcmMessageRepositoryTest {
@@ -41,6 +41,33 @@ class CcmMessageRepositoryTest {
         Assertions.assertTrue(fined.isPresent());
         Assertions.assertEquals(1600_100000_000L, fined.get().getKbReceiptTs().getTime());
         Assertions.assertEquals(2L, fined.get().getRequest().getId());
+    }
+
+
+    @Test
+    void saveUpdate() {
+        Assertions.assertDoesNotThrow(() -> repository.save(
+                CcmMessage.builder().topic("topic10").partition(0).offset(200).key("key100")
+                        .kbSendingTs(new Date(1600_000000_000L))
+                        .kbReceiptTs(new Date(1600_000000_000L)).primeId("123456")
+                        .request(AttestationRequest.builder().id(1L).value(Value.builder().data(
+                                DataField.builder().primeId("123456").width(900.0).build()).build()).build()).build()));
+        repository.flush();
+        var ids = repository.findIdByTopicAndPartitionAndOffset("topic10", 0, 200);
+        Assertions.assertEquals(1L, ids.size());
+
+        CcmMessage ccm = CcmMessage.builder().topic("topic10").partition(0).offset(200).key("key100")
+                .kbSendingTs(new Date(1600_000000_000L))
+                .kbReceiptTs(new Date(1600_000000_000L)).primeId("123456")
+                .request(AttestationRequest.builder().id(1L).value(Value.builder().data(
+                        DataField.builder().primeId("123456").width(1200.0).build()).build()).build()).build();
+
+        ccm.setId(ids.get(0));
+        Assertions.assertDoesNotThrow(() -> repository.save(ccm));
+        repository.flush();
+        final var fined = repository.findFirstByPrimeIdOrderByKbReceiptTsDesc("123456");
+        Assertions.assertTrue(fined.isPresent());
+        Assertions.assertEquals(1200.0, fined.get().getRequest().getValue().getData().getWidth());
     }
 
 }

@@ -30,37 +30,25 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     @Transactional
     public Optional<CcmMessage> save(CcmMessage ccmMessage) {
 
-        if (messageRepository.existsByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+        var ids = messageRepository.findIdByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
                 ccmMessage.getPartition(),
-                ccmMessage.getOffset())
-        ) {
-            log.info("the message with topic: [{}]; partition: {}; offset: {} is already present in the database. ",
+                ccmMessage.getOffset());
+
+        /*
+        INFO: в списке всегда возможно одно значение
+         - @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
+         имеющаяся запись обновляется без чтения, потому что возможен устаревший формат json request
+        */
+        if (!ids.isEmpty()) {
+            log.info("CCM сообщение для topic: [{}]; partition: {}; offset: {} уже есть в базе данных таблицы ccm_message.",
                     ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
-
-            List<CcmMessage> storedRequests = messageRepository
-                    .findByTopicAndPartitionAndOffset(
-                            ccmMessage.getTopic(),
-                            ccmMessage.getPartition(),
-                            ccmMessage.getOffset()
-                    );
-            if (storedRequests.size() > 1) {
-                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию с характеристиками" +
-                                " topic: {}," +
-                                " partition: {}," +
-                                " offset: {}",
-                        ccmMessage.getTopic(),
-                        ccmMessage.getPartition(),
-                        ccmMessage.getOffset()
-                );
-            }
-
-            return Optional.of(storedRequests.get(0));
+            ccmMessage.setId(ids.get(0));
         }
 
-        messageRepository.save(ccmMessage);
-        log.info("Successfully saved ccmMessage with attestation request.primeId: {}", ccmMessage.getPrimeId());
+        var saved = messageRepository.save(ccmMessage);
+        log.info("ccmMessage аттестации успешно сохранено для primeId: {}", saved.getPrimeId());
 
-        return Optional.ofNullable(ccmMessage);
+        return Optional.of(saved);
     }
 
     @Override
@@ -87,7 +75,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
 
     @Override
     public Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId) {
-        return ccmMessageSourceRepository.findByRequestId(requestId).map(src -> sourceMapper.toDto(src));
+        return ccmMessageSourceRepository.findByRequestId(requestId).map(sourceMapper::toDto);
     }
 
     @Override
