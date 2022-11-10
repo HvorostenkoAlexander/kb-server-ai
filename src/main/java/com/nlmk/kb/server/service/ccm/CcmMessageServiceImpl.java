@@ -6,6 +6,7 @@ import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.mapper.CcmMessageSourceMapper;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,10 @@ public class CcmMessageServiceImpl implements CcmMessageService {
             log.info("the message with topic: [{}]; partition: {}; offset: {} is already present in the database. ",
                     ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
 
-            List<CcmMessage> storedRequests = messageRepository
-                    .findByTopicAndPartitionAndOffset(
-                            ccmMessage.getTopic(),
-                            ccmMessage.getPartition(),
-                            ccmMessage.getOffset()
-                    );
-            if (storedRequests.size() > 1) {
+            if (messageRepository.countByTopicAndPartitionAndOffset(
+                    ccmMessage.getTopic(),
+                    ccmMessage.getPartition(),
+                    ccmMessage.getOffset()) > 1) {
                 log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию с характеристиками" +
                                 " topic: {}," +
                                 " partition: {}," +
@@ -53,8 +51,16 @@ public class CcmMessageServiceImpl implements CcmMessageService {
                         ccmMessage.getOffset()
                 );
             }
-
-            return Optional.of(storedRequests.get(0));
+            messageRepository.updateAllByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+                    ccmMessage.getPartition(),
+                    ccmMessage.getOffset(),
+                    ccmMessage.getKey(),
+                    ccmMessage.getKbSendingTs(),
+                    ccmMessage.getKbReceiptTs(),
+                    ccmMessage.getStatus(),
+                    ccmMessage.getNote(),
+                    ccmMessage.getPrimeId(),
+                    ccmMessage.getRequest());
         }
 
         messageRepository.save(ccmMessage);
