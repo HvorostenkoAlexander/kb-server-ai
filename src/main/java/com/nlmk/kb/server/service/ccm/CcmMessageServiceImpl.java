@@ -37,12 +37,12 @@ public class CcmMessageServiceImpl implements CcmMessageService {
         /*
         INFO: в списке всегда возможно одно значение
          - @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
-         имеющаяся запись обновляется без чтения, потому что возможен устаревший формат json request
+         имеющаяся запись удаляется без чтения, потому что возможен устаревший формат json request
         */
         if (!ids.isEmpty()) {
             log.info("CCM сообщение для topic: [{}]; partition: {}; offset: {} уже есть в базе данных таблицы ccm_message.",
                     ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
-            ccmMessage.setId(ids.get(0));
+            messageRepository.deleteById(ids.get(0));
         }
 
         var saved = messageRepository.save(ccmMessage);
