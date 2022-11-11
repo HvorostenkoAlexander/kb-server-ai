@@ -30,20 +30,14 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     @Transactional
     public Optional<CcmMessage> save(CcmMessage ccmMessage) {
 
-        var ids = messageRepository.findIdByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+        /*
+        INFO:
+        Одна запись, т.к. @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
+        имеющаяся запись удаляется без чтения, потому что возможен устаревший формат json request
+        */
+        messageRepository.deleteOldByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
                 ccmMessage.getPartition(),
                 ccmMessage.getOffset());
-
-        /*
-        INFO: в списке всегда возможно одно значение
-         - @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
-         имеющаяся запись удаляется без чтения, потому что возможен устаревший формат json request
-        */
-        if (!ids.isEmpty()) {
-            log.info("CCM сообщение для topic: [{}]; partition: {}; offset: {} уже есть в базе данных таблицы ccm_message.",
-                    ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
-            messageRepository.deleteById(ids.get(0));
-        }
 
         var saved = messageRepository.save(ccmMessage);
         log.info("ccmMessage аттестации успешно сохранено для primeId: {}", saved.getPrimeId());

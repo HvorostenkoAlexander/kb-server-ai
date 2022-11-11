@@ -45,7 +45,7 @@ class CcmMessageRepositoryTest {
 
 
     @Test
-    void saveUpdate() {
+    void saveDelete() {
         Assertions.assertDoesNotThrow(() -> repository.save(
                 CcmMessage.builder().topic("topic10").partition(0).offset(200).key("key100")
                         .kbSendingTs(new Date(1600_000000_000L))
@@ -53,21 +53,10 @@ class CcmMessageRepositoryTest {
                         .request(AttestationRequest.builder().id(1L).value(Value.builder().data(
                                 DataField.builder().primeId("123456").width(900.0).build()).build()).build()).build()));
         repository.flush();
-        var ids = repository.findIdByTopicAndPartitionAndOffset("topic10", 0, 200);
-        Assertions.assertEquals(1L, ids.size());
+        repository.deleteOldByTopicAndPartitionAndOffset("topic10", 0, 200);
 
-        CcmMessage ccm = CcmMessage.builder().topic("topic10").partition(0).offset(200).key("key100")
-                .kbSendingTs(new Date(1600_000000_000L))
-                .kbReceiptTs(new Date(1600_000000_000L)).primeId("123456")
-                .request(AttestationRequest.builder().id(1L).value(Value.builder().data(
-                        DataField.builder().primeId("123456").width(1200.0).build()).build()).build()).build();
-
-        ccm.setId(ids.get(0));
-        Assertions.assertDoesNotThrow(() -> repository.save(ccm));
-        repository.flush();
         final var fined = repository.findFirstByPrimeIdOrderByKbReceiptTsDesc("123456");
-        Assertions.assertTrue(fined.isPresent());
-        Assertions.assertEquals(1200.0, fined.get().getRequest().getValue().getData().getWidth());
+        Assertions.assertFalse(fined.isPresent());
     }
 
 }
