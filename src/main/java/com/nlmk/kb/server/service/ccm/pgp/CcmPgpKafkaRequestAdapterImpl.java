@@ -68,6 +68,10 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .kceh(recordData.getKceh())
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
+                .attestationPoint(recordData.getAttestationPoint())
+                .cutTaskNum(recordData.getCutTaskNum())
+                .cutTaskDate(AdapterUtils.sequenceToString(recordData.getCutTaskDate()))
+                .cutTaskStrNum(recordData.getCutTaskStrNum())
                 .orderReq(List.of())
                 .specifications(
                         recordData.getSpecifications().stream()
