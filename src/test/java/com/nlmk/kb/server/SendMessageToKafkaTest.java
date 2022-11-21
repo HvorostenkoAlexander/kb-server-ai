@@ -110,8 +110,11 @@ class SendMessageToKafkaTest {
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
                 .setKceh(12)
-                .setOrderNum(40L)
-                .setOrderPos(4)
+                .setOrderNum(1138L)
+                .setOrderPos(1)
+                .setAttestationPoint(2)
+                .setCutTaskNum(10)
+                .setCutTaskStrNum(1)
                 .setSpecifications(List.of(
                         nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(1)
                                 .setSpecCode(3).setSpecName("Марка стали").setSpecValue("Ст3сп").build(),
@@ -121,7 +124,7 @@ class SendMessageToKafkaTest {
                 .build();
 
         nlmk.l3.ccm.pgp.AttestationRequest value = nlmk.l3.ccm.pgp.AttestationRequest.newBuilder()
-                .setTs("2021-05-18T00:38:25.194-03:00")
+                .setTs("2022-11-21T10:08:25.194+05:00")
                 .setOp(nlmk.l3.ccm.pgp.EnumOp.U)
                 .setPk(nlmk.l3.ccm.pgp.RecordPk.newBuilder()
                         .setId("0001020210329001515440422")

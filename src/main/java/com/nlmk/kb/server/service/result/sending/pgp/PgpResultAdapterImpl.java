@@ -32,16 +32,17 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
         var mismatch = Status.WAITING_FOR_DATA.getValue();
         String ts = null;
 
-        final var attestations = product.getRequests().get(0).getAttestations();
-        final var primeId = product.getRequests().get(0).getPrimeID();
+        final var request = product.getRequests().get(0);
+        final var attestations = request.getAttestations();
+        final var primeId = request.getPrimeID();
 
-        if (product.getRequests().get(0).getKceh() != null) {
-            kceh = product.getRequests().get(0).getKceh();
+        if (request.getKceh() != null) {
+            kceh = request.getKceh();
         }
-        if (product.getRequests().get(0).getStatus() != null) {
+        if (request.getStatus() != null) {
             mismatch = product.getRequests().get(0).getStatus().getValue();
         }
-        if (product.getRequests().get(0).getAttestationTs() != null) {
+        if (request.getAttestationTs() != null) {
             ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
         }
 
@@ -60,6 +61,9 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                         .setChemical(toChemicalRecordList(attestations))
                         .setMechanical(toMechanicalRecordList(attestations))
                         .setMetallographic(toMettallographicRecordList(attestations))
+                        .setCutTaskNum(request.getCutTaskNum())
+                        .setCutTaskDate(request.getCutTaskDate())
+                        .setCutTaskStrNum(request.getCutTaskStrNum())
                         .build()
                 ).build();
     }
