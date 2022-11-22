@@ -11,6 +11,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
@@ -72,11 +73,11 @@ public class CcmPtsKafkaService {
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);
                 if (attResult.isEmpty()
-                        || attResult.get().getResult() == null) {
+                        || Objects.isNull(attResult.get().getResult())) {
                     throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
                 }
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
-                        && (null != attResult.get().getResult().getRequests().get(0).getId())) {
+                        && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
                     ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
                 }
