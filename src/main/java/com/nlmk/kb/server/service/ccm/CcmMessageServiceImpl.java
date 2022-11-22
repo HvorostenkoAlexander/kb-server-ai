@@ -1,7 +1,13 @@
 package com.nlmk.kb.server.service.ccm;
 
+import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.entity.CcmMessage;
+import com.nlmk.kb.server.entity.CcmMessageSource;
+import com.nlmk.kb.server.mapper.CcmMessageSourceMapper;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
+import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,51 +16,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CcmMessageServiceImpl implements CcmMessageService {
 
     private final CcmMessageRepository messageRepository;
+    private final CcmMessageSourceRepository ccmMessageSourceRepository;
+
+    private final CcmMessageSourceMapper sourceMapper;
 
     @Override
     @Transactional
     public Optional<CcmMessage> save(CcmMessage ccmMessage) {
 
-        if (messageRepository.existsByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+        /*
+        INFO:
+        Одна запись, т.к. @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
+        имеющаяся запись удаляется без чтения, потому что возможен устаревший формат json request
+        */
+        messageRepository.deleteOldByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
                 ccmMessage.getPartition(),
-                ccmMessage.getOffset())
-        ) {
-            log.info("the message with topic: [{}]; partition: {}; offset: {} is already present in the database. ",
-                    ccmMessage.getTopic(), ccmMessage.getPartition(), ccmMessage.getOffset());
+                ccmMessage.getOffset());
 
-            List<CcmMessage> storedRequests = messageRepository
-                    .findByTopicAndPartitionAndOffset(
-                            ccmMessage.getTopic(),
-                            ccmMessage.getPartition(),
-                            ccmMessage.getOffset()
-                    );
-            if (storedRequests.size() > 1) {
-                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного запроса на аттестацию с характеристиками" +
-                                " topic: {}," +
-                                " partition: {}," +
-                                " offset: {}",
-                        ccmMessage.getTopic(),
-                        ccmMessage.getPartition(),
-                        ccmMessage.getOffset()
-                );
-            }
+        var saved = messageRepository.save(ccmMessage);
+        log.info("ccmMessage аттестации успешно сохранено для primeId: {}", saved.getPrimeId());
 
-            return Optional.of(storedRequests.get(0));
-        }
-
-        messageRepository.save(ccmMessage);
-        log.info("Successfully saved ccmMessage with attestation request.primeId: {}", ccmMessage.getPrimeId());
-
-        return Optional.ofNullable(ccmMessage);
+        return Optional.of(saved);
     }
 
     @Override
@@ -77,6 +65,19 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     @Override
     public Optional<CcmMessage> findLastMessage(String primeId) {
         return messageRepository.findFirstByPrimeIdOrderByKbReceiptTsDesc(primeId);
+    }
+
+    @Override
+    public Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId) {
+        return ccmMessageSourceRepository.findByRequestId(requestId).map(sourceMapper::toDto);
+    }
+
+    @Override
+    public void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString) {
+        ccmMessageSourceRepository.save(CcmMessageSource.builder()
+                .requestId(requestId)
+                .primeId(primeId)
+                .messageSource(ccmSourceMessageString).build());
     }
 
 }
