@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CcmMessageRepository extends JpaRepository<CcmMessage, Long> {
 
     /*
-    INFO: Используется запрос для удаления записи с возможным старым форматом Json request поля
-    что не позволяет прочитать запись CcmMessage из базы данных в принципе
-    по этой же причине не использованы отображения
-    constraint для topic partition offset гарантирует наличие одной записи
+    INFO: Используется запрос для удаления записи с возможным старым форматом Json request поля.
+    Нельзя обойтись без запроса, удаление через JPA выполняется с поиском-чтением,
+    при этом устаревший формат не прочитается.
+    По полям topic, partition, offset хранится одна запись в таблице.
     */
     @Transactional
     @Modifying
