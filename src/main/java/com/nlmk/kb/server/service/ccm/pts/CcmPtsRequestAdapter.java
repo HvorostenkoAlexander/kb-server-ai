@@ -4,6 +4,8 @@ import com.nlmk.attestation.product.api.pam.ChemicalSpec;
 import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
 import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
 import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAttribute;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAttributeValue;
 import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
@@ -33,10 +35,12 @@ public abstract class CcmPtsRequestAdapter {
     private static final String DELIMITER = ";";
     private final List<Integer> allowedMechanicalCodes;
     private final List<Integer> allowedAnalysisCodes;
+    private final List<Integer> allowedPropertyAttributes;
 
     protected CcmPtsRequestAdapter(AllowedCodesConfig allowedCodesConfig) {
         log.info("CcmPtsRequestAdapter создан для allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
         log.info("CcmPtsRequestAdapter создан для allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
+        log.info("CcmPtsRequestAdapter создан для allowedPropertyAttributes {}", allowedCodesConfig.getAllowedPropertyAttributes());
         if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedMechanicalCodes())) {
             allowedMechanicalCodes = Arrays.stream(allowedCodesConfig.getAllowedMechanicalCodes().split(DELIMITER))
                     .map(Integer::parseInt)
@@ -52,6 +56,14 @@ public abstract class CcmPtsRequestAdapter {
         } else {
             allowedAnalysisCodes = List.of();
             log.warn("Не указано property request.ccm.pts.allowedAnalysisCodes");
+        }
+        if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedPropertyAttributes())) {
+            allowedPropertyAttributes = Arrays.stream(allowedCodesConfig.getAllowedPropertyAttributes().split(DELIMITER))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toUnmodifiableList());
+        } else {
+            allowedPropertyAttributes = List.of();
+            log.warn("Не указано property request.ccm.pts.allowedPropertyAttributes");
         }
     }
 
@@ -320,6 +332,7 @@ public abstract class CcmPtsRequestAdapter {
 
             List<PtsPropertyValue> listValues = null;
             List<PtsPropertyAnalyzes> listAnalyzes = null;
+            List<PtsPropertyAttribute> listAttributes = null;
 
             if (!CollectionUtils.isEmpty(p.getListValues())) {
                 listValues = p.getListValues().stream()
@@ -354,7 +367,25 @@ public abstract class CcmPtsRequestAdapter {
                                 .build())
                         .collect(Collectors.toUnmodifiableList());
             }
-            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalyzes)) {
+            if (!CollectionUtils.isEmpty(p.getAttestationList())) {
+                listAttributes = p.getAttestationList().stream()
+                        .filter(a -> allowPropertyAttribute(a.getTypeCode()))
+                        .map(a -> PtsPropertyAttribute.builder()
+                                .typeCode(a.getTypeCode())
+                                .typeName(a.getTypeName())
+                                .listValues(
+                                        a.getListValues().stream()
+                                                .map(v -> PtsPropertyAttributeValue.builder()
+                                                        .attrCode(v.getAttrCode())
+                                                        .attrValue(v.getAttrValue().toString())
+                                                        .side(v.getSide().getValue())
+                                                        .build())
+                                                .collect(Collectors.toUnmodifiableList())
+                                        )
+                                .build())
+                        .collect(Collectors.toUnmodifiableList());
+            }
+            if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalyzes) || !CollectionUtils.isEmpty(listAttributes)) {
                 properties.add(PtsMechanicalProperty.builder()
                                 .probeCode(p.getProbeCode())
                                 .probeName(p.getProbeName())
@@ -363,6 +394,7 @@ public abstract class CcmPtsRequestAdapter {
                                 .typeName(p.getTypeName())
                         .listValues(listValues)
                         .analyzes(listAnalyzes)
+                        .attestationList(listAttributes)
                         .build());
             }
         });
@@ -447,6 +479,13 @@ public abstract class CcmPtsRequestAdapter {
      */
     private boolean allowMechanicalAnalysisCode(Integer code) {
         return code != null && allowedAnalysisCodes.contains(code);
+    }
+
+    /**
+     * Только используемые в аттестации коды свойств атрибутов
+     */
+    private boolean allowPropertyAttribute(Integer code) {
+        return code != null && allowedPropertyAttributes.contains(code);
     }
 
     private List<String> prepareAttrValueList(List<RecordDataPropertiesListValuesAttrValue> listValues) {

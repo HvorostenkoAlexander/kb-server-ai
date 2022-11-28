@@ -9,6 +9,8 @@ import com.nlmk.attestation.product.api.pam.Pk;
 import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
 import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
 import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAttribute;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAttributeValue;
 import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.pam.Value;
@@ -119,7 +121,7 @@ class RestRequestAdapterTest {
                                         ))
                                         .attestationList(List.of(
                                                 CcmPtsRequest.OnePropAtt.builder()
-                                                        .typeCode(70).typeName("t71")
+                                                        .typeCode(1082).typeName("1082")
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OneAttValue.builder()
                                                                         .side(CcmPtsRequest.Side.BACK)
@@ -192,8 +194,15 @@ class RestRequestAdapterTest {
                                                                 .attrValue(List.of("12"))
                                                                 .build()
                                                 ))
-                                                .build()
-                                ))
+                                                .attestationList(List.of(
+                                                        PtsPropertyAttribute.builder()
+                                                                .typeCode(1082).typeName("1082")
+                                                                .listValues(List.of(
+                                                                        PtsPropertyAttributeValue.builder()
+                                                                                .side(CcmPtsRequest.Side.BACK.getValue())
+                                                                                .attrCode(73).attrValue("74.0").build()
+                                                                )).build()
+                                                )).build()))
                                 .build())
                         .build())
                 .build();
