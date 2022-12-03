@@ -1,16 +1,426 @@
-{"ts": "2022-07-25T16:55:26.1252864+05:00",
+{
+  "ts": "2022-11-30T14:02:24.627404+03:00",
   "op": "I",
   "pk": {
     "systemCode": "30",
-    "directoryId": "402645",
-    "id": "816"
+    "directoryId": "533369",
+    "id": "211"
   },
   "data": {
     "specifications": [
-      {"specCode": 3, "specName": "Марка на продукцию", "specTypeCode": 1, "specValue": "11ЮА", "specMeasure": ""},
-      {"specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "ТУ 14-106-454-94", "specMeasure": ""},
-      {"specCode": 586, "specName": "Толщина проката", "specTypeCode": 1, "specValue": "4.00..8.00", "specMeasure": ""},
-      {"specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "Тест", "specMeasure": ""}
+      {
+        "specCode": 3,
+        "specName": "Марка на продукцию",
+        "specTypeCode": 1,
+        "specValue": "NV27S-160",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1,
+        "specName": "Стандарт на продукцию",
+        "specTypeCode": 1,
+        "specValue": "ТУ 24.10.53-0071-05757665-2021",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 350,
+        "specName": "Толщина проката",
+        "specTypeCode": 1,
+        "specValue": "4.00..8.00",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 529,
+        "specName": "Удельные магнитные потери P 1,5/50",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 542,
+        "specName": "Удельные магнитные потери P 1,5/60",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 547,
+        "specName": "Удельные магнитные потери P 1,7/50",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 543,
+        "specName": "Удельные магнитные потери P 1,7/60",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 540,
+        "specName": "Удельные магнитные потери P 1,5/50 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 544,
+        "specName": "Удельные магнитные потери P 1,5/60 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 541,
+        "specName": "Удельные магнитные потери P 1,7/50 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 545,
+        "specName": "Удельные магнитные потери P 1,7/60 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 531,
+        "specName": "Удельные магнитные потери P 1,5/200",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 532,
+        "specName": "Удельные магнитные потери P 1,5/400",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 530,
+        "specName": "Удельные магнитные потери P 1,0/50",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 533,
+        "specName": "Удельные магнитные потери P 1,0/400",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 534,
+        "specName": "Удельные магнитные потери P 1,0/700",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 535,
+        "specName": "Удельные магнитные потери P 1,0/1000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 536,
+        "specName": "Удельные магнитные потери P 0,04/500",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 537,
+        "specName": "Удельные магнитные потери P 0,1/500",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 538,
+        "specName": "Удельные магнитные потери P 0,04/1000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 539,
+        "specName": "Удельные магнитные потери P 0,1/1000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 546,
+        "specName": "Удельные магнитные потери P 1,5/50, Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 552,
+        "specName": "Удельные магнитные потери P 1,5/60, Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 547,
+        "specName": "Удельные магнитные потери P 1,7/50, Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 548,
+        "specName": "Удельные магнитные потери P 1,7/60, Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 549,
+        "specName": "Удельные магнитные потери P 1,5/50 (SST), Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 553,
+        "specName": "Удельные магнитные потери P 1,5/60 (SST), Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 541,
+        "specName": "Удельные магнитные потери P 1,7/50 (SST), Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 551,
+        "specName": "Удельные магнитные потери P 1,7/60 (SST), Вт/ф",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Вт/ф"
+      },
+      {
+        "specCode": 558,
+        "specName": "Магнитная индукция B 40",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 559,
+        "specName": "Магнитная индукция B 80",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 560,
+        "specName": "Магнитная индукция B 100",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 561,
+        "specName": "Магнитная индукция B 200",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 629,
+        "specName": "Магнитная индукция B 400",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 562,
+        "specName": "Магнитная индукция B 800",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 563,
+        "specName": "Магнитная индукция B 1000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 564,
+        "specName": "Магнитная индукция B 2500",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 565,
+        "specName": "Магнитная индукция B 5000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 566,
+        "specName": "Магнитная индукция B 10000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 567,
+        "specName": "Магнитная индукция B 100 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 568,
+        "specName": "Магнитная индукция B 800 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 569,
+        "specName": "Магнитная индукция B 2500 (SST)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 554,
+        "specName": "Напряженность поля H 0,04/500",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 555,
+        "specName": "Напряженность поля H 0,1/500",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 556,
+        "specName": "Напряженность поля H 0,04/1000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 557,
+        "specName": "Напряженность поля H 0,1/1000",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 571,
+        "specName": "Коэффициент заполнения",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1917,
+        "specName": "Коэффициент старения, %",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "%"
+      },
+      {
+        "specCode": 1918,
+        "specName": "Коэффициент сопротивления, Ом*см2",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Ом*см2"
+      },
+      {
+        "specCode": 1919,
+        "specName": "Коэффициент сопротивления (лицевая), Ом*см2",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Ом*см2"
+      },
+      {
+        "specCode": 1920,
+        "specName": "Коэффициент сопротивления (обратная), Ом*см2",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "Ом*см2"
+      },
+      {
+        "specCode": 1921,
+        "specName": "Сцепление (адгезия)",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 952,
+        "specName": "Сцепление (адгезия) сторона лицевая",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 953,
+        "specName": "Сцепление (адгезия) сторона обратная",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1120,
+        "specName": "Пластичность (количество перегибов), шт",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "шт"
+      },
+      {
+        "specCode": 990,
+        "specName": "Толщина покрытия, мкм",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мкм"
+      },
+      {
+        "specCode": 333,
+        "specName": "Толщина покрытия (сторона лицевая), мкм",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мкм"
+      },
+      {
+        "specCode": 334,
+        "specName": "Толщина покрытия (сторона обратная), мкм",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мкм"
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Тест",
+        "specMeasure": ""
+      }
     ]
   }
 }
