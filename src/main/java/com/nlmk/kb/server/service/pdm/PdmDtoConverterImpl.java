@@ -764,7 +764,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .plasticityNumberBends(converter.getLimitSpecValue(specs, PLASTICITY_NUMBER_OF_BENDS)) // LimitDto
                 .tlotPokr(converter.getLimitSpecValue(specs, COATING_THICKNESS)) // LimitDto
                 .tlotPokrFront(converter.getLimitSpecValue(specs, COATING_THICKNESS_FRONT)) // LimitDto
-                .tlotPokrReverse(converter.getLimitSpecValue(specs, DRAG_FACTOR_REVERSE)) // LimitDto
+                .tlotPokrReverse(converter.getLimitSpecValue(specs, COATING_THICKNESS_REVERSE)) // LimitDto
                 .prP1550(converter.getLimitSpecValue(specs, P1550)) // LimitDto
                 .prP1560(converter.getLimitSpecValue(specs, P1560)) // LimitDto
                 .prP1750(converter.getLimitSpecValue(specs, P1750)) // LimitDto
@@ -810,7 +810,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK)) // String
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD)) // String
-                .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS)) // LimitDto
+                .prThickUncoat(converter.getLimitSpecValue(specs, ROLLED_THICKNESS_MAX)) // LimitDto
                 .prP1550(converter.getLimitSpecValue(specs, P1550)) // LimitDto
                 .prP1560(converter.getLimitSpecValue(specs, P1560)) // LimitDto
                 .prP1750(converter.getLimitSpecValue(specs, P1750)) // LimitDto
@@ -866,7 +866,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .plasticityNumberBends(converter.getLimitSpecValue(specs, PLASTICITY_NUMBER_OF_BENDS)) // LimitDto
                 .tlotPokr(converter.getLimitSpecValue(specs, COATING_THICKNESS)) // LimitDto
                 .tlotPokrFront(converter.getLimitSpecValue(specs, COATING_THICKNESS_FRONT)) // LimitDto
-                .tlotPokrReverse(converter.getLimitSpecValue(specs, DRAG_FACTOR_REVERSE)) // LimitDto
+                .tlotPokrReverse(converter.getLimitSpecValue(specs, COATING_THICKNESS_REVERSE)) // LimitDto
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE)) // String
                 .build();
     }
