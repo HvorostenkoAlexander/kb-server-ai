@@ -854,7 +854,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prH01500(converter.getLimitSpecValue(specs, H01500)) // LimitDto
                 .prH0041000(converter.getLimitSpecValue(specs, H0041000)) // LimitDto
                 .prH011000(converter.getLimitSpecValue(specs, H011000)) // LimitDto
-                .prCoerciveField(converter.getStringSpecValue(specs, COERCIVE_FIELD)) // String
                 .factorLamination(converter.getLimitSpecValue(specs, FACTOR_LAMINATION)) // LimitDto
                 .agingCoefficient(converter.getLimitSpecValue(specs, AGING_FACTOR)) // LimitDto
                 .resistanceCoefficient(converter.getLimitSpecValue(specs, DRAG_FACTOR)) // LimitDto
