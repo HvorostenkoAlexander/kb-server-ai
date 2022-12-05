@@ -21,11 +21,13 @@ import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.validation.Validation;
 import javax.validation.Validator;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -80,7 +82,7 @@ class RestRequestAdapterTest {
                         .weightNet(140.0)
                         .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(300.0).length(3000.0).build())
                         .bundles(List.of(
-                                CcmPtsRequest.Bundle.builder().stripId("s40").stripNum(40)
+                                CcmPtsRequest.Bundle.builder().stripId(40L).stripNum(40)
                                         .stripWidth(400.0).stripWeight(40.0).build()
                         ))
                         .specifications(List.of(
@@ -111,10 +113,10 @@ class RestRequestAdapterTest {
                                                         .samplingPlaceCode(62).samplingPlaceName("s63")
                                                         .analysisValue(AnalysisValue.BEST)
                                                         .listValues(List.of(
-                                                                CcmPtsRequest.OnePropValue.builder()
+                                                                CcmPtsRequest.OneAnalyzeValue.builder()
                                                                         .attrCode(562)
                                                                         .attrType(TypeCode.NUMBER).build(),
-                                                                CcmPtsRequest.OnePropValue.builder()
+                                                                CcmPtsRequest.OneAnalyzeValue.builder()
                                                                         .attrCode(99999)    // not allowed
                                                                         .attrType(TypeCode.NUMBER).build()
                                                         )).build()
@@ -132,11 +134,11 @@ class RestRequestAdapterTest {
                                         .listValues(List.of(
                                                 CcmPtsRequest.OnePropValue.builder()
                                                         .attrCode(SpecCode.AGING_FACTOR.getValue())
-                                                        .attrType(TypeCode.STRING).attrValue("af12")
+                                                        .attrType(TypeCode.STRING).attrValue(List.of("af12"))
                                                         .build(),
                                                 CcmPtsRequest.OnePropValue.builder()
                                                         .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
-                                                        .attrType(TypeCode.NUMBER).attrValue("12")
+                                                        .attrType(TypeCode.NUMBER).attrValue(List.of("12"))
                                                         .build()
                                         )).build()
                         ))
