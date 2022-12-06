@@ -810,7 +810,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK)) // String
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD)) // String
-                .prThickUncoat(converter.getLimitSpecValue(specs, ROLLED_THICKNESS_MAX)) // LimitDto
+                .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS)) // LimitDto
                 .prP1550(converter.getLimitSpecValue(specs, P1550)) // LimitDto
                 .prP1560(converter.getLimitSpecValue(specs, P1560)) // LimitDto
                 .prP1750(converter.getLimitSpecValue(specs, P1750)) // LimitDto
