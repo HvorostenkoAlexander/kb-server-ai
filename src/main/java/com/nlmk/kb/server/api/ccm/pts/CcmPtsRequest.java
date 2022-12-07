@@ -93,7 +93,6 @@ public class CcmPtsRequest {
         private Integer tnum; // Номер ХК партии
         @NotNull
         private Integer roll; // Номер рулона
-        private Integer coil; // Номер смотки
         private Integer strip; // Номер бунта
     }
 
@@ -115,8 +114,8 @@ public class CcmPtsRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Bundle {
-        @NotBlank
-        private String stripId; // Идентификатор бунта
+        @NotNull
+        private Long stripId; // Идентификатор бунта
         @NotNull
         private Integer stripNum; // Номер бунта
         @NotNull
@@ -195,8 +194,21 @@ public class CcmPtsRequest {
         @NotEmpty
         private List<@Valid OnePropAnalyze> analyzes; // Анализы
         private List<@Valid OnePropValue> listValues; // Дополнительные результаты
-        @NotEmpty
         private List<@Valid OnePropAtt> attestationList; // Список аттестаций
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OnePropValue {
+        @NotNull
+        private Integer attrCode; // Код атрибута
+        @NotNull
+        private TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
+        private List<String> attrValue; // Значение атрибута
+        private String attrFormat; // Формат атрибута
+        private String attrMeasure; // Единица измерения атрибута
     }
 
     @Data
@@ -211,14 +223,14 @@ public class CcmPtsRequest {
         @NotNull
         private AnalysisValue analysisValue; // Результат (1-Худший, 2-Лучший)
         @NotEmpty
-        private List<@Valid OnePropValue> listValues; // Список значений
+        private List<@Valid OneAnalyzeValue> listValues; // Список значений
     }
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class OnePropValue {
+    public static class OneAnalyzeValue {
         @NotNull
         private Integer attrCode; // Код атрибута
         @NotNull

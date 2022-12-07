@@ -71,7 +71,7 @@ class AttestationControllerTest {
                                 .weightNet(14.0)
                                 .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(32.0).length(31.0).build())
                                 .bundles(List.of(
-                                        CcmPtsRequest.Bundle.builder().stripId("s40").stripNum(41)
+                                        CcmPtsRequest.Bundle.builder().stripId(40L).stripNum(41)
                                                 .stripWidth(42.0).stripWeight(43.0).build()
                                 ))
                                 .specifications(List.of(
@@ -91,7 +91,7 @@ class AttestationControllerTest {
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
                                                                 .analysisValue(AnalysisValue.BEST)
                                                                 .listValues(List.of(
-                                                                        CcmPtsRequest.OnePropValue.builder()
+                                                                        CcmPtsRequest.OneAnalyzeValue.builder()
                                                                                 .attrCode(64)
                                                                                 .attrType(TypeCode.NUMBER).build()
                                                                 )).build()
