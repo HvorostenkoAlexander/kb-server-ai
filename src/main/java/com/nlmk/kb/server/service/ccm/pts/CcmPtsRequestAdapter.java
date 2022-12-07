@@ -327,7 +327,7 @@ public abstract class CcmPtsRequestAdapter {
                         .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType().getValue())
-                                .attrValue(v.getAttrValue() == null ? List.of() : List.of(v.getAttrValue()))
+                                .attrValue(v.getAttrValue() == null ? List.of() : v.getAttrValue())
                                 .attrFormat(v.getAttrFormat())
                                 .attrMeasure(v.getAttrMeasure())
                                 .build())

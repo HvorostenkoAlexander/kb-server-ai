@@ -10,9 +10,11 @@ import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordAnalyzes;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordChemical;
@@ -71,6 +73,16 @@ class CcmPtsRequestAdapterTest {
     private List<CcmPtsRequest.OnePropValue> prepareMechanicalPropertiesValues() {
         return Arrays.stream(SpecCode.values())
                 .map(sc -> CcmPtsRequest.OnePropValue.builder()
+                        .attrCode(sc.getValue())
+                        .attrValue(List.of(sc.getValue().toString()))
+                        .attrType(sc.getTypeCode())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private List<CcmPtsRequest.OneAnalyzeValue> prepareMechanicalAnalyzeValues() {
+        return Arrays.stream(SpecCode.values())
+                .map(sc -> CcmPtsRequest.OneAnalyzeValue.builder()
                         .attrCode(sc.getValue())
                         .attrValue(sc.getValue().toString())
                         .attrType(sc.getTypeCode())
@@ -279,9 +291,9 @@ class CcmPtsRequestAdapterTest {
                                                         .samplingPlaceCode(1)
                                                         .analysisValue(AnalysisValue.BEST)
                                                         .listValues(List.of(
-                                                                CcmPtsRequest.OnePropValue.builder().build(),
-                                                                CcmPtsRequest.OnePropValue.builder().attrCode(11).build(),
-                                                                CcmPtsRequest.OnePropValue.builder().attrCode(12).build()
+                                                                CcmPtsRequest.OneAnalyzeValue.builder().build(),
+                                                                CcmPtsRequest.OneAnalyzeValue.builder().attrCode(11).build(),
+                                                                CcmPtsRequest.OneAnalyzeValue.builder().attrCode(12).build()
                                                         ))
                                                         .build()
                                         ))
@@ -297,7 +309,7 @@ class CcmPtsRequestAdapterTest {
                                                 CcmPtsRequest.OnePropAnalyze.builder()
                                                         .samplingPlaceCode(2)
                                                         .analysisValue(AnalysisValue.WORST)
-                                                        .listValues(prepareMechanicalPropertiesValues())
+                                                        .listValues(prepareMechanicalAnalyzeValues())
                                                         .build()
                                         ))
                                         .listValues(prepareMechanicalPropertiesValues())
