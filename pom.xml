@@ -30,7 +30,7 @@
         <lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
         <minio.version>8.4.1</minio.version>
 
-        <product-api.version>1.41.6</product-api.version>
+        <product-api.version>1.42.2</product-api.version>
     </properties>
 
     <dependencyManagement>
