@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.entity.pdm;
 
+import com.nlmk.kb.server.entity.Operation;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +50,7 @@ public class PdmMessage {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PdmOp op;
+    private Operation op;
 
     @Column(name = "is_posted",
             nullable = false)

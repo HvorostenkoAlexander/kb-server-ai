@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.attestation.product.api.nsi.CEqDto;
-import com.nlmk.kb.server.entity.pdm.PdmOp;
+import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -53,9 +53,9 @@ class NsiSenderTest {
         {
             final var response = Assertions.assertThrows(
                     RemoteServiceSenderException.class,
-                    () -> nsiSender.exchange((CEqDto) null, urlDictionary, PdmOp.I)
+                    () -> nsiSender.exchange((CEqDto) null, urlDictionary, Operation.I)
             );
-            Assertions.assertEquals("NsiSender, Body is NULL", response.getMessage());
+            Assertions.assertEquals("NsiSender, exchange, пустое тело", response.getMessage());
         }
 
         final var dto = CEqDto.builder().build();
@@ -67,7 +67,7 @@ class NsiSenderTest {
             );
             final var response = Assertions.assertThrows(
                     RemoteServiceSenderException.class,
-                    () -> nsiSender.exchange(dto, urlDictionary, PdmOp.I)
+                    () -> nsiSender.exchange(dto, urlDictionary, Operation.I)
             );
             Assertions.assertEquals(String.format(
                     "NsiSender, exchange, send error, message [%d Bad Request from POST http://localhost:%d/nsi/dict/nsd_ceq]",
@@ -81,7 +81,7 @@ class NsiSenderTest {
                     .setBody("123")
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, PdmOp.I)
+                    () -> nsiSender.exchange(dto, urlDictionary, Operation.I)
             );
             Assertions.assertNotNull(response);
             Assertions.assertEquals(123L, response.getBody());
@@ -96,7 +96,7 @@ class NsiSenderTest {
                     .setBody("123")
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, PdmOp.U)
+                    () -> nsiSender.exchange(dto, urlDictionary, Operation.U)
             );
             Assertions.assertNotNull(response);
             Assertions.assertEquals(123L, response.getBody());
@@ -111,7 +111,7 @@ class NsiSenderTest {
                     .setBody("123")
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, PdmOp.D)
+                    () -> nsiSender.exchange(dto, urlDictionary, Operation.D)
             );
             Assertions.assertNotNull(response);
             Assertions.assertEquals(123L, response.getBody());
@@ -125,7 +125,7 @@ class NsiSenderTest {
                     .setResponseCode(HttpStatus.NOT_FOUND.value())
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, PdmOp.D)
+                    () -> nsiSender.exchange(dto, urlDictionary, Operation.D)
             );
             Assertions.assertNotNull(response);
             Assertions.assertEquals(0L, response.getBody());

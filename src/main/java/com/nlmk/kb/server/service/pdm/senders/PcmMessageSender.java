@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.pdm.senders;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
-import com.nlmk.kb.server.entity.pdm.PdmOp;
+import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
@@ -52,7 +52,7 @@ public class PcmMessageSender extends BasePdmCreator implements PdmMessageSender
                 .offset(consumerRecord.offset())
                 .partition(consumerRecord.partition())
                 .dictionary(dictionary)
-                .op(PdmOp.fromValue(dictionary.getOp()))
+                .op(Operation.fromValue(dictionary.getOp()))
                 .ts(dictionary.getTs())
                 .build();
     }
