@@ -4,7 +4,9 @@ import com.nlmk.attestation.product.api.nsi.SpGroupAndCustomerDto;
 import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.nsi.zifra.Data;
 import nlmk.l3.nsi.zifra.pk;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpGroupAndCustomerParser implements CatalogueParser<SpGroupAndCustomerDto> {
 
     @Override
