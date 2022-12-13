@@ -33,7 +33,7 @@ public class MicrostructureMessageSender extends BasePdmCreator implements PdmMe
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        return super.getNsiSender().exchange(
+        return super.getNsiSender().sendBodyReturnLong(
                 super.getPdmDtoConverter().toMicrostructureDto(message.getDictionary()),
                 super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
                 message.getOp()

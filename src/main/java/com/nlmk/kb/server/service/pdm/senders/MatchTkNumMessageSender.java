@@ -33,7 +33,7 @@ public class MatchTkNumMessageSender extends BasePdmCreator implements PdmMessag
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        return super.getNsiSender().exchange(
+        return super.getNsiSender().sendBodyReturnLong(
                 super.getPdmDtoConverter().toMatchTkDto(message.getDictionary()),
                 super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
                 message.getOp()

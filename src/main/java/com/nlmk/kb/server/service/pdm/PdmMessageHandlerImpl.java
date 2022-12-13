@@ -26,7 +26,7 @@ public class PdmMessageHandlerImpl implements PdmMessageHandler {
         final var dictConf = dictionaryService.findByTopic(consumerRecord.topic());
 
         if (Boolean.FALSE.equals(dictConf.getEnabled())) {
-            log.warn("handleConsumerRecord: topic: [{}] is DISABLED", consumerRecord.topic());
+            log.warn("handleConsumerRecord: тема [{}] отключена", consumerRecord.topic());
             return false;
         }
 

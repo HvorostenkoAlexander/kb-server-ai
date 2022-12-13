@@ -31,7 +31,7 @@ public class TolThickDtSender extends BasePdmCreator implements PdmMessageSender
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        return super.getNsiSender().exchange(
+        return super.getNsiSender().sendBodyReturnLong(
                 super.getPdmDtoConverter().toTolThickDtDto(message.getDictionary()),
                 super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
                 message.getOp()

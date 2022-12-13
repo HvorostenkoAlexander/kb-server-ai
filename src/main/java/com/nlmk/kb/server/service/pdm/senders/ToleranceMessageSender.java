@@ -31,7 +31,7 @@ public class ToleranceMessageSender extends BasePdmCreator implements PdmMessage
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        return super.getNsiSender().exchange(
+        return super.getNsiSender().sendBodyReturnLong(
                 super.getPdmDtoConverter().toToleranceDto(message.getDictionary()),
                 super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
                 message.getOp()

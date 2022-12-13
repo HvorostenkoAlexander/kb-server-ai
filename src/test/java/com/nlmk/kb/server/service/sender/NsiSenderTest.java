@@ -20,7 +20,7 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class NsiSenderTest {
@@ -46,16 +46,16 @@ class NsiSenderTest {
     }
 
     @Test
-    void exchange() throws Exception {
+    void sendBodyReturnLong() throws Exception {
         // на примере объекта CEqDto
         final var urlDictionary = "/nsi/dict/nsd_ceq";
 
         {
             final var response = Assertions.assertThrows(
                     RemoteServiceSenderException.class,
-                    () -> nsiSender.exchange((CEqDto) null, urlDictionary, Operation.I)
+                    () -> nsiSender.sendBodyReturnLong((CEqDto) null, urlDictionary, Operation.I)
             );
-            Assertions.assertEquals("NsiSender, exchange, пустое тело", response.getMessage());
+            assertEquals("NsiSender, exchange, пустое тело", response.getMessage());
         }
 
         final var dto = CEqDto.builder().build();
@@ -67,10 +67,10 @@ class NsiSenderTest {
             );
             final var response = Assertions.assertThrows(
                     RemoteServiceSenderException.class,
-                    () -> nsiSender.exchange(dto, urlDictionary, Operation.I)
+                    () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I)
             );
-            Assertions.assertEquals(String.format(
-                    "NsiSender, exchange, send error, message [%d Bad Request from POST http://localhost:%d/nsi/dict/nsd_ceq]",
+            assertEquals(String.format(
+                    "NsiSender, exchange, ошибка при отправке [%d Bad Request from POST http://localhost:%d/nsi/dict/nsd_ceq]",
                     HttpStatus.BAD_REQUEST.value(), mockWebServer.getPort()), response.getMessage());
             mockWebServer.takeRequest();
         }
@@ -81,10 +81,10 @@ class NsiSenderTest {
                     .setBody("123")
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, Operation.I)
+                    () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I)
             );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response.getBody());
+            assertNotNull(response);
+            assertEquals(123L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("POST", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -96,10 +96,10 @@ class NsiSenderTest {
                     .setBody("123")
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, Operation.U)
+                    () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.U)
             );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response.getBody());
+            assertNotNull(response);
+            assertEquals(123L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("PUT", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -111,10 +111,10 @@ class NsiSenderTest {
                     .setBody("123")
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, Operation.D)
+                    () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D)
             );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(123L, response.getBody());
+            assertNotNull(response);
+            assertEquals(123L, response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("DELETE", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -125,14 +125,18 @@ class NsiSenderTest {
                     .setResponseCode(HttpStatus.NOT_FOUND.value())
             );
             final var response = Assertions.assertDoesNotThrow(
-                    () -> nsiSender.exchange(dto, urlDictionary, Operation.D)
+                    () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D)
             );
-            Assertions.assertNotNull(response);
-            Assertions.assertEquals(0L, response.getBody());
+            assertNotNull(response);
+            assertNull(response.getBody());
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("DELETE", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
         }
+    }
+
+    void sendBodyReturnString() {
+        // todo
     }
 
 }

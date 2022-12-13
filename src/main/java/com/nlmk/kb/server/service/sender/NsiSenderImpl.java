@@ -34,60 +34,43 @@ public class NsiSenderImpl implements NsiSender {
     }
 
     @Override
-    public <T> ResponseEntity<Long> exchange(T body, String urlDictionary, Operation operation) {
+    public <T> ResponseEntity<Long> sendBodyReturnLong(T body, String targetPath, Operation operation) {
+        return exchange(body, Long.class, targetPath, operation);
+    }
+
+    @Override
+    public <T> ResponseEntity<String> sendBodyReturnString(T body, String targetPath, Operation operation) {
+        return exchange(body, String.class, targetPath, operation);
+    }
+
+    private <T, R> ResponseEntity<R> exchange(T body,
+                                              Class<R> returned,
+                                              String targetPath,
+                                              Operation operation) {
         if (body == null) {
             throw new RemoteServiceSenderException("NsiSender, exchange, пустое тело");
         }
 
-        final var result = webClient.method(operation.getHttpMethod())
-                .uri(nsiUrlDict + urlDictionary)
+        final R result = webClient.method(operation.getHttpMethod())
+                .uri(nsiUrlDict + targetPath)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .headers(SenderUtils::addRequestId)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(Long.class)
+                .bodyToMono(returned)
                 .onErrorResume(WebClientResponseException.class, ex -> {
                     if (operation == Operation.D
                             && ex.getRawStatusCode() == HttpStatus.NOT_FOUND.value()) {
-                        return Mono.just(0L);
+                        return Mono.empty();
                     }
                     return Mono.error(ex);
                 })
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new RemoteServiceSenderException(String.format("NsiSender, exchange, send error, message [%s]", e.getMessage()))
-                ))
-                .block();
-
-        log.info(OPERATION_RESPONSE_TEMPLATE, operation, result, body);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @Override
-    public <T> ResponseEntity<String> exchangeReturnString(T body, String urlDictionary, Operation operation) {
-        if (body == null) {
-            throw new RemoteServiceSenderException("NsiSender, exchangeReturnString, пустое тело");
-        }
-
-        final var result = webClient.method(operation.getHttpMethod())
-                .uri(nsiUrlDict + urlDictionary)
-                .accept(MediaType.APPLICATION_JSON)
-                .acceptCharset(StandardCharsets.UTF_8)
-                .headers(SenderUtils::addRequestId)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(String.class)
-                .onErrorResume(WebClientResponseException.class, ex -> {
-                    if (operation == Operation.D
-                            && ex.getRawStatusCode() == HttpStatus.NOT_FOUND.value()) {
-                        return Mono.just("0");
-                    }
-                    return Mono.error(ex);
-                })
-                .timeout(Duration.ofMillis(webClientTimeout))
-                .onErrorResume(e -> Mono.error(
-                        new RemoteServiceSenderException(String.format("NsiSender, exchangeReturnString, send error, message [%s]", e.getMessage()))
+                        new RemoteServiceSenderException(String.format(
+                                "NsiSender, exchange, ошибка при отправке [%s]", e.getMessage()
+                        ))
                 ))
                 .block();
 
