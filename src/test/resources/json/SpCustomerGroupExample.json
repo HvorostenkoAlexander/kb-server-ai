@@ -1,0 +1,46 @@
+{
+  "op": "I",
+  "pk": {
+    "systemCode": "54",
+    "lineId": "987e00c0-6b00-11ed-97c4-2b96fc4bacbb"
+  },
+  "ts": "2022-12-05T10:38:50.061+03:00",
+  "data": {
+    "catalogId": "5223d850-0da1-11ed-9625-4577136989db",
+    "catalogCode": "SpCustomerGroup",
+    "hashtagLine": null,
+    "hashtagCatalog": null,
+    "properties": {
+      "cron": null,
+      "dateEnd": null,
+      "dateBegin": null,
+      "dateChange": "2022-12-05T10:12:50"
+    },
+    "lineAttributes": [
+      {
+        "attrCode": "61114190-0da1-11ed-9625-4577136989db",
+        "attrName": "Признак активности",
+        "attrType": "BOOLEAN",
+        "attrValue": "true",
+        "attrNameEng": "active",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "60bae430-0da1-11ed-9625-4577136989db",
+        "attrName": "Идентификатор группы потребителей",
+        "attrType": "NUMBER",
+        "attrValue": "3",
+        "attrNameEng": "groupId",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "60d6d0a0-0da1-11ed-9625-4577136989db",
+        "attrName": "Наименование группы потребителей",
+        "attrType": "TEXT",
+        "attrValue": "ВР",
+        "attrNameEng": "name",
+        "hashtagColumn": null
+      }
+    ]
+  }
+}

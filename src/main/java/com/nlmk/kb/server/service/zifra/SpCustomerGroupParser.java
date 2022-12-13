@@ -1,0 +1,28 @@
+package com.nlmk.kb.server.service.zifra;
+
+import com.nlmk.attestation.product.api.nsi.SpCustomerGroupDto;
+import com.nlmk.kb.server.util.AdapterUtils;
+import nlmk.l3.nsi.zifra.Data;
+import nlmk.l3.nsi.zifra.pk;
+
+public class SpCustomerGroupParser implements CatalogueParser<SpCustomerGroupDto> {
+
+    @Override
+    public Catalogue getCatalogue() {
+        return Catalogue.SP_CUSTOMER_GROUP;
+    }
+
+    @Override
+    public SpCustomerGroupDto parse(pk pk, Data data) {
+
+        return SpCustomerGroupDto.builder()
+                .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .groupId(getAttrIntegerValueByName(data.getLineAttributes(), "groupId"))
+                .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
+                .dateBegin(getBeginDate(data.getProperties()))
+                .dateEnd(getEndDate(data.getProperties()))
+                .isActive(getActive(data.getLineAttributes()))
+                .build();
+    }
+
+}
