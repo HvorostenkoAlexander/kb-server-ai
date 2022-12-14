@@ -105,7 +105,6 @@ public class CcmPtsRequest {
         private Double thickness; // Толщина, мм
         @NotNull
         private Double width; // Ширина, мм
-        @NotNull
         private Double length; // Длина, мм
     }
 
