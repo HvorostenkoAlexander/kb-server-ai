@@ -69,7 +69,7 @@ class AttestationControllerTest {
                                 .storageCode(13).storageName("s13")
                                 .marking(CcmPtsRequest.Marking.builder().nplv(20).hnum(21).tnum(22).roll(23).build())
                                 .weightNet(14.0)
-                                .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(32.0).length(31.0).build())
+                                .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(32.0).build())
                                 .bundles(List.of(
                                         CcmPtsRequest.Bundle.builder().stripId(40L).stripNum(41)
                                                 .stripWidth(42.0).stripWeight(43.0).build()
