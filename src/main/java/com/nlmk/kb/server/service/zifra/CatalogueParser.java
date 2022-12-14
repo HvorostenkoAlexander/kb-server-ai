@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service.zifra;
 
 import com.nlmk.kb.server.exception.ZifraMessageParserException;
 import com.nlmk.kb.server.util.AdapterUtils;
-import nlmk.l3.nsi.zifra.lineAttributes_record;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
@@ -72,7 +71,7 @@ public interface CatalogueParser<T> {
     /**
      * Получение Атрибута "Признак активности записи"
      */
-    default Boolean getActive(List<lineAttributes_record> lineAttributes) {
+    default Boolean getActive(List<nlmk.l3.nsi.zifra.lineAttributes_record> lineAttributes) {
         if (CollectionUtils.isEmpty(lineAttributes)) {
             return false;
         }
@@ -88,7 +87,7 @@ public interface CatalogueParser<T> {
     /**
      * Получение значения Атрибута в виде целого числа
      */
-    default Integer getAttrIntegerValueByName(List<lineAttributes_record> lineAttributes, String name) {
+    default Integer getAttrIntegerValueByName(List<nlmk.l3.nsi.zifra.lineAttributes_record> lineAttributes, String name) {
         final var value = getAttrStringValueByName(lineAttributes, name);
         if (Objects.isNull(value)) {
             return null;
@@ -103,14 +102,14 @@ public interface CatalogueParser<T> {
     /**
      * Получение значения Атрибута в виде строки
      */
-    default String getAttrStringValueByName(List<lineAttributes_record> lineAttributes, String name) {
+    default String getAttrStringValueByName(List<nlmk.l3.nsi.zifra.lineAttributes_record> lineAttributes, String name) {
         if (CollectionUtils.isEmpty(lineAttributes)) {
             return null;
         }
 
         return lineAttributes.stream()
                 .filter(a -> Objects.nonNull(a.getAttrNameEng()))
-                .filter(a -> a.getAttrNameEng().equals(name))
+                .filter(a -> AdapterUtils.sequenceToString(a.getAttrNameEng()).equals(name))
                 .findFirst()
                 .map(a -> Objects.isNull(a.getAttrValue()) ? null : a.getAttrValue().toString())
                 .orElse(null);
