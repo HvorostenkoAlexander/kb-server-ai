@@ -45,41 +45,177 @@ class SendZifraMessageToKafkaTest {
         return "key~" + Instant.now().getEpochSecond(); // случайный key
     }
 
-    @Test
-    void spCustomerSend() {
-        Reason value = Reason.newBuilder()
-                .setOp(EnumOp.I)
-                .setTs("2022-10-10T12:26:11.563+00:00")
-                .setPk(pk.newBuilder().setSystemCode("54").setLineId("111-222").build())
+    private Reason prepareSpCustomer(EnumOp operation,
+                                     String guid,
+                                     String customerId,
+                                     String customerName,
+                                     boolean active) {
+        return Reason.newBuilder()
+                .setOp(operation)
+                .setTs("2022-12-14T12:26:11.563+05:00")
+                .setPk(pk.newBuilder().setSystemCode("54").setLineId(guid).build())
                 .setData(Data.newBuilder()
                         .setCatalogId("catalogId").setCatalogCode("catalogCode")
                         .setHashtagLine(List.of()).setHashtagCatalog(List.of())
-                        .setProperties(properties.newBuilder()
-                                .setCron("12/34/56")
-                                .setDateChange("----")
-                                .setDateBegin("2022-01-01")
-                                .setDateEnd("2022-12-31")
+                        .setProperties(properties.newBuilder().setCron("12/34/56").setDateChange("----")
+                                .setDateBegin("2022-01-01").setDateEnd("2022-12-31")
                                 .build())
                         .setLineAttributes(List.of(
-                                lineAttributes_record.newBuilder().setAttrCode("code1")
-                                        .setAttrName("Идентификатор").setAttrNameEng("customerId")
-                                        .setAttrType("TEXT").setAttrValue("1234")
-                                        .setHashtagColumn(List.of()).build(),
-                                lineAttributes_record.newBuilder().setAttrCode("code2")
-                                        .setAttrName("Наименование").setAttrNameEng("customerName")
-                                        .setAttrType("TEXT").setAttrValue("Тестовый потребитель 1234")
-                                        .setHashtagColumn(List.of()).build(),
-                                lineAttributes_record.newBuilder().setAttrCode("code3")
-                                        .setAttrName("Признак активности").setAttrNameEng("active")
-                                        .setAttrType("BOOLEAN").setAttrValue("true")
-                                        .setHashtagColumn(List.of()).build()
+                                lineAttributes_record.newBuilder().setAttrCode("code1").setAttrType("TEXT")
+                                        .setAttrName("Идентификатор").setHashtagColumn(List.of())
+                                        .setAttrNameEng("customerId").setAttrValue(customerId)
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code2").setAttrType("TEXT")
+                                        .setAttrName("Наименование").setHashtagColumn(List.of())
+                                        .setAttrNameEng("customerName").setAttrValue(customerName)
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code3").setAttrType("BOOLEAN")
+                                        .setAttrName("Признак активности").setHashtagColumn(List.of())
+                                        .setAttrNameEng("active").setAttrValue(Boolean.toString(active))
+                                        .build()
                         ))
                         .build())
                 .build();
+    }
 
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), value);
+    private Reason prepareSpCustomerGroup(EnumOp operation,
+                                          String guid,
+                                          Integer groupId,
+                                          String groupName,
+                                          boolean active) {
+        return Reason.newBuilder()
+                .setOp(operation)
+                .setTs("2022-12-14T12:36:14.563+05:00")
+                .setPk(pk.newBuilder().setSystemCode("54").setLineId(guid).build())
+                .setData(Data.newBuilder()
+                        .setCatalogId("catalogId").setCatalogCode("catalogCode")
+                        .setHashtagLine(List.of()).setHashtagCatalog(List.of())
+                        .setProperties(properties.newBuilder().setCron("12/34/56").setDateChange("----")
+                                .setDateBegin("2022-01-01").setDateEnd("2022-12-31")
+                                .build())
+                        .setLineAttributes(List.of(
+                                lineAttributes_record.newBuilder().setAttrCode("code1").setAttrType("NUMBER")
+                                        .setAttrName("Идентификатор группы").setHashtagColumn(List.of())
+                                        .setAttrNameEng("groupId").setAttrValue(groupId.toString())
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code2").setAttrType("TEXT")
+                                        .setAttrName("Наименование группы").setHashtagColumn(List.of())
+                                        .setAttrNameEng("name").setAttrValue(groupName)
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code3").setAttrType("BOOLEAN")
+                                        .setAttrName("Признак активности").setHashtagColumn(List.of())
+                                        .setAttrNameEng("active").setAttrValue(Boolean.toString(active))
+                                        .build()
+                        ))
+                        .build())
+                .build();
+    }
 
-        sendAvro(record);
+    private Reason prepareSpGroupAndCustomer(EnumOp operation,
+                                             String guid,
+                                             String guidGroup,
+                                             String guidCustomer,
+                                             Integer priority,
+                                             boolean active) {
+        return Reason.newBuilder()
+                .setOp(operation)
+                .setTs("2022-12-14T12:42:18.563+05:00")
+                .setPk(pk.newBuilder().setSystemCode("54").setLineId(guid).build())
+                .setData(Data.newBuilder()
+                        .setCatalogId("catalogId").setCatalogCode("catalogCode")
+                        .setHashtagLine(List.of()).setHashtagCatalog(List.of())
+                        .setProperties(properties.newBuilder().setCron("12/34/56").setDateChange("----")
+                                .setDateBegin("2022-01-01").setDateEnd("2022-12-31")
+                                .build())
+                        .setLineAttributes(List.of(
+                                lineAttributes_record.newBuilder().setAttrCode("code1").setAttrType("DIRECTORY_ITEM_FIELD")
+                                        .setAttrName("GUID группы").setHashtagColumn(List.of())
+                                        .setAttrNameEng("groupId").setAttrValue(guidGroup)
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code2").setAttrType("DIRECTORY_ITEM_FIELD")
+                                        .setAttrName("GUID потребителя").setHashtagColumn(List.of())
+                                        .setAttrNameEng("customerId").setAttrValue(guidCustomer)
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code3").setAttrType("BOOLEAN")
+                                        .setAttrName("Признак активности").setHashtagColumn(List.of())
+                                        .setAttrNameEng("active").setAttrValue(Boolean.toString(active))
+                                        .build(),
+                                lineAttributes_record.newBuilder().setAttrCode("code4").setAttrType("NUMBER")
+                                        .setAttrName("Приоритет потребителя").setHashtagColumn(List.of())
+                                        .setAttrNameEng("priority").setAttrValue(priority.toString())
+                                        .build()
+                                ))
+                        .build())
+                .build();
+    }
+
+    // SpCustomer
+
+    @Test
+    void sendSpCustomer1() {
+        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
+                EnumOp.I, "guid-c-1", "c-1", "customer1", true
+        )));
+    }
+
+    @Test
+    void sendSpCustomer2() {
+        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
+                EnumOp.U, "guid-c-2", "c-2", "customer2", false
+        )));
+    }
+
+    @Test
+    void sendSpCustomer3() {
+        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
+                EnumOp.U, "guid-c-3", "c-3", "customer3", true
+        )));
+    }
+
+    // SpCustomerGroup
+
+    @Test
+    void sendSpCustomerGroup1() {
+        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_GROUP_TOPIC, randomKey(), prepareSpCustomerGroup(
+                EnumOp.I, "guid-g-1", 1, "group1", true
+        )));
+    }
+
+    @Test
+    void sendSpCustomerGroup2() {
+        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_GROUP_TOPIC, randomKey(), prepareSpCustomerGroup(
+                EnumOp.U, "guid-g-2", 2, "group2", false
+        )));
+    }
+
+    // SpGroupAndCustomer: соединение SpCustomer и SpCustomerGroup по GUID (id записи)
+
+    @Test
+    void sendSpGroupAndCustomer1() {
+        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+                EnumOp.I, "guid-gac-1", "guid-g-1", "guid-c-1", 1, true
+        )));
+    }
+
+    @Test
+    void sendSpGroupAndCustomer2() {
+        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+                EnumOp.U, "guid-gac-2", "guid-g-2", "guid-c-1", 2, false
+        )));
+    }
+
+    @Test
+    void sendSpGroupAndCustomer3() {
+        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+                EnumOp.I, "guid-gac-3", "guid-g-1", "guid-c-2", 1, true
+        )));
+    }
+
+    @Test
+    void sendSpGroupAndCustomer4() {
+        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+                EnumOp.I, "guid-gac-4", "guid-g-2", "guid-c-3", 1, true
+        )));
     }
 
 }
