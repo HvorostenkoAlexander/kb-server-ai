@@ -4,7 +4,6 @@ import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.service.zifra.ZifraMessageHandler;
 import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;

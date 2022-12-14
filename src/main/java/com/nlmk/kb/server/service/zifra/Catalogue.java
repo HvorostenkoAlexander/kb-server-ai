@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
-enum Catalogue {
+public enum Catalogue {
 
     SP_CUSTOMER("SpCustomer", "/nsi/dict/mdm/sp_customer"),
     SP_CUSTOMER_GROUP("SpCustomerGroup", "/nsi/dict/mdm/sp_customer_group"),

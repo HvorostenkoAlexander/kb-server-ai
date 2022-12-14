@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.testing;
 
+import com.nlmk.kb.server.service.zifra.Catalogue;
 import nlmk.l3.nsi.zifra.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -55,7 +56,7 @@ class SendZifraMessageToKafkaTest {
                 .setTs("2022-12-14T12:26:11.563+05:00")
                 .setPk(pk.newBuilder().setSystemCode("54").setLineId(guid).build())
                 .setData(Data.newBuilder()
-                        .setCatalogId("catalogId").setCatalogCode("catalogCode")
+                        .setCatalogId("catalogId").setCatalogCode(Catalogue.SP_CUSTOMER.getCode())
                         .setHashtagLine(List.of()).setHashtagCatalog(List.of())
                         .setProperties(properties.newBuilder().setCron("12/34/56").setDateChange("----")
                                 .setDateBegin("2022-01-01").setDateEnd("2022-12-31")
@@ -88,7 +89,7 @@ class SendZifraMessageToKafkaTest {
                 .setTs("2022-12-14T12:36:14.563+05:00")
                 .setPk(pk.newBuilder().setSystemCode("54").setLineId(guid).build())
                 .setData(Data.newBuilder()
-                        .setCatalogId("catalogId").setCatalogCode("catalogCode")
+                        .setCatalogId("catalogId").setCatalogCode(Catalogue.SP_CUSTOMER_GROUP.getCode())
                         .setHashtagLine(List.of()).setHashtagCatalog(List.of())
                         .setProperties(properties.newBuilder().setCron("12/34/56").setDateChange("----")
                                 .setDateBegin("2022-01-01").setDateEnd("2022-12-31")
@@ -122,7 +123,7 @@ class SendZifraMessageToKafkaTest {
                 .setTs("2022-12-14T12:42:18.563+05:00")
                 .setPk(pk.newBuilder().setSystemCode("54").setLineId(guid).build())
                 .setData(Data.newBuilder()
-                        .setCatalogId("catalogId").setCatalogCode("catalogCode")
+                        .setCatalogId("catalogId").setCatalogCode(Catalogue.SP_GROUP_AND_CUSTOMER.getCode())
                         .setHashtagLine(List.of()).setHashtagCatalog(List.of())
                         .setProperties(properties.newBuilder().setCron("12/34/56").setDateChange("----")
                                 .setDateBegin("2022-01-01").setDateEnd("2022-12-31")
@@ -144,7 +145,7 @@ class SendZifraMessageToKafkaTest {
                                         .setAttrName("Приоритет потребителя").setHashtagColumn(List.of())
                                         .setAttrNameEng("priority").setAttrValue(priority.toString())
                                         .build()
-                                ))
+                        ))
                         .build())
                 .build();
     }

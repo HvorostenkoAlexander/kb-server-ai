@@ -65,7 +65,7 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
             log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]", response, catalogue, catalogue.getPath(), operation);
             return true;
         } catch (RemoteServiceSenderException e) {
-            log.error("handleConsumerRecord, ошибка отправки объекта DTO в НСИ, Каталог [{}], сообщение [{}]", catalogue, e.getMessage());
+            log.error("handleConsumerRecord, ошибка отправки в НСИ, DTO [{}], Каталог [{}], сообщение [{}]", dto, catalogue, e.getMessage());
             return false;
         }
     }
