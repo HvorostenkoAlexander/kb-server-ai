@@ -84,7 +84,7 @@ class NsiSenderTest {
                     () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I)
             );
             assertNotNull(response);
-            assertEquals(123L, response.getBody());
+            assertEquals(123L, response);
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("POST", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -99,7 +99,7 @@ class NsiSenderTest {
                     () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.U)
             );
             assertNotNull(response);
-            assertEquals(123L, response.getBody());
+            assertEquals(123L, response);
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("PUT", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -114,7 +114,7 @@ class NsiSenderTest {
                     () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D)
             );
             assertNotNull(response);
-            assertEquals(123L, response.getBody());
+            assertEquals(123L, response);
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("DELETE", request.getMethod());
             assertEquals(urlDictionary, request.getPath());
@@ -127,8 +127,7 @@ class NsiSenderTest {
             final var response = Assertions.assertDoesNotThrow(
                     () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D)
             );
-            assertNotNull(response);
-            assertNull(response.getBody());
+            assertNull(response);
             RecordedRequest request = mockWebServer.takeRequest();
             assertEquals("DELETE", request.getMethod());
             assertEquals(urlDictionary, request.getPath());

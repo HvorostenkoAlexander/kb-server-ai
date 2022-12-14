@@ -61,7 +61,8 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
         final var dto = parser.parse(value.getPk(), value.getData());
 
         try {
-            nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation);
+            final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation);
+            log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]", response, catalogue, catalogue.getPath(), operation);
             return true;
         } catch (RemoteServiceSenderException e) {
             log.error("handleConsumerRecord, ошибка отправки объекта DTO в НСИ, Каталог [{}], сообщение [{}]", catalogue, e.getMessage());

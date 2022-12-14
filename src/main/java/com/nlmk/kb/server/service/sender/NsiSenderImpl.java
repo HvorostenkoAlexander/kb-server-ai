@@ -34,19 +34,16 @@ public class NsiSenderImpl implements NsiSender {
     }
 
     @Override
-    public <T> ResponseEntity<Long> sendBodyReturnLong(T body, String targetPath, Operation operation) {
+    public <T> Long sendBodyReturnLong(T body, String targetPath, Operation operation) {
         return exchange(body, Long.class, targetPath, operation);
     }
 
     @Override
-    public <T> ResponseEntity<String> sendBodyReturnString(T body, String targetPath, Operation operation) {
+    public <T> String sendBodyReturnString(T body, String targetPath, Operation operation) {
         return exchange(body, String.class, targetPath, operation);
     }
 
-    private <T, R> ResponseEntity<R> exchange(T body,
-                                              Class<R> returned,
-                                              String targetPath,
-                                              Operation operation) {
+    private <T, R> R exchange(T body, Class<R> returned, String targetPath, Operation operation) {
         if (body == null) {
             throw new RemoteServiceSenderException("NsiSender, exchange, пустое тело");
         }
@@ -75,7 +72,7 @@ public class NsiSenderImpl implements NsiSender {
                 .block();
 
         log.info(OPERATION_RESPONSE_TEMPLATE, operation, result, body);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return result;
     }
 
 }

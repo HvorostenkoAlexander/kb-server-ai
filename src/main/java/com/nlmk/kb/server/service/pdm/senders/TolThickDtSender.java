@@ -10,7 +10,6 @@ import com.nlmk.kb.server.service.sender.NsiSender;
 import nlmk.l3.pdm.SpTolThickDt;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -26,7 +25,7 @@ public class TolThickDtSender extends BasePdmCreator implements PdmMessageSender
     }
 
     @Override
-    public ResponseEntity<Long> send(PdmMessage message) {
+    public Long send(PdmMessage message) {
         Assert.notNull(message, () -> {
             throw new IllegalArgumentException("message for sending is NULL");
         });

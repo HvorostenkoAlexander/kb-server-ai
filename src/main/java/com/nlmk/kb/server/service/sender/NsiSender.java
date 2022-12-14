@@ -8,15 +8,15 @@ public interface NsiSender {
     /**
      * Отправка данных в заданный справочник НСИ (ответ число)
      */
-    <T> ResponseEntity<Long> sendBodyReturnLong(T body,
-                                                final String targetPath,
-                                                final Operation operation);
+    <T> Long sendBodyReturnLong(T body,
+                                final String targetPath,
+                                final Operation operation);
 
     /**
      * Отправка данных в заданный справочник НСИ (ответ строка)
      */
-    <T> ResponseEntity<String> sendBodyReturnString(T body,
-                                                    final String targetPath,
-                                                    final Operation operation);
+    <T> String sendBodyReturnString(T body,
+                                    final String targetPath,
+                                    final Operation operation);
 
 }

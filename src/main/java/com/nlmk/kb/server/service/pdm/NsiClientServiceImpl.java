@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service.pdm;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.service.pdm.senders.PdmMessageSender;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class NsiClientServiceImpl implements NsiClientService {
     }
 
     @Override
-    public ResponseEntity<Long> sendPdmMessage(PdmMessage message) {
+    public Long sendPdmMessage(PdmMessage message) {
 
         PdmMessageSender sender = senders.get(message.getTopic());
 
@@ -32,4 +31,5 @@ public class NsiClientServiceImpl implements NsiClientService {
         }
         return sender.send(message);
     }
+
 }
