@@ -11,11 +11,13 @@ import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.util.AdapterUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
@@ -340,7 +342,7 @@ public abstract class CcmPtsRequestAdapter {
                         .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType().getValue())
-                                .attrValue(v.getAttrValue() == null ? List.of() : v.getAttrValue())
+                                .attrValue(prepareAttrValueListForRequest(v.getAttrValue()))
                                 .attrFormat(v.getAttrFormat())
                                 .attrMeasure(v.getAttrMeasure())
                                 .build())
@@ -381,17 +383,17 @@ public abstract class CcmPtsRequestAdapter {
                                                         .side(v.getSide().getValue())
                                                         .build())
                                                 .collect(Collectors.toUnmodifiableList())
-                                        )
+                                )
                                 .build())
                         .collect(Collectors.toUnmodifiableList());
             }
             if (!CollectionUtils.isEmpty(listValues) || !CollectionUtils.isEmpty(listAnalyzes) || !CollectionUtils.isEmpty(listAttributes)) {
                 properties.add(PtsMechanicalProperty.builder()
-                                .probeCode(p.getProbeCode())
-                                .probeName(p.getProbeName())
-                                .testDate(p.getTestDate())
-                                .typeCode(p.getTypeCode())
-                                .typeName(p.getTypeName())
+                        .probeCode(p.getProbeCode())
+                        .probeName(p.getProbeName())
+                        .testDate(p.getTestDate())
+                        .typeCode(p.getTypeCode())
+                        .typeName(p.getTypeName())
                         .listValues(listValues)
                         .analyzes(listAnalyzes)
                         .attestationList(listAttributes)
@@ -424,7 +426,7 @@ public abstract class CcmPtsRequestAdapter {
                         .map(v -> PtsPropertyValue.builder()
                                 .attrCode(v.getAttrCode())
                                 .attrType(v.getAttrType())
-                                .attrValue(prepareAttrValueList(v.getAttrValue()))
+                                .attrValue(prepareAttrValueListForRecord(v.getAttrValue()))
                                 .attrFormat(AdapterUtils.sequenceToString(v.getAttrFormat()))
                                 .attrMeasure(AdapterUtils.sequenceToString(v.getAttrMeasure()))
                                 .build())
@@ -488,7 +490,18 @@ public abstract class CcmPtsRequestAdapter {
         return code != null && allowedPropertyAttributes.contains(code);
     }
 
-    private List<String> prepareAttrValueList(List<RecordDataPropertiesListValuesAttrValue> listValues) {
+    private List<String> prepareAttrValueListForRequest(List<CcmPtsRequest.OnePropValueAttr> listValues) {
+        if (CollectionUtils.isEmpty(listValues)) {
+            return List.of();
+        }
+        return listValues.stream()
+                .filter(Objects::nonNull)
+                .map(CcmPtsRequest.OnePropValueAttr::getValue)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<String> prepareAttrValueListForRecord(List<RecordDataPropertiesListValuesAttrValue> listValues) {
         if (CollectionUtils.isEmpty(listValues)) {
             return List.of();
         }
