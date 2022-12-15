@@ -205,9 +205,19 @@ public class CcmPtsRequest {
         private Integer attrCode; // Код атрибута
         @NotNull
         private TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
-        private List<String> attrValue; // Значение атрибута
+        @Valid
+        private List<OnePropValueAttr> attrValue; // Значения атрибута
         private String attrFormat; // Формат атрибута
         private String attrMeasure; // Единица измерения атрибута
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OnePropValueAttr {
+        @NotBlank
+        private String value;
     }
 
     @Data

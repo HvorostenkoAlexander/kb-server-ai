@@ -74,7 +74,10 @@ class CcmPtsRequestAdapterTest {
         return Arrays.stream(SpecCode.values())
                 .map(sc -> CcmPtsRequest.OnePropValue.builder()
                         .attrCode(sc.getValue())
-                        .attrValue(List.of(sc.getValue().toString()))
+                        .attrValue(List.of(
+                                CcmPtsRequest.OnePropValueAttr.builder()
+                                        .value(sc.getValue().toString()).build()
+                        ))
                         .attrType(sc.getTypeCode())
                         .build())
                 .collect(Collectors.toList());

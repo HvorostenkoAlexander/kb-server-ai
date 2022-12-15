@@ -134,12 +134,16 @@ class RestRequestAdapterTest {
                                         .listValues(List.of(
                                                 CcmPtsRequest.OnePropValue.builder()
                                                         .attrCode(SpecCode.AGING_FACTOR.getValue())
-                                                        .attrType(TypeCode.STRING).attrValue(List.of("af12"))
-                                                        .build(),
+                                                        .attrType(TypeCode.STRING).attrValue(List.of(
+                                                                CcmPtsRequest.OnePropValueAttr.builder()
+                                                                        .value("af12").build()
+                                                        )).build(),
                                                 CcmPtsRequest.OnePropValue.builder()
                                                         .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
-                                                        .attrType(TypeCode.NUMBER).attrValue(List.of("12"))
-                                                        .build()
+                                                        .attrType(TypeCode.NUMBER).attrValue(List.of(
+                                                                CcmPtsRequest.OnePropValueAttr.builder()
+                                                                        .value("12").build()
+                                                        )).build()
                                         )).build()
                         ))
                         .build())
