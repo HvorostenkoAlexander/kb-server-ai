@@ -96,25 +96,25 @@ class CatalogueParserTest {
                         .setProperties(properties.newBuilder()
                                 .setCron("12/34/56")
                                 .setDateChange("----")
-                                .setDateBegin("2022-01-01")
-                                .setDateEnd("20YY-12-12") // ошибка
+                                .setDateBegin(new StringBuilder("2022-01-01"))
+                                .setDateEnd(new StringBuilder("20YY-12-12")) // ошибка
                                 .build())
                         .setLineAttributes(List.of(
                                 lineAttributes_record.newBuilder().setAttrCode("code1")
-                                        .setAttrName("имя 1").setAttrNameEng("name1")
-                                        .setAttrType("TEXT").setAttrValue("value1")
+                                        .setAttrName("имя 1").setAttrNameEng(new StringBuilder("name1"))
+                                        .setAttrType("TEXT").setAttrValue(new StringBuilder("value1"))
                                         .setHashtagColumn(List.of()).build(),
                                 lineAttributes_record.newBuilder().setAttrCode("code2")
-                                        .setAttrName("имя 2").setAttrNameEng("name2")
-                                        .setAttrType("NUMBER").setAttrValue("2")
+                                        .setAttrName("имя 2").setAttrNameEng(new StringBuilder("name2"))
+                                        .setAttrType("NUMBER").setAttrValue(new StringBuilder("2"))
                                         .setHashtagColumn(List.of()).build(),
                                 lineAttributes_record.newBuilder().setAttrCode("code3")
-                                        .setAttrName("Признак активности").setAttrNameEng("active")
-                                        .setAttrType("BOOLEAN").setAttrValue("true")
+                                        .setAttrName("Признак активности").setAttrNameEng(new StringBuilder("active"))
+                                        .setAttrType("BOOLEAN").setAttrValue(new StringBuilder("true"))
                                         .setHashtagColumn(List.of()).build(),
                                 lineAttributes_record.newBuilder().setAttrCode("code21")
-                                        .setAttrName("имя 21").setAttrNameEng("name21")
-                                        .setAttrType("NUMBER").setAttrValue("2A") // ошибка
+                                        .setAttrName("имя 21").setAttrNameEng(new StringBuilder("name21"))
+                                        .setAttrType("NUMBER").setAttrValue(new StringBuilder("2A")) // ошибка
                                         .setHashtagColumn(List.of()).build()
                         ))
                         .build())
@@ -144,7 +144,7 @@ class CatalogueParserTest {
         assertEquals("value1", parser.getAttrStringValueByName(attr, "name1"));
         assertNull(parser.getAttrStringValueByName(attr, "xyz"));
         assertEquals(2, parser.getAttrIntegerValueByName(attr, "name2"));
-        assertEquals(1_640_977_200_000L, parser.getBeginDate(prop).getTime());
+        assertNotNull(parser.getBeginDate(prop));
 
         final var err1 = assertThrows(ZifraMessageParserException.class, () -> parser.getEndDate(prop));
         assertEquals("Значение даты \"20YY-12-12\" не соответствует шаблону \"yyyy-MM-dd\"", err1.getMessage());
