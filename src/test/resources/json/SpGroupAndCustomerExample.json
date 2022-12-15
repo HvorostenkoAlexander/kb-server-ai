@@ -1,0 +1,54 @@
+{
+  "op": "I",
+  "pk": {
+    "systemCode": "54",
+    "lineId": "a09e7690-77bc-11ed-bf7c-f39ea38ca6e0"
+  },
+  "ts": "2022-12-09T12:26:11.563+00:00",
+  "data": {
+    "catalogId": "3c973600-0e62-11ed-b39e-ffe65956d654",
+    "catalogCode": "SpGroupAndCustomer",
+    "hashtagLine": null,
+    "hashtagCatalog": null,
+    "properties": {
+      "cron": null,
+      "dateEnd": null,
+      "dateBegin": null,
+      "dateChange": "2022-12-09T12:26:11.56"
+    },
+    "lineAttributes": [
+      {
+        "attrCode": "8de348a0-0e62-11ed-b39e-ffe65956d654",
+        "attrName": "Идентификатор группы",
+        "attrType": "DIRECTORY_ITEM_FIELD",
+        "attrValue": "7a533980-6b00-11ed-97c4-2b96fc4bacbb",
+        "attrNameEng": "groupId",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "8dfc75f0-0e62-11ed-b39e-ffe65956d654",
+        "attrName": "Идентификатор потребителя",
+        "attrType": "DIRECTORY_ITEM_FIELD",
+        "attrValue": "90515640-77bc-11ed-bf7c-f39ea38ca6e0",
+        "attrNameEng": "customerId",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "8e1247e0-0e62-11ed-b39e-ffe65956d654",
+        "attrName": "Приоритет потребителя",
+        "attrType": "NUMBER",
+        "attrValue": "1",
+        "attrNameEng": "priority",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "8e2819d0-0e62-11ed-b39e-ffe65956d654",
+        "attrName": "Признак активности",
+        "attrType": "BOOLEAN",
+        "attrValue": "true",
+        "attrNameEng": "active",
+        "hashtagColumn": null
+      }
+    ]
+  }
+}

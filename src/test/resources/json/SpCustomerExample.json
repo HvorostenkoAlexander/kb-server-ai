@@ -1,0 +1,54 @@
+{
+  "op": "I",
+  "pk": {
+    "systemCode": "54",
+    "lineId": "90515640-77bc-11ed-bf7c-f39ea38ca6e0"
+  },
+  "ts": "2022-12-09T12:25:45.925+00:00",
+  "data": {
+    "catalogId": "18a6c980-0e36-11ed-b39e-ffe65956d654",
+    "catalogCode": "SpCustomer",
+    "hashtagLine": null,
+    "hashtagCatalog": null,
+    "properties": {
+      "cron": null,
+      "dateEnd": null,
+      "dateBegin": null,
+      "dateChange": "2022-12-09T12:25:45.922"
+    },
+    "lineAttributes": [
+      {
+        "attrCode": "26c263d0-0e36-11ed-b39e-ffe65956d654",
+        "attrName": "Идентификатор SAP MDG",
+        "attrType": "TEXT",
+        "attrValue": "111111111",
+        "attrNameEng": "customerId",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "26fe0d40-0e36-11ed-b39e-ffe65956d654",
+        "attrName": "Наименование контрагента",
+        "attrType": "TEXT",
+        "attrValue": "ТЕСТ ПОТРЕБИТЕЛЬ",
+        "attrNameEng": "customerName",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "2714f0a0-0e36-11ed-b39e-ffe65956d654",
+        "attrName": "Короткое название",
+        "attrType": "TEXT",
+        "attrValue": "ТЕСТ",
+        "attrNameEng": "shName",
+        "hashtagColumn": null
+      },
+      {
+        "attrCode": "272fcba0-0e36-11ed-b39e-ffe65956d654",
+        "attrName": "Признак активности",
+        "attrType": "BOOLEAN",
+        "attrValue": "true",
+        "attrNameEng": "active",
+        "hashtagColumn": null
+      }
+    ]
+  }
+}

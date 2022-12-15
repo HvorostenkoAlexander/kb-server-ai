@@ -1,4 +1,4 @@
-package com.nlmk.kb.server;
+package com.nlmk.kb.server.testing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -566,4 +566,5 @@ class SendMessageToKafkaTest {
 
         sendAvro(record);
     }
+
 }

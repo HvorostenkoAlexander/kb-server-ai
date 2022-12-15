@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.repository.PdmMessageRepository;
 import com.nlmk.kb.server.service.CommonConverter;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class PdmMessageServiceImpl implements PdmMessageService {
 
     private static final String ID_NOT_NULL = "id не должен быть null";
+    private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     private final PdmMessageRepository repository;
     private final DtoConverter dtoConverter;
@@ -99,8 +101,8 @@ public class PdmMessageServiceImpl implements PdmMessageService {
         return repository.getMessages(
                 topic,
                 isPosted,
-                toStringByPattern(startDate, "yyyy-MM-dd"),
-                toStringByPattern(endDate, "yyyy-MM-dd"),
+                converter.parseToStringByDatePattern(startDate, DATE_PATTERN),
+                converter.parseToStringByDatePattern(endDate, DATE_PATTERN),
                 of
         ).map(dtoConverter::toPdmMessageDto);
     }
@@ -139,9 +141,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
         Assert.notNull(id, ID_NOT_NULL);
 
         final var message = repository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException(
-                        String.format("Не найден объект с id: [%s]", id)
-                )
+                () -> new IllegalArgumentException(String.format("Не найден объект с id: [%s]", id))
         );
 
         return sendToNsi(message);
@@ -149,30 +149,22 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
     @Override
     public ResponseEntity<Long> sendToNsi(PdmMessage message) {
-        ResponseEntity<Long> response = nsiClientService.sendPdmMessage(message);
-        setStatusMessage(message, response.getStatusCode());
-        update(message);
-        return response;
-    }
+        boolean posted = false;
+        Long response = null;
 
-    private String toStringByPattern(Date date, String pattern) {
-        return converter.parseToStringByDatePattern(date, pattern);
-    }
-
-    private void setStatusMessage(PdmMessage message, HttpStatus status) {
-        log.debug("setStatusMessage; HttpStatus: [{}], PdmMessage:[{}]", status.toString(), message);
-
-        if (status == HttpStatus.ACCEPTED ||
-                status == HttpStatus.NOT_FOUND ||
-                status == HttpStatus.OK) {
-            message.setPosted(true);
-            message.setKbReceiptTs(new Date());
-            message.setNote(status.toString());
-        } else {
-            message.setPosted(false);
-            message.setKbReceiptTs(new Date());
-            message.setNote(status.toString());
+        try {
+            response = nsiClientService.sendPdmMessage(message);
+            posted = true;
+        } catch (IllegalArgumentException | RemoteServiceSenderException e) {
+            log.warn("sendToNsi, исключение при отправке в НСИ [{}]", e.getMessage());
         }
+
+        message.setPosted(posted);
+        message.setKbReceiptTs(new Date());
+        message.setNote(posted ? "OK" : "ERROR");
+
+        update(message);
+        return new ResponseEntity<>(response, posted ? HttpStatus.ACCEPTED : HttpStatus.BAD_REQUEST);
     }
 
 }
