@@ -9,7 +9,6 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
-import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsPts;
 import org.junit.jupiter.api.Assertions;
@@ -29,8 +28,6 @@ class AttestationResultSenderEmptyAddressTest {
 
     @Autowired
     private AttestationResultSender productSender;
-    @Autowired
-    private KcehConditionFilterImpl kcehConditionFilter;
     @MockBean
     private ResultConfigService resultConfigService;
 
@@ -77,7 +74,7 @@ class AttestationResultSenderEmptyAddressTest {
 
         final var e = Assertions.assertThrows(KafkaRestConfigException.class,
                 () -> productSender.send(attResult, VerificationResults.class));
-        Assertions.assertEquals("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending", e.getMessage());
+        Assertions.assertEquals("sending, kafka-rest.address не задан", e.getMessage());
     }
 
     @Test
@@ -88,7 +85,7 @@ class AttestationResultSenderEmptyAddressTest {
         final var attResult = prepareMinimal();
 
         final var e = Assertions.assertThrows(KafkaRestConfigException.class, () -> productSender.send(attResult, VerificationResultsPts.class));
-        Assertions.assertEquals("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending", e.getMessage());
+        Assertions.assertEquals("sending, kafka-rest.address не задан", e.getMessage());
     }
 
 }
