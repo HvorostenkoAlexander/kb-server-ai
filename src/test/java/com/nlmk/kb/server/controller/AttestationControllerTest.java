@@ -42,20 +42,20 @@ class AttestationControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(prepareMinimalRequest()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
         mvc.perform(MockMvcRequestBuilders.post("/attestation/ccm/pts")
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(prepareMinimalRequestData()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
         // согласованный вариант REST = AVRO
         mvc.perform(MockMvcRequestBuilders.post("/attestation/ccm/pts")
                         .header(HttpHeaders.AUTHORIZATION, "T V")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(prepareMinimalRequestDataByAVRO()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
 
     private String prepareMinimalRequest() throws Exception {
