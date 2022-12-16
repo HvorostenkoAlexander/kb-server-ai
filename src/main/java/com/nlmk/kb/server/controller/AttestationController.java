@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +27,9 @@ import javax.validation.Valid;
 public interface AttestationController {
 
     @PostMapping("/ccm/pts")
-    @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Запрос на Аттестацию Единицы Продукции, цех ЦТС (nlmk.l3.ccm.pts)",
             security = {@SecurityRequirement(name = "bearer-key")})
-    @ApiResponse(responseCode = "201",
+    @ApiResponse(responseCode = "200",
             description = "Аттестация Единицы Продукции успешно пройдена", content = @Content)
     CcmPtsResponse postAttestationCcmPts(@RequestHeader(name = KbConstants.REQUEST_ID_HEADER, required = false) String requestId,
                                          @RequestBody @Valid CcmPtsRequest attRequest);
