@@ -53,7 +53,7 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
         final var enabledAdapters = getEnabledAdapters(configs);
         if (enabledAdapters.isEmpty()) {
             log.error("send, адаптеры результата аттестации не найдены");
-            throw new AttestationResultSenderException("send, результата аттестации не найдены");
+            throw new AttestationResultSenderException("адаптеры результата аттестации не найдены");
         }
 
         final var product = productAttestationResult.getResult();
@@ -120,7 +120,7 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
         var pk = adapter.get().getPk(results);
 
         if (Objects.isNull(results) || Objects.isNull(pk)) {
-            throw new AttestationResultSenderException("produce, PK сообщения не найден");
+            throw new AttestationResultSenderException("PK сообщения не найден");
         }
 
         final var key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
