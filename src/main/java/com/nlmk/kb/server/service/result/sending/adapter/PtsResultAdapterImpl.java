@@ -1,10 +1,13 @@
-package com.nlmk.kb.server.service.result.sending.pts;
+package com.nlmk.kb.server.service.result.sending.adapter;
 
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.service.result.sending.ResultAdapter;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
 import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.apcs.*;
+import org.apache.avro.Schema;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -13,13 +16,49 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PtsResultAdapterImpl implements ResultAdapter<VerificationResultsPts> {
+public class PtsResultAdapterImpl implements ApcsAvro, ResultAdapter<VerificationResultsPts> {
+
+    private static final Schema SCHEMA = VerificationResultsPts.SCHEMA$;
 
     private final SimpleDateFormat dateFormatter;
 
     public PtsResultAdapterImpl() {
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
+    @Override
+    public Class<VerificationResultsPts> getSendingType() {
+        return VerificationResultsPts.class;
+    }
+
+    @Override
+    public String getAvroName() {
+        return getSchemaName();
+    }
+
+    @Override
+    public String getSchemaName() {
+        return SCHEMA.getName();
+    }
+
+    @Override
+    public String getSchemaDoc() {
+        return SCHEMA.getDoc();
+    }
+
+    @Override
+    public String getSchemaData() {
+        return SCHEMA.toString(false);
+    }
+
+    @Override
+    public RecordPk getPk(SpecificRecordBase recordBase) {
+        try {
+            return ((VerificationResultsPts) recordBase).getPk();
+        } catch (Exception e) {
+            throw new AttestationResultSenderException("getPk, PK сообщения не найден");
+        }
     }
 
     @Override

@@ -6,7 +6,10 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
+import com.nlmk.kb.server.service.result.sending.adapter.ResultAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -20,43 +23,48 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class AttestationResultSenderImpl implements AttestationResultSender {
 
-    private final Map<String, MessageProducer<?>> senders;
+    private final Map<String, ResultAdapter<? extends SpecificRecordBase>> resultAdapters;
+    private final ResultSender resultSender;
     private final ResultConfigService configService;
     private final CommonConditionFilter conditionFilter;
 
-    public AttestationResultSenderImpl(List<MessageProducer<?>> allSenders,
+    public AttestationResultSenderImpl(List<ResultAdapter<? extends SpecificRecordBase>> allResultAdapters,
+                                       ResultSender resultSender,
                                        ResultConfigService configService,
-                                       CommonConditionFilter conditionFilter) {
-        this.senders = allSenders.stream().collect(
-                toMap(MessageProducer::getAvroName, Function.identity())
+                                       CommonConditionFilter conditionFilter
+    ) {
+        this.resultAdapters = allResultAdapters.stream()
+                .collect(
+                toMap(ResultAdapter::getAvroName, Function.identity())
         );
         this.configService = configService;
         this.conditionFilter = conditionFilter;
+        this.resultSender = resultSender;
     }
 
     @Override
     public void send(ProductAttestationResultDto productAttestationResult, Class<?> sendingType) {
         final var configs = configService.getEnabledTopics();
         if (configs.isEmpty()) {
-            log.warn("send, empty enabled topic config FOR sending result");
+            log.warn("send, конфигурации отправки результатов не найдены");
             return;
         }
 
-        final var enabledSenders = getEnabledSenders(configs);
-        if (enabledSenders.isEmpty()) {
-            log.error("send, empty enabled sender list");
-            throw new AttestationResultSenderException("send, empty enabled sender list");
+        final var enabledAdapters = getEnabledAdapters(configs);
+        if (enabledAdapters.isEmpty()) {
+            log.error("send, адаптеры результата аттестации не найдены");
+            throw new AttestationResultSenderException("send, результата аттестации не найдены");
         }
 
         final var product = productAttestationResult.getResult();
-        log.info("send attestation result for product: id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
+        log.info("send, результат аттестации для материала id [{}], referenceId [{}]", product.getId(), product.getReferenceId());
 
         for (ResultsConfigDto config : configs) {
             // только конфигурация своего типа!
             if (config.getAvroName().equals(sendingType.getSimpleName())) {
-                log.info("sending config [{}]", config);
+                log.info("конфигурация отправки результата: [{}]", config);
                 sending(config,
-                        enabledSenders,
+                        enabledAdapters,
                         product,
                         productAttestationResult.isNewProduct()
                 );
@@ -68,17 +76,17 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
      * Отправка по одной активной конфигурации
      */
     private void sending(ResultsConfigDto config,
-                         Set<MessageProducer<?>> enabledSenders,
+                         Set<ResultAdapter<?>> enabledAdapters,
                          ProductDto product,
                          boolean isNew) {
         // свой отправитель: по AvroName и совпадению AvroName с именем типа MessageProducer (от ошибок в базе)
-        var sender = enabledSenders.stream()
-                .filter(producer -> producer.getAvroName().equals(config.getAvroName()))
-                .filter(producer -> producer.getSendingType().getSimpleName().equals(config.getAvroName()))
+        var adapter = enabledAdapters.stream()
+                .filter(a -> a.getAvroName().equals(config.getAvroName()))
+                .filter(a -> a.getSendingType().getSimpleName().equals(config.getAvroName()))
                 .findFirst();
 
-        if (sender.isEmpty()) {
-            log.warn("sending, for topic [{}] not found sender with avroName [{}] (avroName and sendingType)",
+        if (adapter.isEmpty()) {
+            log.warn("sending, не найден адаптер для топика [{}], avroName [{}]",
                     config.getTopic(), config.getAvroName());
             return;
         }
@@ -107,23 +115,32 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
             return;
         }
 
-        // отправка результата
-        sender.get().produce(sendingProduct, isNew, config.getTopic());
+        final var results = adapter.get().adapt(product, isNew);
+
+        var pk = adapter.get().getPk(results);
+
+        if (Objects.isNull(results) || Objects.isNull(pk)) {
+            throw new AttestationResultSenderException("produce, PK сообщения не найден");
+        }
+
+        final var key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
+
+        resultSender.send(results, config.getTopic(), key);
     }
 
     /**
-     * Уникальный список доступных отправителей для списка активных конфигураций
+     * Уникальный список доступных адаптеров для списка активных конфигураций
      */
-    private Set<MessageProducer<?>> getEnabledSenders(List<ResultsConfigDto> configs) {
+    private Set<ResultAdapter<?>> getEnabledAdapters(List<ResultsConfigDto> configs) {
         if (configs == null || configs.isEmpty()) {
             return Set.of();
         }
 
-        // поиск MessageProducer по AvroName
+        // поиск по AvroName
         return configs.stream()
                 .map(ResultsConfigDto::getAvroName)
-                .filter(avroName -> senders.get(avroName) != null)
-                .collect(toMap(k -> k, senders::get))
+                .filter(avroName -> resultAdapters.get(avroName) != null)
+                .collect(toMap(k -> k, resultAdapters::get))
                 .values().stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
@@ -131,7 +148,7 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
 
     private String getKceh(RequestDto request) {
         if (request.getKceh() != null) {
-            return MessageFormat.format("value of request.kceh: {0}", request.getKceh());
+            return MessageFormat.format("значение request.kceh: {0}", request.getKceh());
         } else {
             return "null";
         }
