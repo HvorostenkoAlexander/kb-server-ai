@@ -9,20 +9,19 @@ import nlmk.l3.apcs.*;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PgpResultAdapterImpl implements ApcsAvro, ResultAdapter<VerificationResults> {
+public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationResults> {
 
     private static final Schema SCHEMA = VerificationResults.SCHEMA$;
 
     private final SimpleDateFormat dateFormatter;
 
-    public PgpResultAdapterImpl() {
+    public PgpResultAdapter() {
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
@@ -63,9 +62,8 @@ public class PgpResultAdapterImpl implements ApcsAvro, ResultAdapter<Verificatio
 
     @Override
     public VerificationResults adapt(ProductDto product, boolean isNew) {
-        Assert.notNull(product, "The product is null");
-        Assert.notEmpty(product.getRequests(), "The product.getRequests() must contain elements.");
-        Assert.notEmpty(product.getRequests().get(0).getAttestations(), "The product.getRequests().get(0).getAttestations() must contain elements.");
+
+        checkProduct(product);
 
         var kceh = 0;
         var mismatch = Status.WAITING_FOR_DATA.getValue();

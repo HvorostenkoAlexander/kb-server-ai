@@ -9,20 +9,19 @@ import nlmk.l3.apcs.*;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PtsResultAdapterImpl implements ApcsAvro, ResultAdapter<VerificationResultsPts> {
+public class PtsResultAdapter implements ApcsAvro, ResultAdapter<VerificationResultsPts> {
 
     private static final Schema SCHEMA = VerificationResultsPts.SCHEMA$;
 
     private final SimpleDateFormat dateFormatter;
 
-    public PtsResultAdapterImpl() {
+    public PtsResultAdapter() {
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
@@ -63,9 +62,8 @@ public class PtsResultAdapterImpl implements ApcsAvro, ResultAdapter<Verificatio
 
     @Override
     public VerificationResultsPts adapt(ProductDto product, boolean isNew) {
-        Assert.notNull(product, "The product is null");
-        Assert.notEmpty(product.getRequests(), "The product.getRequests() must contain elements.");
-        Assert.notEmpty(product.getRequests().get(0).getAttestations(), "The product.getRequests().get(0).getAttestations() must contain elements.");
+
+        checkProduct(product);
 
         var mismatch = Status.WAITING_FOR_DATA;
         String ts = null;

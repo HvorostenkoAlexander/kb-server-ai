@@ -9,8 +9,9 @@ import com.nlmk.kb.server.api.ResultsConfigDto;
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.service.result.configuration.ResultConfigService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
-import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
 import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsKc1;
+import nlmk.l3.apcs.VerificationResultsKc2;
 import nlmk.l3.apcs.VerificationResultsPts;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
@@ -41,8 +42,6 @@ class AttestationResultSenderBasicAuthTest {
 
     @Autowired
     private AttestationResultSender productSender;
-    @Autowired
-    private KcehConditionFilterImpl kcehConditionFilter;
     @MockBean
     private ResultConfigService resultConfigService;
 
@@ -61,7 +60,7 @@ class AttestationResultSenderBasicAuthTest {
         mockKafkaRest.setDispatcher(new Dispatcher() {
             @NotNull
             @Override
-            public MockResponse dispatch(@NotNull RecordedRequest request) throws InterruptedException {
+            public MockResponse dispatch(@NotNull RecordedRequest request) {
                 final var auth = request.getHeader(HttpHeaders.AUTHORIZATION);
                 if (StringUtils.isBlank(auth)) {
                     return new MockResponse().setResponseCode(HttpStatus.UNAUTHORIZED.value());
@@ -128,11 +127,17 @@ class AttestationResultSenderBasicAuthTest {
                         ResultsConfigDto.builder().id(2).topic("topic2").condition(null)
                                 .avroName("VerificationResults").enabled(true).build(),
                         ResultsConfigDto.builder().id(3).topic("topic3").condition(null)
-                                .avroName("VerificationResultsPts").enabled(true).build()
+                                .avroName("VerificationResultsPts").enabled(true).build(),
+                        ResultsConfigDto.builder().id(4).topic("topic4").condition(null)
+                                .avroName("VerificationResultsKc1").enabled(true).build(),
+                        ResultsConfigDto.builder().id(5).topic("topic5").condition(null)
+                                .avroName("VerificationResultsKc2").enabled(true).build()
                 ));
 
         Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
         Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsPts.class));
+        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsKc1.class));
+        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsKc2.class));
     }
 
 }
