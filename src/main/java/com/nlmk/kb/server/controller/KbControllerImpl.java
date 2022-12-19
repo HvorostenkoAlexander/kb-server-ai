@@ -23,6 +23,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsKc1;
+import nlmk.l3.apcs.VerificationResultsKc2;
 import nlmk.l3.apcs.VerificationResultsPts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -165,7 +167,17 @@ public class KbControllerImpl implements KbController {
                 attestationResultSender.send(attestationResult, VerificationResultsPts.class);
                 break;
             }
-            default: throw new AttestationResultSenderException("Wrong Kceh Value for send result");
+            case KC1: {
+                attestationResultSender.send(attestationResult, VerificationResultsKc1.class);
+                break;
+            }
+            case KC2: {
+                attestationResultSender.send(attestationResult, VerificationResultsKc2.class);
+                break;
+            }
+            default: throw new AttestationResultSenderException(
+                    "Отправка рельтата аттестации для цеха [" + attestationResult.getKceh() + "] не реализована"
+            );
         }
     }
 
