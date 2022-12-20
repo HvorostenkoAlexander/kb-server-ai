@@ -1,9 +1,12 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
+import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import java.util.Date;
+
+import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.stereotype.Component;
@@ -34,7 +37,9 @@ public class CcmPgpMessageAdapterImpl implements CcmMessageAdapter<AttestationRe
                 .request(attestationRequest);
 
         if (attestationRequest.getValue().getData() != null) {
-            ccmMessageBuilder.primeId(attestationRequest.getValue().getData().getPrimeId());
+            ccmMessageBuilder.primeId(
+                    AdapterUtils.getDataField(attestationRequest.getValue().getData()).map(DataField::getPrimeId).orElse(null)
+            );
         }
         return ccmMessageBuilder.build();
     }

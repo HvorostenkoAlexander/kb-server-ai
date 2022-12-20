@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
@@ -13,6 +14,7 @@ import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.sender.PamSender;
+import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -83,7 +86,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
 
     @Override
     public AttestationRequest getAttestationRequestFromMessage(AttestationMessage message) {
-        if (message == null) {
+        if (Objects.isNull(message)) {
             return null;
         }
 
@@ -98,10 +101,11 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     }
 
     private String getPrimeId(AttestationRequest attRequest) {
-        if (attRequest != null
-                && attRequest.getValue() != null
-                && attRequest.getValue().getData() != null) {
-            return attRequest.getValue().getData().getPrimeId();
+        if (Objects.nonNull(attRequest)
+                && Objects.nonNull(attRequest.getValue())
+                && Objects.nonNull(attRequest.getValue().getData())) {
+
+            return AdapterUtils.getDataField(attRequest.getValue().getData()).map(DataField::getPrimeId).orElse(null);
         }
         return null;
     }

@@ -1,14 +1,10 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
-import com.nlmk.attestation.product.api.pam.DataField;
-import com.nlmk.attestation.product.api.pam.Pk;
-import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-import java.util.List;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.PkType;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
 import org.springframework.stereotype.Component;
@@ -82,9 +78,7 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
             width = AdapterUtils.parseFloat(recordData.getGeometry().getWidth());
         }
 
-        // С версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP,
-        // так же пустые списки для mechanical, metallographic.
-        return DataField.builder()
+        return DataPts.builder()
                 .primeId(primeId)
                 .nplv(nplv)
                 .hnum(hnum)
@@ -100,9 +94,6 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
                 .specifications(super.prepareSpecs(recordData))
                 .chemical(super.prepareChemicalSpecs(recordData))
                 .mechanicalPts(super.prepareMechanicalProperties(recordData))
-                .orderReq(List.of())
-                .mechanical(List.of())
-                .metallographic(List.of())
                 .build();
     }
 

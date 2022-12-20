@@ -10,7 +10,6 @@ import nlmk.l3.ccm.pgp.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -49,13 +48,13 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private DataField toPamDataField(RecordData recordData) {
+    private DataPgp toPamDataField(RecordData recordData) {
         if (recordData == null) {
             return null;
         }
 
         // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
-        return DataField.builder()
+        return DataPgp.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .nplv(recordData.getNplv())
                 .hnum(recordData.getHnum())
@@ -72,7 +71,6 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .cutTaskNum(recordData.getCutTaskNum())
                 .cutTaskDate(AdapterUtils.sequenceToString(recordData.getCutTaskDate()))
                 .cutTaskStrNum(recordData.getCutTaskStrNum())
-                .orderReq(List.of())
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)

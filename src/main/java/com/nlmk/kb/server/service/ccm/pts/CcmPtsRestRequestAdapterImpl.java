@@ -1,14 +1,10 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
-import com.nlmk.attestation.product.api.pam.DataField;
-import com.nlmk.attestation.product.api.pam.Pk;
-import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
-import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,7 +33,7 @@ public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implement
                                 .systemCode(requestMessage.getPk().getSystemCode())
                                 .id(requestMessage.getPk().getId())
                                 .build())
-                        .data(DataField.builder()
+                        .data(DataPts.builder()
                                 .primeId(requestMessage.getPk().getId())
                                 .nplv(data.getMarking().getNplv())
                                 .hnum(data.getMarking().getHnum())
@@ -50,12 +46,9 @@ public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implement
                                 .kceh(data.getKceh())
                                 .orderNum(data.getOrderNum())
                                 .orderPos(data.getOrderPos())
-                                .orderReq(List.of())
                                 .specifications(super.prepareSpecs(requestMessage))
                                 .chemical(super.prepareChemicalSpecs(requestMessage))
                                 .mechanicalPts(super.prepareMechanicalProperties(requestMessage))
-                                .mechanical(List.of())
-                                .metallographic(List.of())
                                 .build())
                         .build())
                 .build();

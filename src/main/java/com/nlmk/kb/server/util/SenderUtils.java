@@ -2,6 +2,7 @@ package com.nlmk.kb.server.util;
 
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.kb.server.config.KbConstants;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,7 @@ public class SenderUtils {
     }
 
     public static void addRequestId(HttpHeaders headers) {
-        if (headers == null) {
+        if (Objects.isNull(headers)) {
             return;
         }
 
@@ -30,17 +31,18 @@ public class SenderUtils {
                 Objects.requireNonNullElseGet(requestId, () -> KbConstants.DEFAULT_PREFIX + UUID.randomUUID()));
     }
 
-    public static String getPrimeId(AttestationRequest attestationRequest) {
-        if (attestationRequest == null
-                || attestationRequest.getValue() == null
-                || attestationRequest.getValue().getData() == null) {
-            return null;
+    public static String getPrimeId(AttestationRequest attRequest) {
+        if (Objects.nonNull(attRequest)
+                && Objects.nonNull(attRequest.getValue())
+                && Objects.nonNull(attRequest.getValue().getData())) {
+
+            return AdapterUtils.getDataField(attRequest.getValue().getData()).map(DataField::getPrimeId).orElse(null);
         }
-        return attestationRequest.getValue().getData().getPrimeId();
+        return null;
     }
 
     public static String getPrimeId(SadimMessageDto dto) {
-        if (dto == null || dto.getParam() == null) {
+        if (Objects.isNull(dto) || Objects.isNull(dto.getParam())) {
             return null;
         }
         return dto.getParam().getPrimeId();
