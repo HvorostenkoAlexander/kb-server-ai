@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
-import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
@@ -14,7 +13,7 @@ import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.sender.PamSender;
-import com.nlmk.kb.server.util.AdapterUtils;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,7 +61,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
          */
         log.info("ccmPtsRequestProcessing, request [{}]", request);
         final var attRequest = ccmPtsRestRequestAdapter.adapt(request);
-        final var primeId = getPrimeId(attRequest);
+        final var primeId = SenderUtils.getPrimeId(attRequest);
 
         try {
             final var attMessage = AttestationMessage.builder()
@@ -98,16 +97,6 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
                     "getAttestationRequestFromMessage, parsing error for primeId [{0}]", message.getPrimeId()
             ));
         }
-    }
-
-    private String getPrimeId(AttestationRequest attRequest) {
-        if (Objects.nonNull(attRequest)
-                && Objects.nonNull(attRequest.getValue())
-                && Objects.nonNull(attRequest.getValue().getData())) {
-
-            return AdapterUtils.getDataField(attRequest.getValue().getData()).map(DataField::getPrimeId).orElse(null);
-        }
-        return null;
     }
 
 }
