@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.nlmk.attestation.product.api.pam.AnalysisValue;
 import com.nlmk.attestation.product.api.specification.TypeCode;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -19,131 +23,89 @@ import java.util.List;
  */
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Jacksonized
 public class CcmPtsRequest {
 
-    @NotBlank
-    private String ts; // Дата и время передачи
-    @NotNull
-    private Pk pk; // Первичный ключ
-    @Valid
-    private Record data; // Данные
+    private final @NotBlank String ts; // Дата и время передачи
+    private final @NotNull @Valid Pk pk; // Первичный ключ
+    private final @Valid Record data; // Данные
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Pk {
-        @NotBlank
-        private String systemCode; // Код системы
-        @NotBlank
-        private String id; // ИД единицы металла (ЕМ)
+        private final @NotBlank String systemCode; // Код системы
+        private final @NotBlank String id; // ИД единицы металла (ЕМ)
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Record {
-        @NotNull
-        private Integer werks; // Код завода
-        @NotBlank
-        private String werksName; // Наименование завода
-        @NotNull
-        private Integer kceh; // Код цеха
-        @NotBlank
-        private String kcehName; // Наименование цеха
-        @NotNull
-        private Integer unitCode; // Код агрегата
-        @NotBlank
-        private String unitName; // Наименование агрегата
-        @NotNull
-        private Integer storageCode; // Код склада
-        @NotBlank
-        private String storageName; // Наименование склада
-        @NotNull
-        @Valid
-        private Marking marking; // Маркировка ЕМ
-        @NotNull
-        private Double weightNet; // Вес нетто (т.)
-        @NotNull
-        @Valid
-        private Geometry geometry; // Геометрия
-        private Long orderNum; // Номер заказа
-        private Integer orderPos; // Позиция заказа
-        private Integer unionId; // Идентификатор упаковки бунтов
-        private List<@Valid Bundle> bundles; // Список бунтов входящих в одну связку
-        @NotEmpty
-        private List<@Valid Specification> specifications; // Список дополнительных характеристик
-        private List<@Valid OneProperty> properties; // Результаты магнитных свойств
-        private List<@Valid Chemical> chemical; // Химия
+        private final @NotNull Integer werks; // Код завода
+        private final @NotBlank String werksName; // Наименование завода
+        private final @NotNull Integer kceh; // Код цеха
+        private final @NotBlank String kcehName; // Наименование цеха
+        private final @NotNull Integer unitCode; // Код агрегата
+        private final @NotBlank String unitName; // Наименование агрегата
+        private final @NotNull Integer storageCode; // Код склада
+        private final @NotBlank String storageName; // Наименование склада
+        private final @NotNull @Valid Marking marking; // Маркировка ЕМ
+        private final @NotNull Double weightNet; // Вес нетто (т.)
+        private final @NotNull @Valid Geometry geometry; // Геометрия
+        private final Long orderNum; // Номер заказа
+        private final Integer orderPos; // Позиция заказа
+        private final Integer unionId; // Идентификатор упаковки бунтов
+        private final List<@Valid Bundle> bundles; // Список бунтов входящих в одну связку
+        private final @NotEmpty List<@Valid Specification> specifications; // Список дополнительных характеристик
+        private final List<@Valid OneProperty> properties; // Результаты магнитных свойств
+        private final List<@Valid Chemical> chemical; // Химия
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Marking {
-        @NotNull
-        private Integer nplv; // Номер плавки
-        @NotNull
-        private Integer hnum; // Номер ГК партии
-        @NotNull
-        private Integer tnum; // Номер ХК партии
-        @NotNull
-        private Integer roll; // Номер рулона
-        private Integer strip; // Номер бунта
+        private final @NotNull Integer nplv; // Номер плавки
+        private final @NotNull Integer hnum; // Номер ГК партии
+        private final @NotNull Integer tnum; // Номер ХК партии
+        private final @NotNull Integer roll; // Номер рулона
+        private final Integer strip; // Номер бунта
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Geometry {
-        @NotNull
-        private Double thickness; // Толщина, мм
-        @NotNull
-        private Double width; // Ширина, мм
-        @NotNull
-        private Double length; // Длина, мм
+        private final @NotNull Double thickness; // Толщина, мм
+        private final @NotNull Double width; // Ширина, мм
+        private final Double length; // Длина, мм
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Bundle {
-        @NotNull
-        private Long stripId; // Идентификатор бунта
-        @NotNull
-        private Integer stripNum; // Номер бунта
-        @NotNull
-        private Double stripWidth; // Ширина бунта
-        @NotNull
-        private Double stripWeight; // Вес бунта (т.)
+        private final @NotNull Long stripId; // Идентификатор бунта
+        private final @NotNull Integer stripNum; // Номер бунта
+        private final @NotNull Double stripWidth; // Ширина бунта
+        private final @NotNull Double stripWeight; // Вес бунта (т.)
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Specification {
-        @NotNull
-        private Integer specCode; // Код характеристики
-        @NotBlank
-        private String specName; // Наименование характеристики
-        @NotNull
-        private Integer specTypeCode; // Тип данных
-        @NotBlank
-        private String specTypeName; // Наименование типа данных
-        @NotNull
-        private SpecTypeValue specTypeValue; // Тип значения (1 - простое, 2 - перечислимое)
-        private String specValue; // Значение
-        private List<@Valid OneSpecValue> listValues;
-        private String specDecryption; // Расшифровка справочного значения
-        private String specFormat; // Формат передачи характеристики
-        private String specMeasure; // Единица измерения
+        private final @NotNull Integer specCode; // Код характеристики
+        private final @NotBlank String specName; // Наименование характеристики
+        private final @NotNull Integer specTypeCode; // Тип данных
+        private final @NotBlank String specTypeName; // Наименование типа данных
+        private final @NotNull SpecTypeValue specTypeValue; // Тип значения (1 - простое, 2 - перечислимое)
+        private final String specValue; // Значение
+        private final List<@Valid OneSpecValue> listValues;
+        private final String specDecryption; // Расшифровка справочного значения
+        private final String specFormat; // Формат передачи характеристики
+        private final String specMeasure; // Единица измерения
     }
 
     @Getter
@@ -168,101 +130,81 @@ public class CcmPtsRequest {
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OneSpecValue {
-        @NotBlank
-        private String value; // Значение
-        private String description; // Описание справочного значения
+        private final @NotBlank String value; // Значение
+        private final String description; // Описание справочного значения
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OneProperty {
-        @NotNull
-        private Integer probeCode; // Код вида пробы
-        @NotNull
-        private String probeName; // Наименование вида пробы
-        @NotNull
-        private String testDate; // Дата и время испытания YYYY-MM-DD"T"HH24:MI:SS+/-HH:MM
-        @NotNull
-        private Integer typeCode; // Код типа испытания
-        @NotBlank
-        private String typeName; // Наименование типа испытания
-        @NotEmpty
-        private List<@Valid OnePropAnalyze> analyzes; // Анализы
-        private List<@Valid OnePropValue> listValues; // Дополнительные результаты
-        private List<@Valid OnePropAtt> attestationList; // Список аттестаций
+        private final @NotNull Integer probeCode; // Код вида пробы
+        private final @NotNull String probeName; // Наименование вида пробы
+        private final @NotNull String testDate; // Дата и время испытания YYYY-MM-DD"T"HH24:MI:SS+/-HH:MM
+        private final @NotNull Integer typeCode; // Код типа испытания
+        private final @NotBlank String typeName; // Наименование типа испытания
+        private final @NotEmpty List<@Valid OnePropAnalyze> analyzes; // Анализы
+        private final List<@Valid OnePropValue> listValues; // Дополнительные результаты
+        private final List<@Valid OnePropAtt> attestationList; // Список аттестаций
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OnePropValue {
-        @NotNull
-        private Integer attrCode; // Код атрибута
-        @NotNull
-        private TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
-        private List<String> attrValue; // Значение атрибута
-        private String attrFormat; // Формат атрибута
-        private String attrMeasure; // Единица измерения атрибута
+        private final @NotNull Integer attrCode; // Код атрибута
+        private final @NotNull TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
+        private final @Valid List<OnePropValueAttr> attrValue; // Значения атрибута
+        private final String attrFormat; // Формат атрибута
+        private final String attrMeasure; // Единица измерения атрибута
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
+    public static class OnePropValueAttr {
+        private final @NotBlank String value;
+    }
+
+    @Data
+    @Builder
+    @Jacksonized
     public static class OnePropAnalyze {
-        @NotNull
-        private Integer samplingPlaceCode; // Код места отбора пробы
-        @NotBlank
-        private String samplingPlaceName; // Наименование места отбора пробы
-        @NotNull
-        private AnalysisValue analysisValue; // Результат (1-Худший, 2-Лучший)
-        @NotEmpty
-        private List<@Valid OneAnalyzeValue> listValues; // Список значений
+        private final @NotNull Integer samplingPlaceCode; // Код места отбора пробы
+        private final @NotBlank String samplingPlaceName; // Наименование места отбора пробы
+        private final @NotNull AnalysisValue analysisValue; // Результат (1-Худший, 2-Лучший)
+        private final @NotEmpty List<@Valid OneAnalyzeValue> listValues; // Список значений
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OneAnalyzeValue {
-        @NotNull
-        private Integer attrCode; // Код атрибута
-        @NotNull
-        private TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
-        private String attrValue; // Значение атрибута
-        private String attrFormat; // Формат атрибута
-        private String attrMeasure; // Единица измерения атрибута
+        private final @NotNull Integer attrCode; // Код атрибута
+        private final @NotNull TypeCode attrType; // Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)
+        private final String attrValue; // Значение атрибута
+        private final String attrFormat; // Формат атрибута
+        private final String attrMeasure; // Единица измерения атрибута
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OnePropAtt {
-        @NotNull
-        private Integer typeCode; // Код аттестации*
-        @NotBlank
-        private String typeName; // Наименование аттестации
-        private List<@Valid OneAttValue> listValues; // Список значений
+        private final @NotNull Integer typeCode; // Код аттестации*
+        private final @NotBlank String typeName; // Наименование аттестации
+        private final List<@Valid OneAttValue> listValues; // Список значений
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OneAttValue {
-        @NotNull
-        private Side side; // Сторона (1 - Лицевая, 2 - Обратная, 3 - Обе стороны)
-        @NotNull
-        private Integer attrCode; // Код атрибута
-        @NotNull
-        private Double attrValue; // Значение атрибута
+        private final @NotNull Side side; // Сторона (1 - Лицевая, 2 - Обратная, 3 - Обе стороны)
+        private final @NotNull Integer attrCode; // Код атрибута
+        private final @NotNull Double attrValue; // Значение атрибута
     }
 
     @Getter
@@ -288,24 +230,19 @@ public class CcmPtsRequest {
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Chemical {
-        @NotNull
-        private Integer id; // Идентификатор хим анализа
-        private List<@Valid OneChemicalValue> listValues; // Список хим.элементов
+        private final @NotNull Integer id; // Идентификатор хим анализа
+        private final List<@Valid OneChemicalValue> listValues; // Список хим.элементов
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class OneChemicalValue {
-        @NotNull
-        private Integer code; // Код химического элемента
-        @NotBlank
-        private String name; // Наименование химического элемента
-        private Double value; // Значение химического элемента
+        private final @NotNull Integer code; // Код химического элемента
+        private final @NotBlank String name; // Наименование химического элемента
+        private final Double value; // Значение химического элемента
     }
 
 }

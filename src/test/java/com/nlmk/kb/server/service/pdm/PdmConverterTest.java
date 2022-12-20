@@ -132,8 +132,8 @@ class PdmConverterTest {
         final var dto = pdmDtoConverter.toPhysMechPropAnisSteelStandDto(dictionary);
 
         assertNotNull(dto);
-        assertEquals("11ЮА",dto.getPrProdMark());
-        assertEquals("ТУ 14-106-454-94",dto.getPrStandMark());
+        assertEquals("NV27S-160",dto.getPrProdMark());
+        assertEquals("ТУ 24.10.53-0071-05757665-2021",dto.getPrStandMark());
         assertEquals("4.00..8.00",dto.getPrThickUncoat().getSrcValue());
         assertEquals("Тест",dto.getPrAnnotation());
     }

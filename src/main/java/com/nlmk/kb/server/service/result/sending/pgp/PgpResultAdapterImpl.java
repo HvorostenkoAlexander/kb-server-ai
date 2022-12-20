@@ -7,6 +7,7 @@ import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.apcs.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,40 +33,46 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
         var mismatch = Status.WAITING_FOR_DATA.getValue();
         String ts = null;
 
-        final var attestations = product.getRequests().get(0).getAttestations();
-        final var primeId = product.getRequests().get(0).getPrimeID();
+        final var request = product.getRequests().get(0);
+        final var attestations = request.getAttestations();
+        final var primeId = request.getPrimeID();
 
-        if (product.getRequests().get(0).getKceh() != null) {
-            kceh = product.getRequests().get(0).getKceh();
+        if (Objects.nonNull(request.getKceh())) {
+            kceh = request.getKceh();
         }
-        if (product.getRequests().get(0).getStatus() != null) {
+        if (Objects.nonNull(request.getStatus())) {
             mismatch = product.getRequests().get(0).getStatus().getValue();
         }
-        if (product.getRequests().get(0).getAttestationTs() != null) {
+        if (Objects.nonNull(request.getAttestationTs())) {
             ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
         }
 
         return VerificationResults.newBuilder()
                 .setTs(ts)
                 .setPk(RecordPk.newBuilder()
-                        .setId(product.getId())
+                        .setId(request.getId())
                         .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                         .build())
                 .setOp(isNew ? EnumOp.I : EnumOp.U)
                 .setData(RecordData.newBuilder()
                         .setPrimeId(primeId)
+                        .setOrderNum(request.getOrderNum())
+                        .setOrderPos(request.getOrderPos())
                         .setKceh(kceh)
                         .setMismatch(mismatch)
                         .setCommons(toCommonRecordList(attestations))
                         .setChemical(toChemicalRecordList(attestations))
                         .setMechanical(toMechanicalRecordList(attestations))
                         .setMetallographic(toMettallographicRecordList(attestations))
+                        .setCutTaskNum(request.getCutTaskNum())
+                        .setCutTaskDate(request.getCutTaskDate())
+                        .setCutTaskStrNum(request.getCutTaskStrNum())
                         .build()
                 ).build();
     }
 
     private List<RecordCommons> toCommonRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -87,7 +94,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormSpecData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
@@ -99,7 +106,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
     }
 
     private List<RecordChemical> toChemicalRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -119,7 +126,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormChemData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
@@ -131,7 +138,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
     }
 
     private List<RecordMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -150,7 +157,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
     }
 
     private List<RecordMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -211,7 +218,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormMetallData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
@@ -233,7 +240,7 @@ public class PgpResultAdapterImpl implements ResultAdapter<VerificationResults> 
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormMechData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
