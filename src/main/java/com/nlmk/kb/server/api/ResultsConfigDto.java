@@ -1,23 +1,19 @@
 package com.nlmk.kb.server.api;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Jacksonized
 public class ResultsConfigDto {
 
     private Integer id;
-    @NotBlank
-    private String topic;
-    @NotBlank
-    private String avroName;
+    private @NotBlank String topic;
+    private @NotBlank String avroName;
     private String condition;
     private boolean enabled;
 
