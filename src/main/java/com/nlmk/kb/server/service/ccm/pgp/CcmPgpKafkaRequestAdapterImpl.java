@@ -53,7 +53,6 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
             return null;
         }
 
-        // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
         return DataPgp.builder()
                 .primeId(recordData.getPrimeId().toString())
                 .nplv(recordData.getNplv())

@@ -23,8 +23,6 @@ public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implement
         final var dateRequest = converter.parseToDate(requestMessage.getTs());
         final var data = requestMessage.getData();
 
-        // с версии 1.27.0 данные поля orderReq не используются, получение требований заказа через SAP
-        // пустые списки для mechanical, metallographic
         return AttestationRequest.builder()
                 .value(Value.builder()
                         .ts(dateRequest)
