@@ -9,6 +9,7 @@ import nlmk.l3.apcs.*;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -68,20 +69,21 @@ public class PtsResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         var mismatch = Status.WAITING_FOR_DATA;
         String ts = null;
 
-        final var attestations = product.getRequests().get(0).getAttestations();
-        final var primeId = product.getRequests().get(0).getPrimeID();
+        final var request = product.getRequests().get(0);
+        final var attestations = request.getAttestations();
+        final var primeId = request.getPrimeID();
 
-        if (product.getRequests().get(0).getStatus() != null) {
-            mismatch = product.getRequests().get(0).getStatus();
+        if (Objects.nonNull(request.getStatus())) {
+            mismatch = request.getStatus();
         }
-        if (product.getRequests().get(0).getAttestationTs() != null) {
-            ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
+        if (Objects.nonNull(request.getAttestationTs())) {
+            ts = dateFormatter.format(request.getAttestationTs());
         }
 
         return VerificationResultsPts.newBuilder()
                 .setTs(ts)
                 .setPk(RecordPk.newBuilder()
-                        .setId(product.getId())
+                        .setId(request.getId())
                         .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                         .build())
                 .setOp(isNew ? EnumOp.I : EnumOp.U)
@@ -98,7 +100,7 @@ public class PtsResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<RecordPtsAttList> prepareRecordPtsAttLists(List<AttestationDto> attestationList) {
-        if (attestationList == null || attestationList.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestationList)) {
             return List.of();
         }
 
@@ -134,16 +136,16 @@ public class PtsResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                             .setTypeCode(specCode.getTypeCode().getValue())
                             .setTypeName(specCode.getTypeCode().getDesc())
                             .setValue(attestation.getValue())
-                            .setDocId(attestation.getDocId() != null
+                            .setDocId(Objects.nonNull(attestation.getDocId())
                                     ? attestation.getDocId().getValue()
                                     : DocId.NOT_DEFINED.getValue())
-                            .setDocName(attestation.getDocId() != null
+                            .setDocName(Objects.nonNull(attestation.getDocId())
                                     ? attestation.getDocId().getDesc()
                                     : DocId.NOT_DEFINED.getDesc())
                             .setNormLimits(prepareNormLimit(attestation))
                             .setMismatch(RecordPtsAttListMismatch.newBuilder()
-                                    .setCode(attestation.getStatus() != null ? attestation.getStatus().getValue() : -1)
-                                    .setName(attestation.getStatus() != null ? attestation.getStatus().getDesc() : null)
+                                    .setCode(Objects.nonNull(attestation.getStatus()) ? attestation.getStatus().getValue() : -1)
+                                    .setName(Objects.nonNull(attestation.getStatus()) ? attestation.getStatus().getDesc() : null)
                                     .build())
                             .setNote(AdapterUtils.detectNote(attestation))
                             .setDefectSuggestion(AdapterUtils.detectDefectSuggestion(attestation))
@@ -158,7 +160,7 @@ public class PtsResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         return RecordPtsAttListNorms.newBuilder()
                 .setValueMin(attestation.getMin())
                 .setValueMax(attestation.getMax())
-                .setListAccValues(attestation.getEqual() == null ? null : List.of(
+                .setListAccValues(Objects.isNull(attestation.getEqual()) ? null : List.of(
                         RecordPtsAttListNormsValues.newBuilder().setValue(attestation.getEqual()).build()
                 ))
                 .build();

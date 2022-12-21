@@ -32,6 +32,7 @@ class ResultAdapterTest {
                         ProductDto.class
                 );
         product.setId(1000L);
+        product.getRequests().get(0).setId(2000L);
 
         List<AttestationDto> commonAttestation = product.getRequests().get(0).getAttestations().stream()
                 .filter(attestation ->
@@ -100,8 +101,10 @@ class ResultAdapterTest {
                 .referenceCode("100")
                 .requests(List.of(
                         RequestDto.builder()
+                                .id(321L)
                                 .attestationTs(new Date(1_000_000_000L))
                                 .primeID("1234567890")
+                                .orderNum(1024L).orderPos(4)
                                 .kceh(12)
                                 .status(Status.MATCHED)
                                 .attestations(List.of(
@@ -157,10 +160,11 @@ class ResultAdapterTest {
     private VerificationResults expectedVerificationResultsPgp() {
         return VerificationResults.newBuilder()
                 .setTs("1970-01-12T13:46:40.000Z")
-                .setPk(RecordPk.newBuilder().setId(123L).setSystemCode("31").build())
+                .setPk(RecordPk.newBuilder().setId(321L).setSystemCode("31").build())
                 .setOp(EnumOp.U)
                 .setData(RecordData.newBuilder()
                         .setPrimeId("1234567890").setKceh(12L).setMismatch(Status.MATCHED.getValue())
+                        .setOrderNum(1024L).setOrderPos(4)
                         .setCommons(List.of(
                                 RecordCommons.newBuilder()
                                         .setSpecCode(SpecCode.EDGE_CHARACTER.getValue())
@@ -286,7 +290,7 @@ class ResultAdapterTest {
     private VerificationResultsPts expectedVerificationResultsPts() {
         return VerificationResultsPts.newBuilder()
                 .setTs("1970-01-12T13:46:40.000Z")
-                .setPk(RecordPk.newBuilder().setId(123L).setSystemCode("31").build())
+                .setPk(RecordPk.newBuilder().setId(321L).setSystemCode("31").build())
                 .setOp(EnumOp.U)
                 .setData(RecordPtsData.newBuilder()
                         .setPrimeSystemCode("100")

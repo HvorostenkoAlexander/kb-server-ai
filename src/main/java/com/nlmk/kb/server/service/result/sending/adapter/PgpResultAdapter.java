@@ -9,6 +9,7 @@ import nlmk.l3.apcs.*;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,25 +74,27 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         final var attestations = request.getAttestations();
         final var primeId = request.getPrimeID();
 
-        if (request.getKceh() != null) {
+        if (Objects.nonNull(request.getKceh())) {
             kceh = request.getKceh();
         }
-        if (request.getStatus() != null) {
+        if (Objects.nonNull(request.getStatus())) {
             mismatch = product.getRequests().get(0).getStatus().getValue();
         }
-        if (request.getAttestationTs() != null) {
+        if (Objects.nonNull(request.getAttestationTs())) {
             ts = dateFormatter.format(product.getRequests().get(0).getAttestationTs());
         }
 
         return VerificationResults.newBuilder()
                 .setTs(ts)
                 .setPk(RecordPk.newBuilder()
-                        .setId(product.getId())
+                        .setId(request.getId())
                         .setSystemCode(SpecCode.SYSTEM_CODE.getValue().toString())
                         .build())
                 .setOp(isNew ? EnumOp.I : EnumOp.U)
                 .setData(RecordData.newBuilder()
                         .setPrimeId(primeId)
+                        .setOrderNum(request.getOrderNum())
+                        .setOrderPos(request.getOrderPos())
                         .setKceh(kceh)
                         .setMismatch(mismatch)
                         .setCommons(toCommonRecordList(attestations))
@@ -106,7 +109,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<RecordCommons> toCommonRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -128,7 +131,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormSpecData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
@@ -140,7 +143,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<RecordChemical> toChemicalRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -160,7 +163,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormChemData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
@@ -172,7 +175,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<RecordMettallographic> toMettallographicRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -191,7 +194,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<RecordMechanical> toMechanicalRecordList(List<AttestationDto> attestations) {
-        if (attestations == null || attestations.isEmpty()) {
+        if (CollectionUtils.isEmpty(attestations)) {
             return List.of();
         }
 
@@ -252,7 +255,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormMetallData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
@@ -274,7 +277,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setSpecValue(attestation.getValue())
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormMechData.newBuilder()
-                        .setListAccValues(attestation.getEqual() == null
+                        .setListAccValues(Objects.isNull(attestation.getEqual())
                                 ? null
                                 : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())

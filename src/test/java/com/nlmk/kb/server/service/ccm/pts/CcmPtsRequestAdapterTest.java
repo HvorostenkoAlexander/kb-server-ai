@@ -253,6 +253,7 @@ class CcmPtsRequestAdapterTest {
                                         .build()
                         ))
                         .listValues(List.of())
+                        .attestationList(List.of())
                         .build(),
                 PtsMechanicalProperty.builder()
                         .listValues(List.of(
@@ -277,7 +278,9 @@ class CcmPtsRequestAdapterTest {
                                                                 .build())
                                                         .collect(Collectors.toUnmodifiableList())
                                         ).build()
-                        )).build()
+                        ))
+                        .attestationList(List.of())
+                        .build()
         );
 
         var request = CcmPtsRequest.builder()
@@ -411,12 +414,17 @@ class CcmPtsRequestAdapterTest {
                                         .build()))
                         .listValues(List.of(
                                 PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("2")).attrType(1).build()
-                        )).build(),
+                        ))
+                        .attestationList(List.of())
+                        .build(),
                 PtsMechanicalProperty.builder()
                         .typeCode(3).typeName("3").testDate("3").probeCode(3).probeName("3")
+                        .analyzes(List.of())
                         .listValues(List.of(
                                 PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("4")).attrType(1).build()
-                        )).build()
+                        ))
+                        .attestationList(List.of())
+                        .build()
         );
 
         Assertions.assertEquals(expected2, adapter.prepareMechanicalProperties(record));
