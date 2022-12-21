@@ -8,12 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CcmKc1ConsumerProperties extends ConsumerProperties {
 
-    private final String topicReq;
-    private final boolean sslEnabled;
-
     public CcmKc1ConsumerProperties(@Value("${kafka.ccm.kc1.bootstrap-servers}") String kafkaServer,
                                     @Value("${kafka.ccm.kc1.consumer.group-id}") String kafkaGroupId,
-                                    @Value("${kafka.ccm.kc1.topicReq}") String topicReq,
                                     @Value("${kafka.ccm.kc1.schema.registry.url}") String schemaRegistryUrl,
                                     @Value("${kafka.ccm.kc1.ssl-enabled}") boolean sslEnabled,
                                     @Value("${kafka.sslTruststorePassword}") String truststorePassword,
@@ -23,14 +19,12 @@ public class CcmKc1ConsumerProperties extends ConsumerProperties {
         super(kafkaServer,
                 kafkaGroupId,
                 schemaRegistryUrl,
+                sslEnabled,
                 truststorePassword,
                 keystorePassword,
                 truststorePath,
                 keystorePath
         );
-
-        this.topicReq = topicReq;
-        this.sslEnabled = sslEnabled;
     }
 
 }

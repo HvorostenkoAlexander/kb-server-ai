@@ -5,6 +5,7 @@ import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.sus.kc1.AttestationRequest;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,7 @@ public class CcmKc1MessageAdapterImpl implements CcmMessageAdapter<AttestationRe
 
         if (attestationRequest.getValue().getData() != null) {
             ccmMessageBuilder.primeId(
-                    AdapterUtils.getDataField(attestationRequest.getValue().getData()).map(DataField::getPrimeId).orElse(null)
+                    SenderUtils.getPrimeId(attestationRequest)
             );
         }
         return ccmMessageBuilder.build();

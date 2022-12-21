@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZifraConsumerProperties extends ConsumerProperties {
 
-    private final boolean sslEnabled;
-
     public ZifraConsumerProperties(@Value("${kafka.zifra.bootstrap-servers}") String kafkaServer,
                                    @Value("${kafka.zifra.consumer.group-id}") String kafkaGroupId,
                                    @Value("${kafka.zifra.schema.registry.url}") String schemaRegistryUrl,
@@ -21,13 +19,12 @@ public class ZifraConsumerProperties extends ConsumerProperties {
         super(kafkaServer,
                 kafkaGroupId,
                 schemaRegistryUrl,
+                sslEnabled,
                 truststorePassword,
                 keystorePassword,
                 truststorePath,
                 keystorePath
         );
-
-        this.sslEnabled = sslEnabled;
     }
 
 }
