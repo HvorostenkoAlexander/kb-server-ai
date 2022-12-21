@@ -93,21 +93,16 @@ class CcmMessageRepositoryTest {
                 CcmMessage.builder().topic("topic10").partition(0).offset(200).key("key100")
                         .kbSendingTs(new Date(1600_000000_000L))
                         .kbReceiptTs(new Date(1600_000000_000L)).primeId("123456")
-                        .request(AttestationRequest.builder().id(1L).value(Value.builder().data(
-                                DataPgp.builder()
-                                        .primeId("123456")
-                                        .width(900.0)
-                                        .build()
-                        ).build()).build()).build()));
+                        .request(AttestationRequest.builder().id(1L).value(Value.builder().build()).build()).build()));
         repository.flush();
 
-        repository.deleteByTopicAndPartitionAndOffset("another", 0, 200);
+        repository.deleteOldByTopicAndPartitionAndOffset("another", 0, 200);
         repository.flush();
 
         final var res1 = repository.findFirstByPrimeIdOrderByKbReceiptTsDesc("123456");
         assertTrue(res1.isPresent());
 
-        repository.deleteByTopicAndPartitionAndOffset("topic10", 0, 200);
+        repository.deleteOldByTopicAndPartitionAndOffset("topic10", 0, 200);
         repository.flush();
 
         final var res2 = repository.findFirstByPrimeIdOrderByKbReceiptTsDesc("123456");

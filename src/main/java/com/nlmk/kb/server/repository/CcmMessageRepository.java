@@ -4,10 +4,22 @@ import com.nlmk.kb.server.entity.CcmMessage;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import javax.transaction.Transactional;
 
 public interface CcmMessageRepository extends JpaRepository<CcmMessage, Long> {
 
-    void deleteByTopicAndPartitionAndOffset(String topic, int partition, int offset);
+    /*
+    INFO: Используется запрос для удаления записи с возможным старым форматом Json request поля.
+    Нельзя обойтись без запроса, удаление через JPA выполняется с поиском-чтением,
+    при этом устаревший формат не прочитается.
+    По полям topic, partition, offset хранится одна запись в таблице.
+    */
+    @Transactional
+    @Modifying
+    @Query("delete from CcmMessage m WHERE m.topic = :topic AND m.partition = :partition AND m.offset = :offset")
+    void deleteOldByTopicAndPartitionAndOffset(String topic, int partition, int offset);
 
     List<CcmMessage> findByPrimeId(String primeId);
 
