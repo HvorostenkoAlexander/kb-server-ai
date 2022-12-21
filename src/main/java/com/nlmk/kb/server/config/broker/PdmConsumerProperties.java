@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PdmConsumerProperties extends ConsumerProperties {
 
-    private final boolean sslEnabled;
-
     public PdmConsumerProperties(@Value("${kafka.pdm.bootstrap-servers}") String kafkaServer,
                                  @Value("${kafka.pdm.consumer.group-id}") String kafkaGroupId,
                                  @Value("${kafka.pdm.schema.registry.url}") String schemaRegistryUrl,
@@ -21,13 +19,12 @@ public class PdmConsumerProperties extends ConsumerProperties {
         super(kafkaServer,
                 kafkaGroupId,
                 schemaRegistryUrl,
+                sslEnabled,
                 truststorePassword,
                 keystorePassword,
                 truststorePath,
                 keystorePath
         );
-
-        this.sslEnabled = sslEnabled;
     }
 
 }

@@ -50,7 +50,7 @@ class CcmMessageRepositoryTest {
                         .kbSendingTs(new Date(1600_100000_000L))
                         .kbReceiptTs(new Date(1600_100000_000L)).primeId("0001")
                         .request(AttestationRequest.builder().id(2L).value(Value.builder()
-                                        .data(DataPgp.builder().kceh(Kceh.PGP.getValue()).hnum(2).build())
+                                .data(DataPgp.builder().kceh(Kceh.PGP.getValue()).hnum(2).build())
                                 .build()).build()).build(),
                 CcmMessage.builder().topic("topic1").partition(0).offset(102).key("key102")
                         .kbSendingTs(new Date(1600_200000_000L))

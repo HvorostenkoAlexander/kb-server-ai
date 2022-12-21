@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 
 @Configuration
-public class CcmPtsBrokerConfig extends BrokerConfigBase {
+public class CcmKc1BrokerConfig extends BrokerConfigBase {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmPtsKafkaListenerContainerFactory(CcmPtsConsumerProperties consumerProperties) {
+    public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmKc1KafkaListenerContainerFactory(CcmKc1ConsumerProperties consumerProperties) {
 
         return getContainerFactory(consumerProperties);
 

@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-public class CcmPgpConsumerProperties extends ConsumerProperties {
+public class CcmKc2ConsumerProperties extends ConsumerProperties {
 
-    public CcmPgpConsumerProperties(@Value("${kafka.ccm.pgp.bootstrap-servers}") String kafkaServer,
-                                    @Value("${kafka.ccm.pgp.consumer.group-id}") String kafkaGroupId,
-                                    @Value("${kafka.ccm.pgp.schema.registry.url}") String schemaRegistryUrl,
-                                    @Value("${kafka.ccm.pgp.ssl-enabled}") boolean sslEnabled,
+    public CcmKc2ConsumerProperties(@Value("${kafka.ccm.kc2.bootstrap-servers}") String kafkaServer,
+                                    @Value("${kafka.ccm.kc2.consumer.group-id}") String kafkaGroupId,
+                                    @Value("${kafka.ccm.kc2.schema.registry.url}") String schemaRegistryUrl,
+                                    @Value("${kafka.ccm.kc2.ssl-enabled}") boolean sslEnabled,
                                     @Value("${kafka.sslTruststorePassword}") String truststorePassword,
                                     @Value("${kafka.sslKeystorePassword}") String keystorePassword,
                                     @Value("${kafka.client.truststore-path}") String truststorePath,
