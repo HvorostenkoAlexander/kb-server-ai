@@ -10,7 +10,7 @@ public class PdmBrokerConfig extends BrokerConfigBase {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> pdmKafkaListenerContainerFactory(PdmConsumerProperties consumerProperties) {
 
-        return getContainer(consumerProperties);
+        return getContainerFactory(consumerProperties);
 
     }
 

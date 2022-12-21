@@ -54,7 +54,7 @@ abstract class BrokerConfigBase {
         );
     }
 
-    <T> ConcurrentKafkaListenerContainerFactory<String, T> getContainer(ConsumerProperties consumerProperties) {
+    <T> ConcurrentKafkaListenerContainerFactory<String, T> getContainerFactory(ConsumerProperties consumerProperties) {
 
         ConcurrentKafkaListenerContainerFactory<String, T> containerFactory =
                 new ConcurrentKafkaListenerContainerFactory<>();

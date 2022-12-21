@@ -11,7 +11,7 @@ public class CcmKc1BrokerConfig extends BrokerConfigBase {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, AttestationRequest> ccmKc1KafkaListenerContainerFactory(CcmKc1ConsumerProperties consumerProperties) {
 
-        return getContainer(consumerProperties);
+        return getContainerFactory(consumerProperties);
 
     }
 

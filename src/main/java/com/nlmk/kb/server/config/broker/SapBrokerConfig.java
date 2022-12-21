@@ -11,7 +11,7 @@ public class SapBrokerConfig extends BrokerConfigBase {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, s3notification> sapKafkaListenerContainerFactory(SapConsumerProperties consumerProperties) {
 
-        return getContainer(consumerProperties);
+        return getContainerFactory(consumerProperties);
 
     }
 

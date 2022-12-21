@@ -10,7 +10,7 @@ public class ZifraBrokerConfig extends BrokerConfigBase {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> zifraKafkaListenerContainerFactory(ZifraConsumerProperties consumerProperties) {
 
-        return getContainer(consumerProperties);
+        return getContainerFactory(consumerProperties);
 
     }
 
