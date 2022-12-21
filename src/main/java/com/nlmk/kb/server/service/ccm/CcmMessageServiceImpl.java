@@ -35,7 +35,7 @@ public class CcmMessageServiceImpl implements CcmMessageService {
         Одна запись, т.к. @UniqueConstraint(columnNames = {"topic", "partition", "msg_offset"})
         имеющаяся запись удаляется без чтения, потому что возможен устаревший формат json request
         */
-        messageRepository.deleteOldByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
+        messageRepository.deleteByTopicAndPartitionAndOffset(ccmMessage.getTopic(),
                 ccmMessage.getPartition(),
                 ccmMessage.getOffset());
 

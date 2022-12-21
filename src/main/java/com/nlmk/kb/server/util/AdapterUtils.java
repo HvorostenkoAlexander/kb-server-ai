@@ -1,7 +1,10 @@
 package com.nlmk.kb.server.util;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Status;
+import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 
@@ -15,6 +18,9 @@ public class AdapterUtils {
     private AdapterUtils() {
         throw new IllegalStateException("AdapterUtils is util class");
     }
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static Double parseFloat(Float f) {
         if (f == null) {
@@ -95,6 +101,17 @@ public class AdapterUtils {
         }
 
         return map;
+    }
+
+    /**
+     * Конвертация поля к типу DataField
+     */
+    public static Optional<DataField> getDataField(Object data) {
+        try {
+            return Optional.ofNullable(objectMapper.convertValue(data, DataField.class));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
     }
 
 }

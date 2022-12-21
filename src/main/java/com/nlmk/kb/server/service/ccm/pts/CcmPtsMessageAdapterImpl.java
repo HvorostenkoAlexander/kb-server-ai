@@ -4,6 +4,8 @@ import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import java.util.Date;
+
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
 import org.springframework.stereotype.Component;
@@ -33,7 +35,9 @@ public class CcmPtsMessageAdapterImpl implements CcmMessageAdapter<DbAttestation
                 .request(attestationRequest);
 
         if (attestationRequest.getValue().getData() != null) {
-            ccmMessageBuilder.primeId(attestationRequest.getValue().getData().getPrimeId());
+            ccmMessageBuilder.primeId(
+                    SenderUtils.getPrimeId(attestationRequest)
+            );
         }
         return ccmMessageBuilder.build();
     }
