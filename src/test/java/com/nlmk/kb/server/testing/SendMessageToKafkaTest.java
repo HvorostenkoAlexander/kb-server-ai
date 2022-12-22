@@ -304,7 +304,7 @@ class SendMessageToKafkaTest {
     void sendCcmKc2Message() {
         nlmk.l3.sus.kc2.RecordData data = nlmk.l3.sus.kc2.RecordData.newBuilder()
                 .setWerks(1).setWerksName("1")
-                .setKceh(6).setKcehName("КЦ-1")
+                .setKceh(7).setKcehName("КЦ-2")
                 .setMarkingAcc( nlmk.l3.sus.kc2.RecordMarkingAcc.newBuilder()
                         .setNplv(2106684)
                         .setStrand(25217)
@@ -338,7 +338,7 @@ class SendMessageToKafkaTest {
                 .setOp(nlmk.EnumOp.U)
                 .setPk(nlmk.l3.sus.kc2.RecordPk.newBuilder()
                         .setId("42") // primeId
-                        .setSystemCode("16")
+                        .setSystemCode("17")
                         .build())
                 .setData(data)
                 .build();
