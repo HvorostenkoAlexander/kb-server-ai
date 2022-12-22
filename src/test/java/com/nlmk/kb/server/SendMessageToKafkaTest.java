@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import nlmk.l3.ccm.pgp.RecordMetallographic;
+import nlmk.l3.ccm.pgp.RecordMetgrapAnalysisData;
+import nlmk.l3.ccm.pgp.RecordMetgrapData;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
@@ -30,7 +33,7 @@ class SendMessageToKafkaTest {
     private static final String CCM_PTS_TOPIC = "000-1.l3-ccm-pts.db.Attestation-Request.0";
 
     private static final String PDM_TOPIC_ASAP_MECH_PROP_DT = "000-0.l3-pdm.cdc.sp-asap-mech-properties-dt.0";
-    private static final String PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL = "000-0.l3-pdm.cdc.sp-phys-mech-prop-anis-steel-stand.0";
+    private static final String PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL = "000-0.l3-pdm.cdc.sp-phys-mech-prop-anis-steel-stand.1";
     private static final String PDM_TOPIC_SP_TOL_EVENNESS_DT = "000-0.l3-pdm.cdc.sp-tol-evenness-dt.0";
     private static final String PDM_TOPIC_SP_TOL_THICK_DT = "000-0.l3-pdm.cdc.sp-tol-thick-dt.0";
     private static final String PDM_TOPIC_SP_TOL_WIDTH_DT = "000-0.l3-pdm.cdc.sp-tol-width-dt.0";
@@ -101,8 +104,12 @@ class SendMessageToKafkaTest {
 
     @Test
     void sendCcmPgpMessage() {
+        // attestationPoint(0) Аттестация после стана, -- 12 (ЦГП) attestationPointOrder(1)
+        // attestationPoint(1) Аттестация перед резкой, - 12 (ЦГП) attestationPointOrder(2)
+        // attestationPoint(2) Аттестация по ФПК,       - 12 (ЦГП) attestationPointOrder(3)
+
         nlmk.l3.ccm.pgp.RecordData data = nlmk.l3.ccm.pgp.RecordData.newBuilder()
-                .setPrimeId("0001020210329001515440422")
+                .setPrimeId("task-1270")
                 .setNplv(2106684) // <- meltNo
                 .setHnum(25217) // <-- lotNo
                 .setRoll("1-1")
@@ -110,21 +117,44 @@ class SendMessageToKafkaTest {
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
                 .setKceh(12)
-                .setOrderNum(40L)
-                .setOrderPos(4)
+                .setOrderNum(1270L) // заказ должен быть загружен
+                .setOrderPos(3)
+                .setAttestationPoint(0)
+                .setCutTaskNum(100)
+                .setCutTaskStrNum(1)
+                .setCutTaskDate("2022-11-24")
                 .setSpecifications(List.of(
                         nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(1)
-                                .setSpecCode(3).setSpecName("Марка стали").setSpecValue("Ст3сп").build(),
+                                .setSpecCode(3).setSpecName("Марка стали").setSpecValue("11ЮА").build(),
                         nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(2)
                                 .setSpecCode(45).setSpecName("Признак травления").setSpecValue("0").build()
+                ))
+                .setMetallographic(List.of(
+                        RecordMetallographic.newBuilder()
+                                .setHnum(25217) // <--
+                                .setMetgrapData(List.of(
+                                        RecordMetgrapData.newBuilder().setMetgrapAnalysisId(100)
+                                                .setMetgrapAnalysisData(List.of(
+                                                        RecordMetgrapAnalysisData.newBuilder().setMetgrapCode(86)
+                                                                .setMetgrapName("УФС, балл перлит")
+                                                                .setMetgrapTypeCode(2).setMetgrapValue("1")
+                                                                .build(),
+                                                        RecordMetgrapAnalysisData.newBuilder().setMetgrapCode(89)
+                                                                .setMetgrapName("Полосчатость")
+                                                                .setMetgrapTypeCode(2).setMetgrapValue("2")
+                                                                .build()
+                                                ))
+                                                .build()
+                                ))
+                                .build()
                 ))
                 .build();
 
         nlmk.l3.ccm.pgp.AttestationRequest value = nlmk.l3.ccm.pgp.AttestationRequest.newBuilder()
-                .setTs("2021-05-18T00:38:25.194-03:00")
+                .setTs("2022-11-24T13:00:25.194+05:00")
                 .setOp(nlmk.l3.ccm.pgp.EnumOp.U)
                 .setPk(nlmk.l3.ccm.pgp.RecordPk.newBuilder()
-                        .setId("0001020210329001515440422")
+                        .setId("task-1270")
                         .setSystemCode("16")
                         .build())
                 .setData(data)
