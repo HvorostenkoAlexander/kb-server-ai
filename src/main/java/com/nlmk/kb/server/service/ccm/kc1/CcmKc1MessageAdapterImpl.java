@@ -1,16 +1,15 @@
 package com.nlmk.kb.server.service.ccm.kc1;
 
-import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
-import com.nlmk.kb.server.util.AdapterUtils;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.sus.kc1.AttestationRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class CcmKc1MessageAdapterImpl implements CcmMessageAdapter<AttestationRe
                 .kbReceiptTs(ts)
                 .request(attestationRequest);
 
-        if (attestationRequest.getValue().getData() != null) {
+        if (Objects.nonNull(attestationRequest.getValue().getData())) {
             ccmMessageBuilder.primeId(
                     SenderUtils.getPrimeId(attestationRequest)
             );

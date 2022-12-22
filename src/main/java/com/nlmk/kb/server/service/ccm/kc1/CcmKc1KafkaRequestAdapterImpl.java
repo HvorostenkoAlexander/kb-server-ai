@@ -87,14 +87,16 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
 
     private Requirement toPamRequirement(RecordRequirements recordRequirements) {
         return Requirement.builder()
-                .chemicalReg(recordRequirements.getChemicalReg().stream()
-                        .map(this::toPamChemicalReg)
-                        .collect(Collectors.toUnmodifiableList())
-                )
-                .specifications(recordRequirements.getSpecifications().stream()
-                        .map(this::toPamSpecs)
-                        .collect(Collectors.toUnmodifiableList())
-                )
+                .chemicalReg(Objects.nonNull(recordRequirements.getChemicalReg()) ?
+                        recordRequirements.getChemicalReg().stream()
+                                .map(this::toPamChemicalReg)
+                                .collect(Collectors.toUnmodifiableList()) :
+                        null)
+                .specifications(Objects.nonNull(recordRequirements.getSpecifications()) ?
+                        recordRequirements.getSpecifications().stream()
+                                .map(this::toPamSpecs)
+                                .collect(Collectors.toUnmodifiableList()) :
+                        null)
                 .build();
     }
 
