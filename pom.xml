@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.42.1</version>
+    <version>1.42.2</version>
     <name>kb-server</name>
     <description>Module for read Kafka Broker messages</description>
     <properties>
@@ -30,7 +30,7 @@
         <lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
         <minio.version>8.4.1</minio.version>
 
-        <product-api.version>1.44.4</product-api.version>
+        <product-api.version>1.44.5</product-api.version>
     </properties>
 
     <dependencyManagement>
