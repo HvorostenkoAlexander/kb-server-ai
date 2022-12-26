@@ -35,7 +35,7 @@ public class SapMessageServiceImpl implements SapMessageService {
                     .orElseThrow(() -> new DataNotFoundException("Сообщение не найдено"));
 
             skip = sapMessageRepository.existsByOrderNumAndIdGreaterThanAndState(nextMessage.getOrderNum(), nextMessage.getId(), SapMessageState.DONE);
-            id++;
+            id = nextMessage.getId();
 
         }
 
