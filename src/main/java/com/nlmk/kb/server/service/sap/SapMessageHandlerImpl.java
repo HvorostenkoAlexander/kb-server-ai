@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.service.sap;
 
-import com.nlmk.attestation.product.api.specification.SapOrderPosCode;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.entity.SapMessage;
 import com.nlmk.kb.server.entity.SapMessageState;
@@ -13,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +27,6 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
     private final PsmSender psmSender;
 
     private static final String MSG_TEMPLATE = "handleConsumerRecord. {}";
-    private static final String EMPTY_VALUE_TEMPLATE = "-";
-    private static final String COMMA_VALUE_TEMPLATE = "^(\\d+,)+\\d+\\.*\\d+$";
 
     @Override
     public boolean handleConsumerRecord(final ConsumerRecord<String, s3notification> consumerRecord) {
@@ -77,7 +72,6 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
 
         try {
             zorder = s3Service.getZorder(message.getOrder());
-            garbageCleaning(zorder);
         } catch (S3ClientException e) {
             log.error(MSG_TEMPLATE, e.getMessage());
             message.setState(SapMessageState.ERROR);
@@ -96,42 +90,6 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
             log.error(MSG_TEMPLATE, e.getMessage());
             return false;
         }
-    }
-
-    /**
-     * Чистка поля value от мусора, выборочно
-     */
-    private void garbageCleaning(ZORDERS051 zorder) {
-        if (zorder == null
-                || zorder.getIDOC() == null
-                || CollectionUtils.isEmpty(zorder.getIDOC().getE1CUCFG())) {
-            return;
-        }
-
-        zorder.getIDOC().getE1CUCFG().forEach(
-                e1cucfg -> {
-                    // одна позиция заказа
-                    e1cucfg.getE1CUVAL().forEach(
-                            // один код признака (только знакомые коды)
-                            e1cuval -> Arrays.stream(SapOrderPosCode.values())
-                                    .filter(code -> code.toString().equals(e1cuval.getCHARC()))
-                                    .findFirst()
-                                    .ifPresent( code ->  e1cuval.setVALUE(trimValue(e1cuval.getVALUE())) )
-                    );
-                });
-    }
-
-    private String trimValue(String value) {
-        if (StringUtils.isNotBlank(value)) {
-            if (value.trim().equals(EMPTY_VALUE_TEMPLATE)) {
-                return null;
-            }
-            if (value.trim().matches(COMMA_VALUE_TEMPLATE)) { // 1,234,567.8 => 1234567.8
-                return value.trim().replaceAll(",", "");
-            }
-        }
-        // без изменений
-        return value;
     }
 
 }
