@@ -23,7 +23,7 @@ public class SapMessageServiceImpl implements SapMessageService {
     @Override
     public SapMessageDto getNextSapMessage(Long id) {
 
-        id = Objects.nonNull(id) ? id : -1L;
+        id = Objects.nonNull(id) ? id : Long.MIN_VALUE;
 
         SapMessage nextMessage = null;
 
