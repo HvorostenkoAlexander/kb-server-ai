@@ -2,10 +2,10 @@ package com.nlmk.kb.server.testing;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.Assertions;
 
 import java.time.Instant;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 public class SendMessageToKafka {
 
@@ -28,27 +28,17 @@ public class SendMessageToKafka {
         stringProducer = new KafkaProducer<>(stringProps);
     }
 
-    protected void sendAvro(ProducerRecord<Object, Object> record) {
-        try {
-            // синхронная отправка сообщения
-            final var task = avroProducer.send(record).get();
-            System.out.printf("Sent Message, Offset %d%n", task.offset());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail();
-        }
+    protected void sendAvro(ProducerRecord<Object, Object> record) throws InterruptedException, ExecutionException {
+        // синхронная отправка сообщения
+        final var task = avroProducer.send(record).get();
+        System.out.printf("Sent Message, Offset %d%n", task.offset());
         avroProducer.close();
     }
 
-    protected void sendString(ProducerRecord<Object, Object> record) {
-        try {
-            // синхронная отправка сообщения
-            final var task = stringProducer.send(record).get();
-            System.out.printf("Sent Message, Offset %d%n", task.offset());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail();
-        }
+    protected void sendString(ProducerRecord<Object, Object> record) throws InterruptedException, ExecutionException {
+        // синхронная отправка сообщения
+        final var task = stringProducer.send(record).get();
+        System.out.printf("Sent Message, Offset %d%n", task.offset());
         stringProducer.close();
     }
 

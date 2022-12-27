@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,7 @@ class SendSadimMessageTest extends SendMessageToKafka {
                 mapper.writeValueAsString(value)
         );
 
-        sendString(record);
+        Assertions.assertDoesNotThrow(() -> sendString(record));
     }
 
 }

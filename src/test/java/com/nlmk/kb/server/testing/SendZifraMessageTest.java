@@ -123,69 +123,69 @@ class SendZifraMessageTest extends SendMessageToKafka {
 
     @Test
     void sendSpCustomer1() {
-        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
                 EnumOp.I, "guid-c-1", "c-1", "customer1", true
-        )));
+        ))));
     }
 
     @Test
     void sendSpCustomer2() {
-        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
                 EnumOp.U, "guid-c-2", "c-2", "customer2", false
-        )));
+        ))));
     }
 
     @Test
     void sendSpCustomer3() {
-        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_TOPIC, randomKey(), prepareSpCustomer(
                 EnumOp.U, "guid-c-3", "c-3", "customer3", true
-        )));
+        ))));
     }
 
     // SpCustomerGroup
 
     @Test
     void sendSpCustomerGroup1() {
-        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_GROUP_TOPIC, randomKey(), prepareSpCustomerGroup(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_GROUP_TOPIC, randomKey(), prepareSpCustomerGroup(
                 EnumOp.I, "guid-g-1", 1, "group1", true
-        )));
+        ))));
     }
 
     @Test
     void sendSpCustomerGroup2() {
-        sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_GROUP_TOPIC, randomKey(), prepareSpCustomerGroup(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_CUSTOMER_GROUP_TOPIC, randomKey(), prepareSpCustomerGroup(
                 EnumOp.U, "guid-g-2", 2, "group2", false
-        )));
+        ))));
     }
 
     // SpGroupAndCustomer: соединение SpCustomer и SpCustomerGroup по GUID (id записи)
 
     @Test
     void sendSpGroupAndCustomer1() {
-        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
                 EnumOp.I, "guid-gac-1", "guid-g-1", "guid-c-1", 1, true
-        )));
+        ))));
     }
 
     @Test
     void sendSpGroupAndCustomer2() {
-        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
                 EnumOp.U, "guid-gac-2", "guid-g-2", "guid-c-1", 2, false
-        )));
+        ))));
     }
 
     @Test
     void sendSpGroupAndCustomer3() {
-        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
                 EnumOp.I, "guid-gac-3", "guid-g-1", "guid-c-2", 1, true
-        )));
+        ))));
     }
 
     @Test
     void sendSpGroupAndCustomer4() {
-        sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
+        Assertions.assertDoesNotThrow(() -> sendAvro(new ProducerRecord<>(ZIFRA_GROUP_AND_CUSTOMER_TOPIC, randomKey(), prepareSpGroupAndCustomer(
                 EnumOp.I, "guid-gac-4", "guid-g-2", "guid-c-3", 1, true
-        )));
+        ))));
     }
 
 }

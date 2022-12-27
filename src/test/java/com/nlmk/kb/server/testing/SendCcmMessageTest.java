@@ -80,7 +80,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(CCM_PGP_TOPIC, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
@@ -142,110 +142,110 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .setOp(nlmk.EnumOp.U)
                 .setPk(nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.PkType.newBuilder()
                         .setId("42") // primeId
-                        .setSystemCode("16")
+                        .setSystemCode("14")
                         .build())
                 .setData(data)
                 .build();
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(CCM_PTS_TOPIC, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
     void sendCcmKc1Message() {
         nlmk.l3.sus.kc1.RecordData data = nlmk.l3.sus.kc1.RecordData.newBuilder()
+                .setId("slabID")
                 .setWerks(1).setWerksName("1")
                 .setKceh(6).setKcehName("КЦ-1")
+                .setOrderNum(1413L).setOrderPos(6)
+                .setMarking(nlmk.l3.sus.kc1.RecordMarking.newBuilder()
+                        .setHeat(2106684)
+                        .setStrand(25217)
+                        .setSlab(1)
+                        .build())
                 .setMarkingAcc(nlmk.l3.sus.kc1.RecordMarkingAcc.newBuilder()
-                        .setNplv(2106684)
+                        .setHeat(2106684)
                         .setStrand(25217)
                         .setSlab(1)
                         .build())
                 .setSpecifications(List.of(
-                        nlmk.l3.sus.kc1.RecordSpecifications.newBuilder()
-                                .setSpecCode(SpecCode.ORDER_NUMBER.getValue())
-                                .setSpecName(SpecCode.ORDER_NUMBER.getDesc())
-                                .setSpecValue("40452892")
+                        nlmk.l3.sus.kc1.RecordDataSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.VACUUMING.getValue())
+                                .setSpecName(SpecCode.VACUUMING.getDesc())
+                                .setSpecValue("RH")
                                 .setSpecTypeCode(TypeCode.STRING.getValue())
-                                .setSpecTypeName("x")
-                                .setSpecMeasure("x")
-                                .build(),
-                        nlmk.l3.sus.kc1.RecordSpecifications.newBuilder()
-                                .setSpecCode(SpecCode.ORDER_POSITION.getValue())
-                                .setSpecName(SpecCode.ORDER_POSITION.getDesc())
-                                .setSpecValue("3")
-                                .setSpecTypeCode(TypeCode.STRING.getValue())
+                                .setSpecTypeValue(1)
                                 .setSpecTypeName("x")
                                 .setSpecMeasure("x")
                                 .build()
                 ))
+                .setPlanTask(nlmk.l3.sus.kc1.RecordPlanTask.newBuilder().setPlanTaskId("1").setPlanTaskLineId("11").build())
                 .setRequirements(nlmk.l3.sus.kc1.RecordRequirements.newBuilder()
-                        .setPlanTask(nlmk.l3.sus.kc1.RecordPlanTask.newBuilder().setPlanTaskId("1").setPlanTaskLineId("11").build())
                         .build())
                 .build();
 
-        nlmk.l3.sus.kc1.AttestationRequest value = nlmk.l3.sus.kc1.AttestationRequest.newBuilder()
-                .setTs("2022-09-02T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
+        nlmk.l3.sus.kc1.AttestRequest value = nlmk.l3.sus.kc1.AttestRequest.newBuilder()
+                .setTs("2022-12-27T14:36:25.000+05:00")
+                .setOp(nlmk.l3.sus.kc1.EnumOp.U)
                 .setPk(nlmk.l3.sus.kc1.RecordPk.newBuilder()
                         .setId("42") // primeId
-                        .setSystemCode("16")
+                        .setSystemCode("12")
                         .build())
                 .setData(data)
                 .build();
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(CCM_KC1_TOPIC, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
     void sendCcmKc2Message() {
         nlmk.l3.sus.kc2.RecordData data = nlmk.l3.sus.kc2.RecordData.newBuilder()
+                .setId("slabID")
                 .setWerks(1).setWerksName("1")
                 .setKceh(7).setKcehName("КЦ-2")
+                .setOrderNum(1413L).setOrderPos(7)
+                .setMarking(nlmk.l3.sus.kc2.RecordMarking.newBuilder()
+                        .setHeat(2106684)
+                        .setStrand(25217)
+                        .setSlab(1)
+                        .build())
                 .setMarkingAcc(nlmk.l3.sus.kc2.RecordMarkingAcc.newBuilder()
-                        .setNplv(2106684)
+                        .setHeat(2106684)
                         .setStrand(25217)
                         .setSlab(1)
                         .build())
                 .setSpecifications(List.of(
-                        nlmk.l3.sus.kc2.RecordSpecifications.newBuilder()
-                                .setSpecCode(SpecCode.ORDER_NUMBER.getValue())
-                                .setSpecName(SpecCode.ORDER_NUMBER.getDesc())
-                                .setSpecValue("40452892")
+                        nlmk.l3.sus.kc2.RecordDataSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.VACUUMING.getValue())
+                                .setSpecName(SpecCode.VACUUMING.getDesc())
+                                .setSpecValue("RH")
                                 .setSpecTypeCode(TypeCode.STRING.getValue())
-                                .setSpecTypeName("x")
-                                .setSpecMeasure("x")
-                                .build(),
-                        nlmk.l3.sus.kc2.RecordSpecifications.newBuilder()
-                                .setSpecCode(SpecCode.ORDER_POSITION.getValue())
-                                .setSpecName(SpecCode.ORDER_POSITION.getDesc())
-                                .setSpecValue("3")
-                                .setSpecTypeCode(TypeCode.STRING.getValue())
+                                .setSpecTypeValue(1)
                                 .setSpecTypeName("x")
                                 .setSpecMeasure("x")
                                 .build()
                 ))
+                .setPlanTask(nlmk.l3.sus.kc2.RecordPlanTask.newBuilder().setPlanTaskId("1").setPlanTaskLineId("11").build())
                 .setRequirements(nlmk.l3.sus.kc2.RecordRequirements.newBuilder()
-                        .setPlanTask(nlmk.l3.sus.kc2.RecordPlanTask.newBuilder().setPlanTaskId("1").setPlanTaskLineId("11").build())
                         .build())
                 .build();
 
-        nlmk.l3.sus.kc2.AttestationRequest value = nlmk.l3.sus.kc2.AttestationRequest.newBuilder()
-                .setTs("2022-09-02T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
+        nlmk.l3.sus.kc2.AttestRequest value = nlmk.l3.sus.kc2.AttestRequest.newBuilder()
+                .setTs("2022-12-27T14:36:25.000+05:00")
+                .setOp(nlmk.l3.sus.kc2.EnumOp.U)
                 .setPk(nlmk.l3.sus.kc2.RecordPk.newBuilder()
                         .setId("42") // primeId
-                        .setSystemCode("17")
+                        .setSystemCode("13")
                         .build())
                 .setData(data)
                 .build();
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(CCM_KC2_TOPIC, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
 }
