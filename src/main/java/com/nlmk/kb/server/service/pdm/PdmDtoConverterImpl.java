@@ -945,4 +945,51 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public SpChemicalPropertiesNotesDto toSpChemicalPropertiesNotesDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("PDM DICTIONARY: {} ", dictionary);
+
+        final var spChemicalPropertiesNotesDto = SpChemicalPropertiesNotesDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
+                .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .c(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_C_MAX))
+                .si(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_SI_MAX))
+                .mn(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MN_MAX))
+                .s(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_S_MAX))
+                .p(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_P_MAX))
+                .al(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_AL_MAX))
+                .cr(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CR_MAX))
+                .ni(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NI_MAX))
+                .cu(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CU_MAX))
+                .n(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_N))
+                .ti(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_TI_MAX))
+                .nb(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NB_MAX))
+                .sn(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_SN_MAX))
+                .v(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_V_MAX))
+                .b(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_B_MAX))
+                .mo(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MO_MAX))
+                .ca(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CA_MAX))
+                .usl1(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL1))
+                .znachUsl1(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL1))
+                .usl2(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL2))
+                .znachUsl2(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL2))
+                .usl3(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL3))
+                .znachUsl3(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL3))
+                .build();
+
+        log.debug("--- PDM chemicalStdLimitDto: {} ", spChemicalPropertiesNotesDto);
+
+        return spChemicalPropertiesNotesDto;
+
+
+    }
+
 }
