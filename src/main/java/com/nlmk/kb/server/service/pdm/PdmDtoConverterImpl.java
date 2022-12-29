@@ -945,6 +945,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120629816">Расширение химического состава по примечаниям(NSD_chemical_properties_notes)</a>
+     */
     @Override
     public SpChemicalPropertiesNotesDto toSpChemicalPropertiesNotesDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -954,7 +957,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         log.debug("PDM DICTIONARY: {} ", dictionary);
 
-        final var spChemicalPropertiesNotesDto = SpChemicalPropertiesNotesDto.builder()
+        return SpChemicalPropertiesNotesDto.builder()
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
@@ -984,12 +987,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .usl3(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL3))
                 .znachUsl3(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL3))
                 .build();
-
-        log.debug("--- PDM chemicalStdLimitDto: {} ", spChemicalPropertiesNotesDto);
-
-        return spChemicalPropertiesNotesDto;
-
-
     }
 
 }
