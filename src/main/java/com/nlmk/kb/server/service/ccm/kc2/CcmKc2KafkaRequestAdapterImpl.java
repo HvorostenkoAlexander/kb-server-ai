@@ -6,7 +6,8 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
-import nlmk.l3.sus.kc2.*;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -18,12 +19,12 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor
-public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.sus.kc2.AttestRequest> {
+public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAttestRequestVer> {
 
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest adapt(nlmk.l3.sus.kc2.AttestRequest requestMessage) {
+    public AttestationRequest adapt(DbAttestRequestVer requestMessage) {
         Assert.notNull(requestMessage, "requestMessage is null");
         Assert.notNull(requestMessage.getTs(), "requestMessage.getTs() is null");
         Assert.notNull(requestMessage.getOp(), "requestMessage.getOp() is null");
@@ -41,7 +42,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private Pk toPamPk(RecordPk recordPk) {
+    private Pk toPamPk(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType recordPk) {
         if (Objects.isNull(recordPk)) {
             return null;
         }
@@ -52,7 +53,8 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private DataField toPamDataField(RecordPk recordPk, RecordData recordData) {
+    private DataField toPamDataField(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType recordPk,
+                                     nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.RecordData recordData) {
         if (Objects.isNull(recordData)) {
             return null;
         }
@@ -66,6 +68,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
                 .requirements(toPamRequirement(recordData.getRequirements()))
+                // + chemData
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)
@@ -100,7 +103,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private Specs toPamSpecs(RecordRequirementsSpecifications specifications) {
+    private Specs toPamSpecs(RecordDataRequirementsSpecifications specifications) {
         return Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
