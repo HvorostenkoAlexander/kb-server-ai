@@ -7,6 +7,7 @@ import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
 import com.nlmk.kb.server.service.pdm.PdmMessageCreator;
 import com.nlmk.kb.server.service.sender.NsiSender;
+import nlmk.l3.pdm.SpChemicalPropertiesNotes;
 import nlmk.l3.pdm.SpPhysMechPropAnisSteelStand;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,7 @@ public class SpChemicalPropertiesNotesSender extends BasePdmCreator implements P
         });
 
         return super.getNsiSender().sendBodyReturnLong(
-                super.getPdmDtoConverter().toPhysMechPropAnisSteelStandDto(message.getDictionary()),
+                super.getPdmDtoConverter().toSpChemicalPropertiesNotesDto(message.getDictionary()),
                 super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
                 message.getOp()
         );
@@ -39,7 +40,7 @@ public class SpChemicalPropertiesNotesSender extends BasePdmCreator implements P
 
     @Override
     public PdmMessage createPdmMessage(ConsumerRecord<Object, Object> consumerRecord) {
-        final var pdmObject = (SpPhysMechPropAnisSteelStand) consumerRecord.value();
+        final var pdmObject = (SpChemicalPropertiesNotes) consumerRecord.value();
 
         final var dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
