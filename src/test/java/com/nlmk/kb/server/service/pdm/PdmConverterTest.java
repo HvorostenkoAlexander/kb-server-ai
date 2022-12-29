@@ -5,6 +5,7 @@ import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
+import java.util.Date;
 import nlmk.l3.pdm.*;
 import org.junit.jupiter.api.Test;
 
@@ -282,4 +283,31 @@ class PdmConverterTest {
         assertEquals("*..3",dto.getCrescent().getSrcValue());
         assertEquals("*..0.015",dto.getBurr().getSrcValue());
     }
+
+    @Test
+    void fromSpChemicalPropertiesNotesTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpChemicalPropertiesNotes.json"),
+                        SpChemicalPropertiesNotes.class
+                );
+
+        Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse("2022-12-05T06:14:41.647+03:00");
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toSpChemicalPropertiesNotesDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("306", dto.getRemoteId());
+        assertEquals(date, dto.getUpdateTs());
+        assertEquals("", dto.getPrAnnotation());
+        assertEquals("РП-336-1-2022.01", dto.getTkNum());
+        assertEquals("1;2;3", dto.getTkRoute());
+        assertEquals("0.06..0.09",dto.getC().getSrcValue());
+        assertEquals("0.70..0.85",dto.getMn().getSrcValue());
+        assertEquals("",dto.getAl().getSrcValue());
+    }
+
 }

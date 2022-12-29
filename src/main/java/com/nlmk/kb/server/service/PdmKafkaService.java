@@ -52,7 +52,8 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.phys-mech-prop-anis-steel}",
                     "${kafka.pdm.topic.tol-evenness-dt}",
                     "${kafka.pdm.topic.tol-thick-dt}",
-                    "${kafka.pdm.topic.tol-width-dt}"
+                    "${kafka.pdm.topic.tol-width-dt}",
+                    "${kafka.pdm.topic.sp-chemical-properties-notes}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

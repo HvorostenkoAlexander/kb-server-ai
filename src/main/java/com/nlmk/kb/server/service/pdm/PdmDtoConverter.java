@@ -52,4 +52,5 @@ public interface PdmDtoConverter {
 
     TolWidthDtDto toTolWidthDtDto(PdmDictionary dictionary);
 
+    SpChemicalPropertiesNotesDto toSpChemicalPropertiesNotesDto(PdmDictionary dictionary);
 }
