@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.sap;
 
-import com.nlmk.attestation.product.api.specification.SapOrderPosCode;
+import com.nlmk.attestation.product.api.order.SapName;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.S3ClientException;
 import io.minio.GetObjectArgs;
@@ -75,8 +75,8 @@ public class S3ServiceImpl implements S3Service {
                         // одна позиция заказа
                         e1cucfg.getE1CUVAL().forEach(
                                 // один код признака (только знакомые коды)
-                                e1cuval -> Arrays.stream(SapOrderPosCode.values())
-                                        .filter(code -> code.toString().equals(e1cuval.getCHARC()))
+                                e1cuval -> Arrays.stream(SapName.values())
+                                        .filter(name -> name.toString().equals(e1cuval.getCHARC()))
                                         .findFirst()
                                         .ifPresent(code -> e1cuval.setVALUE(trimValue(e1cuval.getVALUE())))
                         ));

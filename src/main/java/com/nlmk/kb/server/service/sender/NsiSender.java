@@ -1,7 +1,6 @@
 package com.nlmk.kb.server.service.sender;
 
 import com.nlmk.kb.server.entity.Operation;
-import org.springframework.http.ResponseEntity;
 
 public interface NsiSender {
 
