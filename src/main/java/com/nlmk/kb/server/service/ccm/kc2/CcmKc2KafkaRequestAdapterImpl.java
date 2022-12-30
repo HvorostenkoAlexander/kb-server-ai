@@ -120,6 +120,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
                 .valueMin(recordChemicalReg.getValueMin())
                 .valueMax(recordChemicalReg.getValueMax())
+                .digitsQuantity(recordChemicalReg.getDigitsQuantity())
                 .build();
     }
 
