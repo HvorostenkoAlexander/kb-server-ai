@@ -66,13 +66,13 @@ public class CcmKc2KafkaService {
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
                     || requestMessage.getRequest().getValue().getData() == null) {
-                log.warn("receiveMessageReq (CCM KC2), SKIP send attestation request, partition {}, offset {}, key {}: wrong Op and Data", partition, offset, key);
+                log.warn("receiveMessageReq (CCM KC2), аттестация не выполняется - некорректные Op или Data, partition {}, offset {}, key {}", partition, offset, key);
             } else {
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);
                 if (attResult.isEmpty()
                         || Objects.isNull(attResult.get().getResult())) {
-                    throw new AttestationResultException(String.format("empty attestation result for primeId [%s]", requestMessage.getPrimeId()));
+                    throw new AttestationResultException(String.format("Нет результата аттестации для primeId [%s]", requestMessage.getPrimeId()));
                 }
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
