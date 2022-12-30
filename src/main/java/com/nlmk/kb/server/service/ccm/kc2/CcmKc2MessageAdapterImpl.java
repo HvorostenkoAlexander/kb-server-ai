@@ -5,7 +5,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.RequiredArgsConstructor;
-import nlmk.l3.sus.kc2.AttestationRequest;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -13,16 +13,16 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class CcmKc2MessageAdapterImpl implements CcmMessageAdapter<AttestationRequest> {
+public class CcmKc2MessageAdapterImpl implements CcmMessageAdapter<DbAttestRequestVer> {
 
-    private final KafkaRequestAdapter<AttestationRequest> adapter;
+    private final KafkaRequestAdapter<DbAttestRequestVer> adapter;
 
     @Override
-    public CcmMessage adapt(AttestationRequest requestMessage,
-                                   String topic,
-                                   String key,
-                                   int partition,
-                                   int offset) {
+    public CcmMessage adapt(DbAttestRequestVer requestMessage,
+                            String topic,
+                            String key,
+                            int partition,
+                            int offset) {
 
         final var attestationRequest = adapter.adapt(requestMessage);
         final var ts = new Date();

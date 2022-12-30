@@ -6,7 +6,8 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
-import nlmk.l3.sus.kc2.*;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -14,34 +15,34 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213237">Спецификация</a>
+ * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213250">Спецификация КЦ-2</a>
  */
 @Component
 @RequiredArgsConstructor
-public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.sus.kc2.AttestationRequest> {
+public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAttestRequestVer> {
 
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest adapt(nlmk.l3.sus.kc2.AttestationRequest requestMessageKc2) {
-        Assert.notNull(requestMessageKc2, "requestMessageKc2 is null");
-        Assert.notNull(requestMessageKc2.getTs(), "requestMessageKc2.getTs() is null");
-        Assert.notNull(requestMessageKc2.getOp(), "requestMessageKc2.getOp() is null");
+    public AttestationRequest adapt(DbAttestRequestVer requestMessage) {
+        Assert.notNull(requestMessage, "requestMessage is null");
+        Assert.notNull(requestMessage.getTs(), "requestMessage.getTs() is null");
+        Assert.notNull(requestMessage.getOp(), "requestMessage.getOp() is null");
 
-        final var dateRequest = converter.parseToDate(AdapterUtils.sequenceToString(requestMessageKc2.getTs()));
+        final var dateRequest = converter.parseToDate(AdapterUtils.sequenceToString(requestMessage.getTs()));
         Assert.notNull(dateRequest, "Не удалось получить сведения о ts в запросе на аттестацию");
 
         return AttestationRequest.builder()
                 .value(Value.builder()
                         .ts(dateRequest)
-                        .op(requestMessageKc2.getOp().toString())
-                        .pk(toPamPk(requestMessageKc2.getPk()))
-                        .data(toPamDataField(requestMessageKc2.getPk(), requestMessageKc2.getData()))
+                        .op(requestMessage.getOp().toString())
+                        .pk(toPamPk(requestMessage.getPk()))
+                        .data(toPamDataField(requestMessage.getPk(), requestMessage.getData()))
                         .build())
                 .build();
     }
 
-    private Pk toPamPk(RecordPk recordPk) {
+    private Pk toPamPk(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType recordPk) {
         if (Objects.isNull(recordPk)) {
             return null;
         }
@@ -52,20 +53,22 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private DataField toPamDataField(RecordPk recordPk, RecordData recordData) {
+    private DataField toPamDataField(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType recordPk,
+                                     nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.RecordData recordData) {
         if (Objects.isNull(recordData)) {
             return null;
         }
 
-        var markingAcc = recordData.getMarkingAcc();
-
         return DataKc.builder()
                 .kceh(recordData.getKceh())
                 .primeId(Objects.nonNull(recordPk) ? AdapterUtils.sequenceToString(recordPk.getId()) : null)
-                .nplv(Objects.nonNull(markingAcc) ? markingAcc.getNplv() : null)
-                .strand(Objects.nonNull(markingAcc) ? markingAcc.getStrand() : null)
-                .slab(Objects.nonNull(markingAcc) ? (markingAcc.getSlab()) : null)
+                .heat(recordData.getMarking().getHeat())
+                .strand(recordData.getMarking().getStrand())
+                .slab(recordData.getMarking().getSlab())
+                .orderNum(recordData.getOrderNum())
+                .orderPos(recordData.getOrderPos())
                 .requirements(toPamRequirement(recordData.getRequirements()))
+                // + chemData
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)
@@ -74,7 +77,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private Specs toPamSpecs(RecordSpecifications specifications) {
+    private Specs toPamSpecs(RecordDataSpecifications specifications) {
         return Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
@@ -87,9 +90,9 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
 
     private Requirement toPamRequirement(RecordRequirements recordRequirements) {
         return Requirement.builder()
-                .chemicalReg(Objects.nonNull(recordRequirements.getChemicalReg()) ?
-                        recordRequirements.getChemicalReg().stream()
-                                .map(this::toPamChemicalReg)
+                .chemicalReg(Objects.nonNull(recordRequirements.getChemicalReq()) ?
+                        recordRequirements.getChemicalReq().stream()
+                                .map(this::toPamChemicalReq)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
                 .specifications(Objects.nonNull(recordRequirements.getSpecifications()) ?
@@ -100,7 +103,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private Specs toPamSpecs(RecordRequirementSpecifications specifications) {
+    private Specs toPamSpecs(RecordDataRequirementsSpecifications specifications) {
         return Specs.builder()
                 .specCode(specifications.getSpecCode())
                 .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
@@ -111,7 +114,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private RequirementChemicalSpec toPamChemicalReg(RecordChemicalReg recordChemicalReg) {
+    private RequirementChemicalSpec toPamChemicalReq(RecordChemicalReq recordChemicalReg) {
         return RequirementChemicalSpec.builder()
                 .chemCode(AdapterUtils.sequenceToString(recordChemicalReg.getChemCode()))
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
