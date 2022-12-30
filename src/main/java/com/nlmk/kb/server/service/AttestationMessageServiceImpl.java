@@ -13,6 +13,7 @@ import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.sender.PamSender;
+import com.nlmk.kb.server.util.SenderUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -59,7 +61,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
          */
         log.info("ccmPtsRequestProcessing, request [{}]", request);
         final var attRequest = ccmPtsRestRequestAdapter.adapt(request);
-        final var primeId = getPrimeId(attRequest);
+        final var primeId = SenderUtils.getPrimeId(attRequest);
 
         try {
             final var attMessage = AttestationMessage.builder()
@@ -83,7 +85,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
 
     @Override
     public AttestationRequest getAttestationRequestFromMessage(AttestationMessage message) {
-        if (message == null) {
+        if (Objects.isNull(message)) {
             return null;
         }
 
@@ -95,15 +97,6 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
                     "getAttestationRequestFromMessage, parsing error for primeId [{0}]", message.getPrimeId()
             ));
         }
-    }
-
-    private String getPrimeId(AttestationRequest attRequest) {
-        if (attRequest != null
-                && attRequest.getValue() != null
-                && attRequest.getValue().getData() != null) {
-            return attRequest.getValue().getData().getPrimeId();
-        }
-        return null;
     }
 
 }

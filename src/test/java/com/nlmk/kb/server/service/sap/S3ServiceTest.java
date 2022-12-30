@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service.sap;
 
+import com.nlmk.attestation.product.api.specification.SapOrderPosCode;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.S3ClientException;
 import io.minio.GetObjectResponse;
@@ -12,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.MessageFormat;
 
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 @Slf4j
@@ -45,7 +48,7 @@ class S3ServiceTest {
         Assertions.assertThrows(S3ClientException.class, () -> s3Service.getZorder(xml1));
 
 
-        InputStream mockStream = new FileInputStream(new File("src/test/resources/xml/" + path));
+        InputStream mockStream = new FileInputStream("src/test/resources/xml/" + path);
 
         Mockito.when(s3Client.getObject(any()))
                 .thenReturn(new GetObjectResponse(null, bucket, null, path, mockStream));
@@ -58,4 +61,64 @@ class S3ServiceTest {
         Assertions.assertEquals("0040452892", result.getIDOC().getE1EDK01().getBELNR());
     }
 
+    @Test
+    void garbageCleaningTest() throws IOException {
+
+        final String xmlZOrder = new String(Files.readAllBytes(Path.of("src/test/resources/xml/zordersTestVariant.xml")));
+
+        ZORDERS051 zorder = s3Service.getZorder(xmlZOrder);
+
+        zorder.getIDOC().getE1CUCFG().forEach(
+                e1cucfg -> e1cucfg.getE1CUVAL().forEach(
+                        e1cuval -> {
+                            // все коды, которые есть в заказе
+                            SapOrderPosCode code = SapOrderPosCode.valueOf(e1cuval.getCHARC());
+                            switch (code) {
+                                case STNDRT_PROD:
+                                case STNDRT_MARKA:
+                                case STNDRT_SORT:
+                                    assertEquals("ГОСТ 14918-2020", e1cuval.getVALUE());
+                                    break;
+                                case CEH_PROD:
+                                    assertEquals("11", e1cuval.getVALUE());
+                                    break;
+                                case MARKA:
+                                    assertEquals("02", e1cuval.getVALUE());
+                                    break;
+                                case VID_POSTAVKI:
+                                    assertEquals("РЛН", e1cuval.getVALUE());
+                                    break;
+                                case KROM:
+                                    assertEquals("НО", e1cuval.getVALUE());
+                                    break;
+                                case TPRK:
+                                    assertEquals("ТУ 0027", e1cuval.getVALUE());
+                                    break;
+                                case TEXK:
+                                case RABPL:
+                                case GROT:
+                                case ROUTE_TK:
+                                    assertNull(e1cuval.getVALUE(),
+                                            MessageFormat.format("not NULL value in code {0}", code));
+                                    break;
+                                case SHOT_MIN:
+                                    assertEquals("1250.0", e1cuval.getVALUE());
+                                    break;
+                                case SHOT_MAX:
+                                    assertEquals("1234567.8", e1cuval.getVALUE());
+                                    break;
+                                case DLIN_MIN:
+                                    assertEquals("6000", e1cuval.getVALUE());
+                                    break;
+                                case DLIN_MAX:
+                                    assertEquals("3000.0", e1cuval.getVALUE());
+                                    break;
+                                case VN_DIAM_RL:
+                                    assertEquals("600", e1cuval.getVALUE());
+                                    break;
+                            }
+                        }
+                )
+        );
+    }
 }

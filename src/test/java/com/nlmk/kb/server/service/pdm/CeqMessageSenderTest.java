@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -55,12 +54,20 @@ class CeqMessageSenderTest {
                 .nsiPath("/nsi/dict/nsd_ceq")
                 .enabled(true)
                 .build());
+        {
+            Mockito.when(nsiSender.sendBodyReturnLong(Mockito.any(), Mockito.any(), Mockito.any()))
+                    .thenReturn(321L);
 
-        Mockito.when(nsiSender.exchange(Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(ResponseEntity.ok(321L));
+            final var response = Assertions.assertDoesNotThrow(() -> ceqMessageSender.send(message));
+            Assertions.assertEquals(321L, response);
+        }
+        {
+            Mockito.when(nsiSender.sendBodyReturnLong(Mockito.any(), Mockito.any(), Mockito.any()))
+                    .thenReturn(null);
 
-        final var response = Assertions.assertDoesNotThrow(() -> ceqMessageSender.send(message));
-        Assertions.assertEquals(321L, response.getBody());
+            final var response = Assertions.assertDoesNotThrow(() -> ceqMessageSender.send(message));
+            Assertions.assertNull(response);
+        }
     }
 
 }

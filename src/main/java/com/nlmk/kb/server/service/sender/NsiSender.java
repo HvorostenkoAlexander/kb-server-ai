@@ -1,15 +1,22 @@
 package com.nlmk.kb.server.service.sender;
 
-import com.nlmk.kb.server.entity.pdm.PdmOp;
+import com.nlmk.kb.server.entity.Operation;
 import org.springframework.http.ResponseEntity;
 
 public interface NsiSender {
 
     /**
-     * Отправка данных в заданный справочник НСИ
+     * Отправка данных в заданный справочник НСИ (ответ число)
      */
-    <T> ResponseEntity<Long> exchange(T body,
-                                      final String urlDictionary,
-                                      final PdmOp operation);
+    <T> Long sendBodyReturnLong(T body,
+                                final String targetPath,
+                                final Operation operation);
+
+    /**
+     * Отправка данных в заданный справочник НСИ (ответ строка)
+     */
+    <T> String sendBodyReturnString(T body,
+                                    final String targetPath,
+                                    final Operation operation);
 
 }

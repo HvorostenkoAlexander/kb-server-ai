@@ -3,9 +3,7 @@ package com.nlmk.kb.server.service.result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.service.result.sending.ResultAdapter;
-import com.nlmk.kb.server.service.result.sending.pgp.PgpResultAdapterImpl;
-import com.nlmk.kb.server.service.result.sending.pts.PtsResultAdapterImpl;
+import com.nlmk.kb.server.service.result.sending.adapter.*;
 import nlmk.l3.apcs.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,8 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ResultAdapterTest {
 
-    private final ResultAdapter<VerificationResults> pgpAdapter = new PgpResultAdapterImpl();
-    private final ResultAdapter<VerificationResultsPts> ptsAdapter = new PtsResultAdapterImpl();
+    private final ResultAdapter<VerificationResults> pgpAdapter = new PgpResultAdapter();
+    private final ResultAdapter<VerificationResultsPts> ptsAdapter = new PtsResultAdapter();
+    private final ResultAdapter<VerificationResultsKc1> kc1Adapter = new Kc1ResultAdapter();
+    private final ResultAdapter<VerificationResultsKc2> kc2Adapter = new Kc2ResultAdapter();
 
     @Test
     void simpleVerificationProduct() throws IOException {
@@ -78,6 +78,19 @@ class ResultAdapterTest {
         final var result = ptsAdapter.adapt(certifiedProduct(), false);
         Assertions.assertEquals(expectedVerificationResultsPts(), result);
     }
+
+    @Test
+    void verifyKc1Result() {
+        final var result = kc1Adapter.adapt(certifiedProduct(), false);
+        Assertions.assertEquals(expectedVerificationResultsKc1(), result);
+    }
+
+    @Test
+    void verifyKc2Result() {
+        final var result = kc2Adapter.adapt(certifiedProduct(), false);
+        Assertions.assertEquals(expectedVerificationResultsKc2(), result);
+    }
+
 
     /**
      * Результат Аттестации, условный, только обрабатываемые поля!
@@ -450,4 +463,362 @@ class ResultAdapterTest {
                 .build();
     }
 
+    /**
+     * Ожидаемый результат для цеха КЦ-1
+     */
+    private VerificationResultsKc1 expectedVerificationResultsKc1() {
+        return VerificationResultsKc1.newBuilder()
+                .setTs("1970-01-12T13:46:40.000Z")
+                .setPk(RecordPk.newBuilder().setId(123L).setSystemCode("31").build())
+                .setOp(EnumOp.U)
+                .setData(RecordKc1Data.newBuilder()
+                        .setPrimeSystemCode("100")
+                        .setPrimeId("1234567890")
+                        .setMismatch(RecordKc1Mismatch.newBuilder()
+                                .setCode(Status.MATCHED.getValue())
+                                .setName(Status.MATCHED.getDesc())
+                                .build())
+                        .setAttestationList(List.of(
+                                RecordKc1AttList.newBuilder()
+                                        .setGroupCode(Group.HIM.getCode())
+                                        .setGroupName(Group.HIM.name())
+                                        .setListValues(List.of(
+                                                RecordKc1AttListValues.newBuilder()
+                                                        .setCode(SpecCode.MASS_FRACTION_H.getValue())
+                                                        .setName(SpecCode.MASS_FRACTION_H.getDesc())
+                                                        .setTypeCode(SpecCode.MASS_FRACTION_H.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.MASS_FRACTION_H.getTypeCode().getDesc())
+                                                        .setValue("1.5")
+                                                        .setDocId(DocId.STANDARD_ASSORTMENT.getValue())
+                                                        .setDocName(DocId.STANDARD_ASSORTMENT.getDesc())
+                                                        .setNormLimits(RecordKc1AttListNorms.newBuilder()
+                                                                .setValueMax(2.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc1AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 1")
+                                                        .setParameters(List.of())
+                                                        .build()
+                                        ))
+                                        .build(),
+                                RecordKc1AttList.newBuilder()
+                                        .setGroupCode(Group.MEH.getCode())
+                                        .setGroupName(Group.MEH.name())
+                                        .setListValues(List.of(
+                                                RecordKc1AttListValues.newBuilder()
+                                                        .setCode(SpecCode.TEMPORARY_RESISTANCE.getValue())
+                                                        .setName(SpecCode.TEMPORARY_RESISTANCE.getDesc())
+                                                        .setTypeCode(SpecCode.TEMPORARY_RESISTANCE.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.TEMPORARY_RESISTANCE.getTypeCode().getDesc())
+                                                        .setValue("100")
+                                                        .setDocId(DocId.STANDARD_PRODUCT.getValue())
+                                                        .setDocName(DocId.STANDARD_PRODUCT.getDesc())
+                                                        .setNormLimits(RecordKc1AttListNorms.newBuilder()
+                                                                .setValueMin(90.0).setValueMax(110.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc1AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 2")
+                                                        .setParameters(List.of())
+                                                        .build(),
+                                                RecordKc1AttListValues.newBuilder()
+                                                        .setCode(SpecCode.IMPACT_WORK_1.getValue())
+                                                        .setName(SpecCode.IMPACT_WORK_1.getDesc())
+                                                        .setTypeCode(SpecCode.IMPACT_WORK_1.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.IMPACT_WORK_1.getTypeCode().getDesc())
+                                                        .setValue("50")
+                                                        .setDocId(DocId.STANDARD_PRODUCT.getValue())
+                                                        .setDocName(DocId.STANDARD_PRODUCT.getDesc())
+                                                        .setNormLimits(RecordKc1AttListNorms.newBuilder()
+                                                                .setValueMin(40.0).setValueMax(70.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc1AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 2")
+                                                        .setParameters(List.of(
+                                                                RecordKc1AttListParams.newBuilder()
+                                                                        .setCode(SpecCode.TEMPERATURE.getValue())
+                                                                        .setName(SpecCode.TEMPERATURE.getDesc())
+                                                                        .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                                                                        .setValue("20")
+                                                                        .build(),
+                                                                RecordKc1AttListParams.newBuilder()
+                                                                        .setCode(SpecCode.CONCENTRATOR.getValue())
+                                                                        .setName(SpecCode.CONCENTRATOR.getDesc())
+                                                                        .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                                                                        .setValue("V")
+                                                                        .build(),
+                                                                RecordKc1AttListParams.newBuilder()
+                                                                        .setCode(SpecCode.ANALYSIS_ID.getValue())
+                                                                        .setName(SpecCode.ANALYSIS_ID.getDesc())
+                                                                        .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                                                                        .setValue("3")
+                                                                        .build()
+                                                        ))
+                                                        .build()
+                                        ))
+                                        .build(),
+                                RecordKc1AttList.newBuilder()
+                                        .setGroupCode(Group.MET.getCode())
+                                        .setGroupName(Group.MET.name())
+                                        .setListValues(List.of(
+                                                RecordKc1AttListValues.newBuilder()
+                                                        .setCode(SpecCode.SULPHIDES.getValue())
+                                                        .setName(SpecCode.SULPHIDES.getDesc())
+                                                        .setTypeCode(SpecCode.SULPHIDES.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.SULPHIDES.getTypeCode().getDesc())
+                                                        .setValue("3.4")
+                                                        .setDocId(DocId.STANDARD_MARK.getValue())
+                                                        .setDocName(DocId.STANDARD_MARK.getDesc())
+                                                        .setNormLimits(RecordKc1AttListNorms.newBuilder()
+                                                                .setValueMin(3.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc1AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 3")
+                                                        .setParameters(List.of())
+                                                        .build(),
+                                                RecordKc1AttListValues.newBuilder()
+                                                        .setCode(SpecCode.SILICATES.getValue())
+                                                        .setName(SpecCode.SILICATES.getDesc())
+                                                        .setTypeCode(SpecCode.SILICATES.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.SILICATES.getTypeCode().getDesc())
+                                                        .setValue("2.3")
+                                                        .setDocId(DocId.NOT_DEFINED.getValue())
+                                                        .setDocName(DocId.NOT_DEFINED.getDesc())
+                                                        .setNormLimits(RecordKc1AttListNorms.newBuilder()
+                                                                .setValueMax(3.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc1AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 3")
+                                                        .setParameters(List.of())
+                                                        .build()
+                                        ))
+                                        .build(),
+                                RecordKc1AttList.newBuilder()
+                                        .setGroupCode(Group.COMMON.getCode())
+                                        .setGroupName(Group.COMMON.name())
+                                        .setListValues(List.of(
+                                                RecordKc1AttListValues.newBuilder()
+                                                        .setCode(SpecCode.EDGE_CHARACTER.getValue())
+                                                        .setName(SpecCode.EDGE_CHARACTER.getDesc())
+                                                        .setTypeCode(SpecCode.EDGE_CHARACTER.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.EDGE_CHARACTER.getTypeCode().getDesc())
+                                                        .setValue("X")
+                                                        .setDocId(DocId.ORDER.getValue())
+                                                        .setDocName(DocId.ORDER.getDesc())
+                                                        .setNormLimits(RecordKc1AttListNorms.newBuilder()
+                                                                .setListAccValues(List.of(
+                                                                        RecordKc1AttListNormsValues.newBuilder()
+                                                                                .setValue("X")
+                                                                                .build()
+                                                                ))
+                                                                .build())
+                                                        .setMismatch(RecordKc1AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED_MANUALLY.getValue())
+                                                                .setName(Status.MATCHED_MANUALLY.getDesc())
+                                                                .build())
+                                                        .setDefectSuggestion("Согласно требованиям заказа 2")
+                                                        .setParameters(List.of())
+                                                        .build()
+                                        ))
+                                        .build()
+                        ))
+                        .build())
+                .build();
+    }
+
+
+    /**
+     * Ожидаемый результат для цеха КЦ-2
+     */
+    private VerificationResultsKc2 expectedVerificationResultsKc2() {
+        return VerificationResultsKc2.newBuilder()
+                .setTs("1970-01-12T13:46:40.000Z")
+                .setPk(RecordPk.newBuilder().setId(123L).setSystemCode("31").build())
+                .setOp(EnumOp.U)
+                .setData(RecordKc2Data.newBuilder()
+                        .setPrimeSystemCode("100")
+                        .setPrimeId("1234567890")
+                        .setMismatch(RecordKc2Mismatch.newBuilder()
+                                .setCode(Status.MATCHED.getValue())
+                                .setName(Status.MATCHED.getDesc())
+                                .build())
+                        .setAttestationList(List.of(
+                                RecordKc2AttList.newBuilder()
+                                        .setGroupCode(Group.HIM.getCode())
+                                        .setGroupName(Group.HIM.name())
+                                        .setListValues(List.of(
+                                                RecordKc2AttListValues.newBuilder()
+                                                        .setCode(SpecCode.MASS_FRACTION_H.getValue())
+                                                        .setName(SpecCode.MASS_FRACTION_H.getDesc())
+                                                        .setTypeCode(SpecCode.MASS_FRACTION_H.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.MASS_FRACTION_H.getTypeCode().getDesc())
+                                                        .setValue("1.5")
+                                                        .setDocId(DocId.STANDARD_ASSORTMENT.getValue())
+                                                        .setDocName(DocId.STANDARD_ASSORTMENT.getDesc())
+                                                        .setNormLimits(RecordKc2AttListNorms.newBuilder()
+                                                                .setValueMax(2.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc2AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 1")
+                                                        .setParameters(List.of())
+                                                        .build()
+                                        ))
+                                        .build(),
+                                RecordKc2AttList.newBuilder()
+                                        .setGroupCode(Group.MEH.getCode())
+                                        .setGroupName(Group.MEH.name())
+                                        .setListValues(List.of(
+                                                RecordKc2AttListValues.newBuilder()
+                                                        .setCode(SpecCode.TEMPORARY_RESISTANCE.getValue())
+                                                        .setName(SpecCode.TEMPORARY_RESISTANCE.getDesc())
+                                                        .setTypeCode(SpecCode.TEMPORARY_RESISTANCE.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.TEMPORARY_RESISTANCE.getTypeCode().getDesc())
+                                                        .setValue("100")
+                                                        .setDocId(DocId.STANDARD_PRODUCT.getValue())
+                                                        .setDocName(DocId.STANDARD_PRODUCT.getDesc())
+                                                        .setNormLimits(RecordKc2AttListNorms.newBuilder()
+                                                                .setValueMin(90.0).setValueMax(110.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc2AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 2")
+                                                        .setParameters(List.of())
+                                                        .build(),
+                                                RecordKc2AttListValues.newBuilder()
+                                                        .setCode(SpecCode.IMPACT_WORK_1.getValue())
+                                                        .setName(SpecCode.IMPACT_WORK_1.getDesc())
+                                                        .setTypeCode(SpecCode.IMPACT_WORK_1.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.IMPACT_WORK_1.getTypeCode().getDesc())
+                                                        .setValue("50")
+                                                        .setDocId(DocId.STANDARD_PRODUCT.getValue())
+                                                        .setDocName(DocId.STANDARD_PRODUCT.getDesc())
+                                                        .setNormLimits(RecordKc2AttListNorms.newBuilder()
+                                                                .setValueMin(40.0).setValueMax(70.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc2AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 2")
+                                                        .setParameters(List.of(
+                                                                RecordKc2AttListParams.newBuilder()
+                                                                        .setCode(SpecCode.TEMPERATURE.getValue())
+                                                                        .setName(SpecCode.TEMPERATURE.getDesc())
+                                                                        .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                                                                        .setValue("20")
+                                                                        .build(),
+                                                                RecordKc2AttListParams.newBuilder()
+                                                                        .setCode(SpecCode.CONCENTRATOR.getValue())
+                                                                        .setName(SpecCode.CONCENTRATOR.getDesc())
+                                                                        .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                                                                        .setValue("V")
+                                                                        .build(),
+                                                                RecordKc2AttListParams.newBuilder()
+                                                                        .setCode(SpecCode.ANALYSIS_ID.getValue())
+                                                                        .setName(SpecCode.ANALYSIS_ID.getDesc())
+                                                                        .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
+                                                                        .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                                                                        .setValue("3")
+                                                                        .build()
+                                                        ))
+                                                        .build()
+                                        ))
+                                        .build(),
+                                RecordKc2AttList.newBuilder()
+                                        .setGroupCode(Group.MET.getCode())
+                                        .setGroupName(Group.MET.name())
+                                        .setListValues(List.of(
+                                                RecordKc2AttListValues.newBuilder()
+                                                        .setCode(SpecCode.SULPHIDES.getValue())
+                                                        .setName(SpecCode.SULPHIDES.getDesc())
+                                                        .setTypeCode(SpecCode.SULPHIDES.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.SULPHIDES.getTypeCode().getDesc())
+                                                        .setValue("3.4")
+                                                        .setDocId(DocId.STANDARD_MARK.getValue())
+                                                        .setDocName(DocId.STANDARD_MARK.getDesc())
+                                                        .setNormLimits(RecordKc2AttListNorms.newBuilder()
+                                                                .setValueMin(3.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc2AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 3")
+                                                        .setParameters(List.of())
+                                                        .build(),
+                                                RecordKc2AttListValues.newBuilder()
+                                                        .setCode(SpecCode.SILICATES.getValue())
+                                                        .setName(SpecCode.SILICATES.getDesc())
+                                                        .setTypeCode(SpecCode.SILICATES.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.SILICATES.getTypeCode().getDesc())
+                                                        .setValue("2.3")
+                                                        .setDocId(DocId.NOT_DEFINED.getValue())
+                                                        .setDocName(DocId.NOT_DEFINED.getDesc())
+                                                        .setNormLimits(RecordKc2AttListNorms.newBuilder()
+                                                                .setValueMax(3.0)
+                                                                .build())
+                                                        .setMismatch(RecordKc2AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED.getValue())
+                                                                .setName(Status.MATCHED.getDesc())
+                                                                .build())
+                                                        .setNote("Согласно ГОСТ 3")
+                                                        .setParameters(List.of())
+                                                        .build()
+                                        ))
+                                        .build(),
+                                RecordKc2AttList.newBuilder()
+                                        .setGroupCode(Group.COMMON.getCode())
+                                        .setGroupName(Group.COMMON.name())
+                                        .setListValues(List.of(
+                                                RecordKc2AttListValues.newBuilder()
+                                                        .setCode(SpecCode.EDGE_CHARACTER.getValue())
+                                                        .setName(SpecCode.EDGE_CHARACTER.getDesc())
+                                                        .setTypeCode(SpecCode.EDGE_CHARACTER.getTypeCode().getValue())
+                                                        .setTypeName(SpecCode.EDGE_CHARACTER.getTypeCode().getDesc())
+                                                        .setValue("X")
+                                                        .setDocId(DocId.ORDER.getValue())
+                                                        .setDocName(DocId.ORDER.getDesc())
+                                                        .setNormLimits(RecordKc2AttListNorms.newBuilder()
+                                                                .setListAccValues(List.of(
+                                                                        RecordKc2AttListNormsValues.newBuilder()
+                                                                                .setValue("X")
+                                                                                .build()
+                                                                ))
+                                                                .build())
+                                                        .setMismatch(RecordKc2AttListMismatch.newBuilder()
+                                                                .setCode(Status.MATCHED_MANUALLY.getValue())
+                                                                .setName(Status.MATCHED_MANUALLY.getDesc())
+                                                                .build())
+                                                        .setDefectSuggestion("Согласно требованиям заказа 2")
+                                                        .setParameters(List.of())
+                                                        .build()
+                                        ))
+                                        .build()
+                        ))
+                        .build())
+                .build();
+    }
 }

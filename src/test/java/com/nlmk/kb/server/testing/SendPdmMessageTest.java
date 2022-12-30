@@ -1,246 +1,23 @@
-package com.nlmk.kb.server;
+package com.nlmk.kb.server.testing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
-import nlmk.l3.ccm.pgp.RecordMetallographic;
-import nlmk.l3.ccm.pgp.RecordMetgrapAnalysisData;
-import nlmk.l3.ccm.pgp.RecordMetgrapData;
-import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
-import nlmk.sadim.Sadim;
-import nlmk.sadim.Strip;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 @Disabled("hand sender")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SendMessageToKafkaTest {
+class SendPdmMessageTest extends SendMessageToKafka {
 
-    KafkaProducer<Object, Object> stringProducer;
-    private static final String SADIM_TOPIC = "PA-MU.NLMK.P3.HSM";
-    private final ObjectMapper mapper = new ObjectMapper();
-
-    KafkaProducer<Object, Object> avroProducer;
     // одна комбинация: тема + схема (версия схемы привязана к теме!)
-    private static final String CCM_PGP_TOPIC = "000-1.l3-ccm-pgp.db.Attestation-Request.0";
-    private static final String CCM_PTS_TOPIC = "000-1.l3-ccm-pts.db.Attestation-Request.0";
-
     private static final String PDM_TOPIC_ASAP_MECH_PROP_DT = "000-0.l3-pdm.cdc.sp-asap-mech-properties-dt.0";
     private static final String PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL = "000-0.l3-pdm.cdc.sp-phys-mech-prop-anis-steel-stand.1";
     private static final String PDM_TOPIC_SP_TOL_EVENNESS_DT = "000-0.l3-pdm.cdc.sp-tol-evenness-dt.0";
     private static final String PDM_TOPIC_SP_TOL_THICK_DT = "000-0.l3-pdm.cdc.sp-tol-thick-dt.0";
     private static final String PDM_TOPIC_SP_TOL_WIDTH_DT = "000-0.l3-pdm.cdc.sp-tol-width-dt.0";
-
-    @BeforeAll
-    void setUp() {
-        final var avroProps = new Properties();
-        avroProps.put("bootstrap.servers", "localhost:29092");
-        avroProps.put("schema.registry.url", "http://localhost:28881");
-        avroProps.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        avroProps.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer");
-        avroProducer = new KafkaProducer<>(avroProps);
-
-        final var stringProps = new Properties();
-        stringProps.put("bootstrap.servers", "localhost:29092");
-        stringProps.put("schema.registry.url", "http://localhost:28881");
-        stringProps.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        stringProps.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        stringProducer = new KafkaProducer<>(stringProps);
-    }
-
-    private void sendAvro(ProducerRecord<Object, Object> record) {
-        try {
-            // синхронная отправка сообщения
-            final var task = avroProducer.send(record).get();
-            System.out.printf("Sent Message, Offset %d%n", task.offset());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail();
-        }
-        avroProducer.close();
-    }
-
-    private void sendString(ProducerRecord<Object, Object> record) {
-        try {
-            // синхронная отправка сообщения
-            final var task = stringProducer.send(record).get();
-            System.out.printf("Sent Message, Offset %d%n", task.offset());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail();
-        }
-        stringProducer.close();
-    }
-
-    @Test
-    void sendSadimMessage() throws JsonProcessingException {
-        // nlmk.sadim.Sadim класс составленный на основе примеров сообщений САДиМ, полученных как JSON.
-        final var value = new Sadim();
-        final var strip = new Strip();
-        strip.setTimeRolling(new Date(1_655_880_000_000L));
-        strip.setPrimeId("0001020210329001515440422");
-        strip.setT12Min(795.0);
-        strip.setT12Max(835.0);
-        value.setStrips(List.of(strip));
-        value.setLotNo(25217); // -> hnum
-        value.setMeltNo(2106684); // -> nplv
-
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                SADIM_TOPIC,
-                // при наличие value key не анализируется
-                "key~" + Instant.now().getEpochSecond(),
-                mapper.writeValueAsString(value)
-        );
-
-        sendString(record);
-    }
-
-    @Test
-    void sendCcmPgpMessage() {
-        // attestationPoint(0) Аттестация после стана, -- 12 (ЦГП) attestationPointOrder(1)
-        // attestationPoint(1) Аттестация перед резкой, - 12 (ЦГП) attestationPointOrder(2)
-        // attestationPoint(2) Аттестация по ФПК,       - 12 (ЦГП) attestationPointOrder(3)
-
-        nlmk.l3.ccm.pgp.RecordData data = nlmk.l3.ccm.pgp.RecordData.newBuilder()
-                .setPrimeId("task-1270")
-                .setNplv(2106684) // <- meltNo
-                .setHnum(25217) // <-- lotNo
-                .setRoll("1-1")
-                .setThickness(2.65f)
-                .setWidth(1232.0f)
-                .setWeightNet(10.86f)
-                .setKceh(12)
-                .setOrderNum(1270L) // заказ должен быть загружен
-                .setOrderPos(3)
-                .setAttestationPoint(0)
-                .setCutTaskNum(100)
-                .setCutTaskStrNum(1)
-                .setCutTaskDate("2022-11-24")
-                .setSpecifications(List.of(
-                        nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(1)
-                                .setSpecCode(3).setSpecName("Марка стали").setSpecValue("11ЮА").build(),
-                        nlmk.l3.ccm.pgp.RecordSpecifications.newBuilder().setSpecTypeCode(2)
-                                .setSpecCode(45).setSpecName("Признак травления").setSpecValue("0").build()
-                ))
-                .setMetallographic(List.of(
-                        RecordMetallographic.newBuilder()
-                                .setHnum(25217) // <--
-                                .setMetgrapData(List.of(
-                                        RecordMetgrapData.newBuilder().setMetgrapAnalysisId(100)
-                                                .setMetgrapAnalysisData(List.of(
-                                                        RecordMetgrapAnalysisData.newBuilder().setMetgrapCode(86)
-                                                                .setMetgrapName("УФС, балл перлит")
-                                                                .setMetgrapTypeCode(2).setMetgrapValue("1")
-                                                                .build(),
-                                                        RecordMetgrapAnalysisData.newBuilder().setMetgrapCode(89)
-                                                                .setMetgrapName("Полосчатость")
-                                                                .setMetgrapTypeCode(2).setMetgrapValue("2")
-                                                                .build()
-                                                ))
-                                                .build()
-                                ))
-                                .build()
-                ))
-                .build();
-
-        nlmk.l3.ccm.pgp.AttestationRequest value = nlmk.l3.ccm.pgp.AttestationRequest.newBuilder()
-                .setTs("2022-11-24T13:00:25.194+05:00")
-                .setOp(nlmk.l3.ccm.pgp.EnumOp.U)
-                .setPk(nlmk.l3.ccm.pgp.RecordPk.newBuilder()
-                        .setId("task-1270")
-                        .setSystemCode("16")
-                        .build())
-                .setData(data)
-                .build();
-
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                CCM_PGP_TOPIC,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
-
-        sendAvro(record);
-    }
-
-    @Test
-    void sendCcmPtsMessage() {
-        nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData data = RecordData.newBuilder()
-                .setWerks(1).setWerksName("1")
-                .setKceh(11).setKcehName("11")
-                .setUnitCode(2).setUnitName("2")
-                .setStorageCode(3).setStorageName("3")
-                .setWeightNet(10.86f)
-                .setKceh(11)
-                .setOrderNum(1014L)
-                .setOrderPos(1)
-                .setMarking(RecordMarking.newBuilder()
-                        .setNplv(2106684) // <- meltNo
-                        .setHnum(25217) // <-- lotNo
-                        .setTnum(1)
-                        .setRoll(1)
-                        .build())
-                .setGeometry(RecordGeometry.newBuilder()
-                        .setThickness(2.65f)
-                        .setWidth(1232.0f)
-                        .build())
-                .setSpecifications(List.of())
-                .setBundles(List.of(
-                        RecordBundles.newBuilder()
-                                .setStripId(1).setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
-                        RecordBundles.newBuilder()
-                                .setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
-                        RecordBundles.newBuilder()
-                                .setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
-                ))
-                .setProperties(List.of(
-                        RecordProperties.newBuilder()
-                                .setProbeCode(3).setProbeName("3").setTestDate("3")
-                                .setTypeCode(3).setTypeName("3")
-                                .setAnalyzes(List.of())
-                                .setAttestationList(List.of())
-                                .setListValues(List.of(
-                                        RecordDataPropertiesListValues.newBuilder()
-                                                .setAttrCode(3)
-                                                .setAttrValue(List.of(
-                                                        RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("3").build()
-                                                )).setAttrType(1)
-                                                .build(),
-                                        RecordDataPropertiesListValues.newBuilder()
-                                                .setAttrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
-                                                .setAttrType(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getTypeCode().getValue())
-                                                .setAttrValue(List.of(
-                                                        RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("4").build()
-                                                )).build()
-                                ))
-                                .build()
-                ))
-                .build();
-
-        nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1 value = nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1.newBuilder()
-                .setTs("2022-09-02T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
-                .setPk(nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.PkType.newBuilder()
-                        .setId("42") // primeId
-                        .setSystemCode("16")
-                        .build())
-                .setData(data)
-                .build();
-
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                CCM_PTS_TOPIC,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
-
-        sendAvro(record);
-    }
 
     @Test
     void sendPdmSpAsapMechPropertiesDt() {
@@ -278,13 +55,9 @@ class SendMessageToKafkaTest {
                         .build())
                 .build();
 
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                PDM_TOPIC_ASAP_MECH_PROP_DT,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_ASAP_MECH_PROP_DT, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
@@ -328,13 +101,9 @@ class SendMessageToKafkaTest {
                         .build())
                 .build();
 
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
@@ -388,13 +157,9 @@ class SendMessageToKafkaTest {
                         .build())
                 .build();
 
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                PDM_TOPIC_SP_TOL_EVENNESS_DT,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_SP_TOL_EVENNESS_DT, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
@@ -458,13 +223,9 @@ class SendMessageToKafkaTest {
                         .build())
                 .build();
 
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                PDM_TOPIC_SP_TOL_THICK_DT,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_SP_TOL_THICK_DT, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
     @Test
@@ -558,12 +319,9 @@ class SendMessageToKafkaTest {
                         .build())
                 .build();
 
-        ProducerRecord<Object, Object> record = new ProducerRecord<>(
-                PDM_TOPIC_SP_TOL_WIDTH_DT,
-                "key~" + Instant.now().getEpochSecond(), // случайный key
-                value
-        );
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_SP_TOL_WIDTH_DT, randomKey(), value);
 
-        sendAvro(record);
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
+
 }

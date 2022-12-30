@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.kb.SapMessageDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
@@ -91,6 +92,15 @@ public interface KbController {
     ResponseEntity<String> postSendingSapMessage(
             @RequestBody @Schema(example = "<?xml version=... ?><ZORDERS05_1></ZORDERS05_1>") String message
     ) throws JsonProcessingException;
+
+    @GetMapping("/sap_message/next")
+    @Operation(summary = "Запрос получения сообщения SAP, следующего после указанного id",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    @ApiResponse(responseCode = "200",
+            description = "Сообщение найдено", content = @Content)
+    @ApiResponse(responseCode = "404",
+            description = "Сообщение не найдено", content = @Content)
+    SapMessageDto getSapMessageNextId(@RequestParam(value = "id", required = false) Long id);
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/send_attestation_result")

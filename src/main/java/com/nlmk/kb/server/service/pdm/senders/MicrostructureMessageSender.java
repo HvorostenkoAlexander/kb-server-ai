@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.service.pdm.senders;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
-import com.nlmk.kb.server.entity.pdm.PdmOp;
+import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.pdm.SpMicrostructure;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -28,12 +27,12 @@ public class MicrostructureMessageSender extends BasePdmCreator implements PdmMe
     }
 
     @Override
-    public ResponseEntity<Long> send(PdmMessage message) {
+    public Long send(PdmMessage message) {
         Assert.notNull(message, () -> {
             throw new IllegalArgumentException("message for sending is NULL");
         });
 
-        return super.getNsiSender().exchange(
+        return super.getNsiSender().sendBodyReturnLong(
                 super.getPdmDtoConverter().toMicrostructureDto(message.getDictionary()),
                 super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
                 message.getOp()
@@ -54,7 +53,7 @@ public class MicrostructureMessageSender extends BasePdmCreator implements PdmMe
                 .offset(consumerRecord.offset())
                 .partition(consumerRecord.partition())
                 .dictionary(dictionary)
-                .op(PdmOp.fromValue(dictionary.getOp()))
+                .op(Operation.fromValue(dictionary.getOp()))
                 .ts(dictionary.getTs())
                 .build();
     }
