@@ -588,6 +588,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .nbV(converter.getLimitSpecValue(specs, NB_V))
                 .nAl(converter.getLimitSpecValue(specs, N_AL))
                 .tiN(converter.getLimitSpecValue(specs, TI_N))
+                .alsol(converter.getLimitSpecValue(specs, MASS_FRACTION_ALSOL))
                 .build();
     }
 
