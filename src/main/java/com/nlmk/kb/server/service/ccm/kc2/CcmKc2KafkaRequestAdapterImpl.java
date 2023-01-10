@@ -5,6 +5,7 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer;
@@ -80,29 +81,32 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
 
     private List<KcChemData> toChemData(List<RecordChemData> chemData) {
         if (Objects.isNull(chemData)) {
-            return null;
+            return Collections.emptyList();
         }
         return chemData.stream()
                 .map(a ->
                         KcChemData.builder()
                                 .sampleId(a.getSampleId())
                                 .sampleNum(a.getSampleNum())
-                                .probeCode(a.getProbeCode().toString())
-                                .analysisCode(a.getAnalysisCode().toString())
+                                .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
+                                .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
                                 .heat(a.getHeat())
-                                .samplingPlaceName(a.getSamplingPlaceName().toString())
+                                .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                                 .chemical(toChemical(a.getChemical()))
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
 
     private List<KcChemical> toChemical(List<RecordChemical> chemical) {
+        if (Objects.isNull(chemical)) {
+            return Collections.emptyList();
+        }
         return chemical.stream()
                 .map(a ->
                         KcChemical.builder()
                                 .chemCode(a.getChemCode())
-                                .chemName(a.getChemName().toString())
-                                .chemValue(a.getChemValue().toString()) //расхождение спецификации со схемой - в спецификации это число
+                                .chemName(AdapterUtils.sequenceToString(a.getChemName()))
+                                .chemValue(AdapterUtils.sequenceToString(a.getChemValue())) //расхождение спецификации со схемой - в спецификации это число
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
