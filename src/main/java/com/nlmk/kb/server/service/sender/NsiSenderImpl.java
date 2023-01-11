@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.sender;
 
-import com.nlmk.kb.server.entity.pdm.PdmOp;
+import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,34 +34,45 @@ public class NsiSenderImpl implements NsiSender {
     }
 
     @Override
-    public <T> ResponseEntity<Long> exchange(T body, String urlDictionary, PdmOp operation) {
+    public <T> Long sendBodyReturnLong(T body, String targetPath, Operation operation) {
+        return exchange(body, Long.class, targetPath, operation);
+    }
+
+    @Override
+    public <T> String sendBodyReturnString(T body, String targetPath, Operation operation) {
+        return exchange(body, String.class, targetPath, operation);
+    }
+
+    private <T, R> R exchange(T body, Class<R> returned, String targetPath, Operation operation) {
         if (body == null) {
-            throw new RemoteServiceSenderException("NsiSender, Body is NULL");
+            throw new RemoteServiceSenderException("NsiSender, exchange, пустое тело");
         }
 
-        final var result = webClient.method(operation.getHttpMethod())
-                .uri(nsiUrlDict + urlDictionary)
+        final R result = webClient.method(operation.getHttpMethod())
+                .uri(nsiUrlDict + targetPath)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .headers(SenderUtils::addRequestId)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(Long.class)
+                .bodyToMono(returned)
                 .onErrorResume(WebClientResponseException.class, ex -> {
-                    if (operation == PdmOp.D
+                    if (operation == Operation.D
                             && ex.getRawStatusCode() == HttpStatus.NOT_FOUND.value()) {
-                        return Mono.just(0L);
+                        return Mono.empty();
                     }
                     return Mono.error(ex);
                 })
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
-                        new RemoteServiceSenderException(String.format("NsiSender, exchange, send error, message [%s]", e.getMessage()))
+                        new RemoteServiceSenderException(String.format(
+                                "NsiSender, exchange, ошибка при отправке [%s]", e.getMessage()
+                        ))
                 ))
                 .block();
 
         log.info(OPERATION_RESPONSE_TEMPLATE, operation, result, body);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return result;
     }
 
 }

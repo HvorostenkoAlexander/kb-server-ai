@@ -1,13 +1,14 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.product.api.kb.SapMessageDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.exception.AttestationRequestNotFoundException;
+import com.nlmk.kb.server.exception.DataNotFoundException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
@@ -15,6 +16,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import com.nlmk.kb.server.service.sap.S3Service;
+import com.nlmk.kb.server.service.sap.SapMessageService;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
 import java.text.MessageFormat;
@@ -23,6 +25,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsKc1;
+import nlmk.l3.apcs.VerificationResultsKc2;
 import nlmk.l3.apcs.VerificationResultsPts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +46,7 @@ public class KbControllerImpl implements KbController {
     private final CcmMessageService ccmMessageService;
     private final PdmMessageService pdmMessageService;
     private final CcmCommonService ccmCommonService;
+    private final SapMessageService sapMessageService;
     private final S3Service s3Service;
     private final PsmSender psmSender;
     private final AttestationResultSender attestationResultSender;
@@ -82,7 +87,7 @@ public class KbControllerImpl implements KbController {
         final var ccmRest = attestationMessageService.findLastAttestationMessage(primeId);
 
         if (ccmKafka.isEmpty() && ccmRest.isEmpty()) {
-            throw new AttestationRequestNotFoundException(MessageFormat.format(
+            throw new DataNotFoundException(MessageFormat.format(
                     "AttestationRequest for primeId [{0}] not found", primeId
             ));
         }
@@ -154,6 +159,12 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
+    public SapMessageDto getSapMessageNextId(Long id) {
+        log.info("postSapMessageNextId, id [{}]", id);
+        return sapMessageService.getNextSapMessage(id);
+    }
+
+    @Override
     public void postProductAttestationResult(ProductAttestationResultDto attestationResult) {
         log.info("postProductAttestationResult, ProductAttestationResultDto [{}]", attestationResult);
         switch (attestationResult.getKceh()) {
@@ -165,7 +176,17 @@ public class KbControllerImpl implements KbController {
                 attestationResultSender.send(attestationResult, VerificationResultsPts.class);
                 break;
             }
-            default: throw new AttestationResultSenderException("Wrong Kceh Value for send result");
+            case KC1: {
+                attestationResultSender.send(attestationResult, VerificationResultsKc1.class);
+                break;
+            }
+            case KC2: {
+                attestationResultSender.send(attestationResult, VerificationResultsKc2.class);
+                break;
+            }
+            default: throw new AttestationResultSenderException(
+                    "Отправка рельтата аттестации для цеха [" + attestationResult.getKceh() + "] не реализована"
+            );
         }
     }
 

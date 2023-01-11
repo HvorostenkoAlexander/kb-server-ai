@@ -1,9 +1,0 @@
-package com.nlmk.kb.server.service.result.sending.pgp;
-
-import nlmk.l3.apcs.VerificationResults;
-
-public interface ResultSenderPgp {
-
-    void send(VerificationResults result, String topic);
-
-}

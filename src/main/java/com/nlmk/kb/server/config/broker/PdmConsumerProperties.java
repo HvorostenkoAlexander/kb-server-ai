@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.config.broker;
 
-import com.nlmk.kb.server.config.broker.ConsumerProperties;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,8 +7,6 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class PdmConsumerProperties extends ConsumerProperties {
-
-    private final boolean sslEnabled;
 
     public PdmConsumerProperties(@Value("${kafka.pdm.bootstrap-servers}") String kafkaServer,
                                  @Value("${kafka.pdm.consumer.group-id}") String kafkaGroupId,
@@ -22,13 +19,12 @@ public class PdmConsumerProperties extends ConsumerProperties {
         super(kafkaServer,
                 kafkaGroupId,
                 schemaRegistryUrl,
+                sslEnabled,
                 truststorePassword,
                 keystorePassword,
                 truststorePath,
                 keystorePath
         );
-
-        this.sslEnabled = sslEnabled;
     }
 
 }

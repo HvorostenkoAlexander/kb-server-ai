@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.entity.pdm;
+package com.nlmk.kb.server.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
-public enum PdmOp {
+public enum Operation {
 
     I(HttpMethod.POST),
     U(HttpMethod.PUT),
@@ -16,11 +16,11 @@ public enum PdmOp {
 
     private final HttpMethod httpMethod;
 
-    public static PdmOp fromValue(String value) {
-        return Arrays.stream(PdmOp.values())
+    public static Operation fromValue(String value) {
+        return Arrays.stream(Operation.values())
                 .filter(p -> p.name().equals(value))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown PdmOp value [%s]", value)));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Operation: неизвестное значение [%s]", value)));
     }
 
 }

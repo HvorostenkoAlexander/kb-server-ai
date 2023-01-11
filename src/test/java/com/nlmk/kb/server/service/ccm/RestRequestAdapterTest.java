@@ -1,19 +1,7 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.pam.AnalysisValue;
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
-import com.nlmk.attestation.product.api.pam.ChemicalSpec;
-import com.nlmk.attestation.product.api.pam.DataField;
-import com.nlmk.attestation.product.api.pam.Pk;
-import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
-import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
-import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
-import com.nlmk.attestation.product.api.pam.PtsPropertyAttribute;
-import com.nlmk.attestation.product.api.pam.PtsPropertyAttributeValue;
-import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
-import com.nlmk.attestation.product.api.pam.Specs;
-import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
@@ -156,7 +144,7 @@ class RestRequestAdapterTest {
                         .ts(new Date(1000000000_000L)) // для теста!
                         .op("I")
                         .pk(Pk.builder().systemCode("11").id("0001020210329001515440422").build())
-                        .data(DataField.builder()
+                        .data(DataPts.builder()
                                 .primeId("0001020210329001515440422")
                                 .nplv(2106684).hnum(25217).roll("1")
                                 .length(3000.0).thickness(30.0).width(300.0)
@@ -177,9 +165,6 @@ class RestRequestAdapterTest {
                                                 .chemValue("13.4")
                                                 .build()
                                 ))
-                                .orderReq(List.of())
-                                .mechanical(List.of())
-                                .metallographic(List.of())
                                 .mechanicalPts(List.of(
                                         PtsMechanicalProperty.builder()
                                                 .typeCode(60).typeName("t61").testDate("2022-09-16T14:22:33+03:00").probeCode(70).probeName("p70")

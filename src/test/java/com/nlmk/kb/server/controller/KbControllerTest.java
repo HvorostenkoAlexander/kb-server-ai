@@ -3,6 +3,7 @@ package com.nlmk.kb.server.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.Kceh;
 import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.kb.SapMessageDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.pam.Value;
@@ -18,6 +19,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
+import com.nlmk.kb.server.service.sap.SapMessageService;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -38,8 +40,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(KbController.class)
@@ -55,6 +56,8 @@ class KbControllerTest {
     private PdmMessageService pdmMessageService;
     @MockBean
     private CcmCommonService ccmCommonService;
+    @MockBean
+    private SapMessageService sapMessageService;
     @MockBean
     private PsmSender psmSender;
     @MockBean
@@ -202,4 +205,59 @@ class KbControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void getSapMessageNextId() throws Exception {
+
+        var url = "/sap_message/next?id=100";
+
+        when(sapMessageService.getNextSapMessage(100L))
+                .thenThrow(new DataNotFoundException("---"));
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isNotFound());
+
+        reset(sapMessageService);
+
+        when(sapMessageService.getNextSapMessage(100L))
+                .thenThrow(new S3ClientException("---"));
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isBadRequest());
+
+        reset(sapMessageService);
+
+
+        when(sapMessageService.getNextSapMessage(100L))
+                .thenReturn(SapMessageDto.builder().build());
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk());
+
+        reset(sapMessageService);
+
+
+        url = "/sap_message/next";
+
+        when(sapMessageService.getNextSapMessage(isNull()))
+                .thenThrow(new DataNotFoundException("---"));
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isNotFound());
+
+        reset(sapMessageService);
+
+        when(sapMessageService.getNextSapMessage(isNull()))
+                .thenReturn(SapMessageDto.builder().build());
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk());
+
+        reset(sapMessageService);
+
+     }
 }

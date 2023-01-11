@@ -3,14 +3,9 @@ package com.nlmk.kb.server.service.result.sending;
 import com.nlmk.kb.server.api.MessagesBatchDto;
 import com.nlmk.kb.server.entity.KafkaMessageKey;
 import com.nlmk.kb.server.exception.KafkaRestConfigException;
-import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
-import com.nlmk.kb.server.service.result.sending.pgp.ResultSenderPgp;
-import com.nlmk.kb.server.service.result.sending.pts.ResultSenderPts;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.apcs.RecordPk;
-import nlmk.l3.apcs.VerificationResults;
-import nlmk.l3.apcs.VerificationResultsPts;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +21,7 @@ import static com.nlmk.kb.server.config.KbConstants.*;
 
 @Slf4j
 @Service
-public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
+public class ResultSenderImpl implements ResultSender {
 
     private final String kafkaHttpProxyAddress;
     private final KafkaRestMessageAdapter kafkaRestMessageAdapter;
@@ -43,50 +38,25 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
         this.kafkaRestMessageAdapter = kafkaRestMessageAdapter;
     }
 
-    private void checkBeforeSend(Object result, String topic) {
-        if (result == null || StringUtils.isBlank(topic)) {
-            throw new AttestationResultSenderException("checkBeforeSend, empty result OR topic");
-        }
-        if (StringUtils.isBlank(kafkaHttpProxyAddress)) {
-            throw new KafkaRestConfigException("checkBeforeSend, kafka-rest.address is EMPTY, cancel sending");
-        }
-    }
+    @Override
+    public void send(SpecificRecordBase result, String topic, String key) {
 
-    private KafkaMessageKey generateKey(RecordPk pk) {
-        if (pk == null) {
-            log.warn("generateKey, result.getPk() is null");
-            throw new AttestationResultSenderException("generateKey, gen key error: result.getPk() is NULL");
-        }
-
-        final var key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
         final var schemaKey = "{\"type\": \"string\"}";
 
-        return KafkaMessageKey.create(key, schemaKey);
-    }
+        final var messageKey = KafkaMessageKey.create(key, schemaKey);
 
-    @Override
-    public void send(VerificationResults result, String topic) {
-        checkBeforeSend(result, topic);
+        final var batchDto = kafkaRestMessageAdapter.adapt(result, messageKey);
 
-        final var key = generateKey(result.getPk());
-        final var batchDto = kafkaRestMessageAdapter.adapt(result, key);
-
-        log.info("send, VerificationResults, request to KAFKA: key [{}], value [{}]", key.getKey(), result);
-        sending(batchDto, topic);
-    }
-
-    @Override
-    public void send(VerificationResultsPts result, String topic) {
-        checkBeforeSend(result, topic);
-
-        final var key = generateKey(result.getPk());
-        final var batchDto = kafkaRestMessageAdapter.adapt(result, key);
-
-        log.info("send, VerificationResultsPts, request to KAFKA: key [{}], value [{}]", key.getKey(), result);
+        log.info("send, отправка результата в KAFKA: key [{}], value [{}]", messageKey.getKey(), result);
         sending(batchDto, topic);
     }
 
     private void sending(MessagesBatchDto batchDto, String topic) {
+
+        if (StringUtils.isBlank(kafkaHttpProxyAddress)) {
+            throw new KafkaRestConfigException("sending, kafka-rest.address не задан");
+        }
+
         final var response = webClient.post()
                 .uri(String.format(KAFKA_REST_PROXY_TEMPLATE, kafkaHttpProxyAddress, topic))
                 .acceptCharset(StandardCharsets.UTF_8)
@@ -98,10 +68,10 @@ public class ResultSenderImpl implements ResultSenderPgp, ResultSenderPts {
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
                         new RemoteServiceSenderException(
-                                String.format("ResultSenderImpl, sending, sending error: [%s]", e.getMessage())
+                                String.format("ResultSenderImpl, sending, ошибка отправки: [%s]", e.getMessage())
                         )))
                 .block();
-        log.info("sending, response from KAFKA: [{}]", response);
+        log.info("sending, результат отправки в KAFKA: [{}]", response);
     }
 
 }
