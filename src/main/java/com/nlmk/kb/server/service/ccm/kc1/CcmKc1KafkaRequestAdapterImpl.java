@@ -5,6 +5,8 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer;
 import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.*;
@@ -68,13 +70,44 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
                 .requirements(toPamRequirement(recordData.getRequirements()))
-                // + chemData
+                .chemData(toChemData(recordData.getChemData()))
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList())
                 )
                 .build();
+    }
+    private List<KcChemData> toChemData(List<RecordChemData> chemData) {
+        if (Objects.isNull(chemData)) {
+            return Collections.emptyList();
+        }
+        return chemData.stream()
+                .map(a ->
+                        KcChemData.builder()
+                                .sampleId(a.getSampleId())
+                                .sampleNum(a.getSampleNum())
+                                .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
+                                .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
+                                .heat(!Objects.isNull(a.getHeat()) ? a.getHeat().longValue() : null) //разные типы в схемах
+                                .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
+                                .chemical(toChemical(a.getChemical()))
+                                .build()
+                ).collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<KcChemical> toChemical(List<RecordChemical> chemical) {
+        if (Objects.isNull(chemical)) {
+            return Collections.emptyList();
+        }
+        return chemical.stream()
+                .map(a ->
+                        KcChemical.builder()
+                                .chemCode(a.getChemCode())
+                                .chemName(AdapterUtils.sequenceToString(a.getChemName()))
+                                .chemValue(AdapterUtils.sequenceToString(a.getChemValue())) //расхождение спецификации со схемой - в спецификации это число
+                                .build()
+                ).collect(Collectors.toUnmodifiableList());
     }
 
     private Specs toPamSpecs(RecordDataSpecifications specifications) {
@@ -120,6 +153,7 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
                 .valueMin(recordChemicalReg.getValueMin())
                 .valueMax(recordChemicalReg.getValueMax())
+                .digitsQuantity(recordChemicalReg.getDigitsQuantity())
                 .build();
     }
 
