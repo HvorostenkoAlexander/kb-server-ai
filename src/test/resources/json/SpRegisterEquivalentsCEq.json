@@ -1,0 +1,20 @@
+{
+  "ts": "2022-12-01T11:16:28.7002718+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "578300",
+    "Id": "24"
+  },
+  "data": {
+    "specifications": [
+      {"specCode": 3537, "specName": "Параметр", "specTypeCode": 1, "specValue": "Угл. эквивалент", "specMeasure": ""},
+      {"specCode": 476,  "specName": "Номер формулы", "specTypeCode": 1, "specValue": "20", "specMeasure": ""},
+      {"specCode": 1908, "specName": "Формула", "specTypeCode": 1, "specValue": "C+Mn/6+Si/24+Ni/40+Cr/5+Mo/4+V/14", "specMeasure": ""},
+      {"specCode": 138,  "specName": "Примечание", "specTypeCode": 1, "specValue": "", "specMeasure": ""},
+      {"specCode": 609,  "specName": "Cr+Ni+Cu", "specTypeCode": 1, "specValue": "*..0.20", "specMeasure": "%"},
+      {"specCode": 9005, "specName": "B", "specTypeCode": 1, "specValue": "0.0005..*", "specMeasure": "%"},
+      {"specCode": 9006, "specName": "C", "specTypeCode": 1, "specValue": "*..0.12", "specMeasure": "%"}
+    ]
+  }
+}
