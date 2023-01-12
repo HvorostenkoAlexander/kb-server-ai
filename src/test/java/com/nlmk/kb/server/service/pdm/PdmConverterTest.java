@@ -310,4 +310,25 @@ class PdmConverterTest {
         assertEquals("",dto.getAl().getSrcValue());
     }
 
+    @Test
+    void fromSpTolShapeSlabTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTolShapeSlab.json"),
+                        SpTolEvenness.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTolShapeSlabDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("ДТ 0042.02", dto.getDt());
+        assertEquals("ТУ 24.10.21-0036-05757665-2020", dto.getPrStandMark());
+        assertEquals(10, dto.getPrior());
+        assertEquals("Добавлены планшетность (мм) и серповидность (мм) по ДТ 0042.02", dto.getPrAnnotation());
+        assertEquals("*..10", dto.getVypUzkGr().getSrcValue());
+    }
 }

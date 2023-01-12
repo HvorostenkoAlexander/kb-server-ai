@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.attestation.product.api.nsi.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.utils.LimitUtils;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.Spec;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -989,4 +990,53 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=116498692">Допуски по форме слябов(NSD_tol_shape_slab)</a>
+     */
+    @Override
+    public TolShapeSlabDto toTolShapeSlabDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("PDM DICTIONARY: {} ", dictionary);
+
+        return TolShapeSlabDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .nomTlot(converter.getLimitSpecValue(specs, NOMINAL_THICKNESS))
+                .nomWidth(converter.getLimitSpecValue(specs, NOMINAL_WIDTH))
+                .nomLength(converter.getLimitSpecValue(specs, LENGTH_NOMINAL))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .vognUzkGr(converter.getLimitSpecValue(specs, VOGN_UZK_GR))
+                .neprNesoosn(converter.getLimitSpecValue(specs, NON_RECTANGULAR_MISALIGNMENT))
+                .neprSrez(converter.getLimitSpecValue(specs, NON_RECTANGULAR_OBLIQUE_CUT))
+                .neprTor(converter.getLimitSpecValue(specs, NON_RECTANGULAR_OBLIQUE_BUTT))
+                .neprUzkGr(converter.getLimitSpecValue(specs, NON_RECTANGULAR_NARROW_EDGE))
+                .vypIzgM(converter.getLimitSpecValue(specs, SICKLE_SHAPE_FACTOR))
+                .vypIzgMm(converter.getLimitSpecValue(specs, SICKLE_SHAPE))
+                .progWidthMm(converter.getLimitSpecValue(specs, WIDTH_DEFLECTION))
+                .progWidthM(converter.getLimitSpecValue(specs, WIDTH_DEFLECTION_FACTOR))
+                .progLengthM(converter.getLimitSpecValue(specs, LENGTH_DEFLECTION_FACTOR))
+                .progLengthMm(converter.getLimitSpecValue(specs, LENGTH_DEFLECTION))
+                .otklLength(converter.getLimitSpecValue(specs, LENGTH_DEVIATION))
+                .prLengthTol(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_LENGTH))
+                .otklWidth(converter.getLimitSpecValue(specs, WIDTH_DEVIATION))
+                .prWidthTol(converter.getLimitSpecValue(specs, WIDTH_TOLERANCE_PERCENT))
+                .otklTlotMm(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
+                .otklTlotPr(converter.getLimitSpecValue(specs, THICKNESS_DEVIATION_PERCENT))
+                .prThickTol(converter.getLimitSpecValue(specs, THICKNESS_TOLERANCE))
+                .otklWeight(converter.getLimitSpecValue(specs, NOMINAL_THICKNESS))
+                .slabWeight(converter.getLimitSpecValue(specs, SLAB_WEIGHT))
+                .vypUzkGr(converter.getLimitSpecValue(specs, CONVEX_NARROW_EDGE))
+                .prWidthTolMm(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_WIDTH))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+
+    }
 }

@@ -1,0 +1,230 @@
+{
+  "ts": "2022-09-06T12:51:47.6850091+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "504189",
+    "id": "17"
+  },
+  "data": {
+    "specifications": [
+      {
+        "specCode": 604,
+        "specName": "Приоритет",
+        "specTypeCode": 1,
+        "specValue": "10",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1,
+        "specName": "Стандарт на продукцию",
+        "specTypeCode": 1,
+        "specValue": "ТУ 24.10.21-0036-05757665-2020",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 955,
+        "specName": "Доп. требование",
+        "specTypeCode": 1,
+        "specValue": "ДТ 0042.02",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1816,
+        "specName": "Код потребителя",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1815,
+        "specName": "Потребитель",
+        "specTypeCode": 1,
+        "specValue": "SAHAVIRIYA STEEL INDUSTRIES PUBLIC COMPANY",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1185,
+        "specName": "Номинальная длина, мм",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1814,
+        "specName": "Номинальная ширина, мм",
+        "specTypeCode": 1,
+        "specValue": "1401..1900",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1813,
+        "specName": "Номинальная толщина, мм",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1004,
+        "specName": "Вес сляба, т",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "т"
+      },
+      {
+        "specCode": 1812,
+        "specName": "Отклонение по весу, %",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "%"
+      },
+      {
+        "specCode": 1811,
+        "specName": "Допуск по толщине (P+Q)/2, мм",
+        "specTypeCode": 1,
+        "specValue": "-5..5",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1810,
+        "specName": "Отклонение от толщины (разнотолщинность)|b-d|, %",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "%"
+      },
+      {
+        "specCode": 588,
+        "specName": "Отклонение от толщины (разнотолщинность)|b-d|, мм",
+        "specTypeCode": 1,
+        "specValue": "*..2.0",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1809,
+        "specName": "Допуск по ширине, %",
+        "specTypeCode": 1,
+        "specValue": "-1..1",
+        "specMeasure": "%"
+      },
+      {
+        "specCode": 1808,
+        "specName": "Отклонение по ширине (разноширинность) |w1-w2|, мм",
+        "specTypeCode": 1,
+        "specValue": "*..16",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 595,
+        "specName": "Допуск по длине, мм",
+        "specTypeCode": 1,
+        "specValue": "-100..100",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1807,
+        "specName": "Отклонение от длины |L1-L2|, мм",
+        "specTypeCode": 1,
+        "specValue": "*..20",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1172,
+        "specName": "Прогиб по длине (планшетность), мм",
+        "specTypeCode": 1,
+        "specValue": "*..50",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1171,
+        "specName": "Прогиб по длине (планшетность), мм/м",
+        "specTypeCode": 1,
+        "specValue": "*..6",
+        "specMeasure": "мм/м"
+      },
+      {
+        "specCode": 1806,
+        "specName": "Прогиб по ширине, мм/м",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мм/м"
+      },
+      {
+        "specCode": 1173,
+        "specName": "Прогиб по ширине, мм",
+        "specTypeCode": 1,
+        "specValue": "*..5",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1176,
+        "specName": "Выпуклый изгиб (серповидность), мм",
+        "specTypeCode": 1,
+        "specValue": "*..50",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1175,
+        "specName": "Выпуклый изгиб  (серповидность), мм/м",
+        "specTypeCode": 1,
+        "specValue": "*..6",
+        "specMeasure": "мм/м"
+      },
+      {
+        "specCode": 1177,
+        "specName": "Непрямоугольность (узкая грань), мм",
+        "specTypeCode": 1,
+        "specValue": "*..10",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1178,
+        "specName": "Непрямоугольность (торец), мм",
+        "specTypeCode": 1,
+        "specValue": "*..10",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1180,
+        "specName": "Непрямоугольность (косой рез), мм",
+        "specTypeCode": 1,
+        "specValue": "*..15",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1805,
+        "specName": "Непрямоугольность (несоосность реза двух резаков), мм",
+        "specTypeCode": 1,
+        "specValue": "*..12",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1182,
+        "specName": "Вогнутость по узкой грани, мм",
+        "specTypeCode": 1,
+        "specValue": "*..10",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 1181,
+        "specName": "Выпуклость по узкой грани, мм",
+        "specTypeCode": 1,
+        "specValue": "*..10",
+        "specMeasure": "мм"
+      },
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "Добавлены планшетность (мм) и серповидность (мм) по ДТ 0042.02",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 593,
+        "specName": "Допуск по ширине, мм",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": "мм"
+      }
+    ]
+  }
+}
