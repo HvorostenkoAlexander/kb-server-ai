@@ -53,7 +53,8 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.tol-evenness-dt}",
                     "${kafka.pdm.topic.tol-thick-dt}",
                     "${kafka.pdm.topic.tol-width-dt}",
-                    "${kafka.pdm.topic.sp-chemical-properties-notes}"
+                    "${kafka.pdm.topic.sp-chemical-properties-notes}",
+                    "${kafka.pdm.topic.tol-shape-slab}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
