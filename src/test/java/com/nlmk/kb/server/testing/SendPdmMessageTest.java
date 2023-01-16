@@ -18,6 +18,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
     private static final String PDM_TOPIC_SP_TOL_EVENNESS_DT = "000-0.l3-pdm.cdc.sp-tol-evenness-dt.0";
     private static final String PDM_TOPIC_SP_TOL_THICK_DT = "000-0.l3-pdm.cdc.sp-tol-thick-dt.0";
     private static final String PDM_TOPIC_SP_TOL_WIDTH_DT = "000-0.l3-pdm.cdc.sp-tol-width-dt.0";
+    private static final String PDM_TOPIC_REGISTER_EQUIVALENTS = "000-1.l3-pdm.cdc.sp-register-equivalents.0";
 
     @Test
     void sendPdmSpAsapMechPropertiesDt() {
@@ -324,4 +325,59 @@ class SendPdmMessageTest extends SendMessageToKafka {
         Assertions.assertDoesNotThrow(() -> sendAvro(record));
     }
 
+    @Test
+    void sendPdmRegisterEquivalents() {
+        nlmk.l3.pdm.SpRegisterEquivalents value = nlmk.l3.pdm.SpRegisterEquivalents.newBuilder()
+                .setTs("2023-01-16T10:25:25.123+05:00")
+                .setOp(nlmk.l3.pdm.opEnum.I) // I -> U -> D
+                .setPk(nlmk.l3.pdm.Pk.newBuilder()
+                        .setId("42")
+                        .setSystemCode("16")
+                        .setDirectoryId("4242")
+                        .build())
+                .setData(nlmk.l3.pdm.Data.newBuilder()
+                        .setSpecifications(List.of(
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.REGISTER_PARAMETER.getValue())
+                                        .setSpecName(SpecCode.REGISTER_PARAMETER.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("Угл. эквивалент").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.REGISTER_FORMULA_NUMBER.getValue())
+                                        .setSpecName(SpecCode.REGISTER_FORMULA_NUMBER.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("11.5").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.REGISTER_FORMULA.getValue())
+                                        .setSpecName(SpecCode.REGISTER_FORMULA.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("C+0.5*B").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.CR_NI_CU.getValue())
+                                        .setSpecName(SpecCode.CR_NI_CU.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("*..0.25").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.MASS_FRACTION_B.getValue())
+                                        .setSpecName(SpecCode.MASS_FRACTION_B.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("0.005..*").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.MASS_FRACTION_C.getValue())
+                                        .setSpecName(SpecCode.MASS_FRACTION_C.getDesc())
+                                        .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("*..0.02").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.NOTE.getValue())
+                                        .setSpecName(SpecCode.NOTE.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("C > 0").build()
+                        ))
+                        .build())
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_REGISTER_EQUIVALENTS, randomKey(), value);
+
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+    }
 }
