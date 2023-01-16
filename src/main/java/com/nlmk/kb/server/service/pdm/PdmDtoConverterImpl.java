@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service.pdm;
 
 import com.nlmk.attestation.product.api.nsi.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.attestation.product.utils.LimitUtils;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.Spec;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -26,9 +25,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     private final CommonConverter converter;
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034208">Химический состав по стандартам</a>
-     */
     @Override
     public ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -36,7 +32,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("PDM DICTIONARY: {} ", dictionary);
+        log.debug("toChemicalStdLimitDto, PDM DICTIONARY: {} ", dictionary);
 
         final var chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
@@ -635,7 +631,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("--- toChemicalEquivalentStdDto PDM DICTIONARY: {} ", dictionary);
+        log.debug("toChemicalEquivalentStdDto, PDM DICTIONARY: {} ", dictionary);
 
         return ChemicalEquivalentStdDto.builder()
                 .remote_id(dictionary.getPk().getId())
@@ -719,9 +715,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034811">Физико-механические свойства по ДТ для ЦТС</a>
-     */
     @Override
     public AsapMechPropertiesDtDto toAsapMechPropertiesDtDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -796,9 +789,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120625772">Физико-механические свойства проката анизотропной стали по стандартам для ЦТС</a>
-     */
     @Override
     public PhysMechPropAnisSteelStandDto toPhysMechPropAnisSteelStandDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -946,9 +936,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120629816">Расширение химического состава по примечаниям(NSD_chemical_properties_notes)</a>
-     */
     @Override
     public SpChemicalPropertiesNotesDto toSpChemicalPropertiesNotesDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -956,7 +943,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("PDM DICTIONARY: {} ", dictionary);
+        log.debug("toSpChemicalPropertiesNotesDto, PDM DICTIONARY: {} ", dictionary);
 
         return SpChemicalPropertiesNotesDto.builder()
                 .remoteId(dictionary.getPk().getId())
@@ -990,9 +977,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=116498692">Допуски по форме слябов(NSD_tol_shape_slab)</a>
-     */
     @Override
     public TolShapeSlabDto toTolShapeSlabDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -1000,7 +984,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("PDM DICTIONARY: {} ", dictionary);
+        log.debug("toTolShapeSlabDto, PDM DICTIONARY: {} ", dictionary);
 
         return TolShapeSlabDto.builder()
                 .remoteId(dictionary.getPk().getId())
@@ -1037,6 +1021,28 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prWidthTolMm(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_WIDTH))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
-
     }
+
+    @Override
+    public RegisterEquivalentsDto toRegisterEquivalentsDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toRegisterEquivalentsDto, PDM DICTIONARY: {} ", dictionary);
+
+        return RegisterEquivalentsDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .parameter(converter.getStringSpecValue(specs, REGISTER_PARAMETER))
+                .formulaNumber(converter.getStringSpecValue(specs, REGISTER_FORMULA_NUMBER))
+                .formula(converter.getStringSpecValue(specs, REGISTER_FORMULA))
+                .crNiCu(converter.getLimitSpecValue(specs, CR_NI_CU))
+                .b(converter.getLimitSpecValue(specs, MASS_FRACTION_B))
+                .c(converter.getLimitSpecValue(specs, MASS_FRACTION_C))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
 }

@@ -3,7 +3,6 @@ package com.nlmk.kb.server.service.pdm;
 import com.nlmk.kb.server.api.DictionaryConfigDto;
 import com.nlmk.kb.server.entity.DictionaryConfig;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
-import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DictionaryConfigServiceTest {
@@ -49,14 +44,14 @@ class DictionaryConfigServiceTest {
 
     @Test
     void findDtoByIdTestOk() {
-        val dto = service.findById(validEntity.getId());
+        final var dto = service.findById(validEntity.getId());
 
         assertNotNull(dto);
         assertEquals(dto.getId(), validEntity.getId());
         assertEquals(dto.getTopic(), validEntity.getTopic());
         assertEquals(dto.getNsiPath(), validEntity.getNsiPath());
         assertEquals(dto.getEnabled(), validEntity.getEnabled());
-        assertTrue(Arrays.equals(dto.getCodes(), validEntity.getCodes().toArray()));
+        assertArrayEquals(dto.getCodes(), validEntity.getCodes().toArray());
     }
 
     @Test
@@ -73,25 +68,25 @@ class DictionaryConfigServiceTest {
     @Test
     void updateTestOk() {
 
-        val dto = DictionaryConfigDto.builder()
+        final var dto = DictionaryConfigDto.builder()
                 .topic("updatedTopic")
                 .nsiPath("/updated/updatedPath")
                 .enabled(false)
                 .codes(new Integer[]{101, 202, 303, 404})
                 .build();
-        val actualDto = service.update(validEntity.getId(), dto);
+        final var actualDto = service.update(validEntity.getId(), dto);
 
         assertNotNull(actualDto);
         assertEquals(validEntity.getId(), actualDto.getId());
         assertEquals(dto.getTopic(), actualDto.getTopic());
         assertEquals(dto.getNsiPath(), actualDto.getNsiPath());
         assertEquals(dto.getEnabled(), actualDto.getEnabled());
-        assertTrue(Arrays.equals(dto.getCodes(), actualDto.getCodes()));
+        assertArrayEquals(dto.getCodes(), actualDto.getCodes());
     }
 
     @Test
     void updateTestBad() {
-        val notValidDto = DictionaryConfigDto.builder()
+        final var notValidDto = DictionaryConfigDto.builder()
                 .topic("")
                 .nsiPath("/updated/updatedPath")
                 .enabled(false)
@@ -125,7 +120,7 @@ class DictionaryConfigServiceTest {
 
     @Test
     void deleteByIdTestOk() {
-        val entity = DictionaryConfig.builder()
+        final var entity = DictionaryConfig.builder()
                 .topic(RandomStringUtils.randomAlphabetic(12))
                 .nsiPath("/dict/path")
                 .codes(List.of(101))
@@ -155,19 +150,19 @@ class DictionaryConfigServiceTest {
 
     @Test
     void findByTopicNameOk() {
-        val dto = service.findByTopic(validEntity.getTopic());
+        final var dto = service.findByTopic(validEntity.getTopic());
 
         assertNotNull(dto);
         assertEquals(dto.getId(), validEntity.getId());
         assertEquals(dto.getTopic(), validEntity.getTopic());
         assertEquals(dto.getNsiPath(), validEntity.getNsiPath());
         assertEquals(dto.getEnabled(), validEntity.getEnabled());
-        assertTrue(Arrays.equals(dto.getCodes(), validEntity.getCodes().toArray()));
+        assertArrayEquals(dto.getCodes(), validEntity.getCodes().toArray());
     }
 
     @Test
     void findByTopicNameNotFound() {
-        val topicName = RandomStringUtils.randomAlphabetic(12);
+        final var topicName = RandomStringUtils.randomAlphabetic(12);
 
         IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
                 () -> service.findByTopic(topicName)
@@ -178,7 +173,7 @@ class DictionaryConfigServiceTest {
 
     @Test
     void uniqueTopicNameTest() {
-        val entity = DictionaryConfig.builder()
+        final var entity = DictionaryConfig.builder()
                 .topic("newTopicName")
                 .nsiPath("newNsiPath")
                 .enabled(true)
@@ -186,7 +181,7 @@ class DictionaryConfigServiceTest {
                 .build();
         repository.save(entity);
 
-        val nonUniqueTopicDto = DictionaryConfigDto.builder()
+        final var nonUniqueTopicDto = DictionaryConfigDto.builder()
                 .topic(validEntity.getTopic())
                 .nsiPath(entity.getNsiPath())
                 .enabled(true)
