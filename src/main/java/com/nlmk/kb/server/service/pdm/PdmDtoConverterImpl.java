@@ -997,7 +997,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prCustomer(converter.getStringSpecValue(specs, CONSUMER_NAME))
                 .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
                 .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
-                .vognUzkGr(converter.getLimitSpecValue(specs, VOGN_UZK_GR))
+                .vognUzkGr(converter.getLimitSpecValue(specs, CONCAVITY_NARROW_EDGE))
                 .neprNesoosn(converter.getLimitSpecValue(specs, NON_RECTANGULAR_MISALIGNMENT))
                 .neprSrez(converter.getLimitSpecValue(specs, NON_RECTANGULAR_OBLIQUE_CUT))
                 .neprTor(converter.getLimitSpecValue(specs, NON_RECTANGULAR_OBLIQUE_BUTT))
