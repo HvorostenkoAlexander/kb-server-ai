@@ -2,7 +2,6 @@ package com.nlmk.kb.server.testing;
 
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
-import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.*;
 
@@ -198,7 +197,8 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .setSpecMeasure("x")
                                 .build()
                 ))
-                .setChemData(List.of(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                .setChemData(List.of(
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
                                 .setAnalysisCode("1")
                                 .setHeat(2106684)
                                 .setProbeCode("М")
@@ -207,9 +207,9 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .setSampleNum(1)
                                 .setChemical(List.of(
                                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
-                                                .setChemCode(9007)
+                                                .setChemCode(SpecCode.MASS_FRACTION_N.getValue().longValue())
                                                 .setChemValue("0.0006")
-                                                .setChemName("MASS_FRACTION_С")
+                                                .setChemName("N")
                                                 .build()
                                 ))
                                 .build(),
@@ -222,9 +222,35 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .setSampleNum(2)
                                 .setChemical(List.of(
                                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
-                                                .setChemCode(9007)
+                                                .setChemCode(SpecCode.MASS_FRACTION_N.getValue().longValue())
                                                 .setChemValue("0.02")
-                                                .setChemName("MASS_FRACTION_С")
+                                                .setChemName("N")
+                                                .build()
+                                ))
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                                .setSampleId(1L).setSampleNum(1).setAnalysisCode("1")
+                                .setProbeCode("К")
+                                .setChemical(List.of(
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_C.getValue().longValue())
+                                                .setChemName("C")
+                                                .setChemValue("2.0")
+                                                .build(),
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_CR.getValue().longValue())
+                                                .setChemName("CR")
+                                                .setChemValue("2.1")
+                                                .build(),
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_B.getValue().longValue())
+                                                .setChemName("B")
+                                                .setChemValue("2.222")
+                                                .build(),
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_CU.getValue().longValue())
+                                                .setChemName("CU")
+                                                .setChemValue("2.3")
                                                 .build()
                                 ))
                                 .build()
@@ -236,10 +262,10 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .build();
 
         final var value = nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer.newBuilder()
-                .setTs("2022-12-27T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
+                .setTs("2023-01-19T11:46:25.000+05:00")
+                .setOp(nlmk.EnumOp.I)
                 .setPk(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.PkType.newBuilder()
-                        .setId("test-1465") // primeId
+                        .setId("test-1419") // primeId
                         .setSystemCode("12")
                         .build())
                 .setData(data)
@@ -286,9 +312,9 @@ class SendCcmMessageTest extends SendMessageToKafka {
 
         final var value = nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer.newBuilder()
                 .setTs("2022-12-27T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
+                .setOp(nlmk.EnumOp.I)
                 .setPk(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType.newBuilder()
-                        .setId("42") // primeId
+                        .setId("test-1413") // primeId
                         .setSystemCode("13")
                         .build())
                 .setData(data)
