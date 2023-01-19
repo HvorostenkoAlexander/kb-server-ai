@@ -71,11 +71,22 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .orderPos(recordData.getOrderPos())
                 .requirements(toPamRequirement(recordData.getRequirements()))
                 .chemData(toChemData(recordData.getChemData()))
+                .planTask(toPlanTask(recordData.getPlanTask()))
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList())
                 )
+                .build();
+    }
+
+    private PlanTask toPlanTask(RecordPlanTask planTask) {
+        if (Objects.isNull(planTask)) {
+            return PlanTask.builder().build();
+        }
+        return PlanTask.builder()
+                .planTaskId(AdapterUtils.sequenceToString(planTask.getPlanTaskId()))
+                .planTaskLineId(AdapterUtils.sequenceToString(planTask.getPlanTaskLineId()))
                 .build();
     }
 

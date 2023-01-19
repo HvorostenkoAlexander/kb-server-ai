@@ -2,6 +2,7 @@ package com.nlmk.kb.server.testing;
 
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.*;
 
@@ -159,7 +160,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .setId("slabID")
                 .setWerks(1).setWerksName("1")
                 .setKceh(6).setKcehName("КЦ-1")
-                .setOrderNum(1413L).setOrderPos(6)
+                .setOrderNum(1419L).setOrderPos(1)
                 .setMarking(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordMarking.newBuilder()
                         .setHeat(2106684)
                         .setStrand(25217)
@@ -172,6 +173,22 @@ class SendCcmMessageTest extends SendMessageToKafka {
                         .build())
                 .setSpecifications(List.of(
                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordDataSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.STEEL_MARK.getValue())
+                                .setSpecName(SpecCode.STEEL_MARK.getDesc())
+                                .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                .setSpecValue("0404")
+                                .setSpecTypeName("typeName")
+                                .setSpecTypeValue(1)
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordDataSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
+                                .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
+                                .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                .setSpecValue("-")
+                                .setSpecTypeName("typeName")
+                                .setSpecTypeValue(1)
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordDataSpecifications.newBuilder()
                                 .setSpecCode(SpecCode.VACUUMING.getValue())
                                 .setSpecName(SpecCode.VACUUMING.getDesc())
                                 .setSpecValue("RH")
@@ -179,6 +196,37 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .setSpecTypeValue(1)
                                 .setSpecTypeName("x")
                                 .setSpecMeasure("x")
+                                .build()
+                ))
+                .setChemData(List.of(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                                .setAnalysisCode("1")
+                                .setHeat(2106684)
+                                .setProbeCode("М")
+                                .setSamplingPlaceName("Конец")
+                                .setSampleId(1L)
+                                .setSampleNum(1)
+                                .setChemical(List.of(
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(9007)
+                                                .setChemValue("0.0006")
+                                                .setChemName("MASS_FRACTION_С")
+                                                .build()
+                                ))
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                                .setAnalysisCode("2")
+                                .setHeat(2106684)
+                                .setProbeCode("С")
+                                .setSamplingPlaceName("Конец")
+                                .setSampleId(2L)
+                                .setSampleNum(2)
+                                .setChemical(List.of(
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(9007)
+                                                .setChemValue("0.02")
+                                                .setChemName("MASS_FRACTION_С")
+                                                .build()
+                                ))
                                 .build()
                 ))
                 .setPlanTask(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordPlanTask.newBuilder()
@@ -191,7 +239,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .setTs("2022-12-27T14:36:25.000+05:00")
                 .setOp(nlmk.EnumOp.U)
                 .setPk(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.PkType.newBuilder()
-                        .setId("42") // primeId
+                        .setId("test-1465") // primeId
                         .setSystemCode("12")
                         .build())
                 .setData(data)
