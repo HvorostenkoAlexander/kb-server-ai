@@ -1045,4 +1045,21 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public MinNumberSampChemDto toMinNumberSampChemDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toMinNumberSampChemDto, PDM DICTIONARY: {} ", dictionary);
+
+        return MinNumberSampChemDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
+                .numberSamp(converter.parseToInteger(converter.getStringSpecValue(specs, SAMPLES_NUMBER)))
+                .build();
+    }
+
 }

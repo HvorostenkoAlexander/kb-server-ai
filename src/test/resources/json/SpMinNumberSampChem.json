@@ -1,0 +1,27 @@
+{
+  "ts": "2022-11-23T10:35:56.0840864+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "577013",
+    "id": "1"
+  },
+  "data": {
+    "specifications": [
+      {
+        "specCode": 909,
+        "specName": "Цех",
+        "specTypeCode": 1,
+        "specValue": "КЦ-1",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 3542,
+        "specName": "Количество проб",
+        "specTypeCode": 1,
+        "specValue": "1",
+        "specMeasure": ""
+      }
+    ]
+  }
+}
