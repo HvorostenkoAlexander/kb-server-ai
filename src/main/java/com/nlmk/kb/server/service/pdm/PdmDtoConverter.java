@@ -76,4 +76,8 @@ public interface PdmDtoConverter {
      */
     RegisterEquivalentsDto toRegisterEquivalentsDto(PdmDictionary dictionary);
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=147134079">Минимальное количество проб для химанализа( NSD_min_number_samp_chem )</a>
+     */
+    MinNumberSampChemDto toMinNumberSampChemDto(PdmDictionary dictionary);
 }

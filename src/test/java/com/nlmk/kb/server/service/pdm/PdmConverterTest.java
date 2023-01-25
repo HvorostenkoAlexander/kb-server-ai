@@ -359,4 +359,22 @@ class PdmConverterTest {
         assertEquals("C > 0", dto.getPrAnnotation());
     }
 
+    @Test
+    void fromSpMinNumberSampChemTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpMinNumberSampChem.json"),
+                        SpTolEvenness.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toMinNumberSampChemDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("КЦ-1", dto.getRouteShop());
+        assertEquals(1, dto.getNumberSamp());
+    }
 }
