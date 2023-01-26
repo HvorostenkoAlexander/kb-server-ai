@@ -76,7 +76,7 @@ public class S3ServiceImpl implements S3Service {
                         e1cucfg.getE1CUVAL().forEach(
                                 // один код признака (только знакомые коды)
                                 e1cuval -> Arrays.stream(SapName.values())
-                                        .filter(name -> name.toString().equals(e1cuval.getCHARC()))
+                                        .filter(value -> value.getTag().equals(e1cuval.getCHARC()))
                                         .findFirst()
                                         .ifPresent(code -> e1cuval.setVALUE(trimValue(e1cuval.getVALUE())))
                         ));
