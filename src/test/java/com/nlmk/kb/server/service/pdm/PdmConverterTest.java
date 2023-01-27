@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("java:S5961")
 class PdmConverterTest {
 
     private final CommonConverter commonConverter = new CommonConverterImpl();
@@ -377,4 +378,50 @@ class PdmConverterTest {
         assertEquals("КЦ-1", dto.getRouteShop());
         assertEquals(1, dto.getNumberSamp());
     }
+
+    @Test
+    void fromSpSchemeStrippingSlab() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpSchemeStrippingSlab.json"),
+                        SpSchemeStrippingSlab.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toSchemeStrippingSlabDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("28", dto.getRemoteId());
+        // updateTs
+        assertEquals("ГОСТ 1", dto.getPrStandMark());
+        assertEquals("сп3", dto.getPrSteelMark());
+        assertEquals(1, dto.getPrior());
+        assertEquals("ДТ 1", dto.getDt());
+        assertEquals("КЦ-1", dto.getRouteShop());
+        assertEquals("", dto.getWorkCenterNum());
+        assertEquals("", dto.getWorkCenterCode());
+        assertEquals("", dto.getCustomerCodeName());
+        assertEquals("2000001389", dto.getPrCustomer());
+        assertEquals("*..6)", dto.getPrThickGood().getSrcValue());
+        assertEquals("!1..3", dto.getMacroStrAver().getSrcValue());
+        assertEquals("0.08..*", dto.getUglr().getSrcValue());
+        assertEquals("(0.6..*", dto.getMn().getSrcValue());
+        assertEquals("*..0.005)", dto.getNb().getSrcValue());
+        assertEquals("*..0.0006)", dto.getB().getSrcValue());
+        assertEquals("U08", dto.getCodeSlabEar().getSrcValue());
+        assertEquals("плавка", dto.getMeltSlab());
+        assertEquals("!100", dto.getNumberSlabSeria().getSrcValue());
+        assertEquals("!100", dto.getNumberSlabPlavka().getSrcValue());
+        assertEquals("1", dto.getSnakeWide());
+        assertEquals("1", dto.getPerimeterWide());
+        assertEquals("1", dto.getEdgeWide());
+        assertEquals("2", dto.getSnakeNarrow());
+        assertEquals("2", dto.getPerimeterNarrow());
+        assertEquals("2", dto.getEdgeNarrow());
+        assertEquals("тест", dto.getPrAnnotation());
+    }
+
 }

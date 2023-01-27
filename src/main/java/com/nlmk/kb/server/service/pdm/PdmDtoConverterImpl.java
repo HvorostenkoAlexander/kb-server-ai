@@ -1062,4 +1062,44 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public SchemeStrippingSlabDto toSchemeStrippingSlabDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toSchemeStrippingSlabDto, PDM DICTIONARY: {} ", dictionary);
+        return SchemeStrippingSlabDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prSteelMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
+                .workCenterNum(converter.getStringSpecValue(specs, WORK_CENTER_NUM))
+                .workCenterCode(converter.getStringSpecValue(specs, WORK_CENTER_CODE))
+                .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
+                .macroStrAver(converter.getLimitSpecValue(specs, MACRO_MANN))
+                .uglr(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_C_MAX))
+                .mn(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MN_MAX))
+                .nb(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NB_MAX))
+                .b(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_B_MAX))
+                .codeSlabEar(converter.getLimitSpecValue(specs, CODE_SLAB_EAR))
+                .meltSlab(converter.getStringSpecValue(specs, MELT_SLAB))
+                .numberSlabSeria(converter.getLimitSpecValue(specs, NUMBER_SLAB_SERIA))
+                .numberSlabPlavka(converter.getLimitSpecValue(specs, NUMBER_SLAB_PLAVKA))
+                .snakeWide(converter.getStringSpecValue(specs, SNAKE_WIDE))
+                .perimeterWide(converter.getStringSpecValue(specs, PERIMETER_WIDE))
+                .edgeWide(converter.getStringSpecValue(specs, EDGE_WIDE))
+                .snakeNarrow(converter.getStringSpecValue(specs, SNAKE_NARROW))
+                .perimeterNarrow(converter.getStringSpecValue(specs, PERIMETER_NARROW))
+                .edgeNarrow(converter.getStringSpecValue(specs, EDGE_NARROW))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
 }

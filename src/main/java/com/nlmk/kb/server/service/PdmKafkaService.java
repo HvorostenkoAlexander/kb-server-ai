@@ -56,7 +56,8 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.sp-chemical-properties-notes}",
                     "${kafka.pdm.topic.tol-shape-slab}",
                     "${kafka.pdm.topic.register-equivalents}",
-                    "${kafka.pdm.topic.min-number-samp-chem}"
+                    "${kafka.pdm.topic.min-number-samp-chem}",
+                    "${kafka.pdm.topic.scheme-stripping-slab}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

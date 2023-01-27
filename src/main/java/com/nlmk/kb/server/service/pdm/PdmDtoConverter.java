@@ -80,4 +80,10 @@ public interface PdmDtoConverter {
      * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=147134079">Минимальное количество проб для химанализа( NSD_min_number_samp_chem )</a>
      */
     MinNumberSampChemDto toMinNumberSampChemDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118453626">Схемы зачистки слябов( NSD_scheme_stripping_slab )</a>
+     */
+    SchemeStrippingSlabDto toSchemeStrippingSlabDto(PdmDictionary dictionary);
+
 }
