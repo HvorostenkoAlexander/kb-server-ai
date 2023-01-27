@@ -5,6 +5,7 @@ import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.S3ClientException;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -72,7 +73,8 @@ class S3ServiceTest {
                 e1cucfg -> e1cucfg.getE1CUVAL().forEach(
                         e1cuval -> {
                             // все коды, которые есть в заказе
-                            SapName sapName = SapName.valueOf(e1cuval.getCHARC());
+                            SapName sapName = Arrays.stream(SapName.values())
+                                    .filter(a -> a.getTag().equals(e1cuval.getCHARC())).findFirst().get();
                             switch (sapName) {
                                 case STNDRT_PROD:
                                 case STNDRT_MARKA:
