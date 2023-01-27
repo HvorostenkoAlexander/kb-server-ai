@@ -26,6 +26,7 @@ import java.util.List;
         PdmDictionaryCreatorImpl.class,
         DictionaryConfigServiceImpl.class,
         DtoConverterImpl.class,
+        //
         AsapChemicalPropMessageSender.class,
         AsapMechPropertiesDtSender.class,
         AsapMechPropertiesMessageSender.class,
@@ -37,9 +38,11 @@ import java.util.List;
         MatchTkNumMessageSender.class,
         MechPropertiesMessageSender.class,
         MicrostructureMessageSender.class,
+        MinNumberSampChemSender.class,
         PcmMessageSender.class,
         PhysMechPropAnisSteelSender.class,
         RegisterEquivalentsMessageSender.class,
+        SchemeStrippingSlabSender.class,
         SpChemicalPropertiesNotesSender.class,
         TkNumMessageSender.class,
         ToleranceMessageSender.class,
@@ -64,7 +67,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(25, messageSenders.size());
+        Assertions.assertEquals(27, messageSenders.size());
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")

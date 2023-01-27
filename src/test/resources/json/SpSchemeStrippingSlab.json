@@ -1,0 +1,39 @@
+{
+  "ts": "2022-12-16T08:25:40.163+03:00",
+  "op": "U",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "528078",
+    "id": "28"
+  },
+  "data": {
+    "specifications": [
+      { "specCode": 1 , "specName": "Стандарт на продукцию" , "specTypeCode": 1 , "specValue": "ГОСТ 1" , "specMeasure": "" },
+      { "specCode": 3 , "specName": "Марка стали" , "specTypeCode": 1 , "specValue": "сп3" , "specMeasure": "" },
+      { "specCode": 604 , "specName": "Приоритет" , "specTypeCode": 1 , "specValue": "1" , "specMeasure": "" },
+      { "specCode": 955 , "specName": "Дополнительное требование заказа" , "specTypeCode": 1 , "specValue": "ДТ 1" , "specMeasure": "" },
+      { "specCode": 909 , "specName": "Цех" , "specTypeCode": 1 , "specValue": "КЦ-1" , "specMeasure": "" },
+      { "specCode": 433 , "specName": "Шифр рабочего центра" , "specTypeCode": 1 , "specValue": "" , "specMeasure": "" },
+      { "specCode": 434 , "specName": "Краткое название рабочего центра" , "specTypeCode": 1 , "specValue": "" , "specMeasure": "" },
+      { "specCode": 1815 , "specName": "Наименование потребителя" , "specTypeCode": 1 , "specValue": "" , "specMeasure": "" },
+      { "specCode": 1816 , "specName": "Код потребителя" , "specTypeCode": 1 , "specValue": "2000001389" , "specMeasure": "" },
+      { "specCode": 416 , "specName": "Толщина продукции, мм" , "specTypeCode": 1 , "specValue": "*..6)" , "specMeasure": "мм" },
+      { "specCode": 572 , "specName": "Требуемая макроструктура, класс" , "specTypeCode": 1 , "specValue": "!1..3" , "specMeasure": "" },
+      { "specCode": 248 , "specName": "C, %" , "specTypeCode": 1 , "specValue": "0.08..*" , "specMeasure": "%" },
+      { "specCode": 250 , "specName": "Mn, %" , "specTypeCode": 1 , "specValue": "(0.6..*" , "specMeasure": "%" },
+      { "specCode": 272 , "specName": "Nb, %" , "specTypeCode": 1 , "specValue": "*..0.005)" , "specMeasure": "%" },
+      { "specCode": 278 , "specName": "B, %" , "specTypeCode": 1 , "specValue": "*..0.0006)" , "specMeasure": "%" },
+      { "specCode": 1877 , "specName": "Код сляба (ушка)" , "specTypeCode": 1 , "specValue": "U08" , "specMeasure": "" },
+      { "specCode": 1899 , "specName": "Плавка/сляб" , "specTypeCode": 1 , "specValue": "плавка" , "specMeasure": "" },
+      { "specCode": 3690 , "specName": "Номер сляба в серии" , "specTypeCode": 1 , "specValue": "!100" , "specMeasure": "" },
+      { "specCode": 3691 , "specName": "Номер сляба в плавке" , "specTypeCode": 1 , "specValue": "!100" , "specMeasure": "" },
+      { "specCode": 3692 , "specName": "Змейка (широкая грань)" , "specTypeCode": 1 , "specValue": "1" , "specMeasure": "" },
+      { "specCode": 3693 , "specName": "Периметр (широкая грань)" , "specTypeCode": 1 , "specValue": "1" , "specMeasure": "" },
+      { "specCode": 3694 , "specName": "Ребро (широкая грань)" , "specTypeCode": 1 , "specValue": "1" , "specMeasure": "" },
+      { "specCode": 3695 , "specName": "Змейка (узкая грань)" , "specTypeCode": 1 , "specValue": "2" , "specMeasure": "" },
+      { "specCode": 3696 , "specName": "Периметр (узкая грань)" , "specTypeCode": 1 , "specValue": "2" , "specMeasure": "" },
+      { "specCode": 3697 , "specName": "Ребро (узкая грань)" , "specTypeCode": 1 , "specValue": "2" , "specMeasure": ""},
+      { "specCode": 138 , "specName": "Примечание" , "specTypeCode": 1 , "specValue": "тест" , "specMeasure": "" }
+    ]
+  }
+}
