@@ -424,4 +424,22 @@ class PdmConverterTest {
         assertEquals("тест", dto.getPrAnnotation());
     }
 
+    @Test
+    void from() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpMacrosructure.json"),
+                        SpMacrosructure.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toMacrosructureDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        // todo
+    }
+
 }

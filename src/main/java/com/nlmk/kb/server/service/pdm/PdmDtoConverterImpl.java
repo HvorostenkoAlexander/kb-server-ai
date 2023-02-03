@@ -1102,4 +1102,28 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public MacrosructureDto toMacrosructureDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toMacrosructureDto, PDM DICTIONARY: {} ", dictionary);
+
+        return MacrosructureDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .tkNum(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
+                .route(converter.getStringSpecValue(specs, ROUTE_TK))
+                .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
+                // todo
+                .build();
+    }
+
 }

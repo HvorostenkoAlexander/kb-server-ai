@@ -1,0 +1,32 @@
+{
+  "ts": "2023-01-26T09:18:36.427+03:00",
+  "op": "U",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "504191",
+    "Id": "103"
+  },
+  "data": {
+    "specifications": [
+      { "specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "ГОСТ 1", "specMeasure": "" },
+      { "specCode": 955, "specName": "Доп. требование", "specTypeCode": 1, "specValue": "ДТ 22.02", "specMeasure": "" },
+      { "specCode": 604, "specName": "Приоритет", "specTypeCode": 1, "specValue": "10", "specMeasure": "" },
+      { "specCode": 474, "specName": "Номер ТК", "specTypeCode": 1, "specValue": "ТК-185", "specMeasure": "" },
+      { "specCode": 415, "specName": "Маршрут", "specTypeCode": 1, "specValue": "1", "specMeasure": "" },
+      { "specCode": 1815, "specName": "Потребитель", "specTypeCode": 1, "specValue": "БОРУСАН МАННЕСМАНН БОРУ", "specMeasure": "" },
+      { "specCode": 1816, "specName": "Код потребителя", "specTypeCode": 1, "specValue": "2000002631", "specMeasure": "" },
+      { "specCode": 416, "specName": "Толщина продукции", "specTypeCode": 1, "specValue": "(4..*", "specMeasure": "" },
+      { "specCode": 1830, "specName": "Группа стали ВМЗ", "specTypeCode": 1, "specValue": "!1", "specMeasure": "" },
+      { "specCode": 1835, "specName": "Расслой (ширина раскрытия), мм", "specTypeCode": 1, "specValue": "*..1", "specMeasure": "мм" },
+      { "specCode": 1836, "specName": "Расслой (суммарная протяженность), %", "specTypeCode": 1, "specValue": "*..50", "specMeasure": "%" },
+      { "specCode": 1837, "specName": "Осевая пористость (диаметр пор), мм", "specTypeCode": 1, "specValue": "*..2", "specMeasure": "мм" },
+      { "specCode": 573, "specName": "Внутренние трещины", "specTypeCode": 1, "specValue": "1..2", "specMeasure": "" },
+      { "specCode": 574, "specName": "Облачные включения", "specTypeCode": 1, "specValue": "2..3", "specMeasure": "" },
+      { "specCode": 575, "specName": "Осевая сегрегация", "specTypeCode": 1, "specValue": "3..4", "specMeasure": "" },
+      { "specCode": 576, "specName": "Точечные включения", "specTypeCode": 1, "specValue": "4..5", "specMeasure": "" },
+      { "specCode": 577, "specName": "Трещ. на узких гранях", "specTypeCode": 1, "specValue": "5..6", "specMeasure": "" },
+      { "specCode": 578, "specName": "Угловые трещины", "specTypeCode": 1, "specValue": "6..7", "specMeasure": "" },
+      { "specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "тест", "specMeasure": "" }
+    ]
+  }
+}
