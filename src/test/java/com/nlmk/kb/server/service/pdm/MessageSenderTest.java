@@ -34,6 +34,7 @@ import java.util.List;
         ChemicalPropertiesMessageSender.class,
         EquivalentsMessageSender.class,
         KatSteel4041MessageSender.class,
+        MacrostructureSender.class,
         MatchRpNumMessageSender.class,
         MatchTkNumMessageSender.class,
         MechPropertiesMessageSender.class,
@@ -67,7 +68,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(27, messageSenders.size());
+        Assertions.assertEquals(28, messageSenders.size());
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")
