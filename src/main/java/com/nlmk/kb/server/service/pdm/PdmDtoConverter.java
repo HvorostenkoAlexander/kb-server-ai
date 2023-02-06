@@ -89,6 +89,6 @@ public interface PdmDtoConverter {
     /**
      * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118428454">Макроструктура( NSD_macrosructure )</a>
      */
-    MacrosructureDto toMacrosructureDto(PdmDictionary dictionary);
+    MacrostructureDto toMacrostructureDto(PdmDictionary dictionary);
 
 }

@@ -1103,7 +1103,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
     }
 
     @Override
-    public MacrosructureDto toMacrosructureDto(PdmDictionary dictionary) {
+    public MacrostructureDto toMacrostructureDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
         Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
 
@@ -1111,7 +1111,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         log.debug("toMacrosructureDto, PDM DICTIONARY: {} ", dictionary);
 
-        return MacrosructureDto.builder()
+        return MacrostructureDto.builder()
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))

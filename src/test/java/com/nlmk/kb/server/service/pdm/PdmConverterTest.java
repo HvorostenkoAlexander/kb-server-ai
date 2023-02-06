@@ -436,7 +436,7 @@ class PdmConverterTest {
                 obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
         );
 
-        final var dto = pdmDtoConverter.toMacrosructureDto(dictionary);
+        final var dto = pdmDtoConverter.toMacrostructureDto(dictionary);
         assertNotNull(dto);
         assertNull(dto.getId());
         assertEquals("103", dto.getRemoteId());

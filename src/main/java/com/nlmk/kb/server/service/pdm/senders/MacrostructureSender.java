@@ -24,7 +24,7 @@ public class MacrostructureSender extends BasePdmCreator {
 
     @Override
     Object getBody(PdmMessage message) {
-        return super.getPdmDtoConverter().toMacrosructureDto(message.getDictionary());
+        return super.getPdmDtoConverter().toMacrostructureDto(message.getDictionary());
     }
 
     @Override
