@@ -6,30 +6,30 @@ import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
-import nlmk.l3.pdm.SpTolWidth;
+import nlmk.l3.pdm.SpTolLength;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TolWidthMessageSender extends BasePdmCreator {
+public class TolLengthSender extends BasePdmCreator {
 
-    public TolWidthMessageSender(@Value("${kafka.pdm.topic.tol-width}") String type,
-                                 PdmDtoConverter pdmDtoConverter,
-                                 NsiSender commonSender,
-                                 PdmDictionaryCreator pdmDictionaryCreator,
-                                 DictionaryConfigService dictionaryConfigService) {
+    public TolLengthSender(@Value("${kafka.pdm.topic.tol-length}") String type,
+                           PdmDtoConverter pdmDtoConverter,
+                           NsiSender commonSender,
+                           PdmDictionaryCreator pdmDictionaryCreator,
+                           DictionaryConfigService dictionaryConfigService) {
         super(type, pdmDtoConverter, commonSender, pdmDictionaryCreator, dictionaryConfigService);
     }
 
     @Override
     Object getBody(PdmMessage message) {
-        return super.getPdmDtoConverter().toWidthTkLimitDto(message.getDictionary());
+        return super.getPdmDtoConverter().toLengthTkLimitDto(message.getDictionary());
     }
 
     @Override
     PdmDictionary getDictionary(ConsumerRecord<Object, Object> consumerRecord) {
-        final var pdmObject = (SpTolWidth) consumerRecord.value();
+        final var pdmObject = (SpTolLength) consumerRecord.value();
         return super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );

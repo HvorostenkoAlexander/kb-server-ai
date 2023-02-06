@@ -424,4 +424,41 @@ class PdmConverterTest {
         assertEquals("тест", dto.getPrAnnotation());
     }
 
+    @Test
+    void from() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpMacrosructure.json"),
+                        SpMacrosructure.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toMacrosructureDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("103", dto.getRemoteId());
+        assertEquals("ГОСТ 1", dto.getPrStandMark());
+        assertEquals("ДТ 22.02", dto.getDt());
+        assertEquals(10, dto.getPrior());
+        assertEquals("ТК-185", dto.getTkNum());
+        assertEquals("1", dto.getRoute());
+        assertEquals("БОРУСАН МАННЕСМАНН БОРУ", dto.getCustomerCodeName());
+        assertEquals("2000002631", dto.getPrCustomer());
+        assertEquals("(4..*", dto.getPrThickGood().getSrcValue());
+        assertEquals("!1", dto.getGrSteelVmz());
+        assertEquals("*..1", dto.getRasslOpeningWidth().getSrcValue());
+        assertEquals("*..50", dto.getRasslTotalLength().getSrcValue());
+        assertEquals("*..2", dto.getPoreDiametr().getSrcValue());
+        assertEquals("1..2", dto.getVnutrTr().getSrcValue());
+        assertEquals("2..3", dto.getVklObl().getSrcValue());
+        assertEquals("3..4", dto.getOsevSeqr().getSrcValue());
+        assertEquals("4..5", dto.getVklToch().getSrcValue());
+        assertEquals("5..6", dto.getUzkgrTr().getSrcValue());
+        assertEquals("6..7", dto.getUglovTr().getSrcValue());
+        assertEquals("тест", dto.getPrAnnotation());
+    }
+
 }

@@ -27,33 +27,34 @@ import java.util.List;
         DictionaryConfigServiceImpl.class,
         DtoConverterImpl.class,
         //
-        AsapChemicalPropMessageSender.class,
+        AsapChemicalPropSender.class,
         AsapMechPropertiesDtSender.class,
-        AsapMechPropertiesMessageSender.class,
+        AsapMechPropertiesSender.class,
         CeqMessageSender.class,
-        ChemicalPropertiesMessageSender.class,
-        EquivalentsMessageSender.class,
-        KatSteel4041MessageSender.class,
-        MatchRpNumMessageSender.class,
-        MatchTkNumMessageSender.class,
-        MechPropertiesMessageSender.class,
-        MicrostructureMessageSender.class,
+        ChemicalPropertiesSender.class,
+        EquivalentsSender.class,
+        KatSteel4041Sender.class,
+        MacrostructureSender.class,
+        MatchRpNumSender.class,
+        MatchTkNumSender.class,
+        MechPropertiesSender.class,
+        MicrostructureSender.class,
         MinNumberSampChemSender.class,
-        PcmMessageSender.class,
+        PcmSender.class,
         PhysMechPropAnisSteelSender.class,
-        RegisterEquivalentsMessageSender.class,
+        RegisterEquivalentsSender.class,
         SchemeStrippingSlabSender.class,
         SpChemicalPropertiesNotesSender.class,
-        TkNumMessageSender.class,
-        ToleranceMessageSender.class,
+        TkNumSender.class,
+        ToleranceSender.class,
         TolEvennessDtSender.class,
-        TolEvennessMessageSender.class,
-        TolLengthMessageSender.class,
+        TolEvennessSender.class,
+        TolLengthSender.class,
         TolShapeSlabSender.class,
         TolThickDtSender.class,
-        TolThickMessageSender.class,
+        TolThickSender.class,
         TolWidthDtSender.class,
-        TolWidthMessageSender.class
+        TolWidthSender.class
 })
 class MessageSenderTest {
 
@@ -67,7 +68,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(27, messageSenders.size());
+        Assertions.assertEquals(28, messageSenders.size());
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")

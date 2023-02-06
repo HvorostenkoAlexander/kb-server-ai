@@ -57,7 +57,8 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.tol-shape-slab}",
                     "${kafka.pdm.topic.register-equivalents}",
                     "${kafka.pdm.topic.min-number-samp-chem}",
-                    "${kafka.pdm.topic.scheme-stripping-slab}"
+                    "${kafka.pdm.topic.scheme-stripping-slab}",
+                    "${kafka.pdm.topic.macrostructure}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

@@ -6,30 +6,32 @@ import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
-import nlmk.l3.pdm.SpAsapMechProperties;
+import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.pdm.SpMatchTkNum;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
-public class AsapMechPropertiesMessageSender extends BasePdmCreator {
+public class MatchTkNumSender extends BasePdmCreator {
 
-    public AsapMechPropertiesMessageSender(@Value("${kafka.pdm.topic.asap-mech-properties}") String type,
-                                           NsiSender commonSender,
-                                           PdmDtoConverter pdmDtoConverter,
-                                           PdmDictionaryCreator pdmDictionaryCreator,
-                                           DictionaryConfigService dictionaryConfigService) {
+    public MatchTkNumSender(@Value("${kafka.pdm.topic.match-tk-num}") String type,
+                            PdmDtoConverter pdmDtoConverter,
+                            NsiSender commonSender,
+                            PdmDictionaryCreator pdmDictionaryCreator,
+                            DictionaryConfigService dictionaryConfigService) {
         super(type, pdmDtoConverter, commonSender, pdmDictionaryCreator, dictionaryConfigService);
     }
 
     @Override
     Object getBody(PdmMessage message) {
-        return super.getPdmDtoConverter().toPhysMechPropertiesDto(message.getDictionary());
+        return super.getPdmDtoConverter().toMatchTkDto(message.getDictionary());
     }
 
     @Override
     PdmDictionary getDictionary(ConsumerRecord<Object, Object> consumerRecord) {
-        final var pdmObject = (SpAsapMechProperties) consumerRecord.value();
+        final var pdmObject = (SpMatchTkNum) consumerRecord.value();
         return super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );

@@ -1102,4 +1102,38 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public MacrosructureDto toMacrosructureDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toMacrosructureDto, PDM DICTIONARY: {} ", dictionary);
+
+        return MacrosructureDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .tkNum(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
+                .route(converter.getStringSpecValue(specs, ROUTE_TK))
+                .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
+                .grSteelVmz(converter.getStringSpecValue(specs, VMZ_STEEL_GROUP))
+                .rasslOpeningWidth(converter.getLimitSpecValue(specs, LAYER_OPENING_WIDTH))
+                .rasslTotalLength(converter.getLimitSpecValue(specs, LAYER_TOTAL_LENGTH))
+                .poreDiametr(converter.getLimitSpecValue(specs, AXIAL_POROSITY))
+                .vnutrTr(converter.getLimitSpecValue(specs, INTERNAL_CRACKS))
+                .vklObl(converter.getLimitSpecValue(specs, CLOUD_INCLUSIONS))
+                .osevSeqr(converter.getLimitSpecValue(specs, AXIAL_SEGREGATION))
+                .vklToch(converter.getLimitSpecValue(specs, POINT_INCLUSIONS))
+                .uzkgrTr(converter.getLimitSpecValue(specs, EDGE_CRACKS))
+                .uglovTr(converter.getLimitSpecValue(specs, ANGLE_CRACKS))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
 }
