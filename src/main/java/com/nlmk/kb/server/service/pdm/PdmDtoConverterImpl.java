@@ -1078,7 +1078,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
                 .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
-                .workCenterNum(converter.getStringSpecValue(specs, WORK_CENTER_NUM))
                 .workCenterCode(converter.getStringSpecValue(specs, WORK_CENTER_CODE))
                 .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
                 .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))

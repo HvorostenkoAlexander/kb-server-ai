@@ -401,7 +401,6 @@ class PdmConverterTest {
         assertEquals(1, dto.getPrior());
         assertEquals("ДТ 1", dto.getDt());
         assertEquals("КЦ-1", dto.getRouteShop());
-        assertEquals("", dto.getWorkCenterNum());
         assertEquals("", dto.getWorkCenterCode());
         assertEquals("", dto.getCustomerCodeName());
         assertEquals("2000001389", dto.getPrCustomer());
