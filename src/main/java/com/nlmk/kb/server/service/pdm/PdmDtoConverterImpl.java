@@ -1078,7 +1078,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
                 .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
-                .workCenterCode(converter.getLimitSpecValue(specs, WORK_CENTER_CODE))
+                .workCenterCode(converter.getStringSpecValue(specs, WORK_CENTER_CODE))
                 .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
                 .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
