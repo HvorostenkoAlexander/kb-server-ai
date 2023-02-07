@@ -200,7 +200,6 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .setChemData(List.of(
                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
                                 .setAnalysisCode("М")
-                                .setProbeCode("?")
                                 .setHeat(2106684)
                                 .setSamplingPlaceName("Конец")
                                 .setSampleId(1L)
@@ -215,7 +214,6 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .build(),
                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
                                 .setAnalysisCode("С")
-                                .setProbeCode("?")
                                 .setHeat(2106684)
                                 .setSamplingPlaceName("Конец")
                                 .setSampleId(2L)
@@ -231,7 +229,6 @@ class SendCcmMessageTest extends SendMessageToKafka {
                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
                                 .setSampleId(1L).setSampleNum(1).setAnalysisCode("1")
                                 .setAnalysisCode("К")
-                                .setProbeCode("?")
                                 .setChemical(List.of(
                                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
                                                 .setChemCode(SpecCode.MASS_FRACTION_C.getValue().longValue())
