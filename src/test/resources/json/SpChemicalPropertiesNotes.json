@@ -1,0 +1,209 @@
+{
+  "ts": "2022-12-05T06:14:41.647+03:00",
+  "op": "U",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "397542",
+    "id": "306"
+  },
+  "data": {
+    "specifications": [
+      {
+        "specCode": 138,
+        "specName": "Примечание",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 222,
+        "specName": "Номер ТК",
+        "specTypeCode": 1,
+        "specValue": "РП-336-1-2022.01",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 415,
+        "specName": "Маршрут ТК",
+        "specTypeCode": 1,
+        "specValue": "1;2;3",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 248,
+        "specName": "C",
+        "specTypeCode": 1,
+        "specValue": "0.06..0.09",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 252,
+        "specName": "Si",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 250,
+        "specName": "Mn",
+        "specTypeCode": 1,
+        "specValue": "0.70..0.85",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 254,
+        "specName": "S",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 256,
+        "specName": "P",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 258,
+        "specName": "Al",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 260,
+        "specName": "Cr",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 262,
+        "specName": "Ni",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 264,
+        "specName": "Cu",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1909,
+        "specName": "N",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 268,
+        "specName": "Ti",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 272,
+        "specName": "Nb",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 270,
+        "specName": "V",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 278,
+        "specName": "B",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 276,
+        "specName": "Ca",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 274,
+        "specName": "Mo",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 280,
+        "specName": "Sn",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 867,
+        "specName": "Sb",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1910,
+        "specName": "H",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1911,
+        "specName": "Условие 1",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1912,
+        "specName": "Значение по условию 1",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1913,
+        "specName": "Условие 2",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1914,
+        "specName": "Значение по условию 2",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1915,
+        "specName": "Условие 3",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 1916,
+        "specName": "Значение по условию 3",
+        "specTypeCode": 1,
+        "specValue": "",
+        "specMeasure": ""
+      }
+    ]
+  }
+}

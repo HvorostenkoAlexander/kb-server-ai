@@ -159,7 +159,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .setId("slabID")
                 .setWerks(1).setWerksName("1")
                 .setKceh(6).setKcehName("КЦ-1")
-                .setOrderNum(1413L).setOrderPos(6)
+                .setOrderNum(1419L).setOrderPos(1)
                 .setMarking(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordMarking.newBuilder()
                         .setHeat(2106684)
                         .setStrand(25217)
@@ -172,6 +172,22 @@ class SendCcmMessageTest extends SendMessageToKafka {
                         .build())
                 .setSpecifications(List.of(
                         nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordDataSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.STEEL_MARK.getValue())
+                                .setSpecName(SpecCode.STEEL_MARK.getDesc())
+                                .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                .setSpecValue("0404")
+                                .setSpecTypeName("typeName")
+                                .setSpecTypeValue(1)
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordDataSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
+                                .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
+                                .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                .setSpecValue("-")
+                                .setSpecTypeName("typeName")
+                                .setSpecTypeValue(1)
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordDataSpecifications.newBuilder()
                                 .setSpecCode(SpecCode.VACUUMING.getValue())
                                 .setSpecName(SpecCode.VACUUMING.getDesc())
                                 .setSpecValue("RH")
@@ -181,6 +197,64 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .setSpecMeasure("x")
                                 .build()
                 ))
+                .setChemData(List.of(
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                                .setAnalysisCode("1")
+                                .setHeat(2106684)
+                                .setProbeCode("М")
+                                .setSamplingPlaceName("Конец")
+                                .setSampleId(1L)
+                                .setSampleNum(1)
+                                .setChemical(List.of(
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_N.getValue().longValue())
+                                                .setChemValue("0.0006")
+                                                .setChemName("N")
+                                                .build()
+                                ))
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                                .setAnalysisCode("2")
+                                .setHeat(2106684)
+                                .setProbeCode("С")
+                                .setSamplingPlaceName("Конец")
+                                .setSampleId(2L)
+                                .setSampleNum(2)
+                                .setChemical(List.of(
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_N.getValue().longValue())
+                                                .setChemValue("0.02")
+                                                .setChemName("N")
+                                                .build()
+                                ))
+                                .build(),
+                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemData.newBuilder()
+                                .setSampleId(1L).setSampleNum(1).setAnalysisCode("1")
+                                .setProbeCode("К")
+                                .setChemical(List.of(
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_C.getValue().longValue())
+                                                .setChemName("C")
+                                                .setChemValue("2.0")
+                                                .build(),
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_CR.getValue().longValue())
+                                                .setChemName("CR")
+                                                .setChemValue("2.1")
+                                                .build(),
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_B.getValue().longValue())
+                                                .setChemName("B")
+                                                .setChemValue("2.222")
+                                                .build(),
+                                        nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordChemical.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_CU.getValue().longValue())
+                                                .setChemName("CU")
+                                                .setChemValue("2.3")
+                                                .build()
+                                ))
+                                .build()
+                ))
                 .setPlanTask(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordPlanTask.newBuilder()
                         .setPlanTaskId("1").setPlanTaskLineId("11").build())
                 .setRequirements(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.RecordRequirements.newBuilder()
@@ -188,10 +262,10 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .build();
 
         final var value = nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer.newBuilder()
-                .setTs("2022-12-27T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
+                .setTs("2023-01-19T11:46:25.000+05:00")
+                .setOp(nlmk.EnumOp.I)
                 .setPk(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver.PkType.newBuilder()
-                        .setId("42") // primeId
+                        .setId("test-1419") // primeId
                         .setSystemCode("12")
                         .build())
                 .setData(data)
@@ -238,9 +312,9 @@ class SendCcmMessageTest extends SendMessageToKafka {
 
         final var value = nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer.newBuilder()
                 .setTs("2022-12-27T14:36:25.000+05:00")
-                .setOp(nlmk.EnumOp.U)
+                .setOp(nlmk.EnumOp.I)
                 .setPk(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType.newBuilder()
-                        .setId("42") // primeId
+                        .setId("test-1413") // primeId
                         .setSystemCode("13")
                         .build())
                 .setData(data)

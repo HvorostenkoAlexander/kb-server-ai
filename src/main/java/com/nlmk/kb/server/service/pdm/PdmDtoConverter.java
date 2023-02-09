@@ -20,6 +20,9 @@ public interface PdmDtoConverter {
 
     MatchRpDto toMatchRpDto(PdmDictionary dictionary);
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034208">Химический состав по стандартам</a>
+     */
     ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary);
 
     SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary);
@@ -42,8 +45,14 @@ public interface PdmDtoConverter {
 
     ChemicalTkLimitDto toChemicalTkLimitDto(PdmDictionary dictionary);
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034811">Физико-механические свойства по ДТ для ЦТС</a>
+     */
     AsapMechPropertiesDtDto toAsapMechPropertiesDtDto(PdmDictionary dictionary);
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120625772">Физико-механические свойства проката анизотропной стали по стандартам для ЦТС</a>
+     */
     PhysMechPropAnisSteelStandDto toPhysMechPropAnisSteelStandDto(PdmDictionary dictionary);
 
     TolEvennessDtDto toTolEvennessDtDto(PdmDictionary dictionary);
@@ -51,5 +60,20 @@ public interface PdmDtoConverter {
     TolThickDtDto toTolThickDtDto(PdmDictionary dictionary);
 
     TolWidthDtDto toTolWidthDtDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120629816">Расширение химического состава по примечаниям(NSD_chemical_properties_notes)</a>
+     */
+    SpChemicalPropertiesNotesDto toSpChemicalPropertiesNotesDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=116498692">Допуски по форме слябов(NSD_tol_shape_slab)</a>
+     */
+    TolShapeSlabDto toTolShapeSlabDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=144109644">Реестр эквивалентов(NSD_register_equivalents )</a>
+     */
+    RegisterEquivalentsDto toRegisterEquivalentsDto(PdmDictionary dictionary);
 
 }
