@@ -5,8 +5,10 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+
 import java.util.Collections;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer;
 import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.*;
@@ -101,7 +103,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                                 .sampleNum(a.getSampleNum())
                                 .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
                                 .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
-                                .heat(a.getHeat())
+                                .heat(Objects.nonNull(a.getHeat()) ? a.getHeat().intValue() : null) // fixme
                                 .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                                 .chemical(toChemical(a.getChemical()))
                                 .build()
