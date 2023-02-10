@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer;
-import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.*;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor
-public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAttestRequestVer> {
+public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAttestRequestVer0> {
 
     private final CommonConverter converter;
 
     @Override
-    public AttestationRequest adapt(DbAttestRequestVer requestMessage) {
+    public AttestationRequest adapt(DbAttestRequestVer0 requestMessage) {
         Assert.notNull(requestMessage, "requestMessage is null");
         Assert.notNull(requestMessage.getTs(), "requestMessage.getTs() is null");
         Assert.notNull(requestMessage.getOp(), "requestMessage.getOp() is null");
@@ -46,7 +46,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .build();
     }
 
-    private Pk toPamPk(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType recordPk) {
+    private Pk toPamPk(PkType recordPk) {
         if (Objects.isNull(recordPk)) {
             return null;
         }
@@ -57,8 +57,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .build();
     }
 
-    private DataField toPamDataField(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.PkType recordPk,
-                                     nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver.RecordData recordData) {
+    private DataField toPamDataField(PkType recordPk, RecordData recordData) {
         if (Objects.isNull(recordData)) {
             return null;
         }
@@ -103,7 +102,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                                 .sampleNum(a.getSampleNum())
                                 .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
                                 .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
-                                .heat(Objects.nonNull(a.getHeat()) ? a.getHeat().intValue() : null) // fixme
+                                .heat(a.getHeat())
                                 .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                                 .chemical(toChemical(a.getChemical()))
                                 .build()
