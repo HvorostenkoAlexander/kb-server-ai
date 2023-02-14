@@ -30,7 +30,6 @@ import java.util.List;
         AsapChemicalPropSender.class,
         AsapMechPropertiesDtSender.class,
         AsapMechPropertiesSender.class,
-        CeqMessageSender.class,
         ChemicalPropertiesSender.class,
         EquivalentsSender.class,
         KatSteel4041Sender.class,
@@ -40,7 +39,6 @@ import java.util.List;
         MechPropertiesSender.class,
         MicrostructureSender.class,
         MinNumberSampChemSender.class,
-        PcmSender.class,
         PhysMechPropAnisSteelSender.class,
         RegisterEquivalentsSender.class,
         SchemeStrippingSlabSender.class,
@@ -68,7 +66,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(28, messageSenders.size());
+        Assertions.assertEquals(26, messageSenders.size());
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")

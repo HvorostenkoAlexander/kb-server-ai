@@ -357,22 +357,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
     }
 
     @Override
-    public CEqDto toCEqDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary, DICT_NOT_NULL);
-        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
-
-        final var specs = dictionary.getData().getSpecifications();
-
-        return CEqDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
-                .ceqNum(converter.getStringSpecValue(specs, CARBON_EQUIVALENT_FORMULA_NUMBER))
-                .ceqFormula(converter.getStringSpecValue(specs, CARBON_EQUIVALENT_FORMULA))
-                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
-                .build();
-    }
-
-    @Override
     public MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
         Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
@@ -676,22 +660,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .ts(dictionary.getTs())
                 .rpNumSap(converter.getStringSpecValue(specs, RP_SAP_NUMBER))
                 .tkNum(converter.getStringSpecValue(specs, RP_NUMBER_VERSION_ROUTE))
-                .build();
-    }
-
-    @Override
-    public PcmDto toPcmDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary, DICT_NOT_NULL);
-        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
-
-        final var specs = dictionary.getData().getSpecifications();
-
-        return PcmDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
-                .pcmNum(converter.getStringSpecValue(specs, CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER))
-                .pcmFormula(converter.getStringSpecValue(specs, CRACK_RESISTANCE_FORMULA))
-                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }
 

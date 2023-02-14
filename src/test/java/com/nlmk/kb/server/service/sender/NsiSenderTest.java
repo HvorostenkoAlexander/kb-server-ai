@@ -1,8 +1,9 @@
 package com.nlmk.kb.server.service.sender;
 
-import com.nlmk.attestation.product.api.nsi.CEqDto;
+import com.nlmk.attestation.product.api.nsi.TolWidthDtDto;
 import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
+import nlmk.l3.pdm.SpTolWidth;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -47,18 +48,18 @@ class NsiSenderTest {
 
     @Test
     void sendBodyReturnLong() throws Exception {
-        // на примере объекта CEqDto
-        final var urlDictionary = "/nsi/dict/nsd_ceq";
+        // на примере объекта TolWidthDtDto
+        final var urlDictionary = "/nsi/dict/width";
 
         {
             final var response = Assertions.assertThrows(
                     RemoteServiceSenderException.class,
-                    () -> nsiSender.sendBodyReturnLong((CEqDto) null, urlDictionary, Operation.I)
+                    () -> nsiSender.sendBodyReturnLong((TolWidthDtDto) null, urlDictionary, Operation.I)
             );
             assertEquals("NsiSender, exchange, пустое тело", response.getMessage());
         }
 
-        final var dto = CEqDto.builder().build();
+        final var dto = TolWidthDtDto.builder().build();
 
         {
             mockWebServer.enqueue(new MockResponse()
@@ -70,7 +71,7 @@ class NsiSenderTest {
                     () -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I)
             );
             assertEquals(String.format(
-                    "NsiSender, exchange, ошибка при отправке [%d Bad Request from POST http://localhost:%d/nsi/dict/nsd_ceq]",
+                    "NsiSender, exchange, ошибка при отправке [%d Bad Request from POST http://localhost:%d/nsi/dict/width]",
                     HttpStatus.BAD_REQUEST.value(), mockWebServer.getPort()), response.getMessage());
             mockWebServer.takeRequest();
         }
