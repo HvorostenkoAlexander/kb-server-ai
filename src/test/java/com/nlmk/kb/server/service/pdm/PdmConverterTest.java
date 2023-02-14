@@ -5,6 +5,9 @@ import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
+
+import java.util.Date;
+
 import nlmk.l3.pdm.*;
 import org.junit.jupiter.api.Test;
 
@@ -111,10 +114,10 @@ class PdmConverterTest {
         final var dto = pdmDtoConverter.toAsapMechPropertiesDtDto(dictionary);
 
         assertNotNull(dto);
-        assertEquals("11ЮА",dto.getPrProdMark());
-        assertEquals("ТУ 14-106-454-94",dto.getPrStandMark());
-        assertEquals("4.00..8.00",dto.getPrThickUncoat().getSrcValue());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("11ЮА", dto.getPrProdMark());
+        assertEquals("ТУ 14-106-454-94", dto.getPrStandMark());
+        assertEquals("4.00..8.00", dto.getPrThickUncoat().getSrcValue());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -132,10 +135,10 @@ class PdmConverterTest {
         final var dto = pdmDtoConverter.toPhysMechPropAnisSteelStandDto(dictionary);
 
         assertNotNull(dto);
-        assertEquals("NV27S-160",dto.getPrProdMark());
-        assertEquals("ТУ 24.10.53-0071-05757665-2021",dto.getPrStandMark());
-        assertEquals("4.00..8.00",dto.getPrThickUncoat().getSrcValue());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("NV27S-160", dto.getPrProdMark());
+        assertEquals("ТУ 24.10.53-0071-05757665-2021", dto.getPrStandMark());
+        assertEquals("4.00..8.00", dto.getPrThickUncoat().getSrcValue());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -158,9 +161,9 @@ class PdmConverterTest {
         assertEquals("2", dto.getPrEvenness());
         assertEquals(4.0, dto.getPrEvennessTolMax());
         assertEquals(2.0, dto.getPrEvennessTolPerc());
-        assertEquals("ЛНТ;РЛН;РСП",dto.getPrFormSap().getSrcValue());
-        assertEquals("6",dto.getPrYield().getSrcValue());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("ЛНТ;РЛН;РСП", dto.getPrFormSap().getSrcValue());
+        assertEquals("6", dto.getPrYield().getSrcValue());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -179,12 +182,12 @@ class PdmConverterTest {
 
         assertNotNull(dto);
         assertEquals("ДТ 37.06", dto.getDt());
-        assertEquals("IS 3024:2015",dto.getPrStandMark());
+        assertEquals("IS 3024:2015", dto.getPrStandMark());
         assertEquals("(150..*", dto.getPrWidthGood().getSrcValue());
         assertEquals("", dto.getPrEvenness());
         assertEquals(3.0, dto.getPrEvennessTolMax());
         assertEquals(1.5, dto.getPrEvennessTolPerc());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -207,7 +210,7 @@ class PdmConverterTest {
         assertEquals("0.35", dto.getPrThickUncoat().getSrcValue());
         assertEquals("*..0.016", dto.getLongThickDif());
         assertEquals("*..0.015", dto.getPrUnevenGauge());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -227,13 +230,13 @@ class PdmConverterTest {
         assertNotNull(dto);
         assertEquals("15", dto.getRemoteId());
         assertEquals("ДТ 37.06", dto.getDt());
-        assertEquals("IS 3024:2015",dto.getPrStandMark());
-        assertEquals("(1000..1020]",dto.getPrWidthGood().getSrcValue());
-        assertEquals("ЛНТ;РЛН;РСП",dto.getPrFormSap().getSrcValue());
+        assertEquals("IS 3024:2015", dto.getPrStandMark());
+        assertEquals("(1000..1020]", dto.getPrWidthGood().getSrcValue());
+        assertEquals("ЛНТ;РЛН;РСП", dto.getPrFormSap().getSrcValue());
         assertEquals(1.5, dto.getPrWidthTolMax());
-        assertEquals("*..0.9",dto.getSickleShape().getSrcValue());
+        assertEquals("*..0.9", dto.getSickleShape().getSrcValue());
         assertEquals("*..0.025", dto.getBurr().getSrcValue());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -255,7 +258,7 @@ class PdmConverterTest {
         assertEquals("(2.50..3.00]", dto.getPrThickGood().getSrcValue());
         assertEquals("1.55", dto.getLongThickDif());
         assertEquals("", dto.getPrUnevenGauge());
-        assertEquals("Тест",dto.getPrAnnotation());
+        assertEquals("Тест", dto.getPrAnnotation());
     }
 
     @Test
@@ -278,8 +281,82 @@ class PdmConverterTest {
         assertEquals("НО", dto.getPrCrop());
         assertEquals(0.1, dto.getPrWidthTolMax());
         assertEquals(0.2, dto.getPrWidthTolMin());
-        assertEquals("[200...*)",dto.getPrLengthGood().getSrcValue());
-        assertEquals("*..3",dto.getCrescent().getSrcValue());
-        assertEquals("*..0.015",dto.getBurr().getSrcValue());
+        assertEquals("[200...*)", dto.getPrLengthGood().getSrcValue());
+        assertEquals("*..3", dto.getCrescent().getSrcValue());
+        assertEquals("*..0.015", dto.getBurr().getSrcValue());
     }
+
+    @Test
+    void fromSpChemicalPropertiesNotesTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpChemicalPropertiesNotes.json"),
+                        SpChemicalPropertiesNotes.class
+                );
+
+        Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse("2022-12-05T06:14:41.647+03:00");
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toSpChemicalPropertiesNotesDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("306", dto.getRemoteId());
+        assertEquals(date, dto.getUpdateTs());
+        assertEquals("", dto.getPrAnnotation());
+        assertEquals("РП-336-1-2022.01", dto.getTkNum());
+        assertEquals("1;2;3", dto.getTkRoute());
+        assertEquals("0.06..0.09", dto.getC().getSrcValue());
+        assertEquals("0.70..0.85", dto.getMn().getSrcValue());
+        assertEquals("", dto.getAl().getSrcValue());
+    }
+
+    @Test
+    void fromSpTolShapeSlabTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTolShapeSlab.json"),
+                        SpTolEvenness.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTolShapeSlabDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("ДТ 0042.02", dto.getDt());
+        assertEquals("ТУ 24.10.21-0036-05757665-2020", dto.getPrStandMark());
+        assertEquals(10, dto.getPrior());
+        assertEquals("Добавлены планшетность (мм) и серповидность (мм) по ДТ 0042.02", dto.getPrAnnotation());
+        assertEquals("*..10", dto.getVypUzkGr().getSrcValue());
+    }
+
+    @Test
+    void fromSpRegisterEquivalents() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpRegisterEquivalentsCEq.json"),
+                        SpRegisterEquivalents.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toRegisterEquivalentsDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("24", dto.getRemoteId());
+        assertEquals("Угл. эквивалент", dto.getParameter());
+        assertEquals("20", dto.getFormulaNumber());
+        assertEquals("C+Mn/6+Si/24+Ni/40+Cr/5+Mo/4+V/14", dto.getFormula());
+        assertEquals("*..0.20", dto.getCrNiCu().getSrcValue());
+        assertEquals("0.0005..*", dto.getB().getSrcValue());
+        assertEquals("*..0.12", dto.getC().getSrcValue());
+        assertEquals("C > 0", dto.getPrAnnotation());
+    }
+
 }

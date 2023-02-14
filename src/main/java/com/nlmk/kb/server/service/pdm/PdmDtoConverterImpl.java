@@ -25,9 +25,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
     private final CommonConverter converter;
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034208">Химический состав по стандартам</a>
-     */
     @Override
     public ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -35,7 +32,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("PDM DICTIONARY: {} ", dictionary);
+        log.debug("toChemicalStdLimitDto, PDM DICTIONARY: {} ", dictionary);
 
         final var chemicalStdLimitDto = ChemicalStdLimitDto.builder()
                 .remote_id(dictionary.getPk().getId())
@@ -634,7 +631,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("--- toChemicalEquivalentStdDto PDM DICTIONARY: {} ", dictionary);
+        log.debug("toChemicalEquivalentStdDto, PDM DICTIONARY: {} ", dictionary);
 
         return ChemicalEquivalentStdDto.builder()
                 .remote_id(dictionary.getPk().getId())
@@ -718,9 +715,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034811">Физико-механические свойства по ДТ для ЦТС</a>
-     */
     @Override
     public AsapMechPropertiesDtDto toAsapMechPropertiesDtDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -795,9 +789,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
-    /**
-     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120625772">Физико-механические свойства проката анизотропной стали по стандартам для ЦТС</a>
-     */
     @Override
     public PhysMechPropAnisSteelStandDto toPhysMechPropAnisSteelStandDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
@@ -941,6 +932,115 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prWidthTolPerc(converter.getStringSpecValue(specs, WHIDTH_TOLERANCE_PERCENT))
                 .sickleShape(converter.getLimitSpecValue(specs, SICKLE_SHAPE))
                 .burr(converter.getLimitSpecValue(specs, BURR))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public SpChemicalPropertiesNotesDto toSpChemicalPropertiesNotesDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toSpChemicalPropertiesNotesDto, PDM DICTIONARY: {} ", dictionary);
+
+        return SpChemicalPropertiesNotesDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
+                .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .c(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_C_MAX))
+                .si(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_SI_MAX))
+                .mn(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MN_MAX))
+                .s(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_S_MAX))
+                .p(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_P_MAX))
+                .al(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_AL_MAX))
+                .cr(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CR_MAX))
+                .ni(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NI_MAX))
+                .cu(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CU_MAX))
+                .n(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_N))
+                .ti(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_TI_MAX))
+                .nb(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NB_MAX))
+                .sn(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_SN_MAX))
+                .v(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_V_MAX))
+                .b(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_B_MAX))
+                .mo(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MO_MAX))
+                .ca(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CA_MAX))
+                .usl1(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL1))
+                .znachUsl1(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL1))
+                .usl2(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL2))
+                .znachUsl2(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL2))
+                .usl3(converter.getStringSpecValue(specs, REQUIRED_CONTENT_USL3))
+                .znachUsl3(converter.getStringSpecValue(specs, REQUIRED_CONTENT_ZNACH_USL3))
+                .build();
+    }
+
+    @Override
+    public TolShapeSlabDto toTolShapeSlabDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toTolShapeSlabDto, PDM DICTIONARY: {} ", dictionary);
+
+        return TolShapeSlabDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .nomTlot(converter.getLimitSpecValue(specs, NOMINAL_THICKNESS))
+                .nomWidth(converter.getLimitSpecValue(specs, NOMINAL_WIDTH))
+                .nomLength(converter.getLimitSpecValue(specs, LENGTH_NOMINAL))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .vognUzkGr(converter.getLimitSpecValue(specs, CONCAVITY_NARROW_EDGE))
+                .neprNesoosn(converter.getLimitSpecValue(specs, NON_RECTANGULAR_MISALIGNMENT))
+                .neprSrez(converter.getLimitSpecValue(specs, NON_RECTANGULAR_OBLIQUE_CUT))
+                .neprTor(converter.getLimitSpecValue(specs, NON_RECTANGULAR_OBLIQUE_BUTT))
+                .neprUzkGr(converter.getLimitSpecValue(specs, NON_RECTANGULAR_NARROW_EDGE))
+                .vypIzgM(converter.getLimitSpecValue(specs, SICKLE_SHAPE_FACTOR))
+                .vypIzgMm(converter.getLimitSpecValue(specs, SICKLE_SHAPE))
+                .progWidthMm(converter.getLimitSpecValue(specs, WIDTH_DEFLECTION))
+                .progWidthM(converter.getLimitSpecValue(specs, WIDTH_DEFLECTION_FACTOR))
+                .progLengthM(converter.getLimitSpecValue(specs, LENGTH_DEFLECTION_FACTOR))
+                .progLengthMm(converter.getLimitSpecValue(specs, LENGTH_DEFLECTION))
+                .otklLength(converter.getLimitSpecValue(specs, LENGTH_DEVIATION))
+                .prLengthTol(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_LENGTH))
+                .otklWidth(converter.getLimitSpecValue(specs, WIDTH_DEVIATION))
+                .prWidthTol(converter.getLimitSpecValue(specs, WIDTH_TOLERANCE_PERCENT))
+                .otklTlotMm(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
+                .otklTlotPr(converter.getLimitSpecValue(specs, THICKNESS_DEVIATION_PERCENT))
+                .prThickTol(converter.getLimitSpecValue(specs, THICKNESS_TOLERANCE))
+                .otklWeight(converter.getLimitSpecValue(specs, NOMINAL_THICKNESS))
+                .slabWeight(converter.getLimitSpecValue(specs, SLAB_WEIGHT))
+                .vypUzkGr(converter.getLimitSpecValue(specs, CONVEX_NARROW_EDGE))
+                .prWidthTolMm(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_WIDTH))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public RegisterEquivalentsDto toRegisterEquivalentsDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toRegisterEquivalentsDto, PDM DICTIONARY: {} ", dictionary);
+
+        return RegisterEquivalentsDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .parameter(converter.getStringSpecValue(specs, REGISTER_PARAMETER))
+                .formulaNumber(converter.getStringSpecValue(specs, REGISTER_FORMULA_NUMBER))
+                .formula(converter.getStringSpecValue(specs, REGISTER_FORMULA))
+                .crNiCu(converter.getLimitSpecValue(specs, CR_NI_CU))
+                .b(converter.getLimitSpecValue(specs, MASS_FRACTION_B))
+                .c(converter.getLimitSpecValue(specs, MASS_FRACTION_C))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }

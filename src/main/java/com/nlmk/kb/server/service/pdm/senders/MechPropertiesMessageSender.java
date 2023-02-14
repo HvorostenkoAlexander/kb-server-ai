@@ -1,20 +1,18 @@
 package com.nlmk.kb.server.service.pdm.senders;
 
+import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
-import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.service.pdm.DictionaryConfigService;
 import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.service.pdm.PdmDictionaryCreator;
 import com.nlmk.kb.server.service.pdm.PdmDtoConverter;
-import com.nlmk.kb.server.service.pdm.PdmMessageCreator;
 import nlmk.l3.pdm.SpMechProperties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 @Service
-public class MechPropertiesMessageSender extends BasePdmCreator implements PdmMessageSender, PdmMessageCreator {
+public class MechPropertiesMessageSender extends BasePdmCreator {
 
     public MechPropertiesMessageSender(@Value("${kafka.pdm.topic.mech-properties}") String type,
                                        NsiSender commonSender,
@@ -25,35 +23,16 @@ public class MechPropertiesMessageSender extends BasePdmCreator implements PdmMe
     }
 
     @Override
-    public Long send(PdmMessage message) {
-        Assert.notNull(message, () -> {
-            throw new IllegalArgumentException("message for sending is NULL");
-        });
-
-        return super.getNsiSender().sendBodyReturnLong(
-                super.getPdmDtoConverter().toMechanicalTkDto(message.getDictionary()),
-                super.getDictionaryConfigService().getDictionaryUrlByTopic(message.getTopic()),
-                message.getOp()
-        );
+    Object getBody(PdmMessage message) {
+        return super.getPdmDtoConverter().toMechanicalTkDto(message.getDictionary());
     }
 
     @Override
-    public PdmMessage createPdmMessage(ConsumerRecord<Object, Object> consumerRecord) {
-        SpMechProperties pdmObject = (SpMechProperties) consumerRecord.value();
-
-        final var dictionary = super.getPdmDictionaryCreator().createPdmDictionary(
+    PdmDictionary getDictionary(ConsumerRecord<Object, Object> consumerRecord) {
+        final var pdmObject = (SpMechProperties) consumerRecord.value();
+        return super.getPdmDictionaryCreator().createPdmDictionary(
                 pdmObject.getTs(), pdmObject.getOp(), pdmObject.getPk(), pdmObject.getData()
         );
-
-        return PdmMessage.builder()
-                .topic(consumerRecord.topic())
-                .key((String) consumerRecord.key())
-                .offset(consumerRecord.offset())
-                .partition(consumerRecord.partition())
-                .dictionary(dictionary)
-                .op(Operation.fromValue(dictionary.getOp()))
-                .ts(dictionary.getTs())
-                .build();
     }
 
 }

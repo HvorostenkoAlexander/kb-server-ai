@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.service.sap;
 
-import com.nlmk.attestation.product.api.specification.SapOrderPosCode;
+import com.nlmk.attestation.product.api.order.SapName;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.S3ClientException;
 import io.minio.GetObjectResponse;
@@ -72,8 +72,8 @@ class S3ServiceTest {
                 e1cucfg -> e1cucfg.getE1CUVAL().forEach(
                         e1cuval -> {
                             // все коды, которые есть в заказе
-                            SapOrderPosCode code = SapOrderPosCode.valueOf(e1cuval.getCHARC());
-                            switch (code) {
+                            SapName sapName = SapName.valueOf(e1cuval.getCHARC());
+                            switch (sapName) {
                                 case STNDRT_PROD:
                                 case STNDRT_MARKA:
                                 case STNDRT_SORT:
@@ -99,7 +99,7 @@ class S3ServiceTest {
                                 case GROT:
                                 case ROUTE_TK:
                                     assertNull(e1cuval.getVALUE(),
-                                            MessageFormat.format("not NULL value in code {0}", code));
+                                            MessageFormat.format("not NULL value in sapName {0}", sapName));
                                     break;
                                 case SHOT_MIN:
                                     assertEquals("1250.0", e1cuval.getVALUE());
