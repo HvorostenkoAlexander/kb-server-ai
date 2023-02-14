@@ -10,8 +10,6 @@ public interface PdmDtoConverter {
 
     ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary);
 
-    PcmDto toPcmDto(PdmDictionary dictionary);
-
     ToleranceDto toToleranceDto(PdmDictionary dictionary);
 
     MicrostructureDto toMicrostructureDto(PdmDictionary dictionary);
@@ -38,8 +36,6 @@ public interface PdmDtoConverter {
     EvennessTkLimitDto toEvennessTkLimitDto(PdmDictionary dictionary);
 
     TkNumDto toTkNumDto(PdmDictionary dictionary);
-
-    CEqDto toCEqDto(PdmDictionary dictionary);
 
     MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary);
 
