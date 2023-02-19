@@ -12,6 +12,7 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.util.AdapterUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +74,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Расчёт массы связки
      */
-    protected Double calcBundleWeight(Object data) {
+    protected BigDecimal calcBundleWeight(Object data) {
         if (Objects.isNull(data)) {
             return null;
         }
@@ -91,7 +92,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Расчёт массы связки для CcmPtsRequest
      */
-    private Double calcBundleWeightForRequest(CcmPtsRequest requestMessage) {
+    private BigDecimal calcBundleWeightForRequest(CcmPtsRequest requestMessage) {
         if (Objects.isNull(requestMessage.getData())) {
             return null;
         }
@@ -111,16 +112,16 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Расчёт массы связки для nlmk.l3.ccm.pts.RecordData
      */
-    private Double calcBundleWeightForRecord(RecordData recordData) {
+    private BigDecimal calcBundleWeightForRecord(RecordData recordData) {
         if (Objects.isNull(recordData.getBundles())) {
-            return calcBundleWeight(AdapterUtils.parseFloat(recordData.getWeightNet()), List.of());
+            return calcBundleWeight(AdapterUtils.toBigDecimal(recordData.getWeightNet()), List.of());
         }
 
         return calcBundleWeight(
-                AdapterUtils.parseFloat(recordData.getWeightNet()),
+                AdapterUtils.toBigDecimal(recordData.getWeightNet()),
                 recordData.getBundles().stream()
                         .map(RecordBundles::getStripWeight)
-                        .map(AdapterUtils::parseFloat)
+                        .map(AdapterUtils::toBigDecimal)
                         .collect(Collectors.toList())
         );
     }
@@ -132,8 +133,8 @@ public abstract class CcmPtsRequestAdapter {
      * @param bundles масса всех бунтов
      * @return итоговая масса
      */
-    private Double calcBundleWeight(Double em, List<Double> bundles) {
-        var weightEM = 0.0;
+    private BigDecimal calcBundleWeight(BigDecimal em, List<BigDecimal> bundles) {
+        BigDecimal weightEM = BigDecimal.ZERO;
         if (Objects.nonNull(em)) {
             weightEM = em;
         }
@@ -144,11 +145,11 @@ public abstract class CcmPtsRequestAdapter {
 
         final var weightBundle = bundles.stream()
                 .filter(Objects::nonNull)
-                .reduce(Double::sum)
-                .orElse(0.0);
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
 
         // масса всех бунтов, входящих в одну связку, плюс масса ЕМ
-        return weightBundle + weightEM;
+        return weightBundle.add(weightEM);
     }
 
     /**

@@ -10,6 +10,8 @@ import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
+
 @Component
 public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implements KafkaRequestAdapter<nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1> {
 
@@ -69,13 +71,13 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
             roll = String.valueOf(recordData.getMarking().getRoll());
         }
 
-        Double length = null;
-        Double thickness = null;
-        Double width = null;
+        BigDecimal length = null;
+        BigDecimal thickness = null;
+        BigDecimal width = null;
         if (recordData.getGeometry() != null) {
-            length = AdapterUtils.parseFloat(recordData.getGeometry().getLength());
-            thickness = AdapterUtils.parseFloat(recordData.getGeometry().getThickness());
-            width = AdapterUtils.parseFloat(recordData.getGeometry().getWidth());
+            length = AdapterUtils.toBigDecimal(recordData.getGeometry().getLength());
+            thickness = AdapterUtils.toBigDecimal(recordData.getGeometry().getThickness());
+            width = AdapterUtils.toBigDecimal(recordData.getGeometry().getWidth());
         }
 
         return DataPts.builder()
@@ -86,7 +88,7 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
                 .length(length)
                 .thickness(thickness)
                 .width(width)
-                .weightNet(AdapterUtils.parseFloat(recordData.getWeightNet()))
+                .weightNet(AdapterUtils.toBigDecimal(recordData.getWeightNet()))
                 .bundleWeight(super.calcBundleWeight(recordData))
                 .kceh(recordData.getKceh())
                 .orderNum(recordData.getOrderNum())

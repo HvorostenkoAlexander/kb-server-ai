@@ -10,6 +10,7 @@ import nlmk.l3.ccm.pgp.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,11 +59,11 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .nplv(recordData.getNplv())
                 .hnum(recordData.getHnum())
                 .roll(AdapterUtils.sequenceToString(recordData.getRoll()))
-                .length(AdapterUtils.parseFloat(recordData.getLength()))
-                .thickness(AdapterUtils.parseFloat(recordData.getThickness()))
-                .width(AdapterUtils.parseFloat(recordData.getWidth()))
-                .weightNet(AdapterUtils.parseFloat(recordData.getWeightNet()))
-                .bundleWeight(AdapterUtils.parseFloat(recordData.getBundleWeight()))
+                .length(AdapterUtils.toBigDecimal(recordData.getLength()))
+                .thickness(AdapterUtils.toBigDecimal(recordData.getThickness()))
+                .width(AdapterUtils.toBigDecimal(recordData.getWidth()))
+                .weightNet(AdapterUtils.toBigDecimal(recordData.getWeightNet()))
+                .bundleWeight(AdapterUtils.toBigDecimal(recordData.getBundleWeight()))
                 .kceh(recordData.getKceh())
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())

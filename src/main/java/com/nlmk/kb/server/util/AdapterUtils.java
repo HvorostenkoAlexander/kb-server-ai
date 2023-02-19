@@ -8,6 +8,7 @@ import com.nlmk.attestation.product.api.pam.DataField;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -22,15 +23,22 @@ public class AdapterUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public static Double parseFloat(Float f) {
-        if (f == null) {
+    public static BigDecimal toBigDecimal(Float f) {
+        if (Objects.isNull(f) || Float.isNaN(f)) {
             return null;
         }
-        return Double.parseDouble(Float.toString(f));
+        return new BigDecimal(Float.toString(f));
+    }
+
+    public static BigDecimal toBigDecimal(Double d) {
+        if (Objects.isNull(d) || Double.isNaN(d)) {
+            return null;
+        }
+        return new BigDecimal(Double.toString(d));
     }
 
     public static String sequenceToString(CharSequence sequence) {
-        if (sequence == null) {
+        if (Objects.isNull(sequence)) {
             return null;
         }
         return sequence.toString();
@@ -40,7 +48,7 @@ public class AdapterUtils {
      * Получение корректного типа данных для указанного кода спецификации
      */
     public static TypeCode getTypeCodeByCodeValue(Integer code) {
-        if (code == null) {
+        if (Objects.isNull(code)) {
             return TypeCode.STRING;
         }
         try {
@@ -54,7 +62,7 @@ public class AdapterUtils {
      * Определение значения Комментария
      */
     public static String detectNote(AttestationDto attestation) {
-        if (attestation == null) {
+        if (Objects.isNull(attestation)) {
             return null;
         }
 
@@ -69,7 +77,7 @@ public class AdapterUtils {
      * Определение значения Рекомендации по устранению дефекта
      */
     public static String detectDefectSuggestion(AttestationDto attestation) {
-        if (attestation == null) {
+        if (Objects.isNull(attestation)) {
             return null;
         }
 
@@ -84,7 +92,7 @@ public class AdapterUtils {
      * Подготовка списка Параметров одного результата Аттестации
      */
     public static Map<SpecCode, String> prepareParameters(AttestationDto attestation) {
-        if (attestation == null || attestation.getParams() == null) {
+        if (Objects.isNull(attestation) || Objects.isNull(attestation.getParams())) {
             return Map.of();
         }
 

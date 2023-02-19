@@ -10,6 +10,7 @@ import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -67,11 +68,14 @@ class RestRequestAdapterTest {
                         .storageCode(13).storageName("s13")
                         .marking(CcmPtsRequest.Marking.builder()
                                 .nplv(2106684).hnum(25217).tnum(22).roll(1).build())
-                        .weightNet(140.0)
-                        .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(300.0).length(3000.0).build())
+                        .weightNet(BigDecimal.valueOf(140.0))
+                        .geometry(CcmPtsRequest.Geometry.builder()
+                                .thickness(BigDecimal.valueOf(30.0))
+                                .width(BigDecimal.valueOf(300.0))
+                                .length(BigDecimal.valueOf(3000.0)).build())
                         .bundles(List.of(
                                 CcmPtsRequest.Bundle.builder().stripId(40L).stripNum(40)
-                                        .stripWidth(400.0).stripWeight(40.0).build()
+                                        .stripWidth(BigDecimal.valueOf(400.0)).stripWeight(BigDecimal.valueOf(40.0)).build()
                         ))
                         .specifications(List.of(
                                 CcmPtsRequest.Specification.builder()
@@ -89,7 +93,7 @@ class RestRequestAdapterTest {
                                                 CcmPtsRequest.OneChemicalValue.builder()
                                                         .code(SpecCode.MASS_FRACTION_B.getValue())
                                                         .name(SpecCode.MASS_FRACTION_B.getDesc())
-                                                        .value(13.4)
+                                                        .value(BigDecimal.valueOf(13.4))
                                                         .build()
                                         )).build()
                         ))
@@ -115,7 +119,7 @@ class RestRequestAdapterTest {
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OneAttValue.builder()
                                                                         .side(CcmPtsRequest.Side.BACK)
-                                                                        .attrCode(73).attrValue(74.0)
+                                                                        .attrCode(73).attrValue(BigDecimal.valueOf(74.0))
                                                                         .build()
                                                         )).build()
                                         ))
@@ -147,8 +151,8 @@ class RestRequestAdapterTest {
                         .data(DataPts.builder()
                                 .primeId("0001020210329001515440422")
                                 .nplv(2106684).hnum(25217).roll("1")
-                                .length(3000.0).thickness(30.0).width(300.0)
-                                .weightNet(140.0).bundleWeight(180.0)
+                                .length(BigDecimal.valueOf(3000.0)).thickness(BigDecimal.valueOf(30.0)).width(BigDecimal.valueOf(300.0))
+                                .weightNet(BigDecimal.valueOf(140.0)).bundleWeight(BigDecimal.valueOf(180.0))
                                 .kceh(11)
                                 .specifications(List.of(
                                         Specs.builder()
