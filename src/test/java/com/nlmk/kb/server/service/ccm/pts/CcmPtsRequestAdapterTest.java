@@ -8,6 +8,7 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
 import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
 
@@ -257,10 +258,19 @@ class CcmPtsRequestAdapterTest {
                         .build(),
                 PtsMechanicalProperty.builder()
                         .listValues(List.of(
-                                PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("1120")).attrType(2).build(),
-                                PtsPropertyValue.builder().attrCode(3354).attrValue(List.of("3354")).attrType(1).build(),
-                                PtsPropertyValue.builder().attrCode(3355).attrValue(List.of("3355")).attrType(1).build(),
-                                PtsPropertyValue.builder().attrCode(3356).attrValue(List.of("3356")).attrType(1).build()
+                                PtsPropertyValue.builder().attrCode(952).attrValue(List.of("952")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(953).attrValue(List.of("953")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("1120")).attrType(TypeCode.NUMBER.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(1928).attrValue(List.of("1928")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(1929).attrValue(List.of("1929")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(1930).attrValue(List.of("1930")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(1931).attrValue(List.of("1931")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(1932).attrValue(List.of("1932")).attrType(TypeCode.LIST.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(3354).attrValue(List.of("3354")).attrType(TypeCode.STRING.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(3355).attrValue(List.of("3355")).attrType(TypeCode.STRING.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(3356).attrValue(List.of("3356")).attrType(TypeCode.STRING.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(952).attrValue(List.of("952")).attrType(TypeCode.NUMBER.getValue()).build(),
+                                PtsPropertyValue.builder().attrCode(953).attrValue(List.of("953")).attrType(TypeCode.NUMBER.getValue()).build()
                         ))
                         .analyzes(List.of(
                                 PtsPropertyAnalyzes.builder()
