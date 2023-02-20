@@ -12,6 +12,7 @@ import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.config.AllowedCodesConfig;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,22 +100,22 @@ class CcmPtsRequestAdapterTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.calcBundleWeight("x.y"));
         Assertions.assertNull(adapter.calcBundleWeight(null));
         Assertions.assertNull(adapter.calcBundleWeight(CcmPtsRequest.builder().build()));
-        Assertions.assertEquals(Double.NaN, adapter.calcBundleWeight(prepareMinimalRecordData(null)));
+        Assertions.assertEquals(BigDecimal.ZERO, adapter.calcBundleWeight(prepareMinimalRecordData(null)));
 
-        Assertions.assertEquals(10.1, adapter.calcBundleWeight(CcmPtsRequest.builder()
+        Assertions.assertEquals(BigDecimal.valueOf(10.1), adapter.calcBundleWeight(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
-                        .weightNet(10.1)
+                        .weightNet(BigDecimal.valueOf(10.1))
                         .build())
                 .build()));
-        Assertions.assertEquals(20.5, adapter.calcBundleWeight(prepareMinimalRecordData(20.5f)));
+        Assertions.assertEquals(BigDecimal.valueOf(20.5), adapter.calcBundleWeight(prepareMinimalRecordData(20.5f)));
 
-        Assertions.assertEquals(20.0, adapter.calcBundleWeight(CcmPtsRequest.builder()
+        Assertions.assertEquals(BigDecimal.valueOf(20.0), adapter.calcBundleWeight(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
-                        .weightNet(10.1)
+                        .weightNet(BigDecimal.valueOf(10.1))
                         .bundles(List.of(
                                 CcmPtsRequest.Bundle.builder().build(),
-                                CcmPtsRequest.Bundle.builder().stripWeight(7.2).build(),
-                                CcmPtsRequest.Bundle.builder().stripWeight(2.7).build()
+                                CcmPtsRequest.Bundle.builder().stripWeight(BigDecimal.valueOf(7.2)).build(),
+                                CcmPtsRequest.Bundle.builder().stripWeight(BigDecimal.valueOf(2.7)).build()
                         ))
                         .build())
                 .build()));
@@ -125,7 +126,7 @@ class CcmPtsRequestAdapterTest {
                 RecordBundles.newBuilder().setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
                 RecordBundles.newBuilder().setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
         ));
-        Assertions.assertEquals(30.5, adapter.calcBundleWeight(record));
+        Assertions.assertEquals(BigDecimal.valueOf(30.5), adapter.calcBundleWeight(record));
     }
 
     @Test
@@ -207,10 +208,10 @@ class CcmPtsRequestAdapterTest {
                         .chemical(List.of(
                                 CcmPtsRequest.Chemical.builder().id(1).listValues(List.of(
                                         CcmPtsRequest.OneChemicalValue.builder().build(),
-                                        CcmPtsRequest.OneChemicalValue.builder().code(1).value(1.2).build()
+                                        CcmPtsRequest.OneChemicalValue.builder().code(1).value(BigDecimal.valueOf(1.2)).build()
                                 )).build(),
                                 CcmPtsRequest.Chemical.builder().id(2).listValues(List.of(
-                                        CcmPtsRequest.OneChemicalValue.builder().code(2).value(2.3).build()
+                                        CcmPtsRequest.OneChemicalValue.builder().code(2).value(BigDecimal.valueOf(2.3)).build()
                                 )).build()
                         ))
                         .build())

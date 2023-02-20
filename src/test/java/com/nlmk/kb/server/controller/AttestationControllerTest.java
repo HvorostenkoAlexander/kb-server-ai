@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -78,11 +79,11 @@ class AttestationControllerTest {
                                 .unitCode(12).unitName("u12")
                                 .storageCode(13).storageName("s13")
                                 .marking(CcmPtsRequest.Marking.builder().nplv(20).hnum(21).tnum(22).roll(23).build())
-                                .weightNet(14.0)
-                                .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(32.0).build())
+                                .weightNet(BigDecimal.valueOf(14.0))
+                                .geometry(CcmPtsRequest.Geometry.builder().thickness(BigDecimal.valueOf(30.0)).width(BigDecimal.valueOf(32.0)).build())
                                 .bundles(List.of(
                                         CcmPtsRequest.Bundle.builder().stripId(40L).stripNum(41)
-                                                .stripWidth(42.0).stripWeight(43.0).build()
+                                                .stripWidth(BigDecimal.valueOf(42.0)).stripWeight(BigDecimal.valueOf(43.0)).build()
                                 ))
                                 .specifications(List.of(
                                         CcmPtsRequest.Specification.builder()
@@ -112,7 +113,7 @@ class AttestationControllerTest {
                                                                 .listValues(List.of(
                                                                         CcmPtsRequest.OneAttValue.builder()
                                                                                 .side(CcmPtsRequest.Side.BACK)
-                                                                                .attrCode(73).attrValue(74.0)
+                                                                                .attrCode(73).attrValue(BigDecimal.valueOf(74.0))
                                                                                 .build()
                                                                 )).build()
                                                 ))

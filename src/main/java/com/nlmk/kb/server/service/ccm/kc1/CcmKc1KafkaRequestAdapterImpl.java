@@ -162,8 +162,8 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
         return RequirementChemicalSpec.builder()
                 .chemCode(AdapterUtils.sequenceToString(recordChemicalReg.getChemCode()))
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
-                .valueMin(recordChemicalReg.getValueMin())
-                .valueMax(recordChemicalReg.getValueMax())
+                .valueMin(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMin()))
+                .valueMax(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMax()))
                 .digitsQuantity(recordChemicalReg.getDigitsQuantity())
                 .build();
     }
