@@ -8,7 +8,7 @@ import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResultsKc1;
-import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer;
+import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer0;
 import nlmk.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -31,14 +31,14 @@ public class CcmKc1KafkaService {
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
 
-    private final CcmMessageAdapter<DbAttestRequestVer> ccmMessageAdapter;
+    private final CcmMessageAdapter<DbAttestRequestVer0> ccmMessageAdapter;
 
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
 
     public CcmKc1KafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<DbAttestRequestVer> ccmMessageAdapter,
+                              CcmMessageAdapter<DbAttestRequestVer0> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
                               CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
@@ -57,7 +57,7 @@ public class CcmKc1KafkaService {
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload DbAttestRequestVer request,
+                                  @Payload DbAttestRequestVer0 request,
                                   Acknowledgment ack) {
 
         log.info("receiveMessageReq (CCM KC1): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());

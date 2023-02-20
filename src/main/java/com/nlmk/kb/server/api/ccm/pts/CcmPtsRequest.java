@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class CcmPtsRequest {
         private final @NotNull Integer storageCode; // Код склада
         private final @NotBlank String storageName; // Наименование склада
         private final @NotNull @Valid Marking marking; // Маркировка ЕМ
-        private final @NotNull Double weightNet; // Вес нетто (т.)
+        private final @NotNull BigDecimal weightNet; // Вес нетто (т.)
         private final @NotNull @Valid Geometry geometry; // Геометрия
         private final Long orderNum; // Номер заказа
         private final Integer orderPos; // Позиция заказа
@@ -77,9 +78,9 @@ public class CcmPtsRequest {
     @Builder
     @Jacksonized
     public static class Geometry {
-        private final @NotNull Double thickness; // Толщина, мм
-        private final @NotNull Double width; // Ширина, мм
-        private final Double length; // Длина, мм
+        private final @NotNull BigDecimal thickness; // Толщина, мм
+        private final @NotNull BigDecimal width; // Ширина, мм
+        private final BigDecimal length; // Длина, мм
     }
 
     @Data
@@ -88,8 +89,8 @@ public class CcmPtsRequest {
     public static class Bundle {
         private final @NotNull Long stripId; // Идентификатор бунта
         private final @NotNull Integer stripNum; // Номер бунта
-        private final @NotNull Double stripWidth; // Ширина бунта
-        private final @NotNull Double stripWeight; // Вес бунта (т.)
+        private final @NotNull BigDecimal stripWidth; // Ширина бунта
+        private final @NotNull BigDecimal stripWeight; // Вес бунта (т.)
     }
 
     @Data
@@ -204,7 +205,7 @@ public class CcmPtsRequest {
     public static class OneAttValue {
         private final @NotNull Side side; // Сторона (1 - Лицевая, 2 - Обратная, 3 - Обе стороны)
         private final @NotNull Integer attrCode; // Код атрибута
-        private final @NotNull Double attrValue; // Значение атрибута
+        private final @NotNull BigDecimal attrValue; // Значение атрибута
     }
 
     @Getter
@@ -242,7 +243,7 @@ public class CcmPtsRequest {
     public static class OneChemicalValue {
         private final @NotNull Integer code; // Код химического элемента
         private final @NotBlank String name; // Наименование химического элемента
-        private final Double value; // Значение химического элемента
+        private final BigDecimal value; // Значение химического элемента
     }
 
 }

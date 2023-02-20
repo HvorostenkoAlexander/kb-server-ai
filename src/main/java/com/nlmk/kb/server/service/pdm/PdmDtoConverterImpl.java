@@ -357,22 +357,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
     }
 
     @Override
-    public CEqDto toCEqDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary, DICT_NOT_NULL);
-        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
-
-        final var specs = dictionary.getData().getSpecifications();
-
-        return CEqDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
-                .ceqNum(converter.getStringSpecValue(specs, CARBON_EQUIVALENT_FORMULA_NUMBER))
-                .ceqFormula(converter.getStringSpecValue(specs, CARBON_EQUIVALENT_FORMULA))
-                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
-                .build();
-    }
-
-    @Override
     public MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
         Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
@@ -676,22 +660,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .ts(dictionary.getTs())
                 .rpNumSap(converter.getStringSpecValue(specs, RP_SAP_NUMBER))
                 .tkNum(converter.getStringSpecValue(specs, RP_NUMBER_VERSION_ROUTE))
-                .build();
-    }
-
-    @Override
-    public PcmDto toPcmDto(PdmDictionary dictionary) {
-        Assert.notNull(dictionary, DICT_NOT_NULL);
-        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
-
-        final var specs = dictionary.getData().getSpecifications();
-
-        return PcmDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
-                .pcmNum(converter.getStringSpecValue(specs, CRACK_RESISTANCE_COEFFICIENT_FORMULA_NUMBER))
-                .pcmFormula(converter.getStringSpecValue(specs, CRACK_RESISTANCE_FORMULA))
-                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }
 
@@ -1041,6 +1009,96 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .crNiCu(converter.getLimitSpecValue(specs, CR_NI_CU))
                 .b(converter.getLimitSpecValue(specs, MASS_FRACTION_B))
                 .c(converter.getLimitSpecValue(specs, MASS_FRACTION_C))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public MinNumberSampChemDto toMinNumberSampChemDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toMinNumberSampChemDto, PDM DICTIONARY: {} ", dictionary);
+
+        return MinNumberSampChemDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
+                .numberSamp(converter.parseToInteger(converter.getStringSpecValue(specs, SAMPLES_NUMBER)))
+                .build();
+    }
+
+    @Override
+    public SchemeStrippingSlabDto toSchemeStrippingSlabDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toSchemeStrippingSlabDto, PDM DICTIONARY: {} ", dictionary);
+        return SchemeStrippingSlabDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prSteelMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
+                .workCenterCode(converter.getStringSpecValue(specs, WORK_CENTER_CODE))
+                .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
+                .macroStrAver(converter.getLimitSpecValue(specs, MACRO_MANN))
+                .uglr(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_C_MAX))
+                .mn(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MN_MAX))
+                .nb(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NB_MAX))
+                .b(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_B_MAX))
+                .codeSlabEar(converter.getLimitSpecValue(specs, CODE_SLAB_EAR))
+                .meltSlab(converter.getStringSpecValue(specs, MELT_SLAB))
+                .numberSlabSeria(converter.getLimitSpecValue(specs, NUMBER_SLAB_SERIA))
+                .numberSlabPlavka(converter.getLimitSpecValue(specs, NUMBER_SLAB_PLAVKA))
+                .snakeWide(converter.getStringSpecValue(specs, SNAKE_WIDE))
+                .perimeterWide(converter.getStringSpecValue(specs, PERIMETER_WIDE))
+                .edgeWide(converter.getStringSpecValue(specs, EDGE_WIDE))
+                .snakeNarrow(converter.getStringSpecValue(specs, SNAKE_NARROW))
+                .perimeterNarrow(converter.getStringSpecValue(specs, PERIMETER_NARROW))
+                .edgeNarrow(converter.getStringSpecValue(specs, EDGE_NARROW))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public MacrostructureDto toMacrostructureDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toMacrosructureDto, PDM DICTIONARY: {} ", dictionary);
+
+        return MacrostructureDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .tkNum(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
+                .route(converter.getStringSpecValue(specs, ROUTE_TK))
+                .customerCodeName(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
+                .grSteelVmz(converter.getStringSpecValue(specs, VMZ_STEEL_GROUP))
+                .rasslOpeningWidth(converter.getLimitSpecValue(specs, LAYER_OPENING_WIDTH))
+                .rasslTotalLength(converter.getLimitSpecValue(specs, LAYER_TOTAL_LENGTH))
+                .poreDiametr(converter.getLimitSpecValue(specs, AXIAL_POROSITY))
+                .vnutrTr(converter.getLimitSpecValue(specs, INTERNAL_CRACKS))
+                .vklObl(converter.getLimitSpecValue(specs, CLOUD_INCLUSIONS))
+                .osevSeqr(converter.getLimitSpecValue(specs, AXIAL_SEGREGATION))
+                .vklToch(converter.getLimitSpecValue(specs, POINT_INCLUSIONS))
+                .uzkgrTr(converter.getLimitSpecValue(specs, EDGE_CRACKS))
+                .uglovTr(converter.getLimitSpecValue(specs, ANGLE_CRACKS))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }

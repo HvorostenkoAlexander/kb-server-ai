@@ -36,7 +36,6 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.equivalents}",
                     "${kafka.pdm.topic.match-tk-num}",
                     "${kafka.pdm.topic.match-rabplan-num}",
-                    "${kafka.pdm.topic.pcm}",
                     "${kafka.pdm.topic.asap-tol-links}",
                     "${kafka.pdm.topic.tol-thick}",
                     "${kafka.pdm.topic.kat-steel-4041}",
@@ -45,7 +44,6 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.asap-mech-properties}",
                     "${kafka.pdm.topic.tol-evenness}",
                     "${kafka.pdm.topic.tk-num}",
-                    "${kafka.pdm.topic.ceq}",
                     "${kafka.pdm.topic.mech-properties}",
                     "${kafka.pdm.topic.chemical-properties}",
                     "${kafka.pdm.topic.asap-mech-properties-dt}",
@@ -55,7 +53,10 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.tol-width-dt}",
                     "${kafka.pdm.topic.sp-chemical-properties-notes}",
                     "${kafka.pdm.topic.tol-shape-slab}",
-                    "${kafka.pdm.topic.register-equivalents}"
+                    "${kafka.pdm.topic.register-equivalents}",
+                    "${kafka.pdm.topic.min-number-samp-chem}",
+                    "${kafka.pdm.topic.scheme-stripping-slab}",
+                    "${kafka.pdm.topic.macrostructure}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
