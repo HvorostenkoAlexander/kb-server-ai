@@ -56,6 +56,11 @@ public interface KbController {
             security = {@SecurityRequirement(name = "bearer-key")})
     AttestationRequest getAttestationRequestForPrimeId(@PathVariable String primeId);
 
+    @GetMapping("/ccm_source_message")
+    @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
+
     @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     Page<PdmMessageDto> getPdmTopicMessages(
@@ -116,8 +121,4 @@ public interface KbController {
             description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
     void postProductAttestationResult(@RequestBody @Valid ProductAttestationResultDto attestationResult);
 
-    @GetMapping("/ccm_source_message")
-    @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
-            security = {@SecurityRequirement(name = "bearer-key")})
-    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
 }
