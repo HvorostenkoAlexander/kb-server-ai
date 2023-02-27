@@ -5,7 +5,6 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
@@ -28,8 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 // ApplicationContext will be loaded from the OrderServiceConfig class
 class RestRequestAdapterTest {
 
-    @Autowired
-    AllowedCodesConfig allowedCodesConfig;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private final CommonConverter commonConverter = new CommonConverterImpl();
     private RestRequestAdapter<CcmPtsRequest> ccmPtsAdapter;
@@ -37,7 +34,7 @@ class RestRequestAdapterTest {
 
     @BeforeEach
     void initAdapter() {
-        ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(allowedCodesConfig, commonConverter);
+        ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(commonConverter);
     }
 
     @Test
@@ -177,12 +174,16 @@ class RestRequestAdapterTest {
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
                                                                 .analysisValue(AnalysisValue.BEST.getValue())
                                                                 .listValues(List.of(
-                                                                        PtsPropertyAnalyzesValue.builder()
-                                                                                .attrCode(562)
-                                                                                .attrType(TypeCode.NUMBER.getValue()).build()
+                                                                        PtsPropertyAnalyzesValue.builder().attrCode(562).attrType(TypeCode.NUMBER.getValue()).build(),
+                                                                        PtsPropertyAnalyzesValue.builder().attrCode(99999).attrType(TypeCode.NUMBER.getValue()).build()
                                                                 )).build()
                                                 ))
                                                 .listValues(List.of(
+                                                        PtsPropertyValue.builder()
+                                                                .attrCode(SpecCode.AGING_FACTOR.getValue())
+                                                                .attrType(TypeCode.STRING.getValue())
+                                                                .attrValue(List.of("af12"))
+                                                                .build(),
                                                         PtsPropertyValue.builder()
                                                                 .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
                                                                 .attrType(TypeCode.NUMBER.getValue())

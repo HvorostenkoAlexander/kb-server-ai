@@ -85,8 +85,8 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
             return PlanTask.builder().build();
         }
         return PlanTask.builder()
-                .planTaskId(AdapterUtils.sequenceToString(planTask.getPlanTaskId()))
-                .planTaskLineId(AdapterUtils.sequenceToString(planTask.getPlanTaskLineId()))
+                .planTaskId(planTask.getPlanTaskId())
+                .planTaskLineId(planTask.getPlanTaskLineId())
                 .build();
     }
 
@@ -98,7 +98,7 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .map(a -> KcChemData.builder()
                         .sampleId(a.getSampleId())
                         .sampleNum(a.getSampleNum())
-                        .probeCode(String.valueOf(a.getProbeCode())) // fixme
+                        .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
                         .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
                         .heat(a.getHeat())
                         .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
