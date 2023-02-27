@@ -13,10 +13,18 @@ class CcmMessageServiceTest {
 
     @Test
     void saveFindTest() {
-        service.saveSourceMessage(1020L, "1111111111", "{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}");
-        var found = service.findSourceMessageByRequestId(1020L);
-        Assertions.assertFalse(found.isEmpty());
-        Assertions.assertEquals(1020L, found.stream().findFirst().get().getRequestId());
+        Assertions.assertDoesNotThrow(() -> service.saveSourceMessage(1020L, "1111111111", "{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}"));
+
+        {
+            var found = service.findSourceMessageByRequestId(1020L);
+            Assertions.assertTrue(found.isPresent());
+            Assertions.assertEquals(1020L, found.get().getRequestId());
+        }
+        {
+            var found = service.findSourceMessageByPrimeId("1111111111");
+            Assertions.assertTrue(found.isPresent());
+            Assertions.assertEquals(1020L, found.get().getRequestId());
+        }
     }
 
 }

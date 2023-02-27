@@ -2,7 +2,6 @@ package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.product.api.kb.SapMessageDto;
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
@@ -12,9 +11,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -45,21 +46,6 @@ public interface KbController {
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     Page<CcmMessage> getAttestationRequestAllByPage(@RequestParam(value = "pageNumber") int page,
                                                     @RequestParam(value = "pageSize") int size);
-
-    @GetMapping("/attestation_request/{primeId}")
-    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    @Deprecated(since = "1.33.0")
-    List<CcmMessage> getCcmMessageByPrimeId(@PathVariable String primeId);
-
-    @GetMapping("/attestation/request/{primeId}")
-    @Operation(summary = "Получения последнего запросов на Аттестацию для указанного primeId",
-            security = {@SecurityRequirement(name = "bearer-key")})
-    AttestationRequest getAttestationRequestForPrimeId(@PathVariable String primeId);
-
-    @GetMapping("/ccm_source_message")
-    @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
-            security = {@SecurityRequirement(name = "bearer-key")})
-    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
 
     @GetMapping("/pdm_message")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
@@ -120,5 +106,15 @@ public interface KbController {
     @ApiResponse(responseCode = "503",
             description = "Ошибки настройки сервиса отправки сообщений", content = @Content)
     void postProductAttestationResult(@RequestBody @Valid ProductAttestationResultDto attestationResult);
+
+    @GetMapping("/attestation/request/{primeId}")
+    @Operation(summary = "Получения последнего запросов на Аттестацию для указанного primeId (первоисточник запроса)",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    ResponseEntity<CcmMessageSourceDto> getSourceRequestByPrimeId(@PathVariable String primeId);
+
+    @GetMapping("/ccm_source_message")
+    @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
 
 }
