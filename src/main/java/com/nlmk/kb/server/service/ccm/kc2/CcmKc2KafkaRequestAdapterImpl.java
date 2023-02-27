@@ -86,8 +86,8 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
             return PlanTask.builder().build();
         }
         return PlanTask.builder()
-                .planTaskId(AdapterUtils.sequenceToString(planTask.getPlanTaskId()))
-                .planTaskLineId(AdapterUtils.sequenceToString(planTask.getPlanTaskLineId()))
+                .planTaskId(planTask.getPlanTaskId())
+                .planTaskLineId(planTask.getPlanTaskLineId())
                 .build();
     }
 
