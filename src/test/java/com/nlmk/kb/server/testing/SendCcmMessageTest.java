@@ -259,7 +259,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .build()
                 ))
                 .setPlanTask(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordPlanTask.newBuilder()
-                        .setPlanTaskId("1").setPlanTaskLineId("11").build())
+                        .setPlanTaskId(1).setPlanTaskLineId(11).build())
                 .setRequirements(nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordRequirements.newBuilder()
                         .build())
                 .build();
@@ -308,7 +308,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
                                 .build()
                 ))
                 .setPlanTask(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordPlanTask.newBuilder()
-                        .setPlanTaskId("1").setPlanTaskLineId("11").build())
+                        .setPlanTaskId(1).setPlanTaskLineId(11).build())
                 .setRequirements(nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordRequirements.newBuilder()
                         .build())
                 .build();
