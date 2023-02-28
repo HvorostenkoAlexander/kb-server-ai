@@ -5,7 +5,6 @@ import com.nlmk.kb.server.entity.CcmMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ public interface CcmMessageRepository extends JpaRepository<CcmMessage, Long> {
      * при этом устаревший формат не прочитается.
      * По полям topic, partition, offset хранится одна запись в таблице.
      */
-    @Transactional
     @Modifying
     @Query("delete from CcmMessage m WHERE m.topic = :topic AND m.partition = :partition AND m.offset = :offset")
     void deleteOldByTopicAndPartitionAndOffset(String topic, int partition, int offset);

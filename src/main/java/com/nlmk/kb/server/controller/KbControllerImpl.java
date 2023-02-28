@@ -175,7 +175,7 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(Long requestId) {
+    public ResponseEntity<CcmMessageSourceDto> getSourceRequestByRequestId(Long requestId) {
         log.info("getCcmSourceMessage, requestId [{}]", requestId);
         return ResponseEntity.ok(ccmMessageService.findSourceMessageByRequestId(requestId).orElse(new CcmMessageSourceDto()));
     }

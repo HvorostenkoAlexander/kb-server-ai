@@ -113,8 +113,8 @@ public interface KbController {
     ResponseEntity<CcmMessageSourceDto> getSourceRequestByPrimeId(@PathVariable String primeId);
 
     @GetMapping("/ccm_source_message")
-    @Operation(summary = "Поиск исходного сообщения запроса аттестации ССМ по id запроса",
+    @Operation(summary = "Поиск исходного сообщения ССМ с запросом на Аттестацию по id Запроса Аттестации",
             security = {@SecurityRequirement(name = "bearer-key")})
-    ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(@RequestParam(value = "requestId") Long requestId);
+    ResponseEntity<CcmMessageSourceDto> getSourceRequestByRequestId(@RequestParam(value = "requestId") Long requestId);
 
 }

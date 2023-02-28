@@ -164,8 +164,30 @@ class KbControllerTest {
     }
 
     @Test
-    void getAttestationRequestForPrimeId() throws Exception {
-        final var url = "/attestation/request/pi100";
+    void getSourceRequestByRequestId() throws Exception {
+        final var url = "/ccm_source_message?requestId=1010";
+
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$['requestId']", nullValue()));
+
+        when(ccmMessageService.findSourceMessageByRequestId(any())).thenReturn(Optional.of(
+                CcmMessageSourceDto.builder().requestId(1010L).primeId("22")
+                        .messageSource(objectMapper.readValue("{}", JsonNode.class))
+                        .build()
+        ));
+        mvc.perform(MockMvcRequestBuilders.get(url)
+                        .header(HttpHeaders.AUTHORIZATION, "T V"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$['requestId']", is(1010)));
+    }
+
+    @Test
+    void getSourceRequestByPrimeId() throws Exception {
+        final var url = "/attestation/request/22";
 
         mvc.perform(MockMvcRequestBuilders.get(url)
                         .header(HttpHeaders.AUTHORIZATION, "T V"))
