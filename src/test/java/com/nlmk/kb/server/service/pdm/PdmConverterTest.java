@@ -424,7 +424,7 @@ class PdmConverterTest {
     }
 
     @Test
-    void from() throws Exception {
+    void fromSpMacrosructure() throws Exception {
         final var obj = new ObjectMapper()
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                 .readValue(getJsonFromPath("src/test/resources/json/SpMacrosructure.json"),
@@ -458,6 +458,30 @@ class PdmConverterTest {
         assertEquals("5..6", dto.getUzkgrTr().getSrcValue());
         assertEquals("6..7", dto.getUglovTr().getSrcValue());
         assertEquals("тест", dto.getPrAnnotation());
+    }
+
+    @Test
+    void fromSpTypeSampleMacrostructure() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTypeSampleMacrostructure.json"),
+                        SpTypeSampleMacrostructure.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTypeSampleMacrostructureDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("2", dto.getRemoteId());
+        assertEquals("!ТУ 24.10.20", dto.getPrStandMark());
+        assertEquals(2, dto.getPrior());
+        assertEquals("0.01..*", dto.getUglr().getSrcValue());
+        assertEquals("(0.003..*", dto.getSera().getSrcValue());
+        assertEquals("СО", dto.getType());
+        assertEquals("Серный отпечаток", dto.getPrAnnotation());
     }
 
 }

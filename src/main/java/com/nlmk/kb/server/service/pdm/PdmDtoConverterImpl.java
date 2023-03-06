@@ -1103,4 +1103,25 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .build();
     }
 
+    @Override
+    public TypeSampleMacrostructureDto toTypeSampleMacrostructureDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toTypeSampleMacrostructureDto, PDM DICTIONARY: {} ", dictionary);
+
+        return TypeSampleMacrostructureDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .uglr(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_C_MAX))
+                .sera(converter.getLimitSpecValue(specs, MASS_FRACTION_S))
+                .type(converter.getStringSpecValue(specs, TYPE))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
 }

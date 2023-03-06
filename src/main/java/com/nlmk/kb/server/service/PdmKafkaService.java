@@ -56,7 +56,8 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.register-equivalents}",
                     "${kafka.pdm.topic.min-number-samp-chem}",
                     "${kafka.pdm.topic.scheme-stripping-slab}",
-                    "${kafka.pdm.topic.macrostructure}"
+                    "${kafka.pdm.topic.macrostructure}",
+                    "${kafka.pdm.topic.type-sample-macrostructure}",
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})

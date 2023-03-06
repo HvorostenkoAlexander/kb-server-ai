@@ -52,7 +52,8 @@ import java.util.List;
         TolThickDtSender.class,
         TolThickSender.class,
         TolWidthDtSender.class,
-        TolWidthSender.class
+        TolWidthSender.class,
+        TypeSampleMacrostructureSender.class,
 })
 class MessageSenderTest {
 
@@ -66,7 +67,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(26, messageSenders.size());
+        Assertions.assertEquals(27, messageSenders.size());
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")
