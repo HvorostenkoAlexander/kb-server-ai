@@ -20,11 +20,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-// ApplicationContext will be loaded from the OrderServiceConfig class
 class RestRequestAdapterTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();

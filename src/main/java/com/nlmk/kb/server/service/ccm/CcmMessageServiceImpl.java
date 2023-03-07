@@ -6,7 +6,6 @@ import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.mapper.CcmMessageSourceMapper;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,11 +50,6 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     }
 
     @Override
-    public List<CcmMessage> findByPrimeId(String primeId) {
-        return messageRepository.findByPrimeId(primeId);
-    }
-
-    @Override
     public CcmMessage update(CcmMessage ccmMessage) {
         Assert.notNull(ccmMessage, "ccmMessage must not be null");
 
@@ -70,6 +64,11 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     @Override
     public Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId) {
         return ccmMessageSourceRepository.findByRequestId(requestId).map(sourceMapper::toDto);
+    }
+
+    @Override
+    public Optional<CcmMessageSourceDto> findSourceMessageByPrimeId(String primeId) {
+        return ccmMessageSourceRepository.findFirstByPrimeIdOrderByCreatedAtDesc(primeId).map(sourceMapper::toDto);
     }
 
     @Override
