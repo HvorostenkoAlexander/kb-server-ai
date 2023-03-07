@@ -1,22 +1,18 @@
 package com.nlmk.kb.server.service.ccm.kc2;
 
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
 import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213250">Спецификация КЦ-2</a>
@@ -65,19 +61,48 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
         return DataKc.builder()
                 .kceh(recordData.getKceh())
                 .primeId(Objects.nonNull(recordPk) ? AdapterUtils.sequenceToString(recordPk.getId()) : null)
-                .heat(recordData.getMarking().getHeat())
-                .strand(recordData.getMarking().getStrand())
-                .slab(recordData.getMarking().getSlab())
+                .marking(toKcMarking(recordData.getMarking()))
+                .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
-                .requirements(toPamRequirement(recordData.getRequirements()))
+                .requirements(toPamRequirement(recordData))
                 .chemData(toChemData(recordData.getChemData()))
-                .planTask(toPlanTask(recordData.getPlanTask()))
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList())
                 )
+                .marking(toKcMarking(recordData.getMarking()))
+                .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
+                //TODO: нет в Avro схеме
+                //.weightNet(recordData.)
+                .werks(recordData.getWerks())
+                .werksName(AdapterUtils.sequenceToString(recordData.getWerksName()))
+                //TODO: нет в Avro схеме
+                //.unitCode(recordData.)
+                //.unitName(recordData.)
+                .build();
+    }
+
+    private KcMarking toKcMarking(RecordMarking marking) {
+        if (Objects.isNull(marking)) {
+            return KcMarking.builder().build();
+        }
+        return KcMarking.builder()
+                .heat(marking.getHeat())
+                .slab(marking.getSlab())
+                .strand(marking.getStrand())
+                .build();
+    }
+
+    private KcMarking toKcMarkingAcc(RecordMarkingAcc markingAcc) {
+        if (Objects.isNull(markingAcc)) {
+            return KcMarking.builder().build();
+        }
+        return KcMarking.builder()
+                .heat(markingAcc.getHeat())
+                .slab(markingAcc.getSlab())
+                .strand(markingAcc.getStrand())
                 .build();
     }
 
@@ -129,20 +154,38 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
                 .specTypeCode(specifications.getSpecTypeCode())
                 .specValue(AdapterUtils.sequenceToString(specifications.getSpecValue()))
+                .specTypeName(AdapterUtils.sequenceToString(specifications.getSpecTypeName()))
+                .specTypeValue(specifications.getSpecTypeValue())
+                .listValues(toListValues(specifications.getListValues()))
+                .specDecryption(AdapterUtils.sequenceToString(specifications.getSpecDecryption()))
                 .specFormat(AdapterUtils.sequenceToString(specifications.getSpecFormat()))
                 .specMeasure(AdapterUtils.sequenceToString(specifications.getSpecMeasure()))
                 .build();
     }
 
-    private Requirement toPamRequirement(RecordRequirements recordRequirements) {
+    private List<SpecValue> toListValues(List<RecordDataSpecificationsListValues> listValues) {
+        if (Objects.isNull(listValues)) {
+            return Collections.emptyList();
+        }
+        return listValues.stream()
+                .map(a ->
+                        SpecValue.builder()
+                                .value(AdapterUtils.sequenceToString(a.getValue()))
+                                .description(AdapterUtils.sequenceToString(a.getDescription()))
+                                .build()
+                ).collect(Collectors.toUnmodifiableList());
+    }
+
+    private Requirement toPamRequirement(RecordData recordData) {
         return Requirement.builder()
-                .chemicalReg(Objects.nonNull(recordRequirements.getChemicalReq()) ?
-                        recordRequirements.getChemicalReq().stream()
+                .planTask(toPlanTask(recordData.getPlanTask()))
+                .chemicalReq(Objects.nonNull(recordData.getRequirements().getChemicalReq()) ?
+                        recordData.getRequirements().getChemicalReq().stream()
                                 .map(this::toPamChemicalReq)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
-                .specifications(Objects.nonNull(recordRequirements.getSpecifications()) ?
-                        recordRequirements.getSpecifications().stream()
+                .specifications(Objects.nonNull(recordData.getRequirements().getSpecifications()) ?
+                        recordData.getRequirements().getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
