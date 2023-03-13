@@ -3,6 +3,10 @@ package com.nlmk.kb.server.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc1Response;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc2Response;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
@@ -34,7 +38,10 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
 
     private final RestRequestAdapter<CcmPtsRequest> ccmPtsRestRequestAdapter;
     private final RestResponseAdapter<CcmPtsResponse> ccmPtsRestResponseAdapter;
-
+    private final RestRequestAdapter<CcmKc1Request> ccmKc1RestRequestAdapter;
+    private final RestResponseAdapter<CcmKc1Response> ccmKc1RestResponseAdapter;
+    private final RestRequestAdapter<CcmKc2Request> ccmKc2RestRequestAdapter;
+    private final RestResponseAdapter<CcmKc2Response> ccmKc2RestResponseAdapter;
     private final AttestationMessageRepository attestationMessageRepository;
     private final CcmMessageSourceRepository ccmMessageSourceRepository;
     private final PamSender pamSender;
@@ -117,6 +124,110 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
             throw new CcmRequestParsingException(MessageFormat.format(
                     "getAttestationRequestFromMessage, parsing error for primeId [{0}]", message.getPrimeId()
             ));
+        }
+    }
+
+    @Override
+    @Transactional
+    public CcmKc1Response ccmKc1RequestProcessing(CcmKc1Request request) {
+        /*
+         * 1. принять запрос на аттестацию
+         * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
+         * 3. отправить запрос на аттестацию в PAM
+         * 4. получить ответ от PAM
+         * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
+         * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * 7. преобразовать и отправить ответ
+         */
+        log.info("ccKc1RequestProcessing, request [{}]", request);
+        final var attRequest = ccmKc1RestRequestAdapter.adapt(request);
+        final var primeId = SenderUtils.getPrimeId(attRequest);
+
+        try {
+            final var attMessage = AttestationMessage.builder()
+                    .sender(AttestationMessageSender.CCM_KC1)
+                    .receiptTs(new Date())
+                    .primeId(primeId)
+                    .request(objectMapper.writeValueAsString(attRequest))
+                    .build();
+
+            final var attResult = pamSender.postAttestationRequest(attRequest);
+
+            if (Objects.nonNull(attResult)
+                    && Objects.nonNull(attResult.getResult())
+                    && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
+                final var requestId = attResult.getResult().getRequests().get(0).getId();
+                if (Objects.nonNull(requestId)) {
+                    ccmMessageSourceRepository.save(
+                            CcmMessageSource.builder()
+                                    .requestId(requestId)
+                                    .primeId(primeId)
+                                    .messageSource(objectMapper.writeValueAsString(request))
+                                    .build()
+                    );
+                }
+            }
+
+            attMessage.setAttestationTs(new Date());
+            attestationMessageRepository.save(attMessage);
+            return ccmKc1RestResponseAdapter.adapt(attResult);
+        } catch (JsonProcessingException e) {
+            log.error("ccmKc1RequestProcessing", e);
+            throw new CcmRequestProcessingException(
+                    MessageFormat.format("ccmKc1RequestProcessing, error for primeId [{0}]", primeId)
+            );
+        }
+    }
+
+    @Override
+    @Transactional
+    public CcmKc2Response ccmKc2RequestProcessing(CcmKc2Request request) {
+        /*
+         * 1. принять запрос на аттестацию
+         * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
+         * 3. отправить запрос на аттестацию в PAM
+         * 4. получить ответ от PAM
+         * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
+         * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * 7. преобразовать и отправить ответ
+         */
+        log.info("ccKc2RequestProcessing, request [{}]", request);
+        final var attRequest = ccmKc2RestRequestAdapter.adapt(request);
+        final var primeId = SenderUtils.getPrimeId(attRequest);
+
+        try {
+            final var attMessage = AttestationMessage.builder()
+                    .sender(AttestationMessageSender.CCM_KC2)
+                    .receiptTs(new Date())
+                    .primeId(primeId)
+                    .request(objectMapper.writeValueAsString(attRequest))
+                    .build();
+
+            final var attResult = pamSender.postAttestationRequest(attRequest);
+
+            if (Objects.nonNull(attResult)
+                    && Objects.nonNull(attResult.getResult())
+                    && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
+                final var requestId = attResult.getResult().getRequests().get(0).getId();
+                if (Objects.nonNull(requestId)) {
+                    ccmMessageSourceRepository.save(
+                            CcmMessageSource.builder()
+                                    .requestId(requestId)
+                                    .primeId(primeId)
+                                    .messageSource(objectMapper.writeValueAsString(request))
+                                    .build()
+                    );
+                }
+            }
+
+            attMessage.setAttestationTs(new Date());
+            attestationMessageRepository.save(attMessage);
+            return ccmKc2RestResponseAdapter.adapt(attResult);
+        } catch (JsonProcessingException e) {
+            log.error("ccmKc2RequestProcessing", e);
+            throw new CcmRequestProcessingException(
+                    MessageFormat.format("ccmKc2RequestProcessing, error for primeId [{0}]", primeId)
+            );
         }
     }
 

@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -139,9 +140,9 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
         return chemical.stream()
                 .map(a ->
                         KcChemical.builder()
-                                .chemCode(a.getChemCode())
+                                .chemCode(Long.valueOf(a.getChemCode()).intValue())
                                 .chemName(AdapterUtils.sequenceToString(a.getChemName()))
-                                .chemValue(AdapterUtils.sequenceToString(a.getChemValue())) //расхождение спецификации со схемой - в спецификации это число
+                                .chemValue(new BigDecimal(AdapterUtils.sequenceToString(a.getChemValue()))) //расхождение спецификации со схемой - в спецификации это число
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
@@ -203,7 +204,7 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
 
     private RequirementChemicalSpec toPamChemicalReq(RecordChemicalReq recordChemicalReg) {
         return RequirementChemicalSpec.builder()
-                .chemCode(AdapterUtils.sequenceToString(recordChemicalReg.getChemCode()))
+                .chemCode(converter.parseToInteger(AdapterUtils.sequenceToString(recordChemicalReg.getChemCode())))
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
                 .valueMin(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMin()))
                 .valueMax(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMax()))
