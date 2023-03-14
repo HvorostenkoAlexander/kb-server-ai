@@ -40,7 +40,7 @@ public class CcmKc2Request {
     @Builder
     @Jacksonized
     public static class Record {
-        private final @NotBlank String id; // id_slab Сквозной идентификатор сляба
+        private final @NotBlank String primeId; // id_slab Сквозной идентификатор сляба
         private final @NotNull Long werks; // Код завода
         private final @NotBlank String werksName; // Наименование завода
         private final @NotNull Integer kceh; // Код цеха
