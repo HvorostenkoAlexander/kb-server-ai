@@ -129,6 +129,8 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                         .heat(a.getHeat())
                         .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                         .chemical(toChemical(a.getChemical()))
+                        //TODO: нет в схеме
+                        //.reason()
                         .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
