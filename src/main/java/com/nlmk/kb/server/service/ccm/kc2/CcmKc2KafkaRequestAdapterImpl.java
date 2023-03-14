@@ -75,11 +75,11 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 )
                 .marking(toKcMarking(recordData.getMarking()))
                 .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
-                //TODO: нет в Avro схеме
+                //нет в Avro схеме
                 //.weightNet(recordData.)
                 .werks(recordData.getWerks())
                 .werksName(AdapterUtils.sequenceToString(recordData.getWerksName()))
-                //TODO: нет в Avro схеме
+                //нет в Avro схеме
                 //.unitCode(recordData.)
                 //.unitName(recordData.)
                 .build();
@@ -131,7 +131,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                                 .heat(a.getHeat())
                                 .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                                 .chemical(toChemical(a.getChemical()))
-                                //TODO: нет в схеме
+                                //нет в схеме
                                 //.reason()
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());

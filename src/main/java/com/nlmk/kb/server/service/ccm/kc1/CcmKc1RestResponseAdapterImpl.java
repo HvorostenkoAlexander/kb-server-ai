@@ -101,7 +101,6 @@ public class CcmKc1RestResponseAdapterImpl implements RestResponseAdapter<CcmKc1
     }
 
     private CcmKc1Response.NormLimit prepareNormLimit(AttestationDto attestation) {
-        // в объекте AttestationDto ждем либо Equal, либо Min и (или) Max
         return CcmKc1Response.NormLimit.builder()
                 .valueMin(attestation.getMin())
                 .valueMax(attestation.getMax())
