@@ -32,7 +32,7 @@ import java.util.List;
         AsapMechPropertiesSender.class,
         ChemicalPropertiesSender.class,
         EquivalentsSender.class,
-        KatSteel4041Sender.class,
+        KatSteelGost4041Sender.class,
         MacrostructureSender.class,
         MatchRpNumSender.class,
         MatchTkNumSender.class,
