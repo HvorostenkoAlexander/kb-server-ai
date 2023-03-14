@@ -1,22 +1,19 @@
 package com.nlmk.kb.server.api.ccm.kc;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.nlmk.kb.server.api.ccm.SpecTypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Запрос на Аттестацию Единицы Продукции, цех ЦТС<br>
+ * Запрос на Аттестацию Единицы Продукции, цех КЦ2<br>
  * Ссылка <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=166240974">Аттестация ЕП КЦ1,КЦ2 [2.1]</a>
  */
 @Data
@@ -79,8 +76,8 @@ public class CcmKc2Request {
     @Builder
     @Jacksonized
     public static class ChemicalReq {
-        private final Integer chemCode; // Код химического элемента
-        private final String chemName; // Наименование химического элемента
+        private final @NotNull Integer chemCode; // Код химического элемента
+        private final @NotBlank String chemName; // Наименование химического элемента
         private final BigDecimal valueMin; // Минимальное значение химического элемента
         private final BigDecimal valueMax; // Максимальное значение химического элемента
         private final Integer digitsQuantity; //Количество знаков после запятой
@@ -131,46 +128,6 @@ public class CcmKc2Request {
         private final String specDecryption; // Расшифровка справочного значения
         private final String specFormat; // Формат передачи характеристики
         private final String specMeasure; // Единица измерения
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum SpecTypeValue {
-
-        SIMPLE(1, "простое"),
-        ENUMERABLE(2, "перечислимое");
-
-        @JsonValue
-        private final Integer value;
-        private final String desc;
-
-        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        public static SpecTypeValue fromValue(int value) {
-            return Arrays.stream(SpecTypeValue.values())
-                    .filter(s -> s.getValue().equals(value))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeValue value [%s]", value)));
-        }
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum SpecTypeCode {
-        STRING(1, "строка"),
-        NUMBER(2, "число"),
-        DATA(3, "дата");
-
-        @JsonValue
-        private final Integer value;
-        private final String desc;
-
-        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        public static SpecTypeCode fromValue(int value) {
-            return Arrays.stream(SpecTypeCode.values())
-                    .filter(s -> s.getValue().equals(value))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeCode value [%s]", value)));
-        }
     }
 
     @Data

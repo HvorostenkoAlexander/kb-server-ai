@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Ответ на Аттестацию Единицы Продукции, цех ЦТС<br>
+ * Ответ на Аттестацию Единицы Продукции, цех КЦ2<br>
  * Ссылка <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=166240974">Аттестация ЕП КЦ1,КЦ2 [2.2]</a>
  */
 @Data

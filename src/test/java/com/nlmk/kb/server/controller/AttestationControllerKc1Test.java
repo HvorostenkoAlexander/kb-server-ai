@@ -2,6 +2,8 @@ package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import java.math.BigDecimal;
@@ -20,11 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AttestationController.class)
 class AttestationControllerKc1Test {
 
+    private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mvc;
     @MockBean
     private AttestationMessageService attestationMessageService;
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void postAttestationCcmKc() throws Exception {
@@ -82,9 +84,9 @@ class AttestationControllerKc1Test {
                                 .specifications(List.of(
                                         CcmKc1Request.Specification.builder()
                                                 .specCode(50).specName("s51")
-                                                .specTypeCode(CcmKc1Request.SpecTypeCode.NUMBER)
+                                                .specTypeCode(SpecTypeCode.NUMBER)
                                                 .specTypeName("s53")
-                                                .specTypeValue(CcmKc1Request.SpecTypeValue.SIMPLE)
+                                                .specTypeValue(SpecTypeValue.SIMPLE)
                                                 .listValues(List.of(
                                                         CcmKc1Request.SpecValue.builder().value("v54")
                                                                 .description("v55").build()
@@ -114,9 +116,9 @@ class AttestationControllerKc1Test {
                         .specifications(List.of(
                                 CcmKc1Request.Specification.builder()
                                         .specCode(50).specName("s51")
-                                        .specTypeCode(CcmKc1Request.SpecTypeCode.NUMBER)
+                                        .specTypeCode(SpecTypeCode.NUMBER)
                                         .specTypeName("s53")
-                                        .specTypeValue(CcmKc1Request.SpecTypeValue.SIMPLE)
+                                        .specTypeValue(SpecTypeValue.SIMPLE)
                                         .listValues(List.of(
                                                 CcmKc1Request.SpecValue.builder().value("v54").description("v55")
                                                         .build()
@@ -126,6 +128,7 @@ class AttestationControllerKc1Test {
                         ))
                         .build())
                 .build());
+
     }
 
 }

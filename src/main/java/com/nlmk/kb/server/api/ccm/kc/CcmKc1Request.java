@@ -1,23 +1,20 @@
 package com.nlmk.kb.server.api.ccm.kc;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.nlmk.kb.server.api.ccm.SpecTypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Запрос на Аттестацию Единицы Продукции, цех ЦТС<br>
- * Ссылка <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=166240974">Аттестация ЕП КЦ1,КЦ2 [2.1]</a>
+ * Запрос на Аттестацию Единицы Продукции, цех КЦ1<br> Ссылка <a
+ * href="https://confluence.nlmk.com/pages/viewpage.action?pageId=166240974">Аттестация ЕП КЦ1,КЦ2 [2.1]</a>
  */
 @Data
 @Builder
@@ -32,6 +29,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class Pk {
+
         private final @NotBlank String systemCode; // Код системы
         private final @NotBlank String id; // Идентификатор сляба
     }
@@ -40,6 +38,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class Record {
+
         private final @NotBlank String primeId; // id_slab Сквозной идентификатор сляба
         private final @NotNull Long werks; // Код завода
         private final @NotBlank String werksName; // Наименование завода
@@ -61,6 +60,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class Marking {
+
         private final @NotNull Integer heat; // Номер плавки
         private final @NotNull Integer strand; // Номер машины
         private final @NotNull Integer slab; // Номер сляба
@@ -70,6 +70,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class Requirements {
+
         private final @NotNull @Valid PlanTask planTask; // Плановое задание
         private final List<@Valid ChemicalReq> chemicalReq; // Список требований к хим. анализу
         private final List<@Valid Specification> specifications; // Список треб. характер. из суточного задания
@@ -79,8 +80,9 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class ChemicalReq {
-        private final Integer chemCode; // Код химического элемента
-        private final String chemName; // Наименование химического элемента
+
+        private final @NotNull Integer chemCode; // Код химического элемента
+        private final @NotBlank String chemName; // Наименование химического элемента
         private final BigDecimal valueMin; // Минимальное значение химического элемента
         private final BigDecimal valueMax; // Максимальное значение химического элемента
         private final Integer digitsQuantity; //Количество знаков после запятой
@@ -90,6 +92,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class PlanTask {
+
         private final Integer planTaskId; // Номер суточного задания
         private final Integer planTaskLineId; // Идентификатор строки суточного задания
     }
@@ -98,6 +101,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class ChemData {
+
         private final Long sampleId; // ИД пробы
         private final @NotBlank String probeCode; // Вид пробы ( C-сталь )
         private final @NotBlank String analysisCode; // Тип анализа (М-маркировочный. С-сляб, K-контрольный)
@@ -112,6 +116,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class Chemical {
+
         private final @NotNull Integer chemCode; // Код характеристики
         private final @NotBlank String chemName; // Наименование химического элемента
         private final @NotNull BigDecimal chemValue; // Значение химического элемента
@@ -121,6 +126,7 @@ public class CcmKc1Request {
     @Builder
     @Jacksonized
     public static class Specification {
+
         private final @NotNull Integer specCode; // Код характеристики
         private final @NotBlank String specName; // Наименование характеристики
         private final @NotNull SpecTypeCode specTypeCode; // Тип данных (1-строка, 2-число, 3-дата)
@@ -133,50 +139,11 @@ public class CcmKc1Request {
         private final String specMeasure; // Единица измерения
     }
 
-    @Getter
-    @AllArgsConstructor
-    public enum SpecTypeValue {
-
-        SIMPLE(1, "простое"),
-        ENUMERABLE(2, "перечислимое");
-
-        @JsonValue
-        private final Integer value;
-        private final String desc;
-
-        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        public static SpecTypeValue fromValue(int value) {
-            return Arrays.stream(SpecTypeValue.values())
-                    .filter(s -> s.getValue().equals(value))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeValue value [%s]", value)));
-        }
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum SpecTypeCode {
-        STRING(1, "строка"),
-        NUMBER(2, "число"),
-        DATA(3, "дата");
-
-        @JsonValue
-        private final Integer value;
-        private final String desc;
-
-        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        public static SpecTypeCode fromValue(int value) {
-            return Arrays.stream(SpecTypeCode.values())
-                    .filter(s -> s.getValue().equals(value))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeCode value [%s]", value)));
-        }
-    }
-
     @Data
     @Builder
     @Jacksonized
     public static class SpecValue {
+
         private final @NotBlank String value; // Значение
         private final String description; // Описание справочного значения
     }
