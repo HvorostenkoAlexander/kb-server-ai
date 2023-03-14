@@ -1,0 +1,31 @@
+{
+  "fields": [
+    {
+      "name": "bucket",
+      "type": "string"
+    },
+    {
+      "name": "path",
+      "type": "string"
+    },
+    {
+      "name": "processor_version",
+      "type": "string"
+    },
+    {
+      "name": "server",
+      "type": "string"
+    },
+    {
+      "name": "storage_type",
+      "type": "string"
+    },
+    {
+      "name": "ts",
+      "type": "string"
+    }
+  ],
+  "namespace": "com.nlmk.s3.proxy",
+  "type": "record",
+  "name": "s3notification"
+}

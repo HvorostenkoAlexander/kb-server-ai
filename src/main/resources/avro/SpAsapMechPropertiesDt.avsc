@@ -1,0 +1,85 @@
+{
+  "type": "record",
+  "name": "SpAsapMechPropertiesDt",
+  "namespace": "nlmk.l3.pdm",
+  "fields": [
+    {
+      "name": "ts",
+      "type": "string"
+    },
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "opEnum",
+        "symbols": [
+          "I",
+          "U",
+          "D"
+        ]
+      }
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "Pk",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string"
+          },
+          {
+            "name": "directoryId",
+            "type": "string"
+          },
+          {
+            "name": "Id",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "type": {
+        "type": "record",
+        "name": "Data",
+        "fields": [
+          {
+            "name": "specifications",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "Spec",
+                "fields": [
+                  {
+                    "name": "specCode",
+                    "type": "int"
+                  },
+                  {
+                    "name": "specName",
+                    "type": "string"
+                  },
+                  {
+                    "name": "specTypeCode",
+                    "type": "int"
+                  },
+                  {
+                    "name": "specValue",
+                    "type": "string"
+                  },
+                  {
+                    "name": "specMeasure",
+                    "type": "string"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
