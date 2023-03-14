@@ -93,8 +93,8 @@ public class CcmKc1Request {
     @Jacksonized
     public static class PlanTask {
 
-        private final Integer planTaskId; // Номер суточного задания
-        private final Integer planTaskLineId; // Идентификатор строки суточного задания
+        private final @NotNull Integer planTaskId; // Номер суточного задания
+        private final @NotNull Integer planTaskLineId; // Идентификатор строки суточного задания
     }
 
     @Data
