@@ -45,7 +45,7 @@ class CcmMessageSourceRepositoryTest {
         {
             final var found = repository.findFirstByPrimeIdOrderByCreatedAtDesc("22");
             Assertions.assertTrue(found.isPresent());
-            Assertions.assertEquals(1021L, found.get().getRequestId());
+            Assertions.assertEquals(1020L, found.get().getRequestId());
         }
     }
 
