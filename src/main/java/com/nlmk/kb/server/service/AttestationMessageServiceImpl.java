@@ -50,10 +50,10 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @FunctionalInterface
-    public interface Saver {
+    interface Saver {
         void save(Long requestId, String primeId) throws JsonProcessingException;
     }
-    public class SourceMessageSaver<T> implements Saver {
+    class SourceMessageSaver<T> implements Saver {
         private final CcmMessageSourceRepository sourceRepository;
         private final T sourceMessage;
         public SourceMessageSaver(CcmMessageSourceRepository sourceRepository, T t) {
