@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("java:S5961")
 class PdmConverterTest {
 
     private final CommonConverter commonConverter = new CommonConverterImpl();
@@ -357,6 +358,106 @@ class PdmConverterTest {
         assertEquals("0.0005..*", dto.getB().getSrcValue());
         assertEquals("*..0.12", dto.getC().getSrcValue());
         assertEquals("C > 0", dto.getPrAnnotation());
+    }
+
+    @Test
+    void fromSpMinNumberSampChemTest() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpMinNumberSampChem.json"),
+                        SpTolEvenness.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toMinNumberSampChemDto(dictionary);
+
+        assertNotNull(dto);
+        assertEquals("КЦ-1", dto.getRouteShop());
+        assertEquals(1, dto.getNumberSamp());
+    }
+
+    @Test
+    void fromSpSchemeStrippingSlab() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpSchemeStrippingSlab.json"),
+                        SpSchemeStrippingSlab.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toSchemeStrippingSlabDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("28", dto.getRemoteId());
+        // updateTs
+        assertEquals("ГОСТ 1", dto.getPrStandMark());
+        assertEquals("сп3", dto.getPrSteelMark());
+        assertEquals(1, dto.getPrior());
+        assertEquals("ДТ 1", dto.getDt());
+        assertEquals("КЦ-1", dto.getRouteShop());
+        assertEquals("", dto.getWorkCenterCode());
+        assertEquals("", dto.getCustomerCodeName());
+        assertEquals("2000001389", dto.getPrCustomer());
+        assertEquals("*..6)", dto.getPrThickGood().getSrcValue());
+        assertEquals("!1..3", dto.getMacroStrAver().getSrcValue());
+        assertEquals("0.08..*", dto.getUglr().getSrcValue());
+        assertEquals("(0.6..*", dto.getMn().getSrcValue());
+        assertEquals("*..0.005)", dto.getNb().getSrcValue());
+        assertEquals("*..0.0006)", dto.getB().getSrcValue());
+        assertEquals("U08", dto.getCodeSlabEar().getSrcValue());
+        assertEquals("плавка", dto.getMeltSlab());
+        assertEquals("!100", dto.getNumberSlabSeria().getSrcValue());
+        assertEquals("!100", dto.getNumberSlabPlavka().getSrcValue());
+        assertEquals("1", dto.getSnakeWide());
+        assertEquals("1", dto.getPerimeterWide());
+        assertEquals("1", dto.getEdgeWide());
+        assertEquals("2", dto.getSnakeNarrow());
+        assertEquals("2", dto.getPerimeterNarrow());
+        assertEquals("2", dto.getEdgeNarrow());
+        assertEquals("тест", dto.getPrAnnotation());
+    }
+
+    @Test
+    void from() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpMacrosructure.json"),
+                        SpMacrosructure.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toMacrostructureDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("103", dto.getRemoteId());
+        assertEquals("ГОСТ 1", dto.getPrStandMark());
+        assertEquals("ДТ 22.02", dto.getDt());
+        assertEquals(10, dto.getPrior());
+        assertEquals("ТК-185", dto.getTkNum());
+        assertEquals("1", dto.getRoute());
+        assertEquals("БОРУСАН МАННЕСМАНН БОРУ", dto.getCustomerCodeName());
+        assertEquals("2000002631", dto.getPrCustomer());
+        assertEquals("(4..*", dto.getPrThickGood().getSrcValue());
+        assertEquals("!1", dto.getGrSteelVmz());
+        assertEquals("*..1", dto.getRasslOpeningWidth().getSrcValue());
+        assertEquals("*..50", dto.getRasslTotalLength().getSrcValue());
+        assertEquals("*..2", dto.getPoreDiametr().getSrcValue());
+        assertEquals("1..2", dto.getVnutrTr().getSrcValue());
+        assertEquals("2..3", dto.getVklObl().getSrcValue());
+        assertEquals("3..4", dto.getOsevSeqr().getSrcValue());
+        assertEquals("4..5", dto.getVklToch().getSrcValue());
+        assertEquals("5..6", dto.getUzkgrTr().getSrcValue());
+        assertEquals("6..7", dto.getUglovTr().getSrcValue());
+        assertEquals("тест", dto.getPrAnnotation());
     }
 
 }

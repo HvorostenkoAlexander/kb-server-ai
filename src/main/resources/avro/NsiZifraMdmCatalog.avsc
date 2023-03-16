@@ -1,0 +1,186 @@
+{
+  "type": "record",
+  "name": "Reason",
+  "namespace": "nlmk.l3.nsi.zifra",
+  "doc": "nlmk.l3.nsi.zifra передача справочника из MDM",
+  "fields": [
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "EnumOp",
+        "symbols": [
+          "D",
+          "I",
+          "U"
+        ]
+      },
+      "doc": "Операция"
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "pk",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string",
+            "doc": "Код системы"
+          },
+          {
+            "name": "lineId",
+            "type": "string",
+            "doc": "Идентификатор строки"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ts",
+      "type": "string",
+      "doc": "Дата и время изменения справочника",
+      "logicalType": "date"
+    },
+    {
+      "name": "data",
+      "type": {
+        "type": "record",
+        "name": "Data",
+        "fields": [
+          {
+            "name": "catalogId",
+            "type": "string",
+            "doc": "Идентификатор справочника"
+          },
+          {
+            "name": "catalogCode",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "код справочника"
+          },
+          {
+            "name": "hashtagLine",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": "string"
+              }
+            ],
+            "doc": "Хэштэг строки справочника"
+          },
+          {
+            "name": "hashtagCatalog",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": "string"
+              }
+            ],
+            "doc": "Хэштэг справочника"
+          },
+          {
+            "name": "properties",
+            "type": {
+              "type": "record",
+              "name": "properties",
+              "fields": [
+                {
+                  "name": "cron",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "doc": "Значение CRON, расписание действия записи"
+                },
+                {
+                  "name": "dateEnd",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "doc": "Окончание периода действия записи"
+                },
+                {
+                  "name": "dateBegin",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "doc": "Начало периода действия записи"
+                },
+                {
+                  "name": "dateChange",
+                  "type": "string",
+                  "doc": "Дата изменения записи",
+                  "logicalType": "date"
+                }
+              ]
+            }
+          },
+          {
+            "name": "lineAttributes",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "lineAttributes_record",
+                  "fields": [
+                    {
+                      "name": "attrCode",
+                      "type": "string",
+                      "doc": "Код атрибута"
+                    },
+                    {
+                      "name": "attrName",
+                      "type": "string",
+                      "doc": "Наименование атрибута"
+                    },
+                    {
+                      "name": "attrType",
+                      "type": "string",
+                      "doc": "Тип атрибута"
+                    },
+                    {
+                      "name": "attrValue",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Значение атрибута"
+                    },
+                    {
+                      "name": "attrNameEng",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Английское наименование атрибута справочника"
+                    },
+                    {
+                      "name": "hashtagColumn",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": "string"
+                        }
+                      ],
+                      "doc": "Хэштэг аттрибута"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

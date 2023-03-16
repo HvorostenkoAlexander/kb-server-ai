@@ -1,0 +1,545 @@
+{
+  "type": "record",
+  "name": "AttestationRequest",
+  "namespace": "nlmk.l3.ccm.pgp",
+  "doc": "Запрос на проведение аттестации единицы продукции",
+  "fields": [
+    {
+      "name": "ts",
+      "type": "string",
+      "doc": "Дата и время передачи"
+    },
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "EnumOp",
+        "symbols": [
+          "D",
+          "I",
+          "U"
+        ]
+      },
+      "doc": "Операция"
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "RecordPk",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string",
+            "doc": "Код системы"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "doc": "ИД единицы металла (ЕМ)"
+          }
+        ]
+      },
+      "doc": "Первичный ключ"
+    },
+    {
+      "name": "data",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordData",
+          "fields": [
+            {
+              "name": "primeId",
+              "type": "string",
+              "doc": "Идентификатор ЕМ на стане"
+            },
+            {
+              "name": "nplv",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "№ плавки",
+              "default": null
+            },
+            {
+              "name": "hnum",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Номер ГК партии",
+              "default": null
+            },
+            {
+              "name": "roll",
+              "type": "string",
+              "doc": "Номер рулона/пачки"
+            },
+            {
+              "name": "length",
+              "type": [
+                "null",
+                "float"
+              ],
+              "doc": "Длина",
+              "default": null
+            },
+            {
+              "name": "thickness",
+              "type": "float",
+              "doc": "Толщина"
+            },
+            {
+              "name": "width",
+              "type": "float",
+              "doc": "Ширина"
+            },
+            {
+              "name": "weightNet",
+              "type": "float",
+              "doc": "Масса единицы продукции"
+            },
+            {
+              "name": "bundleWeight",
+              "type": [
+                "null",
+                "float"
+              ],
+              "doc": "Масса связки",
+              "default": null
+            },
+            {
+              "name": "kceh",
+              "type": "int",
+              "doc": "Номер цеха"
+            },
+            {
+              "name": "orderNum",
+              "type": [
+                "null",
+                "long"
+              ],
+              "doc": "Номер заказа",
+              "default": null
+            },
+            {
+              "name": "orderPos",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Номер позиции заказа",
+              "default": null
+            },
+            {
+              "name": "attestationPoint",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Точка аттестации",
+              "default": null
+            },
+            {
+              "name": "cutTaskNum",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Номер задания на порезку металла",
+              "default": null
+            },
+            {
+              "name": "cutTaskDate",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "Дата задания на порезку металла",
+              "default": null
+            },
+            {
+              "name": "cutTaskStrNum",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Номер строки задания на порезку металла",
+              "default": null
+            },
+            {
+              "name": "specifications",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "RecordSpecifications",
+                  "fields": [
+                    {
+                      "name": "specCode",
+                      "type": "int",
+                      "doc": "Код характеристики"
+                    },
+                    {
+                      "name": "specName",
+                      "type": "string",
+                      "doc": "Наименование характеристики"
+                    },
+                    {
+                      "name": "specValue",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Значение характеристики",
+                      "default": null
+                    },
+                    {
+                      "name": "specTypeCode",
+                      "type": "int",
+                      "doc": "Тип данных (1 - строка, 2 - число, 3 - дата)"
+                    },
+                    {
+                      "name": "specFormat",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Формат передачи характеристики",
+                      "default": null
+                    },
+                    {
+                      "name": "specMeasure",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Единица измерения характеристики",
+                      "default": null
+                    }
+                  ]
+                }
+              },
+              "doc": "Основные характеристики единицы продукции"
+            },
+            {
+              "name": "chemical",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordChemical",
+                    "fields": [
+                      {
+                        "name": "chemCode",
+                        "type": "int",
+                        "doc": "Код характеристики"
+                      },
+                      {
+                        "name": "chemName",
+                        "type": "string",
+                        "doc": "Наименование характеристики"
+                      },
+                      {
+                        "name": "chemValue",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Значение характеристики",
+                        "default": null
+                      },
+                      {
+                        "name": "chemFormat",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Формат передачи характеристики",
+                        "default": null
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Химанализ",
+              "default": null
+            },
+            {
+              "name": "mechanical",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordMechanical",
+                    "fields": [
+                      {
+                        "name": "hnum",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Номер испытуемой горячекатаной партии",
+                        "default": null
+                      },
+                      {
+                        "name": "protNum",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Номер протокола",
+                        "default": null
+                      },
+                      {
+                        "name": "protDate",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Дата протокола",
+                        "default": null
+                      },
+                      {
+                        "name": "sampleNum",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Номер пробы (образца)",
+                        "default": null
+                      },
+                      {
+                        "name": "signAnalysis",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Признак испытаний",
+                        "default": null
+                      },
+                      {
+                        "name": "mechData",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "RecordMechData",
+                            "fields": [
+                              {
+                                "name": "mechAnalysisId",
+                                "type": [
+                                  "null",
+                                  "int"
+                                ],
+                                "doc": "Ид анализа",
+                                "default": null
+                              },
+                              {
+                                "name": "mechAnalysisData",
+                                "type": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "record",
+                                    "name": "RecordMechAnalysisData",
+                                    "fields": [
+                                      {
+                                        "name": "mechCode",
+                                        "type": "int",
+                                        "doc": "Код характеристики"
+                                      },
+                                      {
+                                        "name": "mechName",
+                                        "type": "string",
+                                        "doc": "Наименование характеристики"
+                                      },
+                                      {
+                                        "name": "mechFormat",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Формат передачи характеристики",
+                                        "default": null
+                                      },
+                                      {
+                                        "name": "mechValue",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Значение характеристики",
+                                        "default": null
+                                      },
+                                      {
+                                        "name": "mechTypeCode",
+                                        "type": "int",
+                                        "doc": "Тип данных (1 - строка, 2 - число, 3 - дата)"
+                                      },
+                                      {
+                                        "name": "mechMeasure",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Единица измерения характеристики",
+                                        "default": null
+                                      }
+                                    ]
+                                  }
+                                },
+                                "doc": "Данные анализа мех.испытаний"
+                              }
+                            ]
+                          }
+                        },
+                        "doc": "Данные мех.испытаний"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Физмех испытания",
+              "default": null
+            },
+            {
+              "name": "metallographic",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordMetallographic",
+                    "fields": [
+                      {
+                        "name": "hnum",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Номер испытуемой горячекатаной партии",
+                        "default": null
+                      },
+                      {
+                        "name": "protNum",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Номер протокола",
+                        "default": null
+                      },
+                      {
+                        "name": "protDate",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Дата протокола",
+                        "default": null
+                      },
+                      {
+                        "name": "signAnalysis",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Признак испытаний",
+                        "default": null
+                      },
+                      {
+                        "name": "metgrapData",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "RecordMetgrapData",
+                            "fields": [
+                              {
+                                "name": "metgrapAnalysisId",
+                                "type": "int",
+                                "doc": "Ид анализа"
+                              },
+                              {
+                                "name": "metgrapAnalysisData",
+                                "type": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "record",
+                                    "name": "RecordMetgrapAnalysisData",
+                                    "fields": [
+                                      {
+                                        "name": "metgrapCode",
+                                        "type": "int",
+                                        "doc": "Код характеристики"
+                                      },
+                                      {
+                                        "name": "metgrapName",
+                                        "type": "string",
+                                        "doc": "Наименование характеристики"
+                                      },
+                                      {
+                                        "name": "metgrapFormat",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Формат передачи характеристики",
+                                        "default": null
+                                      },
+                                      {
+                                        "name": "metgrapValue",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Значение характеристики",
+                                        "default": null
+                                      },
+                                      {
+                                        "name": "metgrapTypeCode",
+                                        "type": "int",
+                                        "doc": "Тип данных (1 - строка, 2 - число, 3 - дата)"
+                                      },
+                                      {
+                                        "name": "metgrapMeasure",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Единица измерения характеристики",
+                                        "default": null
+                                      }
+                                    ]
+                                  }
+                                },
+                                "doc": "Данные анализа металлографии"
+                              }
+                            ]
+                          }
+                        },
+                        "doc": "Данные металлографии"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Металлографическая оценка стали",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Данные",
+      "default": null
+    }
+  ]
+}

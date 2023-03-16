@@ -7,9 +7,11 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.AttestationMessageSender;
+import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.exception.CcmRequestParsingException;
 import com.nlmk.kb.server.exception.CcmRequestProcessingException;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
+import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.sender.PamSender;
@@ -18,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -32,20 +35,21 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     private final RestRequestAdapter<CcmPtsRequest> ccmPtsRestRequestAdapter;
     private final RestResponseAdapter<CcmPtsResponse> ccmPtsRestResponseAdapter;
 
-    private final AttestationMessageRepository repository;
+    private final AttestationMessageRepository attestationMessageRepository;
+    private final CcmMessageSourceRepository ccmMessageSourceRepository;
     private final PamSender pamSender;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Optional<AttestationMessage> findLastAttestationMessage(String primeId) {
-        return repository.findFirstByPrimeIdOrderByReceiptTsDesc(primeId);
+        return attestationMessageRepository.findFirstByPrimeIdOrderByReceiptTsDesc(primeId);
     }
 
     @Override
     @Transactional
     public void updateAttestationMessage(AttestationMessage attMessage) {
-        repository.save(attMessage);
+        attestationMessageRepository.save(attMessage);
     }
 
     @Override
@@ -55,9 +59,10 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
          * 1. принять запрос на аттестацию
          * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
          * 3. отправить запрос на аттестацию в PAM
-         * 5. получить ответ от PAM
-         * 3. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
-         * 6. преобразовать и отправить ответ
+         * 4. получить ответ от PAM
+         * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
+         * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * 7. преобразовать и отправить ответ
          */
         log.info("ccmPtsRequestProcessing, request [{}]", request);
         final var attRequest = ccmPtsRestRequestAdapter.adapt(request);
@@ -72,8 +77,24 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
                     .build();
 
             final var attResult = pamSender.postAttestationRequest(attRequest);
+
+            if (Objects.nonNull(attResult)
+                    && Objects.nonNull(attResult.getResult())
+                    && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
+                final var requestId = attResult.getResult().getRequests().get(0).getId(); // результат аттестации содержит один экземпляр запроса, т.е. индекс = 0.
+                if (Objects.nonNull(requestId)) {
+                    ccmMessageSourceRepository.save(
+                            CcmMessageSource.builder()
+                                    .requestId(requestId)
+                                    .primeId(primeId)
+                                    .messageSource(objectMapper.writeValueAsString(request))
+                                    .build()
+                    );
+                }
+            }
+
             attMessage.setAttestationTs(new Date());
-            repository.save(attMessage);
+            attestationMessageRepository.save(attMessage);
             return ccmPtsRestResponseAdapter.adapt(attResult);
         } catch (JsonProcessingException e) {
             log.error("ccmPtsRequestProcessing", e);

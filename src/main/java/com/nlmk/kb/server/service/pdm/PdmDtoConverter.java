@@ -10,8 +10,6 @@ public interface PdmDtoConverter {
 
     ChemicalEquivalentStdDto toChemicalEquivalentStdDto(PdmDictionary dictionary);
 
-    PcmDto toPcmDto(PdmDictionary dictionary);
-
     ToleranceDto toToleranceDto(PdmDictionary dictionary);
 
     MicrostructureDto toMicrostructureDto(PdmDictionary dictionary);
@@ -38,8 +36,6 @@ public interface PdmDtoConverter {
     EvennessTkLimitDto toEvennessTkLimitDto(PdmDictionary dictionary);
 
     TkNumDto toTkNumDto(PdmDictionary dictionary);
-
-    CEqDto toCEqDto(PdmDictionary dictionary);
 
     MechanicalTkDto toMechanicalTkDto(PdmDictionary dictionary);
 
@@ -75,5 +71,20 @@ public interface PdmDtoConverter {
      * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=144109644">Реестр эквивалентов(NSD_register_equivalents )</a>
      */
     RegisterEquivalentsDto toRegisterEquivalentsDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=147134079">Минимальное количество проб для химанализа( NSD_min_number_samp_chem )</a>
+     */
+    MinNumberSampChemDto toMinNumberSampChemDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118453626">Схемы зачистки слябов( NSD_scheme_stripping_slab )</a>
+     */
+    SchemeStrippingSlabDto toSchemeStrippingSlabDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118428454">Макроструктура( NSD_macrosructure )</a>
+     */
+    MacrostructureDto toMacrostructureDto(PdmDictionary dictionary);
 
 }

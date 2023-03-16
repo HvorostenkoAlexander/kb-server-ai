@@ -9,11 +9,10 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyAttributeValue;
 import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.util.AdapterUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordDataPropertiesListValuesAttrValue;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordProperties;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -33,47 +31,9 @@ import org.springframework.util.CollectionUtils;
 public abstract class CcmPtsRequestAdapter {
 
     /**
-     * Разделитель кодов для строк из конфигурации.
-     */
-    private static final String DELIMITER = ";";
-    private final List<Integer> allowedMechanicalCodes;
-    private final List<Integer> allowedAnalysisCodes;
-    private final List<Integer> allowedPropertyAttributes;
-
-    protected CcmPtsRequestAdapter(AllowedCodesConfig allowedCodesConfig) {
-        log.info("CcmPtsRequestAdapter создан для allowedAnalysisCodes {}", allowedCodesConfig.getAllowedAnalysisCodes());
-        log.info("CcmPtsRequestAdapter создан для allowedMechanicalCodes {}", allowedCodesConfig.getAllowedMechanicalCodes());
-        log.info("CcmPtsRequestAdapter создан для allowedPropertyAttributes {}", allowedCodesConfig.getAllowedPropertyAttributes());
-        if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedMechanicalCodes())) {
-            allowedMechanicalCodes = Arrays.stream(allowedCodesConfig.getAllowedMechanicalCodes().split(DELIMITER))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toUnmodifiableList());
-        } else {
-            allowedMechanicalCodes = List.of();
-            log.warn("Не указано property request.ccm.pts.allowedMechanicalCodes");
-        }
-        if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedAnalysisCodes())) {
-            allowedAnalysisCodes = Arrays.stream(allowedCodesConfig.getAllowedAnalysisCodes().split(DELIMITER))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toUnmodifiableList());
-        } else {
-            allowedAnalysisCodes = List.of();
-            log.warn("Не указано property request.ccm.pts.allowedAnalysisCodes");
-        }
-        if (StringUtils.isNotBlank(allowedCodesConfig.getAllowedPropertyAttributes())) {
-            allowedPropertyAttributes = Arrays.stream(allowedCodesConfig.getAllowedPropertyAttributes().split(DELIMITER))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toUnmodifiableList());
-        } else {
-            allowedPropertyAttributes = List.of();
-            log.warn("Не указано property request.ccm.pts.allowedPropertyAttributes");
-        }
-    }
-
-    /**
      * Расчёт массы связки
      */
-    protected Double calcBundleWeight(Object data) {
+    protected BigDecimal calcBundleWeight(Object data) {
         if (Objects.isNull(data)) {
             return null;
         }
@@ -91,7 +51,7 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Расчёт массы связки для CcmPtsRequest
      */
-    private Double calcBundleWeightForRequest(CcmPtsRequest requestMessage) {
+    private BigDecimal calcBundleWeightForRequest(CcmPtsRequest requestMessage) {
         if (Objects.isNull(requestMessage.getData())) {
             return null;
         }
@@ -111,16 +71,16 @@ public abstract class CcmPtsRequestAdapter {
     /**
      * Расчёт массы связки для nlmk.l3.ccm.pts.RecordData
      */
-    private Double calcBundleWeightForRecord(RecordData recordData) {
+    private BigDecimal calcBundleWeightForRecord(RecordData recordData) {
         if (Objects.isNull(recordData.getBundles())) {
-            return calcBundleWeight(AdapterUtils.parseFloat(recordData.getWeightNet()), List.of());
+            return calcBundleWeight(AdapterUtils.toBigDecimal(recordData.getWeightNet()), List.of());
         }
 
         return calcBundleWeight(
-                AdapterUtils.parseFloat(recordData.getWeightNet()),
+                AdapterUtils.toBigDecimal(recordData.getWeightNet()),
                 recordData.getBundles().stream()
                         .map(RecordBundles::getStripWeight)
-                        .map(AdapterUtils::parseFloat)
+                        .map(AdapterUtils::toBigDecimal)
                         .collect(Collectors.toList())
         );
     }
@@ -132,8 +92,8 @@ public abstract class CcmPtsRequestAdapter {
      * @param bundles масса всех бунтов
      * @return итоговая масса
      */
-    private Double calcBundleWeight(Double em, List<Double> bundles) {
-        var weightEM = 0.0;
+    private BigDecimal calcBundleWeight(BigDecimal em, List<BigDecimal> bundles) {
+        BigDecimal weightEM = BigDecimal.ZERO;
         if (Objects.nonNull(em)) {
             weightEM = em;
         }
@@ -144,11 +104,11 @@ public abstract class CcmPtsRequestAdapter {
 
         final var weightBundle = bundles.stream()
                 .filter(Objects::nonNull)
-                .reduce(Double::sum)
-                .orElse(0.0);
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
 
         // масса всех бунтов, входящих в одну связку, плюс масса ЕМ
-        return weightBundle + weightEM;
+        return weightBundle.add(weightEM);
     }
 
     /**
@@ -344,7 +304,7 @@ public abstract class CcmPtsRequestAdapter {
         }
 
         return property.getListValues().stream()
-                .filter(v -> allowMechanicalCode(v.getAttrCode()))
+                .filter(v -> Objects.nonNull(v.getAttrCode()))
                 .map(v -> PtsPropertyValue.builder()
                         .attrCode(v.getAttrCode())
                         .attrType(v.getAttrType().getValue())
@@ -367,7 +327,7 @@ public abstract class CcmPtsRequestAdapter {
                         .analysisValue(a.getAnalysisValue().getValue())
                         .listValues(
                                 a.getListValues().stream()
-                                        .filter(v -> allowMechanicalAnalysisCode(v.getAttrCode()))
+                                        .filter(v -> Objects.nonNull(v.getAttrCode()))
                                         .map(v -> PtsPropertyAnalyzesValue.builder()
                                                 .attrCode(v.getAttrCode())
                                                 .attrType(v.getAttrType().getValue())
@@ -387,7 +347,7 @@ public abstract class CcmPtsRequestAdapter {
         }
 
         return property.getAttestationList().stream()
-                .filter(a -> allowPropertyAttribute(a.getTypeCode()))
+                .filter(a -> Objects.nonNull(a.getTypeCode()))
                 .map(a -> PtsPropertyAttribute.builder()
                         .typeCode(a.getTypeCode())
                         .typeName(a.getTypeName())
@@ -453,7 +413,6 @@ public abstract class CcmPtsRequestAdapter {
         }
 
         return property.getListValues().stream()
-                .filter(v -> allowMechanicalCode(v.getAttrCode()))
                 .map(v -> PtsPropertyValue.builder()
                         .attrCode(v.getAttrCode())
                         .attrType(v.getAttrType())
@@ -476,7 +435,6 @@ public abstract class CcmPtsRequestAdapter {
                         .analysisValue(a.getAnalysisValue())
                         .listValues(
                                 a.getListValues().stream()
-                                        .filter(v -> allowMechanicalAnalysisCode(v.getAttrCode()))
                                         .map(v -> PtsPropertyAnalyzesValue.builder()
                                                 .attrCode(v.getAttrCode())
                                                 .attrType(v.getAttrType())
@@ -496,7 +454,6 @@ public abstract class CcmPtsRequestAdapter {
         }
 
         return property.getAttestationList().stream()
-                .filter(a -> allowPropertyAttribute(a.getTypeCode()))
                 .map(a -> PtsPropertyAttribute.builder()
                         .typeCode(a.getTypeCode())
                         .typeName(AdapterUtils.sequenceToString(a.getTypeName()))
@@ -532,27 +489,6 @@ public abstract class CcmPtsRequestAdapter {
                     .attestationList(listAttributes)
                     .build());
         }
-    }
-
-    /**
-     * Только определенные коды для Механики
-     */
-    private boolean allowMechanicalCode(Integer code) {
-        return Objects.nonNull(code) && allowedMechanicalCodes.contains(code);
-    }
-
-    /**
-     * Только используемые в аттестации коды для Анализов
-     */
-    private boolean allowMechanicalAnalysisCode(Integer code) {
-        return Objects.nonNull(code) && allowedAnalysisCodes.contains(code);
-    }
-
-    /**
-     * Только используемые в аттестации коды свойств атрибутов
-     */
-    private boolean allowPropertyAttribute(Integer code) {
-        return Objects.nonNull(code) && allowedPropertyAttributes.contains(code);
     }
 
     private List<String> prepareAttrValueListForRequest(List<CcmPtsRequest.OnePropValueAttr> listValues) {

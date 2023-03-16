@@ -19,9 +19,11 @@ import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.sap.SapMessageService;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import io.micrometer.core.annotation.Timed;
+
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
@@ -57,11 +59,7 @@ public class KbControllerImpl implements KbController {
         log.info("postLaunchReAttestation, повторная отправка запроса на аттестацию из kb-server. primeId:[{}]", primeId);
 
         final var resultId = ccmCommonService.rePostAttestation(primeId);
-        final var resultString = String.format(
-                "Результат: [%s] получен при повторной отправки запроса на аттестацию с primeId: [%s]",
-                resultId,
-                primeId
-        );
+        final var resultString = String.format("Результат: [%s] получен при повторной отправки запроса на аттестацию с primeId: [%s]", resultId, primeId);
 
         return ResponseEntity.ok(resultString);
     }
@@ -72,13 +70,6 @@ public class KbControllerImpl implements KbController {
         return ccmMessageService.findAll(PageRequest.of(page, size));
     }
 
-    @Override
-    public List<CcmMessage> getCcmMessageByPrimeId(String primeId) {
-        log.info("getCcmMessageByPrimeId, primeId [{}]", primeId);
-        return ccmMessageService.findByPrimeId(primeId);
-    }
-
-    @Override
     public AttestationRequest getAttestationRequestForPrimeId(String primeId) {
         log.info("getAttestationRequestForPrimeId, primeId [{}]", primeId);
 
@@ -87,9 +78,7 @@ public class KbControllerImpl implements KbController {
         final var ccmRest = attestationMessageService.findLastAttestationMessage(primeId);
 
         if (ccmKafka.isEmpty() && ccmRest.isEmpty()) {
-            throw new DataNotFoundException(MessageFormat.format(
-                    "AttestationRequest for primeId [{0}] not found", primeId
-            ));
+            throw new DataNotFoundException(MessageFormat.format("Запрос аттестации с primeId [{0}] не найден", primeId));
         }
 
         if (ccmKafka.isPresent() && ccmRest.isPresent()) {
@@ -106,19 +95,9 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public Page<PdmMessageDto> getPdmTopicMessages(int page,
-                                                   int size,
-                                                   String topic,
-                                                   Boolean isPosted,
-                                                   Date startDate,
-                                                   Date endDate) {
+    public Page<PdmMessageDto> getPdmTopicMessages(int page, int size, String topic, Boolean isPosted, Date startDate, Date endDate) {
         log.info("getPdmTopicMessages, topic [{}], posted [{}], startDate [{}], endDate [{}]", topic, isPosted, startDate, endDate);
-        return pdmMessageService.getMessages(topic,
-                isPosted,
-                startDate,
-                endDate,
-                PageRequest.of(page, size)
-        );
+        return pdmMessageService.getMessages(topic, isPosted, startDate, endDate, PageRequest.of(page, size));
     }
 
     @Override
@@ -153,7 +132,7 @@ public class KbControllerImpl implements KbController {
         ZORDERS051 zorder = s3Service.getZorder(message);
 
         psmSender.postZorder(zorder);
-        log.info("kb, sendingSapMessage. Sent to PSM BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
+        log.info("postSendingSapMessage, в PSM отправлен заказ BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
 
         return new ResponseEntity<>("BELNR: " + zorder.getIDOC().getE1EDK01().getBELNR(), HttpStatus.OK);
     }
@@ -184,14 +163,19 @@ public class KbControllerImpl implements KbController {
                 attestationResultSender.send(attestationResult, VerificationResultsKc2.class);
                 break;
             }
-            default: throw new AttestationResultSenderException(
-                    "Отправка рельтата аттестации для цеха [" + attestationResult.getKceh() + "] не реализована"
-            );
+            default:
+                throw new AttestationResultSenderException("Отправка результата аттестации для цеха [" + attestationResult.getKceh() + "] не реализована");
         }
     }
 
     @Override
-    public ResponseEntity<CcmMessageSourceDto> getCcmSourceMessage(Long requestId) {
+    public ResponseEntity<CcmMessageSourceDto> getSourceRequestByPrimeId(String primeId) {
+        log.info("getSourceRequestByPrimeId, primeId [{}]", primeId);
+        return ResponseEntity.ok(ccmMessageService.findSourceMessageByPrimeId(primeId).orElse(new CcmMessageSourceDto()));
+    }
+
+    @Override
+    public ResponseEntity<CcmMessageSourceDto> getSourceRequestByRequestId(Long requestId) {
         log.info("getCcmSourceMessage, requestId [{}]", requestId);
         return ResponseEntity.ok(ccmMessageService.findSourceMessageByRequestId(requestId).orElse(new CcmMessageSourceDto()));
     }

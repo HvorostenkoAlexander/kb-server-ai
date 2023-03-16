@@ -8,11 +8,13 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
 import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import com.nlmk.kb.server.config.AllowedCodesConfig;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordAnalyzes;
@@ -29,29 +31,21 @@ import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordMarking;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordProperties;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordSpecifications;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class CcmPtsRequestAdapterTest {
 
-    @Autowired
-    AllowedCodesConfig allowedCodesConfig;
 
     private static class Adapter extends CcmPtsRequestAdapter {
-        protected Adapter(AllowedCodesConfig allowedCodesConfig) {
-            super(allowedCodesConfig);
-        }
     }
 
-    private Adapter adapter;
+    private final Adapter adapter = new Adapter();
 
-    @BeforeEach
-    void initAdapter() {
-        adapter = new Adapter(allowedCodesConfig);
-    }
+
+    private final Set<Integer> mechanicalAnalyzeCodes = Set.of(560, 567, 562, 568, 563, 564, 569, 529, 540, 546, 549, 542, 544, 552, 553, 528, 541, 547, 550, 543, 545, 548, 551, 533, 532, 536, 537, 538, 539);
+    final Set<Integer> mechanicalPropertiesCodes = Set.of(1120, 1928, 1929, 1930);
 
     private RecordData prepareMinimalRecordData(Float weightNet) {
         return RecordData.newBuilder()
@@ -72,6 +66,7 @@ class CcmPtsRequestAdapterTest {
 
     private List<CcmPtsRequest.OnePropValue> prepareMechanicalPropertiesValues() {
         return Arrays.stream(SpecCode.values())
+                .filter(c -> mechanicalPropertiesCodes.contains(c.getValue()))
                 .map(sc -> CcmPtsRequest.OnePropValue.builder()
                         .attrCode(sc.getValue())
                         .attrValue(List.of(
@@ -85,6 +80,7 @@ class CcmPtsRequestAdapterTest {
 
     private List<CcmPtsRequest.OneAnalyzeValue> prepareMechanicalAnalyzeValues() {
         return Arrays.stream(SpecCode.values())
+                .filter(c -> mechanicalAnalyzeCodes.contains(c.getValue()))
                 .map(sc -> CcmPtsRequest.OneAnalyzeValue.builder()
                         .attrCode(sc.getValue())
                         .attrValue(sc.getValue().toString())
@@ -98,22 +94,22 @@ class CcmPtsRequestAdapterTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.calcBundleWeight("x.y"));
         Assertions.assertNull(adapter.calcBundleWeight(null));
         Assertions.assertNull(adapter.calcBundleWeight(CcmPtsRequest.builder().build()));
-        Assertions.assertEquals(Double.NaN, adapter.calcBundleWeight(prepareMinimalRecordData(null)));
+        Assertions.assertEquals(BigDecimal.ZERO, adapter.calcBundleWeight(prepareMinimalRecordData(null)));
 
-        Assertions.assertEquals(10.1, adapter.calcBundleWeight(CcmPtsRequest.builder()
+        Assertions.assertEquals(BigDecimal.valueOf(10.1), adapter.calcBundleWeight(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
-                        .weightNet(10.1)
+                        .weightNet(BigDecimal.valueOf(10.1))
                         .build())
                 .build()));
-        Assertions.assertEquals(20.5, adapter.calcBundleWeight(prepareMinimalRecordData(20.5f)));
+        Assertions.assertEquals(BigDecimal.valueOf(20.5), adapter.calcBundleWeight(prepareMinimalRecordData(20.5f)));
 
-        Assertions.assertEquals(20.0, adapter.calcBundleWeight(CcmPtsRequest.builder()
+        Assertions.assertEquals(BigDecimal.valueOf(20.0), adapter.calcBundleWeight(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
-                        .weightNet(10.1)
+                        .weightNet(BigDecimal.valueOf(10.1))
                         .bundles(List.of(
                                 CcmPtsRequest.Bundle.builder().build(),
-                                CcmPtsRequest.Bundle.builder().stripWeight(7.2).build(),
-                                CcmPtsRequest.Bundle.builder().stripWeight(2.7).build()
+                                CcmPtsRequest.Bundle.builder().stripWeight(BigDecimal.valueOf(7.2)).build(),
+                                CcmPtsRequest.Bundle.builder().stripWeight(BigDecimal.valueOf(2.7)).build()
                         ))
                         .build())
                 .build()));
@@ -124,7 +120,7 @@ class CcmPtsRequestAdapterTest {
                 RecordBundles.newBuilder().setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
                 RecordBundles.newBuilder().setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
         ));
-        Assertions.assertEquals(30.5, adapter.calcBundleWeight(record));
+        Assertions.assertEquals(BigDecimal.valueOf(30.5), adapter.calcBundleWeight(record));
     }
 
     @Test
@@ -206,10 +202,10 @@ class CcmPtsRequestAdapterTest {
                         .chemical(List.of(
                                 CcmPtsRequest.Chemical.builder().id(1).listValues(List.of(
                                         CcmPtsRequest.OneChemicalValue.builder().build(),
-                                        CcmPtsRequest.OneChemicalValue.builder().code(1).value(1.2).build()
+                                        CcmPtsRequest.OneChemicalValue.builder().code(1).value(BigDecimal.valueOf(1.2)).build()
                                 )).build(),
                                 CcmPtsRequest.Chemical.builder().id(2).listValues(List.of(
-                                        CcmPtsRequest.OneChemicalValue.builder().code(2).value(2.3).build()
+                                        CcmPtsRequest.OneChemicalValue.builder().code(2).value(BigDecimal.valueOf(2.3)).build()
                                 )).build()
                         ))
                         .build())
@@ -249,32 +245,40 @@ class CcmPtsRequestAdapterTest {
                                 PtsPropertyAnalyzes.builder()
                                         .samplingPlaceCode(1)
                                         .analysisValue(AnalysisValue.BEST.getValue())
-                                        .listValues(List.of())
+                                        .listValues(List.of(
+                                                PtsPropertyAnalyzesValue.builder().attrCode(11).attrType(2).build(),
+                                                PtsPropertyAnalyzesValue.builder().attrCode(12).attrType(2).build()
+                                        ))
                                         .build()
                         ))
-                        .listValues(List.of())
+                        .listValues(List.of(
+                                PtsPropertyValue.builder().attrCode(1).attrType(2).attrValue(List.of()).build(),
+                                PtsPropertyValue.builder().attrCode(2).attrType(2).attrValue(List.of()).build()
+                        ))
                         .attestationList(List.of())
                         .build(),
                 PtsMechanicalProperty.builder()
-                        .listValues(List.of(
-                                PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("1120")).attrType(2).build(),
-                                PtsPropertyValue.builder().attrCode(3354).attrValue(List.of("3354")).attrType(1).build(),
-                                PtsPropertyValue.builder().attrCode(3355).attrValue(List.of("3355")).attrType(1).build(),
-                                PtsPropertyValue.builder().attrCode(3356).attrValue(List.of("3356")).attrType(1).build()
-                        ))
+                        .listValues(
+                                mechanicalPropertiesCodes.stream()
+                                        .sorted()
+                                        .map(sc -> PtsPropertyValue.builder()
+                                                .attrCode(sc)
+                                                .attrValue(List.of(sc.toString()))
+                                                .attrType(SpecCode.fromValue(sc).getTypeCode().getValue())
+                                                .build())
+                                        .collect(Collectors.toUnmodifiableList())
+                        )
                         .analyzes(List.of(
                                 PtsPropertyAnalyzes.builder()
                                         .samplingPlaceCode(2)
                                         .analysisValue(AnalysisValue.WORST.getValue())
                                         .listValues(
-                                                Arrays.stream((
-                                                                "560;567;562;568;563;564;569;529;540;546;549;542;544;552;553;528;541;547;550;543;545;548;551;533;532;536;537;538;539"
-                                                        ).split(";"))
+                                                mechanicalAnalyzeCodes.stream()
                                                         .sorted()
                                                         .map(sc -> PtsPropertyAnalyzesValue.builder()
-                                                                .attrCode(Integer.parseInt(sc))
-                                                                .attrValue(sc)
-                                                                .attrType(SpecCode.fromValue(Integer.parseInt(sc)).getTypeCode().getValue())
+                                                                .attrCode(sc)
+                                                                .attrValue(sc.toString())
+                                                                .attrType(SpecCode.fromValue(sc).getTypeCode().getValue())
                                                                 .build())
                                                         .collect(Collectors.toUnmodifiableList())
                                         ).build()
@@ -298,19 +302,18 @@ class CcmPtsRequestAdapterTest {
                                                         .analysisValue(AnalysisValue.BEST)
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OneAnalyzeValue.builder().build(),
-                                                                CcmPtsRequest.OneAnalyzeValue.builder().attrCode(11).build(),
-                                                                CcmPtsRequest.OneAnalyzeValue.builder().attrCode(12).build()
+                                                                CcmPtsRequest.OneAnalyzeValue.builder().attrCode(11).attrType(TypeCode.NUMBER).build(),
+                                                                CcmPtsRequest.OneAnalyzeValue.builder().attrCode(12).attrType(TypeCode.NUMBER).build()
                                                         ))
                                                         .build()
                                         ))
                                         .listValues(List.of(
                                                 CcmPtsRequest.OnePropValue.builder().build(),
-                                                CcmPtsRequest.OnePropValue.builder().attrCode(1).build(),
-                                                CcmPtsRequest.OnePropValue.builder().attrCode(2).build()
+                                                CcmPtsRequest.OnePropValue.builder().attrCode(1).attrType(TypeCode.NUMBER).build(),
+                                                CcmPtsRequest.OnePropValue.builder().attrCode(2).attrType(TypeCode.NUMBER).build()
                                         ))
                                         .build(),
                                 CcmPtsRequest.OneProperty.builder()
-                                        // все возможные коды
                                         .analyzes(List.of(
                                                 CcmPtsRequest.OnePropAnalyze.builder()
                                                         .samplingPlaceCode(2)
@@ -409,10 +412,13 @@ class CcmPtsRequestAdapterTest {
                                         .samplingPlaceName("1111")
                                         .analysisValue(1)
                                         .listValues(List.of(
-                                                PtsPropertyAnalyzesValue.builder().attrCode(540).attrType(2).attrValue("11111").build()
+                                                PtsPropertyAnalyzesValue.builder().attrCode(540).attrType(2).attrValue("11111").build(),
+                                                PtsPropertyAnalyzesValue.builder().attrCode(99999).attrType(2).attrValue("99999").build()
                                         ))
-                                        .build()))
+                                        .build()
+                                ))
                         .listValues(List.of(
+                                PtsPropertyValue.builder().attrCode(1).attrValue(List.of("1")).attrType(1).build(),
                                 PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("2")).attrType(1).build()
                         ))
                         .attestationList(List.of())
@@ -421,6 +427,7 @@ class CcmPtsRequestAdapterTest {
                         .typeCode(3).typeName("3").testDate("3").probeCode(3).probeName("3")
                         .analyzes(List.of())
                         .listValues(List.of(
+                                PtsPropertyValue.builder().attrCode(3).attrValue(List.of("3")).attrType(1).build(),
                                 PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("4")).attrType(1).build()
                         ))
                         .attestationList(List.of())

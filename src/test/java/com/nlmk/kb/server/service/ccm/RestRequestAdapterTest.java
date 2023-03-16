@@ -5,11 +5,11 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-import com.nlmk.kb.server.config.AllowedCodesConfig;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -20,15 +20,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-// ApplicationContext will be loaded from the OrderServiceConfig class
 class RestRequestAdapterTest {
 
-    @Autowired
-    AllowedCodesConfig allowedCodesConfig;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private final CommonConverter commonConverter = new CommonConverterImpl();
     private RestRequestAdapter<CcmPtsRequest> ccmPtsAdapter;
@@ -36,7 +32,7 @@ class RestRequestAdapterTest {
 
     @BeforeEach
     void initAdapter() {
-        ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(allowedCodesConfig, commonConverter);
+        ccmPtsAdapter = new CcmPtsRestRequestAdapterImpl(commonConverter);
     }
 
     @Test
@@ -67,11 +63,14 @@ class RestRequestAdapterTest {
                         .storageCode(13).storageName("s13")
                         .marking(CcmPtsRequest.Marking.builder()
                                 .nplv(2106684).hnum(25217).tnum(22).roll(1).build())
-                        .weightNet(140.0)
-                        .geometry(CcmPtsRequest.Geometry.builder().thickness(30.0).width(300.0).length(3000.0).build())
+                        .weightNet(BigDecimal.valueOf(140.0))
+                        .geometry(CcmPtsRequest.Geometry.builder()
+                                .thickness(BigDecimal.valueOf(30.0))
+                                .width(BigDecimal.valueOf(300.0))
+                                .length(BigDecimal.valueOf(3000.0)).build())
                         .bundles(List.of(
                                 CcmPtsRequest.Bundle.builder().stripId(40L).stripNum(40)
-                                        .stripWidth(400.0).stripWeight(40.0).build()
+                                        .stripWidth(BigDecimal.valueOf(400.0)).stripWeight(BigDecimal.valueOf(40.0)).build()
                         ))
                         .specifications(List.of(
                                 CcmPtsRequest.Specification.builder()
@@ -89,7 +88,7 @@ class RestRequestAdapterTest {
                                                 CcmPtsRequest.OneChemicalValue.builder()
                                                         .code(SpecCode.MASS_FRACTION_B.getValue())
                                                         .name(SpecCode.MASS_FRACTION_B.getDesc())
-                                                        .value(13.4)
+                                                        .value(BigDecimal.valueOf(13.4))
                                                         .build()
                                         )).build()
                         ))
@@ -115,7 +114,7 @@ class RestRequestAdapterTest {
                                                         .listValues(List.of(
                                                                 CcmPtsRequest.OneAttValue.builder()
                                                                         .side(CcmPtsRequest.Side.BACK)
-                                                                        .attrCode(73).attrValue(74.0)
+                                                                        .attrCode(73).attrValue(BigDecimal.valueOf(74.0))
                                                                         .build()
                                                         )).build()
                                         ))
@@ -147,8 +146,8 @@ class RestRequestAdapterTest {
                         .data(DataPts.builder()
                                 .primeId("0001020210329001515440422")
                                 .nplv(2106684).hnum(25217).roll("1")
-                                .length(3000.0).thickness(30.0).width(300.0)
-                                .weightNet(140.0).bundleWeight(180.0)
+                                .length(BigDecimal.valueOf(3000.0)).thickness(BigDecimal.valueOf(30.0)).width(BigDecimal.valueOf(300.0))
+                                .weightNet(BigDecimal.valueOf(140.0)).bundleWeight(BigDecimal.valueOf(180.0))
                                 .kceh(11)
                                 .specifications(List.of(
                                         Specs.builder()
@@ -173,12 +172,16 @@ class RestRequestAdapterTest {
                                                                 .samplingPlaceCode(62).samplingPlaceName("s63")
                                                                 .analysisValue(AnalysisValue.BEST.getValue())
                                                                 .listValues(List.of(
-                                                                        PtsPropertyAnalyzesValue.builder()
-                                                                                .attrCode(562)
-                                                                                .attrType(TypeCode.NUMBER.getValue()).build()
+                                                                        PtsPropertyAnalyzesValue.builder().attrCode(562).attrType(TypeCode.NUMBER.getValue()).build(),
+                                                                        PtsPropertyAnalyzesValue.builder().attrCode(99999).attrType(TypeCode.NUMBER.getValue()).build()
                                                                 )).build()
                                                 ))
                                                 .listValues(List.of(
+                                                        PtsPropertyValue.builder()
+                                                                .attrCode(SpecCode.AGING_FACTOR.getValue())
+                                                                .attrType(TypeCode.STRING.getValue())
+                                                                .attrValue(List.of("af12"))
+                                                                .build(),
                                                         PtsPropertyValue.builder()
                                                                 .attrCode(SpecCode.PLASTICITY_NUMBER_OF_BENDS.getValue())
                                                                 .attrType(TypeCode.NUMBER.getValue())

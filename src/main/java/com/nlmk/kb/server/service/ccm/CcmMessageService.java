@@ -2,9 +2,9 @@ package com.nlmk.kb.server.service.ccm;
 
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.entity.CcmMessageSource;
-import java.util.List;
+
 import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -13,8 +13,6 @@ public interface CcmMessageService {
     Optional<CcmMessage> save(CcmMessage ccmMessage);
 
     Page<CcmMessage> findAll(PageRequest of);
-
-    List<CcmMessage> findByPrimeId(String primeId);
 
     CcmMessage update(CcmMessage ccmMessage);
 
@@ -27,16 +25,20 @@ public interface CcmMessageService {
     Optional<CcmMessage> findLastMessage(String primeId);
 
     /**
-     * Поиск исходного сообщения по id запроса на аттестацию
-     * @param requestId requestId запроса
-     * @return {@link java.util.Optional} of {@link CcmMessageSource}
+     * Поиск исходного сообщения запроса на Аттестацию по идентификатору Запроса на Аттестацию
      */
     Optional<CcmMessageSourceDto> findSourceMessageByRequestId(Long requestId);
 
     /**
+     * Поиск исходного сообщения запроса на Аттестацию по идентификатору Единицы Металла
+     */
+    Optional<CcmMessageSourceDto> findSourceMessageByPrimeId(String primeId);
+
+    /**
      * Сохранить исходное сообщение
-     * @param requestId requestId запроса ccm_message таблицы
-     * @param primeId primeId запроса ccm_message таблицы
+     *
+     * @param requestId              requestId запроса ccm_message таблицы
+     * @param primeId                primeId запроса ccm_message таблицы
      * @param ccmSourceMessageString строка исходное сообщение
      */
     void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString);
