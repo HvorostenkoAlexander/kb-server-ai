@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
 import com.nlmk.kb.server.api.ccm.kc.CcmKc1Response;
 import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
@@ -64,51 +65,20 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     public CcmPtsResponse ccmPtsRequestProcessing(CcmPtsRequest request) {
         /*
          * 1. принять запрос на аттестацию
+         *
+         * #processAttestationRequest
          * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
          * 3. отправить запрос на аттестацию в PAM
          * 4. получить ответ от PAM
          * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
          * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * processAttestationRequest#
+         *
          * 7. преобразовать и отправить ответ
          */
         log.info("ccmPtsRequestProcessing, request [{}]", request);
         final var attRequest = ccmPtsRestRequestAdapter.adapt(request);
-        final var primeId = SenderUtils.getPrimeId(attRequest);
-
-        try {
-            final var attMessage = AttestationMessage.builder()
-                    .sender(AttestationMessageSender.CCM_PTS)
-                    .receiptTs(new Date())
-                    .primeId(primeId)
-                    .request(objectMapper.writeValueAsString(attRequest))
-                    .build();
-
-            final var attResult = pamSender.postAttestationRequest(attRequest);
-
-            if (Objects.nonNull(attResult)
-                    && Objects.nonNull(attResult.getResult())
-                    && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
-                final var requestId = attResult.getResult().getRequests().get(0).getId();
-                if (Objects.nonNull(requestId)) {
-                    ccmMessageSourceRepository.save(
-                            CcmMessageSource.builder()
-                                    .requestId(requestId)
-                                    .primeId(primeId)
-                                    .messageSource(objectMapper.writeValueAsString(request))
-                                    .build()
-                    );
-                }
-            }
-
-            attMessage.setAttestationTs(new Date());
-            attestationMessageRepository.save(attMessage);
-            return ccmPtsRestResponseAdapter.adapt(attResult);
-        } catch (JsonProcessingException e) {
-            log.error("ccmPtsRequestProcessing", e);
-            throw new CcmRequestProcessingException(
-                    MessageFormat.format("ccmPtsRequestProcessing, error for primeId [{0}]", primeId)
-            );
-        }
+        return ccmPtsRestResponseAdapter.adapt(processAttestationRequest(attRequest, AttestationMessageSender.CCM_PTS));
     }
 
     @Override
@@ -132,51 +102,20 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     public CcmKc1Response ccmKc1RequestProcessing(CcmKc1Request request) {
         /*
          * 1. принять запрос на аттестацию
+         *
+         * #processAttestationRequest
          * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
          * 3. отправить запрос на аттестацию в PAM
          * 4. получить ответ от PAM
          * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
          * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * processAttestationRequest#
+         *
          * 7. преобразовать и отправить ответ
          */
         log.info("ccKc1RequestProcessing, request [{}]", request);
         final var attRequest = ccmKc1RestRequestAdapter.adapt(request);
-        final var primeId = SenderUtils.getPrimeId(attRequest);
-
-        try {
-            final var attMessage = AttestationMessage.builder()
-                    .sender(AttestationMessageSender.CCM_KC1)
-                    .receiptTs(new Date())
-                    .primeId(primeId)
-                    .request(objectMapper.writeValueAsString(attRequest))
-                    .build();
-
-            final var attResult = pamSender.postAttestationRequest(attRequest);
-
-            if (Objects.nonNull(attResult)
-                    && Objects.nonNull(attResult.getResult())
-                    && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
-                final var requestId = attResult.getResult().getRequests().get(0).getId();
-                if (Objects.nonNull(requestId)) {
-                    ccmMessageSourceRepository.save(
-                            CcmMessageSource.builder()
-                                    .requestId(requestId)
-                                    .primeId(primeId)
-                                    .messageSource(objectMapper.writeValueAsString(request))
-                                    .build()
-                    );
-                }
-            }
-
-            attMessage.setAttestationTs(new Date());
-            attestationMessageRepository.save(attMessage);
-            return ccmKc1RestResponseAdapter.adapt(attResult);
-        } catch (JsonProcessingException e) {
-            log.error("ccmKc1RequestProcessing", e);
-            throw new CcmRequestProcessingException(
-                    MessageFormat.format("ccmKc1RequestProcessing, error for primeId [{0}]", primeId)
-            );
-        }
+        return ccmKc1RestResponseAdapter.adapt(processAttestationRequest(attRequest, AttestationMessageSender.CCM_KC2));
     }
 
     @Override
@@ -184,26 +123,43 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     public CcmKc2Response ccmKc2RequestProcessing(CcmKc2Request request) {
         /*
          * 1. принять запрос на аттестацию
+         *
+         * #processAttestationRequest
          * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
          * 3. отправить запрос на аттестацию в PAM
          * 4. получить ответ от PAM
          * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
          * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         * processAttestationRequest#
+         *
          * 7. преобразовать и отправить ответ
          */
         log.info("ccKc2RequestProcessing, request [{}]", request);
         final var attRequest = ccmKc2RestRequestAdapter.adapt(request);
-        final var primeId = SenderUtils.getPrimeId(attRequest);
+        return ccmKc2RestResponseAdapter.adapt(processAttestationRequest(attRequest, AttestationMessageSender.CCM_KC2));
+    }
+
+
+    private ProductAttestationResultDto processAttestationRequest(AttestationRequest attestationRequest,
+                                                                  AttestationMessageSender sender) {
+        /*
+         * 2. преобразовать запрос к общему виду для PAM (com.nlmk.attestation.product.api.pam.AttestationRequest)
+         * 3. отправить запрос на аттестацию в PAM
+         * 4. получить ответ от PAM
+         * 5. сохранить первоисточник запроса в базу (для просмотра запроса в UI)
+         * 6. сохранить запрос в базу (для запуска повторной аттестации по сообщениям САДиМ)
+         */
+        final var primeId = SenderUtils.getPrimeId(attestationRequest);
 
         try {
             final var attMessage = AttestationMessage.builder()
-                    .sender(AttestationMessageSender.CCM_KC2)
+                    .sender(sender)
                     .receiptTs(new Date())
                     .primeId(primeId)
-                    .request(objectMapper.writeValueAsString(attRequest))
+                    .request(objectMapper.writeValueAsString(attestationRequest))
                     .build();
 
-            final var attResult = pamSender.postAttestationRequest(attRequest);
+            final var attResult = pamSender.postAttestationRequest(attestationRequest);
 
             if (Objects.nonNull(attResult)
                     && Objects.nonNull(attResult.getResult())
@@ -214,7 +170,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
                             CcmMessageSource.builder()
                                     .requestId(requestId)
                                     .primeId(primeId)
-                                    .messageSource(objectMapper.writeValueAsString(request))
+                                    .messageSource(objectMapper.writeValueAsString(attestationRequest))
                                     .build()
                     );
                 }
@@ -222,13 +178,13 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
 
             attMessage.setAttestationTs(new Date());
             attestationMessageRepository.save(attMessage);
-            return ccmKc2RestResponseAdapter.adapt(attResult);
+            return attResult;
         } catch (JsonProcessingException e) {
-            log.error("ccmKc2RequestProcessing", e);
+            log.error("processAttestationRequest", e);
             throw new CcmRequestProcessingException(
-                    MessageFormat.format("ccmKc2RequestProcessing, error for primeId [{0}]", primeId)
+                    MessageFormat.format("processAttestationRequest, error for primeId [{0}]", primeId)
             );
         }
-    }
 
+    }
 }

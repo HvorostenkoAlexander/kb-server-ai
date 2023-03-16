@@ -140,7 +140,7 @@ class AttestationControllerTest {
         );
     }
 
-    private String prepareMinimalRequestDataByAVRO() throws Exception {
+    private String prepareMinimalRequestDataByAVRO() {
         return DbAttestationRequestVer1.newBuilder()
                 .setTs("2022-09-02T14:36:25.000+05:00")
                 .setOp(EnumOp.U)

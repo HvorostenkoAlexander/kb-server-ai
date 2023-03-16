@@ -1,12 +1,10 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.pam.AnalysisValue;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
-import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import java.math.BigDecimal;
 import java.util.List;
@@ -77,7 +75,7 @@ class AttestationControllerKc1Test {
                 .data(CcmKc1Request.Record.builder()
                         .primeId("id")
                         .werks(10L).werksName("w10")
-                        .kceh(6).kcehName("k6")
+                        .kceh(4).kcehName("КЦ1")
                         .unitCode("УНРС12").unitName("u12")
                         .marking(CcmKc1Request.Marking.builder().heat(13).strand(13).slab(13).build())
                         .markingAcc(CcmKc1Request.Marking.builder().heat(13).strand(13).slab(13).build())
@@ -142,7 +140,7 @@ class AttestationControllerKc1Test {
                 .build());
     }
 
-    private String prepareMinimalRequestDataByAVRO() throws Exception {
+    private String prepareMinimalRequestDataByAVRO() {
         return DbAttestRequestVer0.newBuilder()
                 .setTs("2023-03-13T00:00:00.000Z")
                 .setOp(EnumOp.U)
@@ -150,7 +148,7 @@ class AttestationControllerKc1Test {
                 .setData(RecordData.newBuilder()
                         .setPrimeId("id")
                         .setWerks(10).setWerksName("10L")
-                        .setKceh(6).setKcehName("k6")
+                        .setKceh(4).setKcehName("КЦ1")
                         //.setUnitCode("УНРС12") - нет в схеме
                         //.setUnitName("u12")
                         .setMarking(RecordMarking.newBuilder().setHeat(13).setStrand(13).setSlab(13).build())

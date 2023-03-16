@@ -8,6 +8,9 @@ import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import java.math.BigDecimal;
 import java.util.List;
+import nlmk.EnumOp;
+import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer0;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,6 +50,13 @@ class AttestationControllerKc2Test {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(prepareMinimalRequestData()))
                 .andExpect(status().isOk());
+
+        // согласованный вариант REST = AVRO
+        mvc.perform(MockMvcRequestBuilders.post("/attestation/ccm/kc2")
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(prepareMinimalRequestDataByAVRO()))
+                .andExpect(status().isOk());
     }
 
     private String prepareMinimalRequest() throws Exception {
@@ -66,7 +76,7 @@ class AttestationControllerKc2Test {
                         .data(CcmKc2Request.Record.builder()
                                 .primeId("id")
                                 .werks(10L).werksName("w10")
-                                .kceh(7).kcehName("k7")
+                                .kceh(5).kcehName("КЦ2")
                                 .unitCode("УНРС12").unitName("u12")
                                 .marking(CcmKc2Request.Marking.builder().heat(13).strand(13).slab(13).build())
                                 .markingAcc(CcmKc2Request.Marking.builder().heat(13).strand(13).slab(13).build())
@@ -131,6 +141,82 @@ class AttestationControllerKc2Test {
                                 .build())
                         .build()
         );
+    }
+
+    private String prepareMinimalRequestDataByAVRO() {
+        return DbAttestRequestVer0.newBuilder()
+                .setTs("2023-03-13T00:00:00.000Z")
+                .setOp(EnumOp.U)
+                .setPk(PkType.newBuilder().setId("42").setSystemCode("16").build())
+                .setData(RecordData.newBuilder()
+                        .setPrimeId("id")
+                        .setWerks(10).setWerksName("10L")
+                        .setKceh(2).setKcehName("КЦ2")
+                        //.setUnitCode("УНРС12") - нет в схеме
+                        //.setUnitName("u12")
+                        .setMarking(RecordMarking.newBuilder().setHeat(13).setStrand(13).setSlab(13).build())
+                        .setMarkingAcc(RecordMarkingAcc.newBuilder().setHeat(13).setStrand(13).setSlab(13).build())
+                        //.setWeightNet(14.0f)
+                        .setRequirements(RecordRequirements.newBuilder()
+                                //.setPlanTask()
+                                .setChemicalReq(List.of(
+                                        RecordChemicalReq.newBuilder()
+                                                .setChemCode(SpecCode.MASS_FRACTION_N.getValue().toString())
+                                                .setChemName(SpecCode.MASS_FRACTION_N.getDesc())
+                                                .setValueMin(0.001)
+                                                .setValueMax(0.003)
+                                                .setDigitsQuantity(3)
+                                                .build()
+                                ))
+                                .setSpecifications(List.of(
+                                        RecordDataRequirementsSpecifications.newBuilder()
+                                                .setSpecCode(50).setSpecName("s51")
+                                                .setSpecTypeCode(SpecTypeCode.NUMBER.getValue())
+                                                .setSpecTypeName("s53")
+                                                .setSpecTypeValue(SpecTypeValue.SIMPLE.getValue())
+                                                .setListValues(List.of(
+                                                        RecordDataRequirementsSpecificationsListValues.newBuilder()
+                                                                .setValue("v54")
+                                                                .setDescription("v55")
+                                                                .build()
+                                                ))
+                                                .setSpecDecryption("s15")
+                                                .build()
+                                ))
+                                .build())
+                        .setChemData(List.of(
+                                RecordChemData.newBuilder()
+                                        .setSampleId(1L)
+                                        .setProbeCode("К")
+                                        .setAnalysisCode("aC")
+                                        .setSampleNum(3)
+                                        .setHeat(1)
+                                        .setSamplingPlaceName("sP")
+                                        //.setReason()
+                                        .setChemical(List.of(
+                                                RecordChemical.newBuilder()
+                                                        .setChemCode(SpecCode.MASS_FRACTION_N.getValue())
+                                                        .setChemName(SpecCode.MASS_FRACTION_N.getDesc())
+                                                        .setChemValue("0.002")
+                                                        .build()
+                                        ))
+                                        .build()
+                        ))
+                        .setSpecifications(List.of(
+                                RecordDataSpecifications.newBuilder()
+                                        .setSpecCode(50).setSpecName("s51")
+                                        .setSpecTypeCode(SpecTypeCode.NUMBER.getValue())
+                                        .setSpecTypeName("s53")
+                                        .setSpecTypeValue(SpecTypeValue.SIMPLE.getValue())
+                                        .setListValues(List.of(
+                                                RecordDataSpecificationsListValues.newBuilder()
+                                                        .setValue("v54").setDescription("v55").build()
+                                        ))
+                                        .setSpecDecryption("s15")
+                                        .build()
+                        ))
+                        .build())
+                .build().toString();
     }
 
 }
