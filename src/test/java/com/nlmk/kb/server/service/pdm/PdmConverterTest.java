@@ -255,7 +255,7 @@ class PdmConverterTest {
         final var dto = pdmDtoConverter.toThicknessTkLimitDto(dictionary);
 
         assertNotNull(dto);
-        assertEquals("7999", dto.getRemote_id());
+        assertEquals("7999", dto.getRemoteId());
         assertEquals("(2.50..3.00]", dto.getPrThickGood().getSrcValue());
         assertEquals("1.55", dto.getLongThickDif());
         assertEquals("", dto.getPrUnevenGauge());

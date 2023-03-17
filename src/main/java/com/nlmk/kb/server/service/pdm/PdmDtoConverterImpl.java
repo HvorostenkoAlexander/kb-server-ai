@@ -100,8 +100,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return ThicknessTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .routeShop(converter.getStringSpecValue(specs, ROUTE_SHOP))
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
