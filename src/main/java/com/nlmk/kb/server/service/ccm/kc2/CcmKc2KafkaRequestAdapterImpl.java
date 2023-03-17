@@ -1,22 +1,19 @@
 package com.nlmk.kb.server.service.ccm.kc2;
 
-import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
 import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213250">Спецификация КЦ-2</a>
@@ -63,21 +60,48 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
         }
 
         return DataKc.builder()
-                .kceh(recordData.getKceh())
+                .kceh(recordData.getWorkshop())
                 .primeId(Objects.nonNull(recordPk) ? AdapterUtils.sequenceToString(recordPk.getId()) : null)
-                .heat(recordData.getMarking().getHeat())
-                .strand(recordData.getMarking().getStrand())
-                .slab(recordData.getMarking().getSlab())
+                .marking(toKcMarking(recordData.getMarking()))
+                .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
                 .requirements(toPamRequirement(recordData.getRequirements()))
                 .chemData(toChemData(recordData.getChemData()))
-                .planTask(toPlanTask(recordData.getPlanTask()))
                 .specifications(
                         recordData.getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList())
                 )
+                .marking(toKcMarking(recordData.getMarking()))
+                .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
+                .weightNet(BigDecimal.valueOf(recordData.getWeightNet()))
+                .werks(recordData.getWerks())
+                .werksName(AdapterUtils.sequenceToString(recordData.getWerksName()))
+                .unitCode(AdapterUtils.sequenceToString(recordData.getUnitCode()))
+                .unitName(AdapterUtils.sequenceToString(recordData.getUnitName()))
+                .build();
+    }
+
+    private KcMarking toKcMarking(RecordMarking marking) {
+        if (Objects.isNull(marking)) {
+            return KcMarking.builder().build();
+        }
+        return KcMarking.builder()
+                .heat(marking.getHeat())
+                .slab(marking.getSlab())
+                .strand(marking.getStrand())
+                .build();
+    }
+
+    private KcMarking toKcMarkingAcc(RecordMarkingAcc markingAcc) {
+        if (Objects.isNull(markingAcc)) {
+            return KcMarking.builder().build();
+        }
+        return KcMarking.builder()
+                .heat(markingAcc.getHeat())
+                .slab(markingAcc.getSlab())
+                .strand(markingAcc.getStrand())
                 .build();
     }
 
@@ -105,6 +129,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                                 .heat(a.getHeat())
                                 .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
                                 .chemical(toChemical(a.getChemical()))
+                                .reason(AdapterUtils.sequenceToString(a.getReason()))
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
@@ -118,7 +143,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                         KcChemical.builder()
                                 .chemCode(a.getChemCode())
                                 .chemName(AdapterUtils.sequenceToString(a.getChemName()))
-                                .chemValue(AdapterUtils.sequenceToString(a.getChemValue())) //расхождение спецификации со схемой - в спецификации это число
+                                .chemValue(BigDecimal.valueOf(a.getChemValue()))
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
@@ -129,20 +154,38 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
                 .specTypeCode(specifications.getSpecTypeCode())
                 .specValue(AdapterUtils.sequenceToString(specifications.getSpecValue()))
+                .specTypeName(AdapterUtils.sequenceToString(specifications.getSpecTypeName()))
+                .specTypeValue(specifications.getSpecTypeValue())
+                .listValues(toListValues(specifications.getListValues()))
+                .specDecryption(AdapterUtils.sequenceToString(specifications.getSpecDecryption()))
                 .specFormat(AdapterUtils.sequenceToString(specifications.getSpecFormat()))
                 .specMeasure(AdapterUtils.sequenceToString(specifications.getSpecMeasure()))
                 .build();
     }
 
-    private Requirement toPamRequirement(RecordRequirements recordRequirements) {
+    private List<SpecValue> toListValues(List<RecordDataSpecificationsListValues> listValues) {
+        if (Objects.isNull(listValues)) {
+            return Collections.emptyList();
+        }
+        return listValues.stream()
+                .map(a ->
+                        SpecValue.builder()
+                                .value(AdapterUtils.sequenceToString(a.getValue()))
+                                .description(AdapterUtils.sequenceToString(a.getDescription()))
+                                .build()
+                ).collect(Collectors.toUnmodifiableList());
+    }
+
+    private Requirement toPamRequirement(RecordRequirements requirements) {
         return Requirement.builder()
-                .chemicalReg(Objects.nonNull(recordRequirements.getChemicalReq()) ?
-                        recordRequirements.getChemicalReq().stream()
+                .planTask(toPlanTask(requirements.getPlanTask()))
+                .chemicalReq(Objects.nonNull(requirements.getChemicalReq()) ?
+                        requirements.getChemicalReq().stream()
                                 .map(this::toPamChemicalReq)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
-                .specifications(Objects.nonNull(recordRequirements.getSpecifications()) ?
-                        recordRequirements.getSpecifications().stream()
+                .specifications(Objects.nonNull(requirements.getSpecifications()) ?
+                        requirements.getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
@@ -162,7 +205,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
 
     private RequirementChemicalSpec toPamChemicalReq(RecordChemicalReq recordChemicalReg) {
         return RequirementChemicalSpec.builder()
-                .chemCode(AdapterUtils.sequenceToString(recordChemicalReg.getChemCode()))
+                .chemCode(recordChemicalReg.getChemCode())
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
                 .valueMin(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMin()))
                 .valueMax(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMax()))
