@@ -40,8 +40,8 @@ public class CcmKc2Request {
         private final @NotBlank String primeId; // id_slab Сквозной идентификатор сляба
         private final @NotNull Long werks; // Код завода
         private final @NotBlank String werksName; // Наименование завода
-        private final @NotNull Integer kceh; // Код цеха
-        private final @NotBlank String kcehName; // Наименование цеха
+        private final @NotNull Integer workshop; // Код цеха
+        private final @NotBlank String workshopName; // Наименование цеха
         private final Long orderNum; // Номер заказа
         private final Integer orderPos; // Позиция заказа
         private final @NotBlank String unitCode; // Код агрегата

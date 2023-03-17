@@ -76,7 +76,7 @@ class AttestationControllerKc2Test {
                         .data(CcmKc2Request.Record.builder()
                                 .primeId("id")
                                 .werks(10L).werksName("w10")
-                                .kceh(5).kcehName("КЦ2")
+                                .workshop(5).workshopName("КЦ2")
                                 .unitCode("УНРС12").unitName("u12")
                                 .marking(CcmKc2Request.Marking.builder().heat(13).strand(13).slab(13).build())
                                 .markingAcc(CcmKc2Request.Marking.builder().heat(13).strand(13).slab(13).build())
