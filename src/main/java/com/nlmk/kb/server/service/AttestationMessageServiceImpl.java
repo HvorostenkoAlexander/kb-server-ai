@@ -161,7 +161,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
             if (Objects.nonNull(attResult)
                     && Objects.nonNull(attResult.getResult())
                     && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
-                final var requestId = attResult.getResult().getRequests().get(0).getId();
+                final var requestId = attResult.getResult().getRequests().get(0).getId(); // результат аттестации содержит один экземпляр запроса, т.е. индекс = 0.
                 if (Objects.nonNull(requestId)) {
                     sourceSaver.save(requestId, primeId);
                 }

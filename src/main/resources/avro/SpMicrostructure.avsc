@@ -1,0 +1,86 @@
+{
+  "fields": [
+    {
+      "type": "string",
+      "name": "ts"
+    },
+    {
+      "type": {
+        "symbols": [
+          "I",
+          "U",
+          "D"
+        ],
+        "type": "enum",
+        "name": "opEnum"
+      },
+      "name": "op"
+    },
+    {
+      "type": {
+        "fields": [
+          {
+            "type": "string",
+            "name": "systemCode"
+          },
+          {
+            "type": "string",
+            "name": "directoryId"
+          },
+          {
+            "type": "string",
+            "name": "Id"
+          }
+        ],
+        "type": "record",
+        "name": "Pk"
+      },
+      "name": "pk"
+    },
+    {
+      "type": {
+        "fields": [
+          {
+            "type": {
+              "items": {
+                "fields": [
+                  {
+                    "type": "int",
+                    "name": "specCode"
+                  },
+                  {
+                    "type": "string",
+                    "name": "specName"
+                  },
+                  {
+                    "type": "int",
+                    "name": "specTypeCode"
+                  },
+                  {
+                    "type": "string",
+                    "name": "specValue"
+                  },
+                  {
+                    "type": "string",
+                    "name": "specMeasure"
+                  }
+                ],
+                "type": "record",
+                "name": "Spec"
+              },
+              "type": "array",
+              "name": null
+            },
+            "name": "specifications"
+          }
+        ],
+        "type": "record",
+        "name": "Data"
+      },
+      "name": "data"
+    }
+  ],
+  "namespace": "nlmk.l3.pdm",
+  "type": "record",
+  "name": "SpMicrostructure"
+}

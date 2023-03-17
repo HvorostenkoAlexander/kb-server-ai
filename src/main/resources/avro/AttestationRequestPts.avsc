@@ -1,0 +1,737 @@
+{
+  "type": "record",
+  "name": "DbAttestationRequestVer1",
+  "namespace": "nlmk.nlmk.l3.ccm.pts",
+  "doc": "Запрос на проведение аттестации ЕМ ЦТС",
+  "fields": [
+    {
+      "name": "ts",
+      "type": "string",
+      "doc": "Дата и время передачи"
+    },
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "EnumOp",
+        "namespace": "nlmk",
+        "symbols": [
+          "D",
+          "I",
+          "U"
+        ]
+      },
+      "doc": "Операция"
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "PkType",
+        "namespace": "nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string",
+            "doc": "Код системы"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "doc": "ИД единицы металла (ЕМ)"
+          }
+        ]
+      },
+      "doc": "Первичный ключ"
+    },
+    {
+      "name": "sys",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Sys",
+          "namespace": "nlmk",
+          "fields": [
+            {
+              "name": "seqID",
+              "type": "long",
+              "doc": "Монотонно возрастающий счетчик для проверки или восстановления оригинальной последовательности",
+              "default": -1
+            },
+            {
+              "name": "traceID",
+              "type": "string",
+              "doc": "Сквозной Trace ID (обычно UUID)",
+              "default": ""
+            }
+          ]
+        }
+      ],
+      "doc": "Системные поля, заполняемые источником",
+      "default": null
+    },
+    {
+      "name": "metadata",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Metadata",
+          "namespace": "nlmk",
+          "fields": [
+            {
+              "name": "kafkaKeySchemaID",
+              "type": "int",
+              "doc": "Версия схемы ключа",
+              "default": -1
+            },
+            {
+              "name": "kafkaValueSchemaID",
+              "type": "int",
+              "doc": "Версия схемы значения",
+              "default": -1
+            },
+            {
+              "name": "kafkaKey",
+              "type": "string",
+              "doc": "Ключ в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaPartition",
+              "type": "int",
+              "doc": "Номер партиции",
+              "default": -1
+            },
+            {
+              "name": "kafkaOffset",
+              "type": "long",
+              "doc": "Offset в Kafka",
+              "default": -1
+            },
+            {
+              "name": "kafkaTimestamp",
+              "type": "string",
+              "doc": "Время сообщения в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaTopic",
+              "type": "string",
+              "doc": "Имя топика",
+              "default": ""
+            },
+            {
+              "name": "kafkaHeaders",
+              "type": [
+                "null",
+                {
+                  "type": "map",
+                  "values": "string"
+                }
+              ],
+              "doc": "kafkaHeaders",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Мета структура, заполняется Подписчиком после чтения",
+      "default": null
+    },
+    {
+      "name": "data",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordData",
+          "namespace": "nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1",
+          "fields": [
+            {
+              "name": "werks",
+              "type": "int",
+              "doc": "Код завода"
+            },
+            {
+              "name": "werksName",
+              "type": "string",
+              "doc": "Наименование завода"
+            },
+            {
+              "name": "kceh",
+              "type": "int",
+              "doc": "Код цеха"
+            },
+            {
+              "name": "kcehName",
+              "type": "string",
+              "doc": "Наименование цеха"
+            },
+            {
+              "name": "unitCode",
+              "type": "int",
+              "doc": "Код агрегата"
+            },
+            {
+              "name": "unitName",
+              "type": "string",
+              "doc": "Наименование агрегата"
+            },
+            {
+              "name": "storageCode",
+              "type": "int",
+              "doc": "Код склада"
+            },
+            {
+              "name": "storageName",
+              "type": "string",
+              "doc": "Наименование склада"
+            },
+            {
+              "name": "marking",
+              "type": {
+                "type": "record",
+                "name": "RecordMarking",
+                "fields": [
+                  {
+                    "name": "nplv",
+                    "type": "int",
+                    "doc": "Номер плавки"
+                  },
+                  {
+                    "name": "hnum",
+                    "type": "int",
+                    "doc": "Номер ГК партии"
+                  },
+                  {
+                    "name": "tnum",
+                    "type": "int",
+                    "doc": "Номер ХК партии"
+                  },
+                  {
+                    "name": "roll",
+                    "type": "int",
+                    "doc": "Номер рулона"
+                  },
+                  {
+                    "name": "strip",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Номер бунта",
+                    "default": null
+                  }
+                ]
+              },
+              "doc": "Маркировка ЕМ"
+            },
+            {
+              "name": "weightNet",
+              "type": "float",
+              "doc": "Вес нетто (т.)"
+            },
+            {
+              "name": "geometry",
+              "type": {
+                "type": "record",
+                "name": "RecordGeometry",
+                "fields": [
+                  {
+                    "name": "thickness",
+                    "type": "float",
+                    "doc": "Толщина, мм"
+                  },
+                  {
+                    "name": "width",
+                    "type": "float",
+                    "doc": "Ширина, мм"
+                  },
+                  {
+                    "name": "length",
+                    "type": [
+                      "null",
+                      "float"
+                    ],
+                    "doc": "Длина, мм",
+                    "default": null
+                  }
+                ]
+              },
+              "doc": "Геометрия"
+            },
+            {
+              "name": "orderNum",
+              "type": [
+                "null",
+                "long"
+              ],
+              "doc": "Номер заказа",
+              "default": null
+            },
+            {
+              "name": "orderPos",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Позиция заказа",
+              "default": null
+            },
+            {
+              "name": "unionId",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Идентификатор упаковки бунтов",
+              "default": null
+            },
+            {
+              "name": "bundles",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordBundles",
+                    "fields": [
+                      {
+                        "name": "stripId",
+                        "type": "int",
+                        "doc": "Идентификатор бунта"
+                      },
+                      {
+                        "name": "stripNum",
+                        "type": "int",
+                        "doc": "Номер бунта"
+                      },
+                      {
+                        "name": "stripWidth",
+                        "type": "float",
+                        "doc": "Ширина бунта"
+                      },
+                      {
+                        "name": "stripWeight",
+                        "type": "float",
+                        "doc": "Вес бунта (т.)"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Список бунтов входящих в одну связку",
+              "default": null
+            },
+            {
+              "name": "specifications",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "RecordSpecifications",
+                  "fields": [
+                    {
+                      "name": "specCode",
+                      "type": "int",
+                      "doc": "Код характеристики"
+                    },
+                    {
+                      "name": "specName",
+                      "type": "string",
+                      "doc": "Наименование характеристики"
+                    },
+                    {
+                      "name": "specTypeCode",
+                      "type": "int",
+                      "doc": "Тип данных"
+                    },
+                    {
+                      "name": "specTypeName",
+                      "type": "string",
+                      "doc": "Наименование типа данных"
+                    },
+                    {
+                      "name": "specTypeValue",
+                      "type": "int",
+                      "doc": "Тип значения (1 - простое, 2 - перечислимое)"
+                    },
+                    {
+                      "name": "specValue",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Значение",
+                      "default": null
+                    },
+                    {
+                      "name": "listValues",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "RecordDataSpecificationsListValues",
+                            "fields": [
+                              {
+                                "name": "value",
+                                "type": "string",
+                                "doc": "Значение"
+                              },
+                              {
+                                "name": "description",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "doc": "Описание справочного значения",
+                                "default": null
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "doc": "Список значений",
+                      "default": null
+                    },
+                    {
+                      "name": "specDecryption",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Расшифровка справочного значения",
+                      "default": null
+                    },
+                    {
+                      "name": "specFormat",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Формат передачи характеристики",
+                      "default": null
+                    },
+                    {
+                      "name": "specMeasure",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Единица измерения",
+                      "default": null
+                    }
+                  ]
+                }
+              },
+              "doc": "Список дополнительных характеристик"
+            },
+            {
+              "name": "properties",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordProperties",
+                    "fields": [
+                      {
+                        "name": "probeCode",
+                        "type": "int",
+                        "doc": "Код вида пробы"
+                      },
+                      {
+                        "name": "probeName",
+                        "type": "string",
+                        "doc": "Наименование вида пробы"
+                      },
+                      {
+                        "name": "testDate",
+                        "type": "string",
+                        "doc": "Дата и время испытания"
+                      },
+                      {
+                        "name": "typeCode",
+                        "type": "int",
+                        "doc": "Код типа испытания"
+                      },
+                      {
+                        "name": "typeName",
+                        "type": "string",
+                        "doc": "Наименование типа испытания"
+                      },
+                      {
+                        "name": "analyzes",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "RecordAnalyzes",
+                            "fields": [
+                              {
+                                "name": "samplingPlaceCode",
+                                "type": "int",
+                                "doc": "Код места отбора пробы"
+                              },
+                              {
+                                "name": "samplingPlaceName",
+                                "type": "string",
+                                "doc": "Наименование места отбора пробы"
+                              },
+                              {
+                                "name": "analysisValue",
+                                "type": "int",
+                                "doc": "Результат (1-Худший, 2-Лучший)"
+                              },
+                              {
+                                "name": "listValues",
+                                "type": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "record",
+                                    "name": "RecordDataPropertiesAnalyzesListValues",
+                                    "fields": [
+                                      {
+                                        "name": "attrCode",
+                                        "type": "int",
+                                        "doc": "Код атрибута"
+                                      },
+                                      {
+                                        "name": "attrType",
+                                        "type": "int",
+                                        "doc": "Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)"
+                                      },
+                                      {
+                                        "name": "attrValue",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Значение атрибута",
+                                        "default": null
+                                      },
+                                      {
+                                        "name": "attrFormat",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Формат атрибута",
+                                        "default": null
+                                      },
+                                      {
+                                        "name": "attrMeasure",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "doc": "Единица измерения атрибута",
+                                        "default": null
+                                      }
+                                    ]
+                                  }
+                                },
+                                "doc": "Список значений анализов"
+                              }
+                            ]
+                          }
+                        },
+                        "doc": "Анализы"
+                      },
+                      {
+                        "name": "listValues",
+                        "type": [
+                          "null",
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "RecordDataPropertiesListValues",
+                              "fields": [
+                                {
+                                  "name": "attrCode",
+                                  "type": "int",
+                                  "doc": "Код атрибута"
+                                },
+                                {
+                                  "name": "attrType",
+                                  "type": "int",
+                                  "doc": "Тип атрибута (1 - Строка, 2 - Число, 3 - Дата)"
+                                },
+                                {
+                                  "name": "attrValue",
+                                  "type": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "record",
+                                      "name": "RecordDataPropertiesListValuesAttrValue",
+                                      "fields": [
+                                        {
+                                          "name": "value",
+                                          "type": "string",
+                                          "doc": "Значение"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "doc": "Код дополнительной маркировки"
+                                },
+                                {
+                                  "name": "attrFormat",
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "doc": "Формат атрибута",
+                                  "default": null
+                                },
+                                {
+                                  "name": "attrMeasure",
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "doc": "Единица измерения атрибута",
+                                  "default": null
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "doc": "Дополнительные результаты магнитных свойств",
+                        "default": null
+                      },
+                      {
+                        "name": "attestationList",
+                        "type": [
+                          "null",
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "RecordAttestationList",
+                              "fields": [
+                                {
+                                  "name": "typeCode",
+                                  "type": "int",
+                                  "doc": "Код аттестации"
+                                },
+                                {
+                                  "name": "typeName",
+                                  "type": "string",
+                                  "doc": "Наименование аттестации"
+                                },
+                                {
+                                  "name": "listValues",
+                                  "type": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "record",
+                                      "name": "RecordDataPropertiesAttestationListListValues",
+                                      "fields": [
+                                        {
+                                          "name": "side",
+                                          "type": "int",
+                                          "doc": "Сторона (1 - Лицевая, 2 - Обратная, 3 - Обе стороны)"
+                                        },
+                                        {
+                                          "name": "attrCode",
+                                          "type": "int",
+                                          "doc": "Код атрибута"
+                                        },
+                                        {
+                                          "name": "attrValue",
+                                          "type": "float",
+                                          "doc": "Значение атрибута"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "doc": "Список значений аттестации"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "doc": "Список аттестаций",
+                        "default": null
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Результаты магнитных свойств",
+              "default": null
+            },
+            {
+              "name": "chemical",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordChemical",
+                    "fields": [
+                      {
+                        "name": "id",
+                        "type": "int",
+                        "doc": "Идентификатор хим.анализа"
+                      },
+                      {
+                        "name": "listValues",
+                        "type": [
+                          "null",
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "RecordDataChemicalListValues",
+                              "fields": [
+                                {
+                                  "name": "code",
+                                  "type": "int",
+                                  "doc": "Код химического элемента"
+                                },
+                                {
+                                  "name": "name",
+                                  "type": "string",
+                                  "doc": "Наименование химического элемента"
+                                },
+                                {
+                                  "name": "value",
+                                  "type": [
+                                    "null",
+                                    "float"
+                                  ],
+                                  "doc": "Значение химического элемента",
+                                  "default": null
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "doc": "Список хим.элементов",
+                        "default": null
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Химия",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Данные",
+      "default": null
+    }
+  ]
+}

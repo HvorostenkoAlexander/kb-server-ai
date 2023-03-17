@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KatSteel4041Sender extends BasePdmCreator {
+public class KatSteelGost4041Sender extends BasePdmCreator {
 
-    public KatSteel4041Sender(@Value("${kafka.pdm.topic.kat-steel-4041}") String type,
+    public KatSteelGost4041Sender(@Value("${kafka.pdm.topic.kat-steel-4041}") String type,
                               PdmDtoConverter pdmDtoConverter,
                               NsiSender commonSender,
                               PdmDictionaryCreator pdmDictionaryCreator,

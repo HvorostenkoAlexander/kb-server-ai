@@ -54,18 +54,19 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 .build();
     }
 
-    private DataField toPamDataField(PkType recordPk,
-                                     RecordData recordData) {
+    private DataField toPamDataField(PkType recordPk, RecordData recordData) {
         if (Objects.isNull(recordData)) {
             return null;
         }
 
         return DataKc.builder()
-                .kceh(recordData.getKceh())
+                .kceh(recordData.getWorkshop())
                 .primeId(Objects.nonNull(recordPk) ? AdapterUtils.sequenceToString(recordPk.getId()) : null)
+                .marking(toKcMarking(recordData.getMarking()))
+                .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
-                .requirements(toPamRequirement(recordData))
+                .requirements(toPamRequirement(recordData.getRequirements()))
                 .chemData(toChemData(recordData.getChemData()))
                 .specifications(
                         recordData.getSpecifications().stream()
@@ -74,13 +75,11 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 )
                 .marking(toKcMarking(recordData.getMarking()))
                 .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
-                //нет в Avro схеме
-                //.weightNet(recordData.)
+                .weightNet(BigDecimal.valueOf(recordData.getWeightNet()))
                 .werks(recordData.getWerks())
                 .werksName(AdapterUtils.sequenceToString(recordData.getWerksName()))
-                //нет в Avro схеме
-                //.unitCode(recordData.)
-                //.unitName(recordData.)
+                .unitCode(AdapterUtils.sequenceToString(recordData.getUnitCode()))
+                .unitName(AdapterUtils.sequenceToString(recordData.getUnitName()))
                 .build();
     }
 
@@ -121,17 +120,17 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
             return Collections.emptyList();
         }
         return chemData.stream()
-                .map(a -> KcChemData.builder()
-                        .sampleId(a.getSampleId())
-                        .sampleNum(a.getSampleNum())
-                        .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
-                        .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
-                        .heat(a.getHeat())
-                        .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
-                        .chemical(toChemical(a.getChemical()))
-                        //нет в схеме
-                        //.reason()
-                        .build()
+                .map(a ->
+                        KcChemData.builder()
+                                .sampleId(a.getSampleId())
+                                .sampleNum(a.getSampleNum())
+                                .probeCode(AdapterUtils.sequenceToString(a.getProbeCode()))
+                                .analysisCode(AdapterUtils.sequenceToString(a.getAnalysisCode()))
+                                .heat(a.getHeat())
+                                .samplingPlaceName(AdapterUtils.sequenceToString(a.getSamplingPlaceName()))
+                                .chemical(toChemical(a.getChemical()))
+                                .reason(AdapterUtils.sequenceToString(a.getReason()))
+                                .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
 
@@ -142,9 +141,9 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
         return chemical.stream()
                 .map(a ->
                         KcChemical.builder()
-                                .chemCode(Long.valueOf(a.getChemCode()).intValue())
+                                .chemCode(a.getChemCode())
                                 .chemName(AdapterUtils.sequenceToString(a.getChemName()))
-                                .chemValue(new BigDecimal(AdapterUtils.sequenceToString(a.getChemValue()))) //расхождение спецификации со схемой - в спецификации это число
+                                .chemValue(BigDecimal.valueOf(a.getChemValue()))
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
@@ -177,16 +176,16 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 ).collect(Collectors.toUnmodifiableList());
     }
 
-    private Requirement toPamRequirement(RecordData recordData) {
+    private Requirement toPamRequirement(RecordRequirements requirements) {
         return Requirement.builder()
-                .planTask(toPlanTask(recordData.getPlanTask()))
-                .chemicalReq(Objects.nonNull(recordData.getRequirements().getChemicalReq()) ?
-                        recordData.getRequirements().getChemicalReq().stream()
+                .planTask(toPlanTask(requirements.getPlanTask()))
+                .chemicalReq(Objects.nonNull(requirements.getChemicalReq()) ?
+                        requirements.getChemicalReq().stream()
                                 .map(this::toPamChemicalReq)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
-                .specifications(Objects.nonNull(recordData.getRequirements().getSpecifications()) ?
-                        recordData.getRequirements().getSpecifications().stream()
+                .specifications(Objects.nonNull(requirements.getSpecifications()) ?
+                        requirements.getSpecifications().stream()
                                 .map(this::toPamSpecs)
                                 .collect(Collectors.toUnmodifiableList()) :
                         null)
@@ -206,7 +205,7 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
 
     private RequirementChemicalSpec toPamChemicalReq(RecordChemicalReq recordChemicalReg) {
         return RequirementChemicalSpec.builder()
-                .chemCode(converter.parseToInteger(AdapterUtils.sequenceToString(recordChemicalReg.getChemCode())))
+                .chemCode(recordChemicalReg.getChemCode())
                 .chemName(AdapterUtils.sequenceToString(recordChemicalReg.getChemName()))
                 .valueMin(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMin()))
                 .valueMax(AdapterUtils.toBigDecimal(recordChemicalReg.getValueMax()))
