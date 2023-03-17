@@ -4,7 +4,6 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +74,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                 )
                 .marking(toKcMarking(recordData.getMarking()))
                 .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
-                .weightNet(BigDecimal.valueOf(recordData.getWeightNet()))
+                .weightNet(AdapterUtils.toBigDecimal(recordData.getWeightNet()))
                 .werks(recordData.getWerks())
                 .werksName(AdapterUtils.sequenceToString(recordData.getWerksName()))
                 .unitCode(AdapterUtils.sequenceToString(recordData.getUnitCode()))
@@ -143,7 +142,7 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
                         KcChemical.builder()
                                 .chemCode(a.getChemCode())
                                 .chemName(AdapterUtils.sequenceToString(a.getChemName()))
-                                .chemValue(BigDecimal.valueOf(a.getChemValue()))
+                                .chemValue(AdapterUtils.toBigDecimal(a.getChemValue()))
                                 .build()
                 ).collect(Collectors.toUnmodifiableList());
     }
