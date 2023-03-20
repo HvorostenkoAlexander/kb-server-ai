@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.52.3</version>
+    <version>1.52.4</version>
     <name>kb-server</name>
     <description>Module for read Kafka Broker messages</description>
     <properties>
@@ -31,7 +31,7 @@
         <minio.version>8.4.1</minio.version>
         <avro.version>1.10.2</avro.version>
 
-        <product-api.version>1.54.3</product-api.version>
+        <product-api.version>1.54.4</product-api.version>
     </properties>
 
     <dependencyManagement>
