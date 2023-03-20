@@ -35,8 +35,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         log.debug("toChemicalStdLimitDto, PDM DICTIONARY: {} ", dictionary);
 
         final var chemicalStdLimitDto = ChemicalStdLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .c(converter.getLimitSpecValue(specs, MASS_FRACTION_C))
@@ -499,8 +499,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return ChemicalTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
@@ -618,8 +618,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         log.debug("toChemicalEquivalentStdDto, PDM DICTIONARY: {} ", dictionary);
 
         return ChemicalEquivalentStdDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
