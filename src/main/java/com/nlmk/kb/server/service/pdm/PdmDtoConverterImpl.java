@@ -185,8 +185,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return PhysMechPropertiesDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .pr_category(converter.getStringSpecValue(specs, CATEGORY_OF_MARK))
                 .pr_prod_mark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .pr_stand_mark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
@@ -364,8 +364,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MechanicalTkDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tk_num(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 ._prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .tk_route(converter.getStringSpecValue(specs, ROUTE_TK))
