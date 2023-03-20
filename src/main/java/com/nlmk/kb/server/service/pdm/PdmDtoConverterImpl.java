@@ -129,8 +129,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return WidthTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandSteel(converter.getStringSpecValue(specs, MARK_STANDARD))
@@ -160,8 +160,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return LengthTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .prLengthGood(converter.getLimitSpecValue(specs, LENGTH_PRODUCT))
@@ -311,8 +311,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return EvennessTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
@@ -671,8 +671,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return ToleranceDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .useStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD_ADDITIONAL))
                 .standTolThick(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_STANDART))
