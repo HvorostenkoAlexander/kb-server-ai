@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.entity.CcmMessage;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -40,7 +41,8 @@ public interface CcmMessageService {
      * @param requestId              requestId запроса ccm_message таблицы
      * @param primeId                primeId запроса ccm_message таблицы
      * @param ccmSourceMessageString строка исходное сообщение
+     * @param createdAt              дата создания
      */
-    void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString);
+    void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString, LocalDateTime createdAt);
 
 }

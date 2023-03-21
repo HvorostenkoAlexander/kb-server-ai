@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.nlmk.kb.server.config.KbConstants.THROW_EXC_MESSAGE_TEMPLATE;
@@ -79,7 +80,7 @@ public class CcmKc1KafkaService {
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
-                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
+                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString(), LocalDateTime.now());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsKc1.class);
