@@ -1,0 +1,22 @@
+{
+  "ts": "2023-03-21T09:57:40.163+03:00",
+  "op": "U",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "322078",
+    "id": "40"
+  },
+  "data": {
+    "specifications": [
+      { "specCode": 1 , "specName": "Стандарт на продукцию" , "specTypeCode": 1 , "specValue": "ТУ 24.10.21-0036-05757665-2020" , "specMeasure": "" },
+      { "specCode": 3 , "specName": "Марка стали" , "specTypeCode": 1 , "specValue": "APM45R;APM60M;TER50D;APM55G;C091AL;APM50M;C75ARW;C331;66427B;NV60TX;APM420" , "specMeasure": "" },
+      { "specCode": 604 , "specName": "Приоритет" , "specTypeCode": 1 , "specValue": "" , "specMeasure": "" },
+      { "specCode": 1815 , "specName": "Наименование потребителя" , "specTypeCode": 1 , "specValue": "ТЕРНИУМ МХ" , "specMeasure": "" },
+      { "specCode": 1816 , "specName": "Код потребителя" , "specTypeCode": 1 , "specValue": "2000001389" , "specMeasure": "" },
+      { "specCode": 3739 , "specName": "Коды с ограничением на поставку" , "specTypeCode": 1 , "specValue": "" , "specMeasure": "" },
+      { "specCode": 3738 , "specName": "Коды с запретом на поставку" , "specTypeCode": 1 , "specValue": "U11;U21" , "specMeasure": "" },
+      { "specCode": 3792 , "specName": "Допустимый объем для кодов с ограничениями" , "specTypeCode": 1 , "specValue": "" , "specMeasure": "" },
+      { "specCode": 138 , "specName": "Примечание" , "specTypeCode": 1 , "specValue": "ДТ 0042.02" , "specMeasure": "" }
+    ]
+  }
+}

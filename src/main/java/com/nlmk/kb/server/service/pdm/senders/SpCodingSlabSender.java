@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CodingSlabSender extends BasePdmCreator {
+public class SpCodingSlabSender extends BasePdmCreator {
 
-    public CodingSlabSender(@Value("${kafka.pdm.topic.coding-slab}") String type,
-                            NsiSender commonSender,
-                            PdmDtoConverter pdmDtoConverter,
-                            PdmDictionaryCreator pdmDictionaryCreator,
-                            DictionaryConfigService dictionaryConfigService) {
+    public SpCodingSlabSender(@Value("${kafka.pdm.topic.coding-slab}") String type,
+                              NsiSender commonSender,
+                              PdmDtoConverter pdmDtoConverter,
+                              PdmDictionaryCreator pdmDictionaryCreator,
+                              DictionaryConfigService dictionaryConfigService) {
         super(type, pdmDtoConverter, commonSender, pdmDictionaryCreator, dictionaryConfigService);
     }
 
