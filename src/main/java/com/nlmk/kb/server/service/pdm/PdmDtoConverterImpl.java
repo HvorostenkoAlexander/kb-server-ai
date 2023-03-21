@@ -84,8 +84,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return SteelCategoryG4041Dto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prThickUncoata(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .category(converter.getStringSpecValue(specs, CATEGORY_GOST_4041))
@@ -338,8 +338,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return TkNumDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkPurp(converter.getStringSpecValue(specs, TARGET))
                 .dateStart(this.getDocDate(specs, START_DATE))
@@ -580,8 +580,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MicrostructureDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
@@ -640,8 +640,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MatchTkDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkNumSap(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
@@ -656,8 +656,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MatchRpDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .rpNumSap(converter.getStringSpecValue(specs, RP_SAP_NUMBER))
                 .tkNum(converter.getStringSpecValue(specs, RP_NUMBER_VERSION_ROUTE))
                 .build();

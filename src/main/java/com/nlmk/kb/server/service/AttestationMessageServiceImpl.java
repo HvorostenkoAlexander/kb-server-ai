@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,7 +52,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
 
     @FunctionalInterface
     interface Saver {
-        void save(Long requestId, String primeId) throws JsonProcessingException;
+        void save(Long requestId, String primeId, LocalDateTime createdAt) throws JsonProcessingException;
     }
     class SourceMessageSaver<T> implements Saver {
         private final CcmMessageSourceRepository sourceRepository;
@@ -62,11 +63,12 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
         }
 
         @Override
-        public void save(Long requestId, String primeId) throws JsonProcessingException {
+        public void save(Long requestId, String primeId, LocalDateTime createdAt) throws JsonProcessingException {
             this.sourceRepository.save(
                     CcmMessageSource.builder()
                             .requestId(requestId)
                             .primeId(primeId)
+                            .createdAt(createdAt)
                             .messageSource(objectMapper.writeValueAsString(this.sourceMessage))
                             .build()
             );
@@ -163,7 +165,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
                     && !CollectionUtils.isEmpty(attResult.getResult().getRequests())) {
                 final var requestId = attResult.getResult().getRequests().get(0).getId(); // результат аттестации содержит один экземпляр запроса, т.е. индекс = 0.
                 if (Objects.nonNull(requestId)) {
-                    sourceSaver.save(requestId, primeId);
+                    sourceSaver.save(requestId, primeId, LocalDateTime.now());
                 }
             }
 
