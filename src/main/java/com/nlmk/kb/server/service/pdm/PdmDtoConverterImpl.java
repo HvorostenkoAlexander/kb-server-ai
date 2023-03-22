@@ -1132,7 +1132,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         final var specs = dictionary.getData().getSpecifications();
 
-        log.debug("toNsdCodingSlabDto, PDM DICTIONARY: {} ", dictionary);
+        log.debug("toSpCodingSlabDto, PDM DICTIONARY: {} ", dictionary);
 
         return SpCodingSlabDto.builder()
                 .remoteId(dictionary.getPk().getId())
