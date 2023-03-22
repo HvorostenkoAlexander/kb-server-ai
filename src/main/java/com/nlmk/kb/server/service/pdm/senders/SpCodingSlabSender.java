@@ -24,7 +24,7 @@ public class SpCodingSlabSender extends BasePdmCreator {
 
     @Override
     Object getBody(PdmMessage message) {
-        return super.getPdmDtoConverter().toSpCodingSlabDto(message.getDictionary());
+        return super.getPdmDtoConverter().toCodingSlabDto(message.getDictionary());
     }
 
     @Override

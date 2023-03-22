@@ -498,7 +498,7 @@ class PdmConverterTest {
                 obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
         );
 
-        final var dto = pdmDtoConverter.toSpCodingSlabDto(dictionary);
+        final var dto = pdmDtoConverter.toCodingSlabDto(dictionary);
         assertNotNull(dto);
         assertNull(dto.getId());
         assertEquals("40", dto.getRemoteId());
@@ -509,7 +509,7 @@ class PdmConverterTest {
         assertEquals("2000001389", dto.getPrCustomerCode());
         assertEquals(StringUtils.EMPTY, dto.getCodeLimitDelivery().getSrcValue());
         assertEquals("U11;U21", dto.getCodeBanDelivery().getSrcValue());
-        assertEquals(StringUtils.EMPTY, dto.getAcceptVolCodLimit().getSrcValue());
+        assertEquals(StringUtils.EMPTY, dto.getAcceptVolCodLimit());
         assertEquals("ДТ 0042.02", dto.getPrAnnotation());
     }
 

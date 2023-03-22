@@ -1126,7 +1126,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
 
     @Override
-    public SpCodingSlabDto toSpCodingSlabDto(PdmDictionary dictionary) {
+    public CodingSlabDto toCodingSlabDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
         Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
 
@@ -1134,7 +1134,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         log.debug("toSpCodingSlabDto, PDM DICTIONARY: {} ", dictionary);
 
-        return SpCodingSlabDto.builder()
+        return CodingSlabDto.builder()
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
@@ -1144,7 +1144,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
                 .codeLimitDelivery(converter.getLimitSpecValue(specs, CODE_LIMIT_DELIVERY))
                 .codeBanDelivery(converter.getLimitSpecValue(specs, CODE_BAN_DELIVERY))
-                .acceptVolCodLimit(converter.getLimitSpecValue(specs, ACCEPT_VOL_COD_LIMIT))
+                .acceptVolCodLimit(converter.getStringSpecValue(specs, ACCEPT_VOL_COD_LIMIT))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }
