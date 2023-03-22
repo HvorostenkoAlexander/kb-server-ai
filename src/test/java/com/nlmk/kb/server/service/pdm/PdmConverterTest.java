@@ -9,6 +9,7 @@ import com.nlmk.kb.server.service.CommonConverterImpl;
 import java.util.Date;
 
 import nlmk.l3.pdm.*;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -482,6 +483,34 @@ class PdmConverterTest {
         assertEquals("(0.003..*", dto.getSera().getSrcValue());
         assertEquals("СО", dto.getType());
         assertEquals("Серный отпечаток", dto.getPrAnnotation());
+    }
+
+
+    @Test
+    void fromSpCodingSlab() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpCodingSlab.json"),
+                        SpCodingSlab.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toSpCodingSlabDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("40", dto.getRemoteId());
+        assertEquals("ТУ 24.10.21-0036-05757665-2020", dto.getPrStandMark());
+        assertEquals("APM45R;APM60M;TER50D;APM55G;C091AL;APM50M;C75ARW;C331;66427B;NV60TX;APM420", dto.getPrSteelMark());
+        assertEquals(null, dto.getPrior());
+        assertEquals("ТЕРНИУМ МХ", dto.getPrCustomer());
+        assertEquals("2000001389", dto.getPrCustomerCode());
+        assertEquals(StringUtils.EMPTY, dto.getCodeLimitDelivery().getSrcValue());
+        assertEquals("U11;U21", dto.getCodeBanDelivery().getSrcValue());
+        assertEquals(StringUtils.EMPTY, dto.getAcceptVolCodLimit().getSrcValue());
+        assertEquals("ДТ 0042.02", dto.getPrAnnotation());
     }
 
 }
