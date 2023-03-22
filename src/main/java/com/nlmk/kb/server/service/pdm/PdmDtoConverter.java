@@ -95,5 +95,5 @@ public interface PdmDtoConverter {
     /**
      * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118428442">Проверка кодов (ушек) слябов( NSD_coding_slab )</a>
      */
-    SpCodingSlabDto toSpCodingSlabDto(PdmDictionary dictionary);
+    CodingSlabDto toCodingSlabDto(PdmDictionary dictionary);
 }
