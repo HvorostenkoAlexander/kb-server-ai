@@ -1138,7 +1138,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
-                .prSteelMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prMarkSteel(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .prCustomer(converter.getStringSpecValue(specs, CONSUMER_NAME))
                 .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
