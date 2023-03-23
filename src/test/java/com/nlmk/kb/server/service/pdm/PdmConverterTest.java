@@ -503,7 +503,7 @@ class PdmConverterTest {
         assertNull(dto.getId());
         assertEquals("40", dto.getRemoteId());
         assertEquals("ТУ 24.10.21-0036-05757665-2020", dto.getPrStandMark());
-        assertEquals("APM45R;APM60M;TER50D;APM55G;C091AL;APM50M;C75ARW;C331;66427B;NV60TX;APM420", dto.getPrSteelMark());
+        assertEquals("APM45R;APM60M;TER50D;APM55G;C091AL;APM50M;C75ARW;C331;66427B;NV60TX;APM420", dto.getPrMarkSteel());
         assertEquals(null, dto.getPrior());
         assertEquals("ТЕРНИУМ МХ", dto.getPrCustomer());
         assertEquals("2000001389", dto.getPrCustomerCode());
