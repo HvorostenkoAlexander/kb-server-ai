@@ -9,6 +9,7 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 
 import java.math.BigDecimal;
@@ -148,13 +149,13 @@ class CcmPtsRequestAdapterTest {
                 .data(CcmPtsRequest.Record.builder()
                         .specifications(List.of(
                                 CcmPtsRequest.Specification.builder()
-                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE).specCode(1).specValue("1")
+                                        .specTypeValue(SpecTypeValue.SIMPLE).specCode(1).specValue("1")
                                         .build(),
                                 CcmPtsRequest.Specification.builder()
-                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.ENUMERABLE).specCode(2)
+                                        .specTypeValue(SpecTypeValue.ENUMERABLE).specCode(2)
                                         .build(),
                                 CcmPtsRequest.Specification.builder()
-                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.ENUMERABLE).specCode(3)
+                                        .specTypeValue(SpecTypeValue.ENUMERABLE).specCode(3)
                                         .listValues(List.of(
                                                 CcmPtsRequest.OneSpecValue.builder().value("31").build(),
                                                 CcmPtsRequest.OneSpecValue.builder().value("32").build()

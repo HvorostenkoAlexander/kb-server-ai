@@ -78,7 +78,7 @@ public class KbControllerImpl implements KbController {
         final var ccmRest = attestationMessageService.findLastAttestationMessage(primeId);
 
         if (ccmKafka.isEmpty() && ccmRest.isEmpty()) {
-            throw new DataNotFoundException(MessageFormat.format("AttestationRequest for primeId [{0}] not found", primeId));
+            throw new DataNotFoundException(MessageFormat.format("Запрос аттестации с primeId [{0}] не найден", primeId));
         }
 
         if (ccmKafka.isPresent() && ccmRest.isPresent()) {
@@ -132,7 +132,7 @@ public class KbControllerImpl implements KbController {
         ZORDERS051 zorder = s3Service.getZorder(message);
 
         psmSender.postZorder(zorder);
-        log.info("kb, sendingSapMessage. Sent to PSM BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
+        log.info("postSendingSapMessage, в PSM отправлен заказ BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
 
         return new ResponseEntity<>("BELNR: " + zorder.getIDOC().getE1EDK01().getBELNR(), HttpStatus.OK);
     }

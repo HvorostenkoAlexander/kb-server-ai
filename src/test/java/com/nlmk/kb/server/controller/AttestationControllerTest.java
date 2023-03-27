@@ -3,6 +3,7 @@ package com.nlmk.kb.server.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.pam.AnalysisValue;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import nlmk.EnumOp;
@@ -89,7 +90,7 @@ class AttestationControllerTest {
                                         CcmPtsRequest.Specification.builder()
                                                 .specCode(50).specName("s51")
                                                 .specTypeCode(52).specTypeName("s53")
-                                                .specTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE)
+                                                .specTypeValue(SpecTypeValue.SIMPLE)
                                                 .listValues(List.of(
                                                         CcmPtsRequest.OneSpecValue.builder().value("v54").build()
                                                 )).build()
@@ -139,7 +140,7 @@ class AttestationControllerTest {
         );
     }
 
-    private String prepareMinimalRequestDataByAVRO() throws Exception {
+    private String prepareMinimalRequestDataByAVRO() {
         return DbAttestationRequestVer1.newBuilder()
                 .setTs("2022-09-02T14:36:25.000+05:00")
                 .setOp(EnumOp.U)
@@ -155,7 +156,7 @@ class AttestationControllerTest {
                         .setSpecifications(List.of(
                                 RecordSpecifications.newBuilder().setSpecCode(1).setSpecName("1")
                                         .setSpecTypeCode(2).setSpecTypeName("2")
-                                        .setSpecTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE.getValue())
+                                        .setSpecTypeValue(SpecTypeValue.SIMPLE.getValue())
                                         .setListValues(List.of(
                                                 RecordDataSpecificationsListValues.newBuilder().setValue("vSpec").build()
                                         )).build()

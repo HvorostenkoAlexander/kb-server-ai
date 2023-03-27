@@ -8,6 +8,7 @@ import com.nlmk.attestation.product.api.pam.PtsPropertyAttribute;
 import com.nlmk.attestation.product.api.pam.PtsPropertyAttributeValue;
 import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
 import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.util.AdapterUtils;
 
@@ -141,7 +142,7 @@ public abstract class CcmPtsRequestAdapter {
         final var specs = new ArrayList<Specs>();
         requestMessage.getData().getSpecifications().forEach(s -> {
             if (Objects.nonNull(s.getSpecCode()) && Objects.nonNull(s.getSpecTypeValue())) {
-                if (s.getSpecTypeValue() == CcmPtsRequest.SpecTypeValue.SIMPLE) {
+                if (s.getSpecTypeValue() == SpecTypeValue.SIMPLE) {
                     specs.add(Specs.builder()
                             .specCode(s.getSpecCode())
                             .specName(s.getSpecName())
@@ -150,7 +151,7 @@ public abstract class CcmPtsRequestAdapter {
                             .specFormat(s.getSpecFormat())
                             .specMeasure(s.getSpecMeasure())
                             .build());
-                } else if (s.getSpecTypeValue() == CcmPtsRequest.SpecTypeValue.ENUMERABLE
+                } else if (s.getSpecTypeValue() == SpecTypeValue.ENUMERABLE
                         && !CollectionUtils.isEmpty(s.getListValues())) {
                     s.getListValues().forEach(v -> specs.add(Specs.builder()
                             .specCode(s.getSpecCode())

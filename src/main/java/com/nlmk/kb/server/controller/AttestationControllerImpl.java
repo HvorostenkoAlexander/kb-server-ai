@@ -1,5 +1,9 @@
 package com.nlmk.kb.server.controller;
 
+import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc1Response;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
+import com.nlmk.kb.server.api.ccm.kc.CcmKc2Response;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.AttestationMessageService;
@@ -23,6 +27,18 @@ public class AttestationControllerImpl implements AttestationController {
     public CcmPtsResponse postAttestationCcmPts(String requestId, CcmPtsRequest attRequest) {
         log.info("postAttestationCcmPts, CcmPtsRequest [{}]", attRequest);
         return service.ccmPtsRequestProcessing(attRequest);
+    }
+
+    @Override
+    public CcmKc1Response postAttestationCcmKc1(String requestId, CcmKc1Request attRequest) {
+        log.info("postAttestationCcmKc1, CcmKcRequest [{}]", attRequest);
+        return service.ccmKc1RequestProcessing(attRequest);
+    }
+
+    @Override
+    public CcmKc2Response postAttestationCcmKc2(String requestId, CcmKc2Request attRequest) {
+        log.info("postAttestationCcmKc2, CcmKc2Request [{}]", attRequest);
+        return service.ccmKc2RequestProcessing(attRequest);
     }
 
 }

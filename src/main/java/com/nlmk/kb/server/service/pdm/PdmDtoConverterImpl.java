@@ -35,8 +35,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         log.debug("toChemicalStdLimitDto, PDM DICTIONARY: {} ", dictionary);
 
         final var chemicalStdLimitDto = ChemicalStdLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .c(converter.getLimitSpecValue(specs, MASS_FRACTION_C))
@@ -84,8 +84,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return SteelCategoryG4041Dto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prThickUncoata(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .category(converter.getStringSpecValue(specs, CATEGORY_GOST_4041))
@@ -100,8 +100,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return ThicknessTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .routeShop(converter.getStringSpecValue(specs, ROUTE_SHOP))
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
@@ -129,8 +129,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return WidthTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandSteel(converter.getStringSpecValue(specs, MARK_STANDARD))
@@ -160,8 +160,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return LengthTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .prLengthGood(converter.getLimitSpecValue(specs, LENGTH_PRODUCT))
@@ -185,8 +185,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return PhysMechPropertiesDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .pr_category(converter.getStringSpecValue(specs, CATEGORY_OF_MARK))
                 .pr_prod_mark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .pr_stand_mark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
@@ -311,8 +311,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return EvennessTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
                 .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
@@ -338,8 +338,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return TkNumDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkPurp(converter.getStringSpecValue(specs, TARGET))
                 .dateStart(this.getDocDate(specs, START_DATE))
@@ -364,8 +364,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MechanicalTkDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tk_num(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 ._prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .tk_route(converter.getStringSpecValue(specs, ROUTE_TK))
@@ -499,8 +499,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return ChemicalTkLimitDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
@@ -580,8 +580,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MicrostructureDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
@@ -618,8 +618,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         log.debug("toChemicalEquivalentStdDto, PDM DICTIONARY: {} ", dictionary);
 
         return ChemicalEquivalentStdDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
@@ -640,8 +640,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MatchTkDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
                 .tkNumSap(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
@@ -656,8 +656,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return MatchRpDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .rpNumSap(converter.getStringSpecValue(specs, RP_SAP_NUMBER))
                 .tkNum(converter.getStringSpecValue(specs, RP_NUMBER_VERSION_ROUTE))
                 .build();
@@ -671,8 +671,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         final var specs = dictionary.getData().getSpecifications();
 
         return ToleranceDto.builder()
-                .remote_id(dictionary.getPk().getId())
-                .ts(dictionary.getTs())
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .useStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD_ADDITIONAL))
                 .standTolThick(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_STANDART))
@@ -1120,6 +1120,31 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .uglr(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_C_MAX))
                 .sera(converter.getLimitSpecValue(specs, MASS_FRACTION_S))
                 .type(converter.getStringSpecValue(specs, TYPE))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+
+    @Override
+    public CodingSlabDto toCodingSlabDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toSpCodingSlabDto, PDM DICTIONARY: {} ", dictionary);
+
+        return CodingSlabDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .prMarkSteel(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .prCustomer(converter.getStringSpecValue(specs, CONSUMER_NAME))
+                .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
+                .codeLimitDelivery(converter.getLimitSpecValue(specs, CODE_LIMIT_DELIVERY))
+                .codeBanDelivery(converter.getLimitSpecValue(specs, CODE_BAN_DELIVERY))
+                .acceptVolCodLimit(converter.getStringSpecValue(specs, ACCEPT_VOL_COD_LIMIT))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }

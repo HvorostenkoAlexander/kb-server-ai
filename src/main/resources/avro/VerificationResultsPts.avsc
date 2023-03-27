@@ -1,0 +1,408 @@
+{
+  "namespace": "nlmk.l3.apcs",
+  "type": "record",
+  "doc": "Передача результатов аттестации APCS. Version: [1]. PTS",
+  "name": "VerificationResultsPts",
+  "fields": [
+    {
+      "name": "ts",
+      "type": "string",
+      "doc": "Дата и время передачи данных в формате YYYY-MM-DDThh:mm:ss[.SSS]±hh:mm)"
+    },
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "EnumOp",
+        "symbols": [
+          "I",
+          "U"
+        ]
+      },
+      "doc": "Операция (I, U)"
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "RecordPk",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string",
+            "doc": "Код системы (31)"
+          },
+          {
+            "name": "id",
+            "type": "long",
+            "doc": "ИД результата аттестации"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sys",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordSys",
+          "fields": [
+            {
+              "name": "seqID",
+              "type": "long",
+              "doc": "Монотонно возрастающий счетчик для проверки или восстановления оригинальной последовательности",
+              "default": -1
+            },
+            {
+              "name": "traceID",
+              "type": "string",
+              "doc": "Сквозной Trace ID (обычно UUID)",
+              "default": ""
+            }
+          ]
+        }
+      ],
+      "doc": "Системные поля, заполняемые источником",
+      "default": null
+    },
+    {
+      "name": "metadata",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordMetadata",
+          "fields": [
+            {
+              "name": "kafkaKeySchemaID",
+              "type": "int",
+              "doc": "Версия схемы ключа",
+              "default": -1
+            },
+            {
+              "name": "kafkaValueSchemaID",
+              "type": "int",
+              "doc": "Версия схемы значения",
+              "default": -1
+            },
+            {
+              "name": "kafkaKey",
+              "type": "string",
+              "doc": "Ключ в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaPartition",
+              "type": "int",
+              "doc": "Номер партиции",
+              "default": -1
+            },
+            {
+              "name": "kafkaOffset",
+              "type": "long",
+              "doc": "Offset в Kafka",
+              "default": -1
+            },
+            {
+              "name": "kafkaTimestamp",
+              "type": "string",
+              "doc": "Время сообщения в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaTopic",
+              "type": "string",
+              "doc": "Имя топика",
+              "default": ""
+            },
+            {
+              "name": "kafkaHeaders",
+              "type": [
+                "null",
+                {
+                  "type": "map",
+                  "values": "string"
+                }
+              ],
+              "doc": "kafkaHeaders",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Структура под метаданные Kafka, заполняется Подписчиком после чтения из Kafka",
+      "default": null
+    },
+    {
+      "name": "data",
+      "type": {
+        "type": "record",
+        "name": "RecordPtsData",
+        "fields": [
+          {
+            "name": "primeSystemCode",
+            "type": "string",
+            "doc": "Система - первоисточник запроса на аттестацию"
+          },
+          {
+            "name": "primeId",
+            "type": "string",
+            "doc": "Идентификатор (ИД) единицы ЕМ в первоисточнике"
+          },
+          {
+            "name": "mismatch",
+            "type": {
+              "type": "record",
+              "name": "RecordPtsMismatch",
+              "fields": [
+                {
+                  "name": "code",
+                  "type": "int",
+                  "doc": "Код результата аттестации (0 - не соответствует, 1 - соответствует, 2 - не аттестована(не хватает данных испытаний))"
+                },
+                {
+                  "name": "name",
+                  "type": "string",
+                  "doc": "Название результата аттестации"
+                }
+              ],
+              "doc": "Результат проверки ЕМ"
+            }
+          },
+          {
+            "name": "attestationList",
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "RecordPtsAttList",
+                "fields": [
+                  {
+                    "name": "groupCode",
+                    "type": "int",
+                    "doc": "Код группы характеристик"
+                  },
+                  {
+                    "name": "groupName",
+                    "type": "string",
+                    "doc": "Название группы характеристик"
+                  },
+                  {
+                    "name": "listValues",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "RecordPtsAttListValues",
+                        "fields": [
+                          {
+                            "name": "code",
+                            "type": "int",
+                            "doc": "Код характеристики"
+                          },
+                          {
+                            "name": "name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Наименование характеристики",
+                            "default": null
+                          },
+                          {
+                            "name": "typeCode",
+                            "type": "int",
+                            "doc": "Тип данных (1-строка, 2-число, 3-дата)"
+                          },
+                          {
+                            "name": "typeName",
+                            "type": "string",
+                            "doc": "Наименование типа данных"
+                          },
+                          {
+                            "name": "value",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Значение характеристики",
+                            "default": null
+                          },
+                          {
+                            "name": "format",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Формат передачи характеристики",
+                            "default": null
+                          },
+                          {
+                            "name": "measure",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Единица измерения",
+                            "default": null
+                          },
+                          {
+                            "name": "docId",
+                            "type": "int",
+                            "doc": "Код нормирующего документа"
+                          },
+                          {
+                            "name": "docName",
+                            "type": "string",
+                            "doc": "Название нормирующего документа"
+                          },
+                          {
+                            "name": "normLimits",
+                            "type": [
+                              "null",
+                              {
+                                "type": "record",
+                                "name": "RecordPtsAttListNorms",
+                                "fields": [
+                                  {
+                                    "name": "listAccValues",
+                                    "type": [
+                                      "null",
+                                      {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "record",
+                                          "name": "RecordPtsAttListNormsValues",
+                                          "fields": [
+                                            {
+                                              "name": "value",
+                                              "type": "string",
+                                              "doc": "Допустимое значение"
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    "doc": "Перечень допустимых значений",
+                                    "default": null
+                                  },
+                                  {
+                                    "name": "valueMin",
+                                    "type": [
+                                      "null",
+                                      "double"
+                                    ],
+                                    "doc": "Минимальное допустимое значение",
+                                    "default": null
+                                  },
+                                  {
+                                    "name": "valueMax",
+                                    "type": [
+                                      "null",
+                                      "double"
+                                    ],
+                                    "doc": "Максимальное допустимое значение",
+                                    "default": null
+                                  }
+                                ]
+                              }
+                            ],
+                            "doc": "С чем сверяли фактическое значение",
+                            "default": null
+                          },
+                          {
+                            "name": "mismatch",
+                            "type": {
+                              "type": "record",
+                              "name": "RecordPtsAttListMismatch",
+                              "fields": [
+                                {
+                                  "name": "code",
+                                  "type": "int",
+                                  "doc": "Код результата аттестации: 0 - не соответствует, 1 - соответствует, 2 - аттестация не требуется, справочное значение, 3 - нет результатов испытаний, но аттестация требуется, 4 - не соответствует, но есть рекомендации по устранению не соответствия, 5 - соответствует, изменено сотрудником УАИП"
+                                },
+                                {
+                                  "name": "name",
+                                  "type": "string",
+                                  "doc": "Название результата аттестации"
+                                }
+                              ],
+                              "doc": "Результаты проверки параметра"
+                            }
+                          },
+                          {
+                            "name": "note",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Пояснение результата проверки характеристики",
+                            "default": null
+                          },
+                          {
+                            "name": "defectSuggestion",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Текст рекомендации по устранению 'не соответствия'",
+                            "default": null
+                          },
+                          {
+                            "name": "parameters",
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "RecordPtsAttListParams",
+                                  "fields": [
+                                    {
+                                      "name": "code",
+                                      "type": "int",
+                                      "doc": "Код параметра"
+                                    },
+                                    {
+                                      "name": "name",
+                                      "type": "string",
+                                      "doc": "Название параметра"
+                                    },
+                                    {
+                                      "name": "value",
+                                      "type": "string",
+                                      "doc": "Значение параметра"
+                                    },
+                                    {
+                                      "name": "typeCode",
+                                      "type": "int",
+                                      "doc": "Тип параметра"
+                                    },
+                                    {
+                                      "name": "typeName",
+                                      "type": "string",
+                                      "doc": "Наименование типа параметра"
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "doc": "Список параметров для аттестуемой характеристики",
+                            "default": null
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Результаты проверки характеристик из группы"
+                  }
+                ]
+              }
+            },
+            "doc": "Группы характеристик с результатами проверки"
+          }
+        ]
+      }
+    }
+  ]
+}

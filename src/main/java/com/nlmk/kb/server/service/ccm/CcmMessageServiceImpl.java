@@ -6,6 +6,8 @@ import com.nlmk.kb.server.entity.CcmMessageSource;
 import com.nlmk.kb.server.mapper.CcmMessageSourceMapper;
 import com.nlmk.kb.server.repository.CcmMessageRepository;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,10 +74,11 @@ public class CcmMessageServiceImpl implements CcmMessageService {
     }
 
     @Override
-    public void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString) {
+    public void saveSourceMessage(Long requestId, String primeId, String ccmSourceMessageString, LocalDateTime createdAt) {
         ccmMessageSourceRepository.save(CcmMessageSource.builder()
                 .requestId(requestId)
                 .primeId(primeId)
+                .createdAt(createdAt)
                 .messageSource(ccmSourceMessageString).build());
     }
 

@@ -1,0 +1,673 @@
+{
+  "type": "record",
+  "name": "DbAttestRequestVer0",
+  "namespace": "nlmk.nlmk.l3.sus.kc2",
+  "doc": "Запрос на проведение аттестации единицы продукции",
+  "fields": [
+    {
+      "name": "ts",
+      "type": "string",
+      "doc": "Дата и время передачи"
+    },
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "EnumOp",
+        "namespace": "nlmk",
+        "symbols": [
+          "I",
+          "U",
+          "D"
+        ]
+      },
+      "doc": "Операция"
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "PkType",
+        "namespace": "nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string",
+            "doc": "Код системы"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "doc": "Текущей идентификатор сляба (idsla)"
+          }
+        ]
+      },
+      "doc": "Первичный ключ"
+    },
+    {
+      "name": "sys",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Sys",
+          "namespace": "nlmk",
+          "fields": [
+            {
+              "name": "seqID",
+              "type": "long",
+              "doc": "Монотонно возрастающий счетчик для проверки или восстановления оригинальной последовательности",
+              "default": -1
+            },
+            {
+              "name": "traceID",
+              "type": "string",
+              "doc": "Сквозной Trace ID (обычно UUID)",
+              "default": ""
+            }
+          ]
+        }
+      ],
+      "doc": "Системные поля, заполняемые источником",
+      "default": null
+    },
+    {
+      "name": "metadata",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Metadata",
+          "namespace": "nlmk",
+          "fields": [
+            {
+              "name": "kafkaKeySchemaID",
+              "type": "int",
+              "doc": "Версия схемы ключа",
+              "default": -1
+            },
+            {
+              "name": "kafkaValueSchemaID",
+              "type": "int",
+              "doc": "Версия схемы значения",
+              "default": -1
+            },
+            {
+              "name": "kafkaKey",
+              "type": "string",
+              "doc": "Ключ в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaPartition",
+              "type": "int",
+              "doc": "Номер партиции",
+              "default": -1
+            },
+            {
+              "name": "kafkaOffset",
+              "type": "long",
+              "doc": "Offset в Kafka",
+              "default": -1
+            },
+            {
+              "name": "kafkaTimestamp",
+              "type": "string",
+              "doc": "Время сообщения в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaTopic",
+              "type": "string",
+              "doc": "Имя топика",
+              "default": ""
+            },
+            {
+              "name": "kafkaHeaders",
+              "type": [
+                "null",
+                {
+                  "type": "map",
+                  "values": "string"
+                }
+              ],
+              "doc": "kafkaHeaders",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Мета структура, заполняется Подписчиком после чтения",
+      "default": null
+    },
+    {
+      "name": "data",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordData",
+          "namespace": "nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0",
+          "fields": [
+            {
+              "name": "primeId",
+              "type": "string",
+              "doc": "Сквозной идентификатор сляба (id_slyab)"
+            },
+            {
+              "name": "werks",
+              "type": "long",
+              "doc": "Код завода"
+            },
+            {
+              "name": "werksName",
+              "type": "string",
+              "doc": "Наименование завода"
+            },
+            {
+              "name": "workshop",
+              "type": "int",
+              "doc": "Код цеха"
+            },
+            {
+              "name": "workshopName",
+              "type": "string",
+              "doc": "Наименование цеха"
+            },
+            {
+              "name": "orderNum",
+              "type": [
+                "null",
+                "long"
+              ],
+              "doc": "N заказа",
+              "default": null
+            },
+            {
+              "name": "orderPos",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Позиция заказа",
+              "default": null
+            },
+            {
+              "name": "unitCode",
+              "type": "string",
+              "doc": "Код агрегата(УНРС)"
+            },
+            {
+              "name": "unitName",
+              "type": "string",
+              "doc": "Наименование агрегата"
+            },
+            {
+              "name": "weightNet",
+              "type": "float",
+              "doc": "Вес нетто (т.)"
+            },
+            {
+              "name": "marking",
+              "type": {
+                "type": "record",
+                "name": "RecordMarking",
+                "fields": [
+                  {
+                    "name": "heat",
+                    "type": "int",
+                    "doc": "№ плавки маркировочный"
+                  },
+                  {
+                    "name": "strand",
+                    "type": "int",
+                    "doc": "№ машины маркировочный"
+                  },
+                  {
+                    "name": "slab",
+                    "type": "int",
+                    "doc": "№ сляба маркировочный"
+                  }
+                ]
+              },
+              "doc": "Маркировка"
+            },
+            {
+              "name": "markingAcc",
+              "type": {
+                "type": "record",
+                "name": "RecordMarkingAcc",
+                "fields": [
+                  {
+                    "name": "heat",
+                    "type": "int",
+                    "doc": "Номер плавки учетный"
+                  },
+                  {
+                    "name": "strand",
+                    "type": "int",
+                    "doc": "№ машины учетный"
+                  },
+                  {
+                    "name": "slab",
+                    "type": "int",
+                    "doc": "№ сляба учетный"
+                  }
+                ]
+              },
+              "doc": "Маркировка учетная"
+            },
+            {
+              "name": "requirements",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "RecordRequirements",
+                  "fields": [
+                    {
+                      "name": "planTask",
+                      "type": {
+                        "type": "record",
+                        "name": "RecordPlanTask",
+                        "fields": [
+                          {
+                            "name": "planTaskId",
+                            "type": "int",
+                            "doc": "Идентификатор суточного задания"
+                          },
+                          {
+                            "name": "planTaskLineId",
+                            "type": "int",
+                            "doc": "Идентификатор строки стуточного задания"
+                          }
+                        ]
+                      },
+                      "doc": "Суточное задание"
+                    },
+                    {
+                      "name": "chemicalReq",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "RecordChemicalReq",
+                            "fields": [
+                              {
+                                "name": "chemCode",
+                                "type": "int",
+                                "doc": "Код химического элемента"
+                              },
+                              {
+                                "name": "chemName",
+                                "type": "string",
+                                "doc": "Наименование химического элемента"
+                              },
+                              {
+                                "name": "valueMin",
+                                "type": [
+                                  "null",
+                                  "double"
+                                ],
+                                "doc": "Минимальное значение химического элемента",
+                                "default": null
+                              },
+                              {
+                                "name": "valueMax",
+                                "type": [
+                                  "null",
+                                  "double"
+                                ],
+                                "doc": "Максимальное значение химического элемента",
+                                "default": null
+                              },
+                              {
+                                "name": "digitsQuantity",
+                                "type": [
+                                  "null",
+                                  "int"
+                                ],
+                                "doc": "Кол-во знаков после запятой",
+                                "default": null
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "doc": "Список требований к хим. анализу",
+                      "default": null
+                    },
+                    {
+                      "name": "specifications",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "RecordDataRequirementsSpecifications",
+                            "fields": [
+                              {
+                                "name": "specCode",
+                                "type": "int",
+                                "doc": "Код характеристики"
+                              },
+                              {
+                                "name": "specName",
+                                "type": "string",
+                                "doc": "Наименование характеристики"
+                              },
+                              {
+                                "name": "specTypeCode",
+                                "type": "int",
+                                "doc": "Тип данных (1-строка, 2-число, 3-дата)"
+                              },
+                              {
+                                "name": "specTypeName",
+                                "type": "string",
+                                "doc": "Наименование типа данных (строка, число, дата)"
+                              },
+                              {
+                                "name": "specTypeValue",
+                                "type": "int",
+                                "doc": "Тип значения (1-простое, 2-перечислимое)"
+                              },
+                              {
+                                "name": "specValue",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "doc": "Значение характеристики",
+                                "default": null
+                              },
+                              {
+                                "name": "listValues",
+                                "type": [
+                                  "null",
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "record",
+                                      "name": "RecordDataRequirementsSpecificationsListValues",
+                                      "fields": [
+                                        {
+                                          "name": "value",
+                                          "type": "string",
+                                          "doc": "Значение"
+                                        },
+                                        {
+                                          "name": "description",
+                                          "type": [
+                                            "null",
+                                            "string"
+                                          ],
+                                          "doc": "Описание значений",
+                                          "default": null
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "doc": "Список значений",
+                                "default": null
+                              },
+                              {
+                                "name": "specDecryption",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "doc": "Расшифровка характеристики",
+                                "default": null
+                              },
+                              {
+                                "name": "specFormat",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "doc": "Формат передачи характеристики",
+                                "default": null
+                              },
+                              {
+                                "name": "specMeasure",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "doc": "Единица измерения",
+                                "default": null
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "doc": "Список требуемых характеристик из суточного задания",
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "doc": "Требования",
+              "default": null
+            },
+            {
+              "name": "chemData",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordChemData",
+                    "fields": [
+                      {
+                        "name": "sampleId",
+                        "type": [
+                          "null",
+                          "long"
+                        ],
+                        "doc": "ИД пробы",
+                        "default": null
+                      },
+                      {
+                        "name": "probeCode",
+                        "type": "string",
+                        "doc": "Вид пробы (С-сталь)"
+                      },
+                      {
+                        "name": "analysisCode",
+                        "type": "string",
+                        "doc": "Тип анализа (М-маркировочный. С-сляб)"
+                      },
+                      {
+                        "name": "sampleNum",
+                        "type": [
+                          "null",
+                          "int"
+                        ],
+                        "doc": "Номер пробы (образца)",
+                        "default": null
+                      },
+                      {
+                        "name": "heat",
+                        "type": "int",
+                        "doc": "Номер плавки"
+                      },
+                      {
+                        "name": "samplingPlaceName",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Место отбора",
+                        "default": null
+                      },
+                      {
+                        "name": "reason",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Причина отрезки пробы",
+                        "default": null
+                      },
+                      {
+                        "name": "chemical",
+                        "type": [
+                          "null",
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "RecordChemical",
+                              "fields": [
+                                {
+                                  "name": "chemCode",
+                                  "type": "int",
+                                  "doc": "Код характеристики"
+                                },
+                                {
+                                  "name": "chemName",
+                                  "type": "string",
+                                  "doc": "Наименование характеристики"
+                                },
+                                {
+                                  "name": "chemValue",
+                                  "type": "double",
+                                  "doc": "Значение характеристики"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "doc": "Значения химического анализа",
+                        "default": null
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Химанализ",
+              "default": null
+            },
+            {
+              "name": "specifications",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordDataSpecifications",
+                    "fields": [
+                      {
+                        "name": "specCode",
+                        "type": "int",
+                        "doc": "Код характеристики"
+                      },
+                      {
+                        "name": "specName",
+                        "type": "string",
+                        "doc": "Наименование характеристики"
+                      },
+                      {
+                        "name": "specTypeCode",
+                        "type": "int",
+                        "doc": "Тип данных (1-строка, 2-число, 3-дата)"
+                      },
+                      {
+                        "name": "specTypeName",
+                        "type": "string",
+                        "doc": "Наименование типа данных (строка, число, дата)"
+                      },
+                      {
+                        "name": "specTypeValue",
+                        "type": "int",
+                        "doc": "Тип значения (1-простое, 2-перечислимое)"
+                      },
+                      {
+                        "name": "specValue",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Значение характеристики",
+                        "default": null
+                      },
+                      {
+                        "name": "listValues",
+                        "type": [
+                          "null",
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "record",
+                              "name": "RecordDataSpecificationsListValues",
+                              "fields": [
+                                {
+                                  "name": "value",
+                                  "type": "string",
+                                  "doc": "Значение"
+                                },
+                                {
+                                  "name": "description",
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "doc": "Описание справочного значенния",
+                                  "default": null
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "doc": "Список значений",
+                        "default": null
+                      },
+                      {
+                        "name": "specDecryption",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Расшифровка характеристики",
+                        "default": null
+                      },
+                      {
+                        "name": "specFormat",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Формат передачи характеристики",
+                        "default": null
+                      },
+                      {
+                        "name": "specMeasure",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Единица измерения",
+                        "default": null
+                      }
+                    ]
+                  }
+                }
+              ],
+              "doc": "Основные характеристики единицы продукции",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Данные",
+      "default": null
+    }
+  ]
+}

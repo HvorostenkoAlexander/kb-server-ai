@@ -11,6 +11,8 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.EnumOp;
@@ -79,7 +81,7 @@ public class CcmPtsKafkaService {
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
-                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString());
+                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString(), LocalDateTime.now());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
