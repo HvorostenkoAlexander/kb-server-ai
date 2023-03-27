@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
-public class AttestationMessageServiceTest {
+class AttestationMessageServiceTest {
 
     @Autowired
     private AttestationMessageRepository attestationMessageRepository;

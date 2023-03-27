@@ -6,6 +6,9 @@ import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.AttestationMessageService;
+import nlmk.EnumOp;
+import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
+import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,7 +52,12 @@ class AttestationControllerPtsTest {
                         .content(prepareMinimalRequestData()))
                 .andExpect(status().isOk());
 
-        // согласованный вариант REST = AVRO: прослушивание топика отключено, тест отключен
+        // согласованный вариант REST = AVRO
+        mvc.perform(MockMvcRequestBuilders.post("/attestation/ccm/pts")
+                        .header(HttpHeaders.AUTHORIZATION, "T V")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(prepareMinimalRequestDataByAVRO()))
+                .andExpect(status().isOk());
     }
 
     private String prepareMinimalRequest() throws Exception {
@@ -130,6 +138,80 @@ class AttestationControllerPtsTest {
                                 .build())
                         .build()
         );
+    }
+
+    private String prepareMinimalRequestDataByAVRO() {
+        return DbAttestationRequestVer1.newBuilder()
+                .setTs("2022-09-02T14:36:25.000+05:00")
+                .setOp(EnumOp.U)
+                .setPk(PkType.newBuilder().setId("42").setSystemCode("16").build())
+                .setData(RecordData.newBuilder()
+                        .setWerks(1).setWerksName("1")
+                        .setKceh(11).setKcehName("11")
+                        .setUnitCode(2).setUnitName("2")
+                        .setStorageCode(3).setStorageName("3")
+                        .setWeightNet(10.86f)
+                        .setMarking(RecordMarking.newBuilder().setNplv(2106684).setHnum(25217).setTnum(1).setRoll(1).build())
+                        .setGeometry(RecordGeometry.newBuilder().setThickness(2.65f).setWidth(1232.0f).build())
+                        .setSpecifications(List.of(
+                                RecordSpecifications.newBuilder().setSpecCode(1).setSpecName("1")
+                                        .setSpecTypeCode(2).setSpecTypeName("2")
+                                        .setSpecTypeValue(SpecTypeValue.SIMPLE.getValue())
+                                        .setListValues(List.of(
+                                                RecordDataSpecificationsListValues.newBuilder().setValue("vSpec").build()
+                                        )).build()
+                        ))
+                        .setBundles(List.of(
+                                RecordBundles.newBuilder()
+                                        .setStripId(1).setStripNum(1).setStripWidth(1f).setStripWeight(2.3f).build(),
+                                RecordBundles.newBuilder()
+                                        .setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
+                                RecordBundles.newBuilder()
+                                        .setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
+                        ))
+                        .setProperties(List.of(
+                                RecordProperties.newBuilder()
+                                        .setTypeCode(3).setTypeName("3")
+                                        .setTestDate("2022-01-01")
+                                        .setProbeCode(3).setProbeName("3")
+                                        .setAnalyzes(List.of(
+                                                RecordAnalyzes.newBuilder()
+                                                        .setSamplingPlaceCode(3).setSamplingPlaceName("s3")
+                                                        .setAnalysisValue(AnalysisValue.BEST.getValue())
+                                                        .setListValues(List.of(
+                                                                RecordDataPropertiesAnalyzesListValues.newBuilder()
+                                                                        .setAttrCode(31).setAttrType(1)
+                                                                        .setAttrValue("31").build()
+                                                        ))
+                                                        .build()
+                                        ))
+                                        .setAttestationList(List.of(
+                                                RecordAttestationList.newBuilder()
+                                                        .setTypeCode(40).setTypeName("t40")
+                                                        .setListValues(List.of(
+                                                                RecordDataPropertiesAttestationListListValues.newBuilder()
+                                                                        .setAttrCode(41).setAttrValue(4.1f)
+                                                                        .setSide(CcmPtsRequest.Side.BACK.getValue())
+                                                                        .build()
+                                                        )).build()
+                                        ))
+                                        .setListValues(List.of(
+                                                RecordDataPropertiesListValues.newBuilder()
+                                                        .setAttrCode(3).setAttrType(1)
+                                                        .setAttrValue(List.of(
+                                                                RecordDataPropertiesListValuesAttrValue.newBuilder().setValue("3").build()
+                                                        )).build()
+                                        ))
+                                        .build()
+                        ))
+                        .setChemical(List.of(
+                                RecordChemical.newBuilder().setId(10).setListValues(List.of(
+                                        RecordDataChemicalListValues.newBuilder()
+                                                .setCode(11).setValue(1.2f).setName("v11").build()
+                                )).build()
+                        ))
+                        .build())
+                .build().toString();
     }
 
 }
