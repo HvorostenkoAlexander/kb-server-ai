@@ -35,7 +35,7 @@ public class CcmPtsKafkaService {
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
 
-    public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time:5000}") long sleepTime,
+    public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
