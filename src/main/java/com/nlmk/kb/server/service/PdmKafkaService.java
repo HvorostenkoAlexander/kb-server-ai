@@ -58,6 +58,7 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.scheme-stripping-slab}",
                     "${kafka.pdm.topic.macrostructure}",
                     "${kafka.pdm.topic.type-sample-macrostructure}",
+                    "${kafka.pdm.topic.coding-slab}",
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
