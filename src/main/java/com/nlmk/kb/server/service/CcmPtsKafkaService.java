@@ -1,24 +1,17 @@
 package com.nlmk.kb.server.service;
 
-import com.nlmk.kb.server.exception.AttestationResultException;
-import com.nlmk.kb.server.exception.AttestationResultSenderException;
-import com.nlmk.kb.server.exception.DateTimeParseException;
-import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
-import com.nlmk.kb.server.exception.KafkaRestConfigException;
-import com.nlmk.kb.server.exception.RemoteServiceSenderException;
+import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
 import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -27,8 +20,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 @Slf4j
 @Service
+@ConditionalOnProperty(value = "kafka.ccm.pts.enable", matchIfMissing = true)
 public class CcmPtsKafkaService {
 
     private static final String EXC_MESS = "переброс: %s";
@@ -50,9 +47,7 @@ public class CcmPtsKafkaService {
         this.ccmMessageService = ccmMessageService;
     }
 
-    @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory",
-            topics = {"${kafka.ccm.pts.topicReq}"}
-    )
+    @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory", topics = {"${kafka.ccm.pts.topicReq}"})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                   @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,

@@ -507,8 +507,8 @@ class PdmConverterTest {
         assertEquals(null, dto.getPrior());
         assertEquals("ТЕРНИУМ МХ", dto.getPrCustomer());
         assertEquals("2000001389", dto.getPrCustomerCode());
-        assertEquals(StringUtils.EMPTY, dto.getCodeLimitDelivery().getSrcValue());
-        assertEquals("U11;U21", dto.getCodeBanDelivery().getSrcValue());
+        assertEquals(StringUtils.EMPTY, dto.getCodeLimitDelivery());
+        assertEquals("U11;U21", dto.getCodeBanDelivery());
         assertEquals(StringUtils.EMPTY, dto.getAcceptVolCodLimit());
         assertEquals("ДТ 0042.02", dto.getPrAnnotation());
     }

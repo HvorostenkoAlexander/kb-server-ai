@@ -1142,8 +1142,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
                 .prCustomer(converter.getStringSpecValue(specs, CONSUMER_NAME))
                 .prCustomerCode(converter.getStringSpecValue(specs, CONSUMER_CODE))
-                .codeLimitDelivery(converter.getLimitSpecValue(specs, CODE_LIMIT_DELIVERY))
-                .codeBanDelivery(converter.getLimitSpecValue(specs, CODE_BAN_DELIVERY))
+                .codeLimitDelivery(converter.getStringSpecValue(specs, CODE_LIMIT_DELIVERY))
+                .codeBanDelivery(converter.getStringSpecValue(specs, CODE_BAN_DELIVERY))
                 .acceptVolCodLimit(converter.getStringSpecValue(specs, ACCEPT_VOL_COD_LIMIT))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();

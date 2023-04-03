@@ -24,7 +24,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AttestationController.class)
-class AttestationControllerTest {
+class AttestationControllerPtsTest {
 
     @Autowired
     private MockMvc mvc;

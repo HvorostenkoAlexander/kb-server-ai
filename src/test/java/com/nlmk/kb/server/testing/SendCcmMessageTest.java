@@ -83,6 +83,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
     }
 
     @Test
+    @Disabled("ccm ptc listener off")
     void sendCcmPtsMessage() {
         final var data = nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData.newBuilder()
                 .setWerks(1).setWerksName("1")
