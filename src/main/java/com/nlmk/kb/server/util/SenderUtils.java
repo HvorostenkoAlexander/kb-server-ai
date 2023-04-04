@@ -21,14 +21,12 @@ public class SenderUtils {
             return;
         }
 
-        // выбор варианта
-        final var requestIdKafka = MDC.get(KbConstants.KAFKA_ID);
-        final var requestIdRest = MDC.get(KbConstants.REQUEST_ID_KEY);
-        final var requestId = (requestIdKafka != null) ? requestIdKafka : requestIdRest;
-
         headers.add(KbConstants.REQUEST_ID_HEADER,
                 // готовый requestId или новый с префиксом
-                Objects.requireNonNullElseGet(requestId, () -> KbConstants.DEFAULT_PREFIX + UUID.randomUUID()));
+                Objects.requireNonNullElseGet(
+                        MDC.get(KbConstants.REQUEST_ID_KEY), () -> KbConstants.DEFAULT_PREFIX + UUID.randomUUID()
+                )
+        );
     }
 
     public static String getPrimeId(AttestationRequest attRequest) {
