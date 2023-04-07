@@ -1,13 +1,13 @@
 package com.nlmk.kb.server.api.ccm.kc.response;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
 @Data
-@SuperBuilder
+@Builder
 @Jacksonized
 public class NormLimit {
 

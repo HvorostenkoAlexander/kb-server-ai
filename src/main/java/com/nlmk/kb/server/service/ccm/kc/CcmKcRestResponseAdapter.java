@@ -1,54 +1,21 @@
-package com.nlmk.kb.server.service.ccm.kc1;
+package com.nlmk.kb.server.service.ccm.kc;
 
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
-import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.kc.response.*;
-import com.nlmk.kb.server.api.ccm.kc.Pk;
-import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
 
-@Component
-public class CcmKc1RestResponseAdapterImpl implements RestResponseAdapter<CcmKc1Response> {
+public abstract class CcmKcRestResponseAdapter {
 
-    @Override
-    public CcmKc1Response adapt(ProductAttestationResultDto attResult) {
-        if (attResult == null || attResult.getResult() == null) {
-            return CcmKc1Response.builder().build();
-        }
-
-        final var product = attResult.getResult();
-
-        if (product.getRequests() == null || product.getRequests().isEmpty()) {
-            return CcmKc1Response.builder().build();
-        }
-
-        final var request = product.getRequests().get(0);
-
-        return CcmKc1Response.builder()
-                .ts(new Date())
-                .pk(Pk.builder()
-                        .id(product.getId() != null ? product.getId().toString() : null)
-                        .systemCode(SpecCode.SYSTEM_CODE.getValue().toString())
-                        .build())
-                .data(Record.builder()
-                        .primeSystemCode(product.getReferenceCode())
-                        .primeId(request.getPrimeID())
-                        .mismatch(Mismatch.builder()
-                                .code(request.getStatus() != null ? request.getStatus().getValue() : null)
-                                .name(request.getStatus() != null ? request.getStatus().getDesc() : null)
-                                .build())
-                        .attestationList(prepareAttestation(request))
-                        .build())
-                .build();
-    }
-
-    private List<Attestation> prepareAttestation(RequestDto request) {
+    protected List<Attestation> prepareAttestation(RequestDto request) {
         if (request == null
                 || request.getAttestations() == null
                 || request.getAttestations().isEmpty()) {

@@ -1,7 +1,7 @@
 package com.nlmk.kb.server.api.ccm.kc.request;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.Valid;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-@SuperBuilder
+@Builder
 @Jacksonized
 public class Requirements {
 

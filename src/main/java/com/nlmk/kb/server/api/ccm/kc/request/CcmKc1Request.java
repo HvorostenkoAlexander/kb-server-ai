@@ -5,8 +5,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.nlmk.kb.server.api.ccm.kc.Pk;
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 /**
@@ -14,7 +14,7 @@ import lombok.extern.jackson.Jacksonized;
  * href="https://confluence.nlmk.com/pages/viewpage.action?pageId=166240974">Аттестация ЕП КЦ1,КЦ2 [2.1]</a>
  */
 @Data
-@SuperBuilder
+@Builder
 @Jacksonized
 public class CcmKc1Request {
 

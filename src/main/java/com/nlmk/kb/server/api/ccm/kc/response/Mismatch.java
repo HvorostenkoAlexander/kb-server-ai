@@ -1,14 +1,14 @@
 package com.nlmk.kb.server.api.ccm.kc.response;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-@SuperBuilder
+@Builder
 @Jacksonized
 public class Mismatch {
 

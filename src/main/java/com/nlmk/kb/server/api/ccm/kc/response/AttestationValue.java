@@ -1,8 +1,8 @@
 package com.nlmk.kb.server.api.ccm.kc.response;
 
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotBlank;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-@SuperBuilder
+@Builder
 @Jacksonized
 public class AttestationValue {
 
