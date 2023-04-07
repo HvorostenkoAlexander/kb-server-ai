@@ -1,7 +1,10 @@
 package com.nlmk.kb.server.service.ccm.kc1;
 
 import com.nlmk.attestation.product.api.pam.*;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.PlanTask;
+import com.nlmk.attestation.product.api.pam.SpecValue;
+import com.nlmk.kb.server.api.ccm.kc.request.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
 import java.util.Collections;
@@ -51,7 +54,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
                 .build();
     }
 
-    private List<KcChemData> toChemData(List<CcmKc1Request.ChemData> chemData) {
+    private List<KcChemData> toChemData(List<ChemData> chemData) {
         if (Objects.isNull(chemData)) {
             return Collections.emptyList();
         }
@@ -69,7 +72,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private List<KcChemical> toChemical(List<CcmKc1Request.Chemical> chemical) {
+    private List<KcChemical> toChemical(List<Chemical> chemical) {
         if (Objects.isNull(chemical)) {
             return Collections.emptyList();
         }
@@ -82,7 +85,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private Requirement toRequirements(CcmKc1Request.Requirements requirements) {
+    private Requirement toRequirements(Requirements requirements) {
         if (Objects.isNull(requirements)) {
             return Requirement.builder().build();
         }
@@ -94,7 +97,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
         
     }
 
-    private List<Specs> toSpecifications(List<CcmKc1Request.Specification> specifications) {
+    private List<Specs> toSpecifications(List<Specification> specifications) {
         if (Objects.isNull(specifications)) {
             return Collections.emptyList();
         }
@@ -114,7 +117,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private List<SpecValue> toListValues(List<CcmKc1Request.SpecValue> listValues) {
+    private List<SpecValue> toListValues(List<com.nlmk.kb.server.api.ccm.kc.request.SpecValue> listValues) {
         if (Objects.isNull(listValues)) {
             return Collections.emptyList();
         }
@@ -126,7 +129,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private List<RequirementChemicalSpec> toChemicalReq(List<CcmKc1Request.ChemicalReq> chemicalReq) {
+    private List<RequirementChemicalSpec> toChemicalReq(List<ChemicalReq> chemicalReq) {
         if (Objects.isNull(chemicalReq)) {
             return Collections.emptyList();
         }
@@ -141,7 +144,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private PlanTask toPlanTask(CcmKc1Request.PlanTask planTask) {
+    private PlanTask toPlanTask(com.nlmk.kb.server.api.ccm.kc.request.PlanTask planTask) {
         if (Objects.isNull(planTask)) {
             return PlanTask.builder().build();
         }
@@ -151,7 +154,7 @@ public class CcmKc1RestRequestAdapterImpl implements RestRequestAdapter<CcmKc1Re
                 .build();
     }
 
-    private KcMarking toMarking(CcmKc1Request.Marking marking) {
+    private KcMarking toMarking(Marking marking) {
         if (Objects.isNull(marking)) {
             return KcMarking.builder().build();
         }
