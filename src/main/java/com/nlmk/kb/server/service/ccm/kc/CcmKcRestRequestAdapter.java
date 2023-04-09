@@ -1,57 +1,18 @@
-package com.nlmk.kb.server.service.ccm.kc2;
+package com.nlmk.kb.server.service.ccm.kc;
 
 import com.nlmk.attestation.product.api.pam.*;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
-import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
+import com.nlmk.attestation.product.api.pam.PlanTask;
+import com.nlmk.attestation.product.api.pam.SpecValue;
+import com.nlmk.kb.server.api.ccm.kc.request.*;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
-@RequiredArgsConstructor
-public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Request> {
+public abstract class CcmKcRestRequestAdapter {
 
-    private final CommonConverter converter;
-
-    @Override
-    public AttestationRequest adapt(CcmKc2Request requestMessage) {
-        final var dateRequest = converter.parseToDate(requestMessage.getTs());
-        final var data = requestMessage.getData();
-
-        return AttestationRequest.builder()
-                .value(Value.builder()
-                        .ts(dateRequest)
-                        .op("I")
-                        .pk(Pk.builder()
-                                .systemCode(requestMessage.getPk().getSystemCode())
-                                .id(requestMessage.getPk().getId())
-                                .build())
-                        .data(DataKc.builder()
-                                .primeId(requestMessage.getPk().getId())
-                                .werks(data.getWerks())
-                                .werksName(data.getWerksName())
-                                .kceh(data.getWorkshop())
-                                .kcehName(data.getWorkshopName())
-                                .orderNum(data.getOrderNum())
-                                .orderPos(data.getOrderPos())
-                                .unitCode(data.getUnitCode())
-                                .unitName(data.getUnitName())
-                                .weightNet(data.getWeightNet())
-                                .marking(toMarking(data.getMarking()))
-                                .markingAcc(toMarking(data.getMarkingAcc()))
-                                .requirements(toRequirements(data.getRequirements()))
-                                .chemData(toChemData(data.getChemData()))
-                                .specifications(toSpecifications(data.getSpecifications()))
-                                .build())
-                        .build())
-                .build();
-    }
-
-    private List<KcChemData> toChemData(List<CcmKc2Request.ChemData> chemData) {
+    protected List<KcChemData> toChemData(List<ChemData> chemData) {
         if (Objects.isNull(chemData)) {
             return Collections.emptyList();
         }
@@ -69,7 +30,7 @@ public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private List<KcChemical> toChemical(List<CcmKc2Request.Chemical> chemical) {
+    private List<KcChemical> toChemical(List<Chemical> chemical) {
         if (Objects.isNull(chemical)) {
             return Collections.emptyList();
         }
@@ -82,7 +43,7 @@ public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private Requirement toRequirements(CcmKc2Request.Requirements requirements) {
+    protected Requirement toRequirements(Requirements requirements) {
         if (Objects.isNull(requirements)) {
             return Requirement.builder().build();
         }
@@ -91,10 +52,10 @@ public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Re
                 .chemicalReq(toChemicalReq(requirements.getChemicalReq()))
                 .specifications(toSpecifications(requirements.getSpecifications()))
                 .build();
-        
+
     }
 
-    private List<Specs> toSpecifications(List<CcmKc2Request.Specification> specifications) {
+    protected List<Specs> toSpecifications(List<Specification> specifications) {
         if (Objects.isNull(specifications)) {
             return Collections.emptyList();
         }
@@ -114,7 +75,7 @@ public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private List<SpecValue> toListValues(List<CcmKc2Request.SpecValue> listValues) {
+    private List<SpecValue> toListValues(List<com.nlmk.kb.server.api.ccm.kc.request.SpecValue> listValues) {
         if (Objects.isNull(listValues)) {
             return Collections.emptyList();
         }
@@ -126,22 +87,22 @@ public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Re
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private List<RequirementChemicalSpec> toChemicalReq(List<CcmKc2Request.ChemicalReq> chemicalReq) {
+    private List<RequirementChemicalSpec> toChemicalReq(List<ChemicalReq> chemicalReq) {
         if (Objects.isNull(chemicalReq)) {
             return Collections.emptyList();
         }
         return chemicalReq.stream().map(a ->
-            RequirementChemicalSpec.builder()
-                    .chemCode(a.getChemCode())
-                    .chemName(a.getChemName())
-                    .valueMax(a.getValueMax())
-                    .valueMin(a.getValueMin())
-                    .digitsQuantity(a.getDigitsQuantity())
-                    .build()
+                RequirementChemicalSpec.builder()
+                        .chemCode(a.getChemCode())
+                        .chemName(a.getChemName())
+                        .valueMax(a.getValueMax())
+                        .valueMin(a.getValueMin())
+                        .digitsQuantity(a.getDigitsQuantity())
+                        .build()
         ).collect(Collectors.toUnmodifiableList());
     }
 
-    private PlanTask toPlanTask(CcmKc2Request.PlanTask planTask) {
+    private PlanTask toPlanTask(com.nlmk.kb.server.api.ccm.kc.request.PlanTask planTask) {
         if (Objects.isNull(planTask)) {
             return PlanTask.builder().build();
         }
@@ -151,7 +112,7 @@ public class CcmKc2RestRequestAdapterImpl implements RestRequestAdapter<CcmKc2Re
                 .build();
     }
 
-    private KcMarking toMarking(CcmKc2Request.Marking marking) {
+    protected KcMarking toMarking(Marking marking) {
         if (Objects.isNull(marking)) {
             return KcMarking.builder().build();
         }

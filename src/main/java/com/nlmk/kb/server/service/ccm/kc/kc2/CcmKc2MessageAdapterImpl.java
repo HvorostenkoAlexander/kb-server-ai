@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.ccm.kc2;
+package com.nlmk.kb.server.service.ccm.kc.kc2;
 
 import com.nlmk.kb.server.entity.CcmMessage;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;

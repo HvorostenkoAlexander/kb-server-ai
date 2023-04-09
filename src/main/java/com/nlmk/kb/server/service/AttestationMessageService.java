@@ -1,10 +1,10 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc1Response;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc2Response;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
+import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
+import com.nlmk.kb.server.api.ccm.kc.response.CcmKc2Response;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;

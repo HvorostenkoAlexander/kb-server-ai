@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc1Request;
+import com.nlmk.kb.server.api.ccm.kc.*;
+import com.nlmk.kb.server.api.ccm.kc.request.*;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import java.math.BigDecimal;
 import java.util.List;
@@ -63,7 +64,7 @@ class AttestationControllerKc1Test {
         return mapper.writeValueAsString(
                 CcmKc1Request.builder()
                         .ts("2023-03-13T00:00:00.000Z")
-                        .pk(CcmKc1Request.Pk.builder().systemCode("sc").id("id").build())
+                        .pk(Pk.builder().systemCode("sc").id("id").build())
                         .build()
         );
     }
@@ -71,19 +72,19 @@ class AttestationControllerKc1Test {
     private String prepareMinimalRequestData() throws Exception {
         return mapper.writeValueAsString(CcmKc1Request.builder()
                 .ts("2023-03-13T00:00:00.000Z")
-                .pk(CcmKc1Request.Pk.builder().systemCode("sc").id("id").build())
-                .data(CcmKc1Request.Record.builder()
+                .pk(Pk.builder().systemCode("sc").id("id").build())
+                .data(Record.builder()
                         .primeId("id")
                         .werks(10L).werksName("w10")
                         .workshop(4).workshopName("КЦ1")
                         .unitCode("УНРС12").unitName("u12")
-                        .marking(CcmKc1Request.Marking.builder().heat(13).strand(13).slab(13).build())
-                        .markingAcc(CcmKc1Request.Marking.builder().heat(13).strand(13).slab(13).build())
+                        .marking(Marking.builder().heat(13).strand(13).slab(13).build())
+                        .markingAcc(Marking.builder().heat(13).strand(13).slab(13).build())
                         .weightNet(BigDecimal.valueOf(14.0))
-                        .requirements(CcmKc1Request.Requirements.builder()
-                                .planTask(CcmKc1Request.PlanTask.builder().planTaskId(15).planTaskLineId(1).build())
+                        .requirements(Requirements.builder()
+                                .planTask(PlanTask.builder().planTaskId(15).planTaskLineId(1).build())
                                 .chemicalReq(List.of(
-                                        CcmKc1Request.ChemicalReq.builder()
+                                        ChemicalReq.builder()
                                                 .chemCode(SpecCode.MASS_FRACTION_N.getValue())
                                                 .chemName(SpecCode.MASS_FRACTION_N.getDesc())
                                                 .valueMin(BigDecimal.valueOf(0.001))
@@ -92,13 +93,13 @@ class AttestationControllerKc1Test {
                                                 .build()
                                 ))
                                 .specifications(List.of(
-                                        CcmKc1Request.Specification.builder()
+                                        Specification.builder()
                                                 .specCode(50).specName("s51")
                                                 .specTypeCode(SpecTypeCode.NUMBER)
                                                 .specTypeName("s53")
                                                 .specTypeValue(SpecTypeValue.SIMPLE)
                                                 .listValues(List.of(
-                                                        CcmKc1Request.SpecValue.builder().value("v54")
+                                                        SpecValue.builder().value("v54")
                                                                 .description("v55").build()
                                                 ))
                                                 .specDecryption("s15")
@@ -106,7 +107,7 @@ class AttestationControllerKc1Test {
                                 ))
                                 .build())
                         .chemData(List.of(
-                                CcmKc1Request.ChemData.builder()
+                                ChemData.builder()
                                         .sampleId(1L)
                                         .probeCode("К")
                                         .analysisCode("aC")
@@ -115,7 +116,7 @@ class AttestationControllerKc1Test {
                                         .samplingPlaceName("sP")
                                         .reason("r")
                                         .chemical(List.of(
-                                                CcmKc1Request.Chemical.builder()
+                                                Chemical.builder()
                                                         .chemCode(SpecCode.MASS_FRACTION_N.getValue())
                                                         .chemName(SpecCode.MASS_FRACTION_N.getDesc())
                                                         .chemValue(BigDecimal.valueOf(0.002))
@@ -124,13 +125,13 @@ class AttestationControllerKc1Test {
                                         .build())
                         )
                         .specifications(List.of(
-                                CcmKc1Request.Specification.builder()
+                                Specification.builder()
                                         .specCode(50).specName("s51")
                                         .specTypeCode(SpecTypeCode.NUMBER)
                                         .specTypeName("s53")
                                         .specTypeValue(SpecTypeValue.SIMPLE)
                                         .listValues(List.of(
-                                                CcmKc1Request.SpecValue.builder().value("v54").description("v55")
+                                                SpecValue.builder().value("v54").description("v55")
                                                         .build()
                                         ))
                                         .specDecryption("s15")
