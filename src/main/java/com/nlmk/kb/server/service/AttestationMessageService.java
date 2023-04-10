@@ -1,6 +1,10 @@
 package com.nlmk.kb.server.service;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
+import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
+import com.nlmk.kb.server.api.ccm.kc.response.CcmKc2Response;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
@@ -43,4 +47,19 @@ public interface AttestationMessageService {
      */
     AttestationRequest getAttestationRequestFromMessage(AttestationMessage message);
 
+    /**
+     * Обработка запроса на Аттестацию для типа <code>CcmKc1Request</code>
+     *
+     * @param request сообщения с запросом на Аттестацию
+     * @return объект ответа тип <code>CcmKc1Response</code>
+     */
+    CcmKc1Response ccmKc1RequestProcessing(CcmKc1Request request);
+
+    /**
+     * Обработка запроса на Аттестацию для типа <code>CcmKc2Request</code>
+     *
+     * @param request сообщения с запросом на Аттестацию
+     * @return объект ответа тип <code>CcmKc2Response</code>
+     */
+    CcmKc2Response ccmKc2RequestProcessing(CcmKc2Request request);
 }

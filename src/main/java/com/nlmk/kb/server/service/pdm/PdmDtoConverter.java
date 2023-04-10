@@ -87,4 +87,13 @@ public interface PdmDtoConverter {
      */
     MacrostructureDto toMacrostructureDto(PdmDictionary dictionary);
 
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=162610700">Вид образца для контроля макроструктуры( NSD_type_sample_macrostructure )</a>
+     */
+    TypeSampleMacrostructureDto toTypeSampleMacrostructureDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118428442">Проверка кодов (ушек) слябов( NSD_coding_slab )</a>
+     */
+    CodingSlabDto toCodingSlabDto(PdmDictionary dictionary);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
@@ -78,7 +79,7 @@ class RestRequestAdapterTest {
                                         .specName(SpecCode.STEEL_MARK.getDesc())
                                         .specTypeCode(TypeCode.STRING.getValue())
                                         .specTypeName(TypeCode.STRING.getDesc())
-                                        .specTypeValue(CcmPtsRequest.SpecTypeValue.SIMPLE) // !
+                                        .specTypeValue(SpecTypeValue.SIMPLE) // !
                                         .specValue("Ст3сп")
                                         .listValues(List.of()).build()
                         ))

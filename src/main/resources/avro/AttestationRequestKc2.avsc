@@ -165,12 +165,12 @@
               "doc": "Наименование завода"
             },
             {
-              "name": "kceh",
+              "name": "workshop",
               "type": "int",
               "doc": "Код цеха"
             },
             {
-              "name": "kcehName",
+              "name": "workshopName",
               "type": "string",
               "doc": "Наименование цеха"
             },
@@ -193,24 +193,19 @@
               "default": null
             },
             {
-              "name": "planTask",
-              "type": {
-                "type": "record",
-                "name": "RecordPlanTask",
-                "fields": [
-                  {
-                    "name": "planTaskId",
-                    "type": "int",
-                    "doc": "Идентификатор суточного задания"
-                  },
-                  {
-                    "name": "planTaskLineId",
-                    "type": "int",
-                    "doc": "Идентификатор строки стуточного задания"
-                  }
-                ]
-              },
-              "doc": "Суточное задание"
+              "name": "unitCode",
+              "type": "string",
+              "doc": "Код агрегата(УНРС)"
+            },
+            {
+              "name": "unitName",
+              "type": "string",
+              "doc": "Наименование агрегата"
+            },
+            {
+              "name": "weightNet",
+              "type": "float",
+              "doc": "Вес нетто (т.)"
             },
             {
               "name": "marking",
@@ -271,6 +266,26 @@
                   "name": "RecordRequirements",
                   "fields": [
                     {
+                      "name": "planTask",
+                      "type": {
+                        "type": "record",
+                        "name": "RecordPlanTask",
+                        "fields": [
+                          {
+                            "name": "planTaskId",
+                            "type": "int",
+                            "doc": "Идентификатор суточного задания"
+                          },
+                          {
+                            "name": "planTaskLineId",
+                            "type": "int",
+                            "doc": "Идентификатор строки стуточного задания"
+                          }
+                        ]
+                      },
+                      "doc": "Суточное задание"
+                    },
+                    {
                       "name": "chemicalReq",
                       "type": [
                         "null",
@@ -282,7 +297,7 @@
                             "fields": [
                               {
                                 "name": "chemCode",
-                                "type": "string",
+                                "type": "int",
                                 "doc": "Код химического элемента"
                               },
                               {
@@ -492,6 +507,15 @@
                         "default": null
                       },
                       {
+                        "name": "reason",
+                        "type": [
+                          "null",
+                          "string"
+                        ],
+                        "doc": "Причина отрезки пробы",
+                        "default": null
+                      },
+                      {
                         "name": "chemical",
                         "type": [
                           "null",
@@ -503,7 +527,7 @@
                               "fields": [
                                 {
                                   "name": "chemCode",
-                                  "type": "long",
+                                  "type": "int",
                                   "doc": "Код характеристики"
                                 },
                                 {
@@ -513,7 +537,7 @@
                                 },
                                 {
                                   "name": "chemValue",
-                                  "type": "string",
+                                  "type": "double",
                                   "doc": "Значение характеристики"
                                 }
                               ]

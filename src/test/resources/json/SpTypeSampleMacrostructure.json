@@ -1,0 +1,19 @@
+{
+  "ts": "2023-02-17T12:10:41.7176043+03:00",
+  "op": "I",
+  "pk": {
+    "systemCode": "30",
+    "directoryId": "614318",
+    "id": "2"
+  },
+  "data": {
+    "specifications": [
+      { "specCode": 1, "specName": "Стандарт на продукцию", "specTypeCode": 1, "specValue": "!ТУ 24.10.20", "specMeasure": "" },
+      { "specCode": 604, "specName": "Приоритет", "specTypeCode": 1, "specValue": "2", "specMeasure": "" },
+      { "specCode": 248, "specName": "C, %", "specTypeCode": 1, "specValue": "0.01..*", "specMeasure": "%" },
+      { "specCode": 9016, "specName": "S, %", "specTypeCode": 1, "specValue": "(0.003..*", "specMeasure": "%" },
+      { "specCode": 3737, "specName": "Вид", "specTypeCode": 1, "specValue": "СО", "specMeasure": "" },
+      { "specCode": 138, "specName": "Примечание", "specTypeCode": 1, "specValue": "Серный отпечаток", "specMeasure": "" }
+    ]
+  }
+}

@@ -9,6 +9,7 @@ import com.nlmk.kb.server.service.CommonConverterImpl;
 import java.util.Date;
 
 import nlmk.l3.pdm.*;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -255,7 +256,7 @@ class PdmConverterTest {
         final var dto = pdmDtoConverter.toThicknessTkLimitDto(dictionary);
 
         assertNotNull(dto);
-        assertEquals("7999", dto.getRemote_id());
+        assertEquals("7999", dto.getRemoteId());
         assertEquals("(2.50..3.00]", dto.getPrThickGood().getSrcValue());
         assertEquals("1.55", dto.getLongThickDif());
         assertEquals("", dto.getPrUnevenGauge());
@@ -424,7 +425,7 @@ class PdmConverterTest {
     }
 
     @Test
-    void from() throws Exception {
+    void fromSpMacrosructure() throws Exception {
         final var obj = new ObjectMapper()
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                 .readValue(getJsonFromPath("src/test/resources/json/SpMacrosructure.json"),
@@ -458,6 +459,58 @@ class PdmConverterTest {
         assertEquals("5..6", dto.getUzkgrTr().getSrcValue());
         assertEquals("6..7", dto.getUglovTr().getSrcValue());
         assertEquals("тест", dto.getPrAnnotation());
+    }
+
+    @Test
+    void fromSpTypeSampleMacrostructure() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpTypeSampleMacrostructure.json"),
+                        SpTypeSampleMacrostructure.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toTypeSampleMacrostructureDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("2", dto.getRemoteId());
+        assertEquals("!ТУ 24.10.20", dto.getPrStandMark());
+        assertEquals(2, dto.getPrior());
+        assertEquals("0.01..*", dto.getUglr().getSrcValue());
+        assertEquals("(0.003..*", dto.getSera().getSrcValue());
+        assertEquals("СО", dto.getType());
+        assertEquals("Серный отпечаток", dto.getPrAnnotation());
+    }
+
+
+    @Test
+    void fromSpCodingSlab() throws Exception {
+        final var obj = new ObjectMapper()
+                .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+                .readValue(getJsonFromPath("src/test/resources/json/SpCodingSlab.json"),
+                        SpCodingSlab.class
+                );
+
+        final var dictionary = pdmDictionaryCreator.createPdmDictionary(
+                obj.getTs(), obj.getOp(), obj.getPk(), obj.getData()
+        );
+
+        final var dto = pdmDtoConverter.toCodingSlabDto(dictionary);
+        assertNotNull(dto);
+        assertNull(dto.getId());
+        assertEquals("40", dto.getRemoteId());
+        assertEquals("ТУ 24.10.21-0036-05757665-2020", dto.getPrStandMark());
+        assertEquals("APM45R;APM60M;TER50D;APM55G;C091AL;APM50M;C75ARW;C331;66427B;NV60TX;APM420", dto.getPrMarkSteel());
+        assertEquals(null, dto.getPrior());
+        assertEquals("ТЕРНИУМ МХ", dto.getPrCustomer());
+        assertEquals("2000001389", dto.getPrCustomerCode());
+        assertEquals(StringUtils.EMPTY, dto.getCodeLimitDelivery());
+        assertEquals("U11;U21", dto.getCodeBanDelivery());
+        assertEquals(StringUtils.EMPTY, dto.getAcceptVolCodLimit());
+        assertEquals("ДТ 0042.02", dto.getPrAnnotation());
     }
 
 }

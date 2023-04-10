@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Builder
@@ -30,7 +29,6 @@ public class CcmMessageSource {
     private String messageSource;
 
     @Column(nullable = false)
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
 }

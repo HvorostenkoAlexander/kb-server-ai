@@ -9,6 +9,7 @@ import com.nlmk.kb.server.repository.DictionaryConfigRepository;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.pdm.senders.*;
 import com.nlmk.kb.server.service.sender.NsiSender;
+import nlmk.l3.pdm.SpCodingSlab;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -43,6 +44,7 @@ import java.util.List;
         RegisterEquivalentsSender.class,
         SchemeStrippingSlabSender.class,
         SpChemicalPropertiesNotesSender.class,
+        SpCodingSlabSender.class,
         TkNumSender.class,
         ToleranceSender.class,
         TolEvennessDtSender.class,
@@ -52,7 +54,8 @@ import java.util.List;
         TolThickDtSender.class,
         TolThickSender.class,
         TolWidthDtSender.class,
-        TolWidthSender.class
+        TolWidthSender.class,
+        TypeSampleMacrostructureSender.class,
 })
 class MessageSenderTest {
 
@@ -66,7 +69,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(26, messageSenders.size());
+        Assertions.assertEquals(28, messageSenders.size());
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")

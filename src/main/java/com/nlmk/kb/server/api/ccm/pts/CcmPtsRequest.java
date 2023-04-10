@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.nlmk.attestation.product.api.pam.AnalysisValue;
 import com.nlmk.attestation.product.api.specification.TypeCode;
+import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -107,26 +108,6 @@ public class CcmPtsRequest {
         private final String specDecryption; // Расшифровка справочного значения
         private final String specFormat; // Формат передачи характеристики
         private final String specMeasure; // Единица измерения
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum SpecTypeValue {
-
-        SIMPLE(1, "простое"),
-        ENUMERABLE(2, "перечислимое");
-
-        @JsonValue
-        private final Integer value;
-        private final String desc;
-
-        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-        public static SpecTypeValue fromValue(int value) {
-            return Arrays.stream(SpecTypeValue.values())
-                    .filter(s -> s.getValue().equals(value))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException(String.format("Unknown SpecTypeValue value [%s]", value)));
-        }
     }
 
     @Data
