@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
-import com.nlmk.kb.server.api.ccm.kc.CcmKc2Request;
+import com.nlmk.kb.server.api.ccm.kc.*;
+import com.nlmk.kb.server.api.ccm.kc.request.*;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import java.math.BigDecimal;
 import java.util.List;
@@ -63,7 +64,7 @@ class AttestationControllerKc2Test {
         return mapper.writeValueAsString(
                 CcmKc2Request.builder()
                         .ts("2023-03-13T00:00:00.000Z")
-                        .pk(CcmKc2Request.Pk.builder().systemCode("sc").id("id").build())
+                        .pk(Pk.builder().systemCode("sc").id("id").build())
                         .build()
         );
     }
@@ -72,20 +73,20 @@ class AttestationControllerKc2Test {
         return mapper.writeValueAsString(
                 CcmKc2Request.builder()
                         .ts("2023-03-13T00:00:00.000Z")
-                        .pk(CcmKc2Request.Pk.builder().systemCode("sc").id("id").build())
-                        .data(CcmKc2Request.Record.builder()
+                        .pk(Pk.builder().systemCode("sc").id("id").build())
+                        .data(Record.builder()
                                 .primeId("id")
                                 .werks(10L).werksName("w10")
                                 .workshop(5).workshopName("КЦ2")
                                 .unitCode("УНРС12").unitName("u12")
-                                .marking(CcmKc2Request.Marking.builder().heat(13).strand(13).slab(13).build())
-                                .markingAcc(CcmKc2Request.Marking.builder().heat(13).strand(13).slab(13).build())
+                                .marking(Marking.builder().heat(13).strand(13).slab(13).build())
+                                .markingAcc(Marking.builder().heat(13).strand(13).slab(13).build())
                                 .weightNet(BigDecimal.valueOf(14.0))
-                                .requirements(CcmKc2Request.Requirements.builder()
-                                        .planTask(CcmKc2Request.PlanTask.builder().planTaskId(15).planTaskLineId(1)
+                                .requirements(Requirements.builder()
+                                        .planTask(PlanTask.builder().planTaskId(15).planTaskLineId(1)
                                                 .build())
                                         .chemicalReq(List.of(
-                                                CcmKc2Request.ChemicalReq.builder()
+                                                ChemicalReq.builder()
                                                         .chemCode(SpecCode.MASS_FRACTION_N.getValue())
                                                         .chemName(SpecCode.MASS_FRACTION_N.getDesc())
                                                         .valueMin(BigDecimal.valueOf(0.001))
@@ -94,13 +95,13 @@ class AttestationControllerKc2Test {
                                                         .build()
                                         ))
                                         .specifications(List.of(
-                                                CcmKc2Request.Specification.builder()
+                                                Specification.builder()
                                                         .specCode(50).specName("s51")
                                                         .specTypeCode(SpecTypeCode.NUMBER)
                                                         .specTypeName("s53")
                                                         .specTypeValue(SpecTypeValue.SIMPLE)
                                                         .listValues(List.of(
-                                                                CcmKc2Request.SpecValue.builder().value("v54")
+                                                                SpecValue.builder().value("v54")
                                                                         .description("v55").build()
                                                         ))
                                                         .specDecryption("s15")
@@ -108,7 +109,7 @@ class AttestationControllerKc2Test {
                                         ))
                                         .build())
                                 .chemData(List.of(
-                                        CcmKc2Request.ChemData.builder()
+                                        ChemData.builder()
                                                 .sampleId(1L)
                                                 .probeCode("К")
                                                 .analysisCode("aC")
@@ -117,7 +118,7 @@ class AttestationControllerKc2Test {
                                                 .samplingPlaceName("sP")
                                                 .reason("r")
                                                 .chemical(List.of(
-                                                        CcmKc2Request.Chemical.builder()
+                                                        Chemical.builder()
                                                                 .chemCode(SpecCode.MASS_FRACTION_N.getValue())
                                                                 .chemName(SpecCode.MASS_FRACTION_N.getDesc())
                                                                 .chemValue(BigDecimal.valueOf(0.002))
@@ -126,13 +127,13 @@ class AttestationControllerKc2Test {
                                                 .build())
                                 )
                                 .specifications(List.of(
-                                        CcmKc2Request.Specification.builder()
+                                        Specification.builder()
                                                 .specCode(50).specName("s51")
                                                 .specTypeCode(SpecTypeCode.NUMBER)
                                                 .specTypeName("s53")
                                                 .specTypeValue(SpecTypeValue.SIMPLE)
                                                 .listValues(List.of(
-                                                        CcmKc2Request.SpecValue.builder().value("v54")
+                                                        SpecValue.builder().value("v54")
                                                                 .description("v55").build()
                                                 ))
                                                 .specDecryption("s15")

@@ -13,17 +13,14 @@ import java.util.UUID;
 @Component
 public class KafkaListenerAspect {
 
-    @Around("@annotation(org.springframework.kafka.annotation.KafkaListener))")
-    public void wrapKafkaListener(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        MDC.put(KbConstants.KAFKA_ID, KbConstants.KAFKA_PREFIX + UUID.randomUUID());
+    @Around("@annotation(org.springframework.kafka.annotation.KafkaListener)")
+    public Object wrapKafkaListener(ProceedingJoinPoint joinPoint) throws Throwable {
+        MDC.put(KbConstants.REQUEST_ID_KEY, KbConstants.KAFKA_PREFIX + UUID.randomUUID());
 
         try {
-            if (joinPoint != null) {
-                joinPoint.proceed(joinPoint.getArgs());
-            }
+            return joinPoint.proceed(joinPoint.getArgs());
         } finally {
-            MDC.remove(KbConstants.KAFKA_ID);
+            MDC.remove(KbConstants.REQUEST_ID_KEY);
         }
     }
 

@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.ccm.kc1;
+package com.nlmk.kb.server.service.ccm.kc.kc2;
 
 import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer0;
-import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.*;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
- * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213237">Спецификация КЦ-1</a>
+ * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213250">Спецификация КЦ-2</a>
  */
 @Component
 @RequiredArgsConstructor
-public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAttestRequestVer0> {
+public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAttestRequestVer0> {
 
     private final CommonConverter converter;
 
