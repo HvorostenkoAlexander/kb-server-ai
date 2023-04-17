@@ -60,6 +60,7 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
 
         return DataKc.builder()
                 .kceh(recordData.getWorkshop())
+                .kcehName(AdapterUtils.sequenceToString(recordData.getWorkshopName()))
                 .primeId(Objects.nonNull(recordPk) ? AdapterUtils.sequenceToString(recordPk.getId()) : null)
                 .marking(toKcMarking(recordData.getMarking()))
                 .markingAcc(toKcMarkingAcc(recordData.getMarkingAcc()))
@@ -194,9 +195,19 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
     private Specs toPamSpecs(RecordDataRequirementsSpecifications specifications) {
         return Specs.builder()
                 .specCode(specifications.getSpecCode())
+                .specValue(AdapterUtils.sequenceToString(specifications.getSpecValue()))
+                .listValues(
+                        Objects.nonNull(specifications.getListValues()) ? specifications.getListValues().stream().map(
+                                        a -> SpecValue.builder()
+                                                .value(AdapterUtils.sequenceToString(a.getValue()))
+                                                .description(AdapterUtils.sequenceToString(a.getDescription()))
+                                                .build())
+                                .collect(Collectors.toUnmodifiableList()) : Collections.emptyList())
                 .specName(AdapterUtils.sequenceToString(specifications.getSpecName()))
                 .specTypeCode(specifications.getSpecTypeCode())
-                .specValue(AdapterUtils.sequenceToString(specifications.getSpecValue()))
+                .specTypeValue(specifications.getSpecTypeValue())
+                .specTypeName(AdapterUtils.sequenceToString(specifications.getSpecTypeName()))
+                .specDecryption(AdapterUtils.sequenceToString(specifications.getSpecDecryption()))
                 .specFormat(AdapterUtils.sequenceToString(specifications.getSpecFormat()))
                 .specMeasure(AdapterUtils.sequenceToString(specifications.getSpecMeasure()))
                 .build();
