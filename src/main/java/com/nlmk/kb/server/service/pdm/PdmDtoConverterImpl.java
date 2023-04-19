@@ -1027,6 +1027,20 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .updateTs(dictionary.getTs())
                 .routeShop(converter.getStringSpecValue(specs, PRODUCTION_SHOP))
                 .numberSamp(converter.parseToInteger(converter.getStringSpecValue(specs, SAMPLES_NUMBER)))
+                .prior(converter.parseToInteger(converter.getStringSpecValue(specs, PRIORITY)))
+                .mnMax(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MN_MAX))
+                .sMax(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_S_MAX))
+                .pMax(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_P_MAX))
+                .pMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_P_MIN))
+                .crMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CR_MIN))
+                .niMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NI_MIN))
+                .cuMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_CU_MIN))
+                .tiMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_TI_MIN))
+                .vMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_V_MIN))
+                .nbMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_NB_MIN))
+                .moMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_MO_MIN))
+                .bMin(converter.getLimitSpecValue(specs, REQUIRED_CONTENT_B_MIN))
+                .sbMin(converter.getLimitSpecValue(specs, MASS_FRACTION_SB))
                 .build();
     }
 
