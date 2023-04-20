@@ -382,17 +382,17 @@ class PdmConverterTest {
         assertEquals(1, dto.getPrior());
 
         assertEquals("1.00..*", dto.getMnMax().getSrcValue());
-        assertEquals("*..0.010", dto.getSMax().getSrcValue());
-        assertEquals("*..0.010", dto.getPMax().getSrcValue());
-        assertEquals("(0..*", dto.getPMin().getSrcValue());
+        assertEquals("*..0.010", dto.getSulfurMax().getSrcValue());
+        assertEquals("*..0.010", dto.getPhosphorusMax().getSrcValue());
+        assertEquals("(0..*", dto.getPhosphorusMin().getSrcValue());
         assertEquals("(0..*", dto.getCrMin().getSrcValue());
         assertEquals("(0..*", dto.getNiMin().getSrcValue());
         assertEquals("(0..*", dto.getCuMin().getSrcValue());
         assertEquals("(0..*", dto.getTiMin().getSrcValue());
-        assertEquals("(0..*", dto.getVMin().getSrcValue());
+        assertEquals("(0..*", dto.getVanadiumMin().getSrcValue());
         assertEquals("(0..*", dto.getNbMin().getSrcValue());
         assertEquals("(0..*", dto.getMoMin().getSrcValue());
-        assertEquals("(0..*", dto.getBMin().getSrcValue());
+        assertEquals("(0..*", dto.getBorumMin().getSrcValue());
         assertEquals("(0..*", dto.getSbMin().getSrcValue());
 
 
