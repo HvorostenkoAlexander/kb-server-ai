@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.pdm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.nsi.LimitDto;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -378,6 +379,23 @@ class PdmConverterTest {
         assertNotNull(dto);
         assertEquals("КЦ-1", dto.getRouteShop());
         assertEquals(1, dto.getNumberSamp());
+        assertEquals(1, dto.getPrior());
+
+        assertEquals("1.00..*", dto.getMnMax().getSrcValue());
+        assertEquals("*..0.010", dto.getSulfurMax().getSrcValue());
+        assertEquals("*..0.010", dto.getPhosphorusMax().getSrcValue());
+        assertEquals("(0..*", dto.getPhosphorusMin().getSrcValue());
+        assertEquals("(0..*", dto.getCrMin().getSrcValue());
+        assertEquals("(0..*", dto.getNiMin().getSrcValue());
+        assertEquals("(0..*", dto.getCuMin().getSrcValue());
+        assertEquals("(0..*", dto.getTiMin().getSrcValue());
+        assertEquals("(0..*", dto.getVanadiumMin().getSrcValue());
+        assertEquals("(0..*", dto.getNbMin().getSrcValue());
+        assertEquals("(0..*", dto.getMoMin().getSrcValue());
+        assertEquals("(0..*", dto.getBorumMin().getSrcValue());
+        assertEquals("(0..*", dto.getSbMin().getSrcValue());
+
+
     }
 
     @Test

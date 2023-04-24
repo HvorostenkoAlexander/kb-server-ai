@@ -21,6 +21,104 @@
         "specTypeCode": 1,
         "specValue": "1",
         "specMeasure": ""
+      },
+      {
+        "specCode": 604,
+        "specName": "Приоритет",
+        "specTypeCode": 1,
+        "specValue": "1",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 250,
+        "specName": "Требуемое содержание Mn max",
+        "specTypeCode": 1,
+        "specValue": "1.00..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 254,
+        "specName": "Требуемое содержание S max",
+        "specTypeCode": 1,
+        "specValue": "*..0.010",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 256,
+        "specName": "Требуемое содержание P max",
+        "specTypeCode": 1,
+        "specValue": "*..0.010",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 255,
+        "specName": "Требуемое содержание P min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 259,
+        "specName": "Требуемое содержание Cr min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 261,
+        "specName": "Требуемое содержание Ni min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 263,
+        "specName": "Требуемое содержание Cu min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 267,
+        "specName": "Требуемое содержание Ti min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 269,
+        "specName": "Требуемое содержание V min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 271,
+        "specName": "Требуемое содержание Nb min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 273,
+        "specName": "Требуемое содержание Mo min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 277,
+        "specName": "Требуемое содержание B min",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
+      },
+      {
+        "specCode": 9051,
+        "specName": "Массовая доля сурьмы, Sb",
+        "specTypeCode": 1,
+        "specValue": "(0..*",
+        "specMeasure": ""
       }
     ]
   }
