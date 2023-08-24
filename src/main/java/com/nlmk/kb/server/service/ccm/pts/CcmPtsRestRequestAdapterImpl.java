@@ -52,7 +52,7 @@ public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implement
     private String getRollWithStrip(CcmPtsRequest.Marking marking) {
         StringBuilder builder = new StringBuilder(String.valueOf(marking.getRoll()));
         if (Objects.nonNull(marking.getStrip())) {
-            builder.append(STRIP_DELIMETER).append(String.valueOf(marking.getStrip()));
+            builder.append(STRIP_DELIMETER).append(marking.getStrip());
         }
         return builder.toString();
     }
