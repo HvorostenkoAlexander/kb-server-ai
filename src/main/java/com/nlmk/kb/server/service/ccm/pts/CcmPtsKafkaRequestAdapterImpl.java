@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.PkType;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implements KafkaRequestAdapter<nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1> {
 
+    private static final String STRIP_DELIMETER = "-";
     private final CommonConverter converter;
 
     @Override
@@ -64,6 +66,9 @@ public class CcmPtsKafkaRequestAdapterImpl extends CcmPtsRequestAdapter implemen
             hnum = recordData.getMarking().getHnum();
             nplv = recordData.getMarking().getNplv();
             roll = String.valueOf(recordData.getMarking().getRoll());
+            if (Objects.nonNull(recordData.getMarking().getStrip())) {
+                roll = roll.concat(STRIP_DELIMETER).concat(String.valueOf(recordData.getMarking().getStrip()));
+            }
         }
 
         BigDecimal length = null;
