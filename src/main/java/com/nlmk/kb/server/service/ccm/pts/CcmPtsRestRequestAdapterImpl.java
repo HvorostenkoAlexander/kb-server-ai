@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implements RestRequestAdapter<CcmPtsRequest> {
 
+    private static final char STRIP_DELIMETER = '-';
     private final CommonConverter converter;
 
     @Override
@@ -30,7 +32,7 @@ public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implement
                                 .primeId(requestMessage.getPk().getId())
                                 .nplv(data.getMarking().getNplv())
                                 .hnum(data.getMarking().getHnum())
-                                .roll(data.getMarking().getRoll().toString())
+                                .roll(getRollWithStrip(data.getMarking()))
                                 .length(data.getGeometry().getLength())
                                 .thickness(data.getGeometry().getThickness())
                                 .width(data.getGeometry().getWidth())
@@ -45,6 +47,14 @@ public class CcmPtsRestRequestAdapterImpl extends CcmPtsRequestAdapter implement
                                 .build())
                         .build())
                 .build();
+    }
+
+    private String getRollWithStrip(CcmPtsRequest.Marking marking) {
+        StringBuilder builder = new StringBuilder(String.valueOf(marking.getRoll()));
+        if (Objects.nonNull(marking.getStrip())) {
+            builder.append(STRIP_DELIMETER).append(String.valueOf(marking.getStrip()));
+        }
+        return builder.toString();
     }
 
 }
