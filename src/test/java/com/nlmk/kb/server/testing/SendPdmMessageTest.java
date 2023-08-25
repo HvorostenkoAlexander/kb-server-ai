@@ -18,7 +18,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
     private static final String PDM_TOPIC_SP_TOL_EVENNESS_DT = "000-0.l3-pdm.cdc.sp-tol-evenness-dt.0";
     private static final String PDM_TOPIC_SP_TOL_THICK_DT = "000-0.l3-pdm.cdc.sp-tol-thick-dt.0";
     private static final String PDM_TOPIC_SP_TOL_WIDTH_DT = "000-0.l3-pdm.cdc.sp-tol-width-dt.0";
-    private static final String PDM_TOPIC_REGISTER_EQUIVALENTS = "000-0.l3-pdm.cdc.sp-register-equivalents.0";
+    private static final String PDM_TOPIC_REGISTER_EQUIVALENTS = "000-0.l3-pdm.cdc.sp-register-parameters.0";
 
     @Test
     void sendPdmSpAsapMechPropertiesDt() {
