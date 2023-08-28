@@ -1,7 +1,6 @@
 package com.nlmk.kb.server.service.pdm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.nsi.LimitDto;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -338,11 +337,11 @@ class PdmConverterTest {
     }
 
     @Test
-    void fromSpRegisterEquivalents() throws Exception {
+    void fromSpRegisterParameters() throws Exception {
         final var obj = new ObjectMapper()
                 .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
-                .readValue(getJsonFromPath("src/test/resources/json/SpRegisterEquivalentsCEq.json"),
-                        SpRegisterEquivalents.class
+                .readValue(getJsonFromPath("src/test/resources/json/SpRegisterParametersCEq.json"),
+                        SpRegisterParameters.class
                 );
 
         final var dictionary = pdmDictionaryCreator.createPdmDictionary(

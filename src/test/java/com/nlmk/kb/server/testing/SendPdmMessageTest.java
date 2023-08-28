@@ -327,7 +327,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
     @Test
     void sendPdmRegisterEquivalents() {
-        nlmk.l3.pdm.SpRegisterEquivalents value = nlmk.l3.pdm.SpRegisterEquivalents.newBuilder()
+        nlmk.l3.pdm.SpRegisterParameters value = nlmk.l3.pdm.SpRegisterParameters.newBuilder()
                 .setTs("2023-01-16T10:25:25.123+05:00")
                 .setOp(nlmk.l3.pdm.opEnum.I) // I -> U -> D
                 .setPk(nlmk.l3.pdm.Pk.newBuilder()
