@@ -18,7 +18,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
     private static final String PDM_TOPIC_SP_TOL_EVENNESS_DT = "000-0.l3-pdm.cdc.sp-tol-evenness-dt.0";
     private static final String PDM_TOPIC_SP_TOL_THICK_DT = "000-0.l3-pdm.cdc.sp-tol-thick-dt.0";
     private static final String PDM_TOPIC_SP_TOL_WIDTH_DT = "000-0.l3-pdm.cdc.sp-tol-width-dt.0";
-    private static final String PDM_TOPIC_REGISTER_EQUIVALENTS = "000-0.l3-pdm.cdc.sp-register-equivalents.0";
+    private static final String PDM_TOPIC_REGISTER_EQUIVALENTS = "000-0.l3-pdm.cdc.sp-register-parameters.0";
 
     @Test
     void sendPdmSpAsapMechPropertiesDt() {
@@ -327,7 +327,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
     @Test
     void sendPdmRegisterEquivalents() {
-        nlmk.l3.pdm.SpRegisterEquivalents value = nlmk.l3.pdm.SpRegisterEquivalents.newBuilder()
+        nlmk.l3.pdm.SpRegisterParameters value = nlmk.l3.pdm.SpRegisterParameters.newBuilder()
                 .setTs("2023-01-16T10:25:25.123+05:00")
                 .setOp(nlmk.l3.pdm.opEnum.I) // I -> U -> D
                 .setPk(nlmk.l3.pdm.Pk.newBuilder()

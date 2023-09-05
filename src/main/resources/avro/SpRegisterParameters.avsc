@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "SpRegisterEquivalents",
+  "name": "SpRegisterParameters",
   "namespace": "nlmk.l3.pdm",
   "fields": [
     {
