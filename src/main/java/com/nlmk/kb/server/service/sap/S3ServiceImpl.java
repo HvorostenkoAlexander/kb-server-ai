@@ -78,14 +78,31 @@ public class S3ServiceImpl implements S3Service {
                                 e1cuval -> Arrays.stream(SapName.values())
                                         .filter(value -> value.getTag().equals(e1cuval.getCHARC()))
                                         .findFirst()
-                                        .ifPresent(code -> e1cuval.setVALUE(trimValue(e1cuval.getVALUE())))
+                                        .ifPresent(code -> e1cuval.setVALUE(trimValue(e1cuval.getVALUE(), code)))
                         ));
     }
 
-    private String trimValue(String value) {
+    private String trimValue(String value, SapName code) {
         if (StringUtils.isNotBlank(value)) {
             if (value.trim().equals(EMPTY_VALUE_TEMPLATE)) {
                 return null;
+            }
+            //Коэффицтент растрескивания КЦ2 ОПЭ-42 [3] Коэффициент трещиностойкости требования из заказа
+            //Руководитель команды SAP указал, что не могут замень запятую на точку
+            //Поэтому первая правая запятая будет заменена на точку
+            if (code.equals(SapName.KOEF_RASTRESK_MIN) || code.equals(SapName.KOEF_RASTRESK_MIN)) {
+                var commaIndex = value.lastIndexOf(',');
+                if (commaIndex >= 0) {
+                    char[] chars = value.toCharArray();
+                    chars[commaIndex] = '.';
+                    var updatedValue = String.valueOf(chars);
+                    //Если есть еще запятые
+                    if (updatedValue.trim().matches(COMMA_VALUE_TEMPLATE)) { // 1,234,567.8 => 1234567.8
+                        return updatedValue.trim().replace(",", "");
+                    } else {
+                        return updatedValue;
+                    }
+                }
             }
             if (value.trim().matches(COMMA_VALUE_TEMPLATE)) { // 1,234,567.8 => 1234567.8
                 return value.trim().replace(",", "");
