@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nlmk.attestation.product.api.kb.SapMessageDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
+import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
@@ -126,19 +127,31 @@ public class KbControllerImpl implements KbController {
     }
 
     @Override
-    public ResponseEntity<String> postSendingSapMessage(String message) throws JsonProcessingException {
-        log.info("postSendingSapMessage, message [{}]", message);
+    public ResponseEntity<String> postSendingSapZorderMessage(String message) throws JsonProcessingException {
+        log.info("postSendingSapZorderMessage, message [{}]", message);
 
-        ZORDERS051 zorder = s3Service.getZorder(message);
+        ZORDERS051 zorder = s3Service.unmarshalZorder(message);
 
         psmSender.postZorder(zorder);
-        log.info("postSendingSapMessage, в PSM отправлен заказ BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
+        log.info("postSendingSapZorderMessage, в PSM отправлен заказ BELNR: [{}]", zorder.getIDOC().getE1EDK01().getBELNR());
 
         return new ResponseEntity<>("BELNR: " + zorder.getIDOC().getE1EDK01().getBELNR(), HttpStatus.OK);
     }
 
     @Override
-    public SapMessageDto getSapMessageNextId(Long id) {
+    public ResponseEntity<String> postSendingSapZmmorderMessage(String message) throws JsonProcessingException {
+        log.info("postSendingSapZmmorderMessage, message [{}]", message);
+
+        ZMMORDERS05DOP zmmorder = s3Service.unmarshalZmmorder(message);
+
+        psmSender.postZmmorder(zmmorder);
+        log.info("postSendingSapZmmorderMessage, в PSM отправлен заказ BELNR: [{}]", zmmorder.getIDOC().getE1EDK01().getBELNR());
+
+        return new ResponseEntity<>("BELNR: " + zmmorder.getIDOC().getE1EDK01().getBELNR(), HttpStatus.OK);
+    }
+
+    @Override
+    public SapMessageDto<?> getSapMessageNextId(Long id) {
         log.info("postSapMessageNextId, id [{}]", id);
         return sapMessageService.getNextSapMessage(id);
     }
