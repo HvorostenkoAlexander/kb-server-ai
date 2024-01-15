@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ZMMORDERS05_DOP>
+    <IDOC BEGIN="1">
+        <EDI_DC40 SEGMENT="1">
+            <TABNAM>EDI_DC40</TABNAM>
+            <MANDT>400</MANDT>
+            <DOCNUM>0000000158726078</DOCNUM>
+            <DOCREL>751</DOCREL>
+            <STATUS>30</STATUS>
+            <DIRECT>1</DIRECT>
+            <OUTMOD>2</OUTMOD>
+            <IDOCTYP>ORDERS05</IDOCTYP>
+            <CIMTYP>ZMMORDERS05_DOP</CIMTYP>
+            <MESTYP>ZMMORDERS05_DOP</MESTYP>
+            <MESCOD>KFK</MESCOD>
+            <SNDPOR>SAPPER</SNDPOR>
+            <SNDPRT>LS</SNDPRT>
+            <SNDPRN>PERCLNT400</SNDPRN>
+            <RCVPOR>PO_AAE</RCVPOR>
+            <RCVPRT>LS</RCVPRT>
+            <RCVPFC>LS</RCVPFC>
+            <RCVPRN>S3</RCVPRN>
+            <CREDAT>20231222</CREDAT>
+            <CRETIM>124745</CRETIM>
+            <SERIAL>20231222124744</SERIAL>
+        </EDI_DC40>
+        <E1EDK01 SEGMENT="1">
+            <CURCY>RUB</CURCY>
+            <HWAER>RUB</HWAER>
+            <WKURS>1.00000</WKURS>
+            <BSART>ZUP5</BSART>
+            <BELNR>4500745477</BELNR>
+            <ZMME1EDK01_DOP SEGMENT="1">
+                <ZZ_ZUONR>*</ZZ_ZUONR>
+                <ZZ_SPEC>100000000000053375</ZZ_SPEC>
+                <ZZ_KDST_TO>16</ZZ_KDST_TO>
+                <ZZ_LIFSK>Z2</ZZ_LIFSK>
+                <ZZ_STATION>000000</ZZ_STATION>
+                <ZZ_UDATE>00000000</ZZ_UDATE>
+                <ZZ_UTIME>000000</ZZ_UTIME>
+                <ZZDSPEC>00000000</ZZDSPEC>
+                <ZZDSP_BEGIN>00000000</ZZDSP_BEGIN>
+                <ZZDSP_END>00000000</ZZDSP_END>
+                <ZZ_SHP_BEG>00000000</ZZ_SHP_BEG>
+                <ZZ_SHP_END>00000000</ZZ_SHP_END>
+            </ZMME1EDK01_DOP>
+        </E1EDK01>
+        <E1EDK14 SEGMENT="1">
+            <QUALF>014</QUALF>
+            <ORGID>1010</ORGID>
+        </E1EDK14>
+        <E1EDK14 SEGMENT="1">
+            <QUALF>009</QUALF>
+            <ORGID>163</ORGID>
+        </E1EDK14>
+        <E1EDK14 SEGMENT="1">
+            <QUALF>013</QUALF>
+            <ORGID>ZUP5</ORGID>
+        </E1EDK14>
+        <E1EDK14 SEGMENT="1">
+            <QUALF>011</QUALF>
+            <ORGID>1010</ORGID>
+        </E1EDK14>
+        <E1EDK03 SEGMENT="1">
+            <IDDAT>012</IDDAT>
+            <DATUM>20231222</DATUM>
+        </E1EDK03>
+        <E1EDK03 SEGMENT="1">
+            <IDDAT>011</IDDAT>
+            <DATUM>20231222</DATUM>
+        </E1EDK03>
+        <E1EDKA1 SEGMENT="1">
+            <PARVW>AG</PARVW>
+            <PARTN>1010</PARTN>
+            <TELFX>1</TELFX>
+            <PAORG>1010</PAORG>
+            <ORGTX>Закуп Орг НЛМК</ORGTX>
+            <PAGRU>163</PAGRU>
+        </E1EDKA1>
+        <E1EDKA1 SEGMENT="1">
+            <PARVW>LF</PARVW>
+            <SPRAS>R</SPRAS>
+            <SPRAS_ISO>RU</SPRAS_ISO>
+        </E1EDKA1>
+        <E1EDKA1 SEGMENT="1">
+            <PARVW>LS</PARVW>
+        </E1EDKA1>
+        <E1EDKA1 SEGMENT="1">
+            <PARVW>WE</PARVW>
+            <LIFNR>1011</LIFNR>
+            <NAME1>Чурилина И.А., Татаринова О.Л.</NAME1>
+            <STRAS>ЦМК/2 34, 3452</STRAS>
+            <STRS2>ЦЕХ МЕТАЛЛИЧЕСКИХ КОНСТРУКЦИЙ</STRS2>
+            <ORT01>ЦМК Чурилина И.А., Татаринова О.Л.</ORT01>
+            <LAND1>RU</LAND1>
+            <SPRAS>R</SPRAS>
+            <REGIO>48</REGIO>
+            <SPRAS_ISO>RU</SPRAS_ISO>
+        </E1EDKA1>
+        <E1EDK02 SEGMENT="1">
+            <QUALF>001</QUALF>
+            <BELNR>4500745477</BELNR>
+            <DATUM>20231222</DATUM>
+            <UZEIT>124744</UZEIT>
+        </E1EDK02>
+        <E1EDP01 SEGMENT="1">
+            <POSEX>00010</POSEX>
+            <ACTION>001</ACTION>
+            <PSTYP>7</PSTYP>
+            <MENGE>50.000</MENGE>
+            <MENEE>TNE</MENEE>
+            <BMNG2>50.000</BMNG2>
+            <PMENE>TNE</PMENE>
+            <NTGEW>50</NTGEW>
+            <GEWEI>TNE</GEWEI>
+            <MATKL>A0080_013</MATKL>
+            <BPUMN>1</BPUMN>
+            <BPUMZ>1</BPUMZ>
+            <BRGEW>50</BRGEW>
+            <WERKS>1011</WERKS>
+            <LGORT>2342</LGORT>
+            <ZMME1EDP01_DOP SEGMENT="1">
+                <ZZPOSNR>000000</ZZPOSNR>
+                <ZZREFPS>00000</ZZREFPS>
+            </ZMME1EDP01_DOP>
+            <E1CUREF SEGMENT="1">
+                <POSEX>000010</POSEX>
+                <CONFIG_ID>000001</CONFIG_ID>
+                <INST_ID>00000001</INST_ID>
+            </E1CUREF>
+            <E1EDP20 SEGMENT="1">
+                <WMENG>50.000</WMENG>
+                <AMENG>0.000</AMENG>
+                <EDATU>20231201</EDATU>
+            </E1EDP20>
+            <E1EDP19 SEGMENT="1">
+                <QUALF>001</QUALF>
+                <IDTNR>OS_HR_0103100</IDTNR>
+                <KTEXT>б-4х1500-1550х6000-8000 Ст09Г2С</KTEXT>
+                <IDTNR_LONG>OS_HR_0103100</IDTNR_LONG>
+            </E1EDP19>
+            <E1EDP19 SEGMENT="1">
+                <QUALF>003</QUALF>
+                <IDTNR>324169</IDTNR>
+            </E1EDP19>
+        </E1EDP01>
+        <E1CUCFG SEGMENT="1">
+            <POSEX>000010</POSEX>
+            <CONFIG_ID>000001</CONFIG_ID>
+            <ROOT_ID>00000001</ROOT_ID>
+            <E1CUINS SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <OBJ_TYPE>MARA</OBJ_TYPE>
+                <CLASS_TYPE>300</CLASS_TYPE>
+                <OBJ_KEY>OS_HR_0103100</OBJ_KEY>
+                <OBJ_TXT>б-4х1500-1550х6000-8000 Ст09Г2С</OBJ_TXT>
+                <QUANTITY>        50.000</QUANTITY>
+            </E1CUINS>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>KDNR</CHARC>
+                <CHARC_TXT>ВП_Группа сбыта</CHARC_TXT>
+                <VALUE_TXT>ГЧиГП</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>STNDRT_PROD</CHARC>
+                <CHARC_TXT>Стандарт на продукцию</CHARC_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>VID_PRODUCT</CHARC>
+                <CHARC_TXT>Вид продукции</CHARC_TXT>
+                <AUTHOR>3</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>MARKA</CHARC>
+                <CHARC_TXT>Марка</CHARC_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>STNDRT_MARKA</CHARC>
+                <CHARC_TXT>Стандарт на марку</CHARC_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>STNDRT_SORT</CHARC>
+                <CHARC_TXT>Стандарт на сортамент</CHARC_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>VID_POSTAVKI</CHARC>
+                <CHARC_TXT>Вид поставки</CHARC_TXT>
+                <VALUE_TXT>Лист</VALUE_TXT>
+                <AUTHOR>8</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>TLOT_TEXT</CHARC>
+                <CHARC_TXT>Толщина диапазон текст</CHARC_TXT>
+                <VALUE_TXT>Не указывается</VALUE_TXT>
+                <AUTHOR>7</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>TLOT_MIN</CHARC>
+                <CHARC_TXT>Толщина от, мм</CHARC_TXT>
+                <VALUE_TXT>4,00 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>SHOT_MIN</CHARC>
+                <CHARC_TXT>Ширина от, мм</CHARC_TXT>
+                <VALUE_TXT>1.500,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>SHOT_MAX</CHARC>
+                <CHARC_TXT>Ширина до, мм</CHARC_TXT>
+                <VALUE_TXT>1550,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>DLIN_MIN</CHARC>
+                <CHARC_TXT>Длина от, мм</CHARC_TXT>
+                <VALUE_TXT>6.000,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>DLIN_MAX</CHARC>
+                <CHARC_TXT>Длина до, мм</CHARC_TXT>
+                <VALUE_TXT>8.000,0 мм</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>TPRK</CHARC>
+                <CHARC_TXT>Точность прокатки</CHARC_TXT>
+                <AUTHOR>8</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>KROM</CHARC>
+                <CHARC_TXT>Характер кромки</CHARC_TXT>
+                <VALUE_TXT>необрезная</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>MAS_BUNT_MAX</CHARC>
+                <CHARC_TXT>Масса (рлн,бунт,пачка) макс, т</CHARC_TXT>
+                <VALUE_TXT>10,000 т</VALUE_TXT>
+                <AUTHOR>8</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>SHOT_TEXT</CHARC>
+                <CHARC_TXT>Ширина диапазон текст</CHARC_TXT>
+                <VALUE_TXT>Не указывается</VALUE_TXT>
+                <AUTHOR>7</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>QUAN_SD</CHARC>
+                <CHARC_TXT>Кол-во на переделе для SD зак.</CHARC_TXT>
+                <VALUE_TXT>15,000 т</VALUE_TXT>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>SORTAMENT</CHARC>
+                <CHARC_TXT>Сортаментная группа для квот</CHARC_TXT>
+                <AUTHOR>8</AUTHOR>
+            </E1CUVAL>
+            <E1CUVAL SEGMENT="1">
+                <INST_ID>00000001</INST_ID>
+                <CHARC>KOD_PROD</CHARC>
+                <CHARC_TXT>Вид продукции_KDPR из MES</CHARC_TXT>
+                <VALUE_TXT>СТАЛЬ ГК ТОЛСТОЛИСТОВАЯ ОТ 4ММ</VALUE_TXT>
+            </E1CUVAL>
+        </E1CUCFG>
+    </IDOC>
+</ZMMORDERS05_DOP>
