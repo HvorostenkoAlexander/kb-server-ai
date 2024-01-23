@@ -102,7 +102,7 @@ class PamSenderTest {
             final var res = Assertions.assertThrows(RemoteServiceSenderException.class, () ->
                     pamSender.postAttestationRequest(attestationRequest));
             mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS); // timeout 100 < 1000
-            Assertions.assertEquals("PamSender, postAttestationRequest, primeId [p100], send error, message [Did not observe any item or terminal signal within 1000ms in 'flatMap' (and no fallback has been configured)]", res.getMessage());
+            Assertions.assertEquals("PamSender, postAttestationRequest, primeId [p100], send error, message [Did not observe any item or terminal signal within 2000ms in 'flatMap' (and no fallback has been configured)]", res.getMessage());
         }
     }
 

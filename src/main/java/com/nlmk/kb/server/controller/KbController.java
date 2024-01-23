@@ -80,8 +80,15 @@ public interface KbController {
     @PostMapping("/sap_message/zorder")
     @Operation(summary = "Парсинг и сохранение заказа, переданного в виде xml",
             security = {@SecurityRequirement(name = "bearer-key")})
-    ResponseEntity<String> postSendingSapMessage(
+    ResponseEntity<String> postSendingSapZorderMessage(
             @RequestBody @Schema(example = "<?xml version=... ?><ZORDERS05_1></ZORDERS05_1>") String message
+    ) throws JsonProcessingException;
+
+    @PostMapping("/sap_message/zmmorder")
+    @Operation(summary = "Парсинг и сохранение заказа, переданного в виде xml",
+            security = {@SecurityRequirement(name = "bearer-key")})
+    ResponseEntity<String> postSendingSapZmmorderMessage(
+            @RequestBody @Schema(example = "<?xml version=... ?><ZMMORDERS05_DOP></ZMMORDERS05_DOP>") String message
     ) throws JsonProcessingException;
 
     @GetMapping("/sap_message/next")
@@ -91,7 +98,7 @@ public interface KbController {
             description = "Сообщение найдено", content = @Content)
     @ApiResponse(responseCode = "404",
             description = "Сообщение не найдено", content = @Content)
-    SapMessageDto getSapMessageNextId(@RequestParam(value = "id", required = false) Long id);
+    SapMessageDto<?> getSapMessageNextId(@RequestParam(value = "id", required = false) Long id);
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/send_attestation_result")

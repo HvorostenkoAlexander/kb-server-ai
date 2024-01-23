@@ -28,7 +28,8 @@ public class SapKafkaService {
     }
 
     @KafkaListener(containerFactory = "sapKafkaListenerContainerFactory",
-            topics = {"${kafka.sap.topic.s3.idoczordrs}"}
+            topics = {"${kafka.sap.topic.s3.idoczordrs}",
+                    "${kafka.sap.topic.s3.zmmordersdop}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
