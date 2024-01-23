@@ -1,0 +1,300 @@
+{
+  "idoc": {
+    "edidc40": {
+      "tabnam": "EDI_DC40",
+      "mandt": "400",
+      "docnum": "158726078",
+      "docrel": "751",
+      "status": "30",
+      "direct": "1",
+      "outmod": "2",
+      "idoctyp": "ORDERS05",
+      "cimtyp": "ZMMORDERS05_DOP",
+      "mestyp": "ZMMORDERS05_DOP",
+      "mescod": "KFK",
+      "sndpor": "SAPPER",
+      "sndprt": "LS",
+      "sndprn": "PERCLNT400",
+      "rcvpor": "PO_AAE",
+      "rcvprt": "LS",
+      "rcvpfs": "LS",
+      "rcvprn": "S3",
+      "credat": "20231222",
+      "cretim": "124745",
+      "serial": "20231222124744"
+    },
+    "e1EDK01": {
+      "curcy": "RUB",
+      "hwaer": "RUB",
+      "wkurs": "1",
+      "bsart": "ZUP5",
+      "belnr": "4500745477",
+      "zmme1EDK01DOP": {
+        "zzzuonr": "*",
+        "zzspec": "100000000000053380",
+        "zzkdstto": "16",
+        "zzlifsk": "Z2",
+        "zzstation": "0",
+        "zzudate": "0",
+        "zzutime": "0",
+        "zzdspec": "0",
+        "zzdspbegin": "0",
+        "zzdspend": "0",
+        "zzshpbeg": "0",
+        "zzshpend": "0"
+      }
+    },
+    "e1EDK14": [
+      {
+        "qualf": "14",
+        "orgid": "1010"
+      },
+      {
+        "qualf": "9",
+        "orgid": "163"
+      },
+      {
+        "qualf": "13",
+        "orgid": "ZUP5"
+      },
+      {
+        "qualf": "11",
+        "orgid": "1010"
+      }
+    ],
+    "e1EDK03": [
+      {
+        "iddat": "12",
+        "datum": "20231222"
+      },
+      {
+        "iddat": "11",
+        "datum": "20231222"
+      }
+    ],
+    "e1EDKA1": [
+      {
+        "parvw": "AG",
+        "partn": "1010",
+        "telfx": "1",
+        "paorg": "1010",
+        "orgtx": "Закуп Орг НЛМК",
+        "pagru": "163"
+      },
+      {
+        "parvw": "LF",
+        "spras": "R",
+        "sprasiso": "RU"
+      },
+      {
+        "parvw": "LS"
+      },
+      {
+        "parvw": "WE",
+        "lifnr": "1011",
+        "name1": "Чурилина И.А., Татаринова О.Л.",
+        "stras": "ЦМК/2 34, 3452",
+        "strs2": "ЦЕХ МЕТАЛЛИЧЕСКИХ КОНСТРУКЦИЙ",
+        "ort01": "ЦМК Чурилина И.А., Татаринова О.Л.",
+        "land1": "RU",
+        "spras": "R",
+        "regio": "48",
+        "sprasiso": "RU"
+      }
+    ],
+    "e1EDK02": [
+      {
+        "qualf": "1",
+        "belnr": "4500745477",
+        "datum": "20231222",
+        "uzeit": "124744"
+      }
+    ],
+    "e1EDP01": [
+      {
+        "posex": "10",
+        "action": "1",
+        "pstyp": "7",
+        "menge": "50",
+        "menee": "TNE",
+        "bmng2": "50",
+        "pmene": "TNE",
+        "ntgew": "50",
+        "gewei": "TNE",
+        "matkl": "A0080_013",
+        "bpumn": "1",
+        "bpumz": "1",
+        "brgew": "50",
+        "werks": "1011",
+        "lgort": "2342",
+        "zmme1EDP01DOP": {
+          "zzposnr": "0",
+          "zzrefps": "0"
+        },
+        "e1CUREF": {
+          "posex": "10",
+          "configid": "1",
+          "instid": "1"
+        },
+        "e1EDP20": [
+          {
+            "wmeng": "50.0",
+            "ameng": "0",
+            "edatu": "20231201"
+          }
+        ],
+        "e1EDP19": [
+          {
+            "qualf": "1",
+            "idtnr": "OS_HR_0103100",
+            "ktext": "б-4х1500-1550х6000-8000 Ст09Г2С",
+            "idtnrlong": "OS_HR_0103100"
+          },
+          {
+            "qualf": "3",
+            "idtnr": "324169"
+          }
+        ]
+      }
+    ],
+    "e1CUCFG": [
+      {
+        "posex": "10",
+        "configid": "1",
+        "rootid": "1",
+        "e1CUINS": [
+          {
+            "instid": "1",
+            "objtype": "MARA",
+            "classtype": "300",
+            "objkey": "OS_HR_0103100",
+            "objtxt": "б-4х1500-1550х6000-8000 Ст09Г2С",
+            "quantity": "50"
+          }
+        ],
+        "e1CUVAL": [
+          {
+            "instid": "1",
+            "charc": "KDNR",
+            "charctxt": "ВП_Группа сбыта",
+            "valuetxt": "ГЧиГП"
+          },
+          {
+            "instid": "1",
+            "charc": "STNDRT_PROD",
+            "charctxt": "Стандарт на продукцию"
+          },
+          {
+            "instid": "1",
+            "charc": "VID_PRODUCT",
+            "charctxt": "Вид продукции",
+            "author": "3"
+          },
+          {
+            "instid": "1",
+            "charc": "MARKA",
+            "charctxt": "Марка"
+          },
+          {
+            "instid": "1",
+            "charc": "STNDRT_MARKA",
+            "charctxt": "Стандарт на марку"
+          },
+          {
+            "instid": "1",
+            "charc": "STNDRT_SORT",
+            "charctxt": "Стандарт на сортамент"
+          },
+          {
+            "instid": "1",
+            "charc": "VID_POSTAVKI",
+            "charctxt": "Вид поставки",
+            "valuetxt": "Лист",
+            "author": "8"
+          },
+          {
+            "instid": "1",
+            "charc": "TLOT_TEXT",
+            "charctxt": "Толщина диапазон текст",
+            "valuetxt": "Не указывается",
+            "author": "7"
+          },
+          {
+            "instid": "1",
+            "charc": "TLOT_MIN",
+            "charctxt": "Толщина от, мм",
+            "valuetxt": "4,00 мм"
+          },
+          {
+            "instid": "1",
+            "charc": "SHOT_MIN",
+            "charctxt": "Ширина от, мм",
+            "valuetxt": "1.500,0 мм"
+          },
+          {
+            "instid": "1",
+            "charc": "SHOT_MAX",
+            "charctxt": "Ширина до, мм",
+            "valuetxt": "1550,0 мм"
+          },
+          {
+            "instid": "1",
+            "charc": "DLIN_MIN",
+            "charctxt": "Длина от, мм",
+            "valuetxt": "6.000,0 мм"
+          },
+          {
+            "instid": "1",
+            "charc": "DLIN_MAX",
+            "charctxt": "Длина до, мм",
+            "valuetxt": "8.000,0 мм"
+          },
+          {
+            "instid": "1",
+            "charc": "TPRK",
+            "charctxt": "Точность прокатки",
+            "author": "8"
+          },
+          {
+            "instid": "1",
+            "charc": "KROM",
+            "charctxt": "Характер кромки",
+            "valuetxt": "необрезная"
+          },
+          {
+            "instid": "1",
+            "charc": "MAS_BUNT_MAX",
+            "charctxt": "Масса (рлн,бунт,пачка) макс, т",
+            "valuetxt": "10,000 т",
+            "author": "8"
+          },
+          {
+            "instid": "1",
+            "charc": "SHOT_TEXT",
+            "charctxt": "Ширина диапазон текст",
+            "valuetxt": "Не указывается",
+            "author": "7"
+          },
+          {
+            "instid": "1",
+            "charc": "QUAN_SD",
+            "charctxt": "Кол-во на переделе для SD зак.",
+            "valuetxt": "15,000 т"
+          },
+          {
+            "instid": "1",
+            "charc": "SORTAMENT",
+            "charctxt": "Сортаментная группа для квот",
+            "author": "8"
+          },
+          {
+            "instid": "1",
+            "charc": "KOD_PROD",
+            "charctxt": "Вид продукции_KDPR из MES",
+            "valuetxt": "СТАЛЬ ГК ТОЛСТОЛИСТОВАЯ ОТ 4ММ"
+          }
+        ]
+      }
+    ]
+  }
+}

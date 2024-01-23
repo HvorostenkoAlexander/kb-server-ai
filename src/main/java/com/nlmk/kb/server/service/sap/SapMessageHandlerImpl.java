@@ -1,5 +1,7 @@
 package com.nlmk.kb.server.service.sap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.entity.SapMessage;
 import com.nlmk.kb.server.entity.SapMessageState;
@@ -7,10 +9,10 @@ import com.nlmk.kb.server.exception.S3ClientException;
 import com.nlmk.kb.server.repository.SapMessageRepository;
 import com.nlmk.kb.server.service.sender.PsmSender;
 import com.nlmk.s3.proxy.s3notification;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,12 +21,21 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SapMessageHandlerImpl implements SapMessageHandler {
 
     private final SapMessageRepository repository;
     private final S3Service s3Service;
     private final PsmSender psmSender;
+
+    private final String idoczordrsBucketName;
+
+    public SapMessageHandlerImpl(SapMessageRepository repository, S3Service s3Service, PsmSender psmSender,
+                                 @Value("${s3.idoczordrs.bucket-name}") String idoczordrsBucketName) {
+        this.repository = repository;
+        this.s3Service = s3Service;
+        this.psmSender = psmSender;
+        this.idoczordrsBucketName = idoczordrsBucketName;
+    }
 
     private static final String MSG_TEMPLATE = "handleConsumerRecord. {}";
 
@@ -59,7 +70,7 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
 
         if (StringUtils.isBlank(message.getOrder())) {
             try {
-                String xmlOrder = s3Service.getObjectAsString(message.getBucket(), message.getPath());
+                String xmlOrder = s3Service.getObjectAsStringFromBucket(message.getBucket(), message.getPath());
                 message.setOrder(xmlOrder);
                 repository.save(message);
             } catch (S3ClientException e) {
@@ -68,28 +79,29 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
             }
         }
 
-        ZORDERS051 zorder;
-
+        boolean isZorder = message.getBucket().equals(idoczordrsBucketName);
         try {
-            zorder = s3Service.getZorder(message.getOrder());
+            if (isZorder) {
+                ZORDERS051 zorder = s3Service.unmarshalZorder(message.getOrder());
+                psmSender.postZorder(zorder);
+                message.setOrderNum(zorder.getIDOC().getE1EDK01().getBELNR());
+            } else {
+                ZMMORDERS05DOP zmmorder = s3Service.unmarshalZmmorder(message.getOrder());
+                psmSender.postZmmorder(zmmorder);
+                message.setOrderNum(zmmorder.getIDOC().getE1EDK01().getBELNR());
+            }
         } catch (S3ClientException e) {
             log.error(MSG_TEMPLATE, e.getMessage());
             message.setState(SapMessageState.ERROR);
             repository.save(message);
             return true;
-        }
-
-        try {
-            psmSender.postZorder(zorder);
-            message.setOrderNum(zorder.getIDOC().getE1EDK01().getBELNR());
-            message.setState(SapMessageState.DONE);
-            repository.save(message);
-            log.info("handleConsumerRecord. Sent to PSM: [{}]", message.getPath());
-            return true;
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             log.error(MSG_TEMPLATE, e.getMessage());
             return false;
         }
+        message.setState(SapMessageState.DONE);
+        repository.save(message);
+        log.info("handleConsumerRecord. Sent to PSM: [{}]", message.getPath());
+        return true;
     }
-
 }

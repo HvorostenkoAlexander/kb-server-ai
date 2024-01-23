@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.sender;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
@@ -23,7 +24,8 @@ public class PsmSenderImpl implements PsmSender {
 
     private final WebClient webClient;
     private final int webClientTimeout;
-    private final String psmSapOrder;
+    private final String psmSapZorder;
+    private final String psmSapZmmorder;
     private final String psmSadim;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -33,7 +35,8 @@ public class PsmSenderImpl implements PsmSender {
                          @Qualifier("defaultWebClient") WebClient webClient) {
         this.webClient = webClient;
         this.webClientTimeout = timeout;
-        this.psmSapOrder = psmUrl + "/sap/order";
+        this.psmSapZorder = psmUrl + "/sap/zorder";
+        this.psmSapZmmorder = psmUrl + "/sap/zmmorder";
         this.psmSadim = psmUrl + "/sadim";
     }
 
@@ -43,7 +46,7 @@ public class PsmSenderImpl implements PsmSender {
         final byte[] zorderJson = objectMapper.writeValueAsBytes(zorder);
 
         final var response = webClient.post()
-                .uri(psmSapOrder)
+                .uri(psmSapZorder)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .headers(SenderUtils::addRequestId)
@@ -56,7 +59,30 @@ public class PsmSenderImpl implements PsmSender {
                 ))
                 .block();
 
-        log.info("postZorder, PSM response [{}], JSON length [{}] byte", response, zorderJson.length);
+        log.info("postZorder, PSM response [{}], JSON length [{}] byte", response, objectMapper.writeValueAsBytes(zorder).length);
+        return response;
+    }
+
+    @Override
+    public Integer postZmmorder(ZMMORDERS05DOP zmmorder) throws JsonProcessingException {
+        log.info("postZmmorder [{}]", zmmorder);
+        final byte[] zmmorderJson = objectMapper.writeValueAsBytes(zmmorder);
+
+        final var response = webClient.post()
+                .uri(psmSapZmmorder)
+                .accept(MediaType.APPLICATION_JSON)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .headers(SenderUtils::addRequestId)
+                .bodyValue(zmmorderJson)
+                .retrieve()
+                .bodyToMono(Integer.class)
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> Mono.error(
+                        new RemoteServiceSenderException(String.format("PsmSender, postZmmorder, send error, message [%s]", e.getMessage()))
+                ))
+                .block();
+
+        log.info("postZmmorder, PSM response [{}], JSON length [{}] byte", response, objectMapper.writeValueAsBytes(zmmorder).length);
         return response;
     }
 
