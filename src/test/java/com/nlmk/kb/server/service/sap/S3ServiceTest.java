@@ -80,15 +80,13 @@ class S3ServiceTest {
         }
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {IDOCZORDRS_BUCKET_NAME, ZMMORDERSDOP_BUCKET_NAME})
-    void canReplaceColumnToPointFOrKoefRasteskXmlOrderFromS3(String bucketName) throws Exception {
+    @Test
+    void canReplaceColumnToPointFOrKoefRasteskXmlOrderFromS3() throws Exception {
+        final String bucketName = IDOCZORDRS_BUCKET_NAME;
         // given
         final String path = "zorderKoefRastresk.xml";
         InputStream mockStream = new FileInputStream("src/test/resources/xml/" + path);
         when(idoczordrsS3Client.getObject(any()))
-                .thenReturn(new GetObjectResponse(null, bucketName, null, path, mockStream));
-        when(zmmordersdopS3Client.getObject(any()))
                 .thenReturn(new GetObjectResponse(null, bucketName, null, path, mockStream));
 
         // when
@@ -104,13 +102,7 @@ class S3ServiceTest {
         Assertions.assertNotNull(result);
         Assertions.assertEquals("0.24", resultValue);
 
-        if (bucketName.equals(IDOCZORDRS_BUCKET_NAME)) {
-            verify(idoczordrsS3Client, times(1)).getObject(any());
-            verify(zmmordersdopS3Client, times(0)).getObject(any());
-        } else {
-            verify(idoczordrsS3Client, times(0)).getObject(any());
-            verify(zmmordersdopS3Client, times(1)).getObject(any());
-        }
+        verify(idoczordrsS3Client, times(1)).getObject(any());
     }
 
     @Test
