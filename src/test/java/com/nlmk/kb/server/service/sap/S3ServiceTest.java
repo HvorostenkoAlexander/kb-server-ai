@@ -9,6 +9,7 @@ import io.minio.MinioClient;
 
 import java.util.Arrays;
 
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,39 @@ class S3ServiceTest {
         // then
         Assertions.assertNotNull(result);
         Assertions.assertEquals("0040452892", result.getIDOC().getE1EDK01().getBELNR());
+
+        if (bucketName.equals(IDOCZORDRS_BUCKET_NAME)) {
+            verify(idoczordrsS3Client, times(1)).getObject(any());
+            verify(zmmordersdopS3Client, times(0)).getObject(any());
+        } else {
+            verify(idoczordrsS3Client, times(0)).getObject(any());
+            verify(zmmordersdopS3Client, times(1)).getObject(any());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {IDOCZORDRS_BUCKET_NAME, ZMMORDERSDOP_BUCKET_NAME})
+    void canReplaceColumnToPointFOrKoefRasteskXmlOrderFromS3(String bucketName) throws Exception {
+        // given
+        final String path = "zorderKoefRastresk.xml";
+        InputStream mockStream = new FileInputStream("src/test/resources/xml/" + path);
+        when(idoczordrsS3Client.getObject(any()))
+                .thenReturn(new GetObjectResponse(null, bucketName, null, path, mockStream));
+        when(zmmordersdopS3Client.getObject(any()))
+                .thenReturn(new GetObjectResponse(null, bucketName, null, path, mockStream));
+
+        // when
+        String xml = s3Service.getObjectAsStringFromBucket(bucketName, path);
+        ZORDERS051 result = s3Service.unmarshalZorder(xml);
+        var resultValue = result.getIDOC().getE1CUCFG().stream().flatMap(e1CUCFG -> {
+            return e1CUCFG.getE1CUVAL().stream()
+                    .filter(cuval -> cuval.getCHARC().equals(SapName.KOEF_RASTRESK_MAX.getTag()))
+                    .collect(Collectors.toList()).stream();
+        }).findFirst().map(it -> it.getVALUE()).orElse(null);
+
+        // then
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals("0.24", resultValue);
 
         if (bucketName.equals(IDOCZORDRS_BUCKET_NAME)) {
             verify(idoczordrsS3Client, times(1)).getObject(any());
