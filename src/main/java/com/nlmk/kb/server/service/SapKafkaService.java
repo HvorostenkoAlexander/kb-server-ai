@@ -28,8 +28,7 @@ public class SapKafkaService {
     }
 
     @KafkaListener(containerFactory = "sapKafkaListenerContainerFactory",
-            topics = {"${kafka.sap.topic.s3.idoczordrs}",
-                    "${kafka.sap.topic.s3.zmmordersdop}"}
+            topics = {"${kafka.sap.topic.s3.idoczordrs}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
@@ -40,7 +39,11 @@ public class SapKafkaService {
         try {
             if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
                 ack.acknowledge();
+                log.debug("receiveMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
             } else {
+                log.debug("receiveMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.nack(sleepTime);
             }
         } catch (DateTimeParseException e) {
