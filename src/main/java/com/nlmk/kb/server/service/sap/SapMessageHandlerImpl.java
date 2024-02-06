@@ -41,7 +41,9 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
 
     @Override
     public boolean handleConsumerRecord(final ConsumerRecord<String, s3notification> consumerRecord) {
-        log.debug("handleConsumerRecord. record: [{}]", consumerRecord);
+        log.info("handleConsumerRecord (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
+                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+        log.debug("handleConsumerRecord (SAP): record: [{}]", consumerRecord);
 
         s3notification notification = consumerRecord.value();
 
@@ -50,26 +52,32 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
 
         if (storedMessage.isPresent()
                 && List.of(SapMessageState.DONE, SapMessageState.ERROR).contains(storedMessage.get().getState())) {
-            log.warn("handleConsumerRecord. Сообщение SAP topic: [{}], partition: [{}], offset: [{}] уже было обработано со статусом [{}].", consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), storedMessage.get().getState());
+            log.warn("handleConsumerRecord (SAP): Сообщение SAP topic: [{}], partition: [{}], offset: [{}] уже было обработано со статусом [{}].",
+                    consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), storedMessage.get().getState());
             return true;
         }
 
-        SapMessage message = storedMessage.orElseGet(
-                () -> repository.save(SapMessage.builder()
-                        .topic(consumerRecord.topic())
-                        .partition(consumerRecord.partition())
-                        .offset(consumerRecord.offset())
-                        .key(consumerRecord.key())
-                        .bucket(notification.getBucket().toString())
-                        .path(notification.getPath().toString())
-                        .processorVersion(notification.getProcessorVersion().toString())
-                        .server(notification.getServer().toString())
-                        .ts(new Date(Long.parseLong(notification.getTs().toString())))
-                        .state(SapMessageState.NEW)
-                        .build()));
+        SapMessage message = storedMessage.orElseGet(() -> {
+            log.debug("handleConsumerRecord (SAP): Сообщение SAP topic: [{}], partition: [{}], offset: [{}] ещё не было обработано. Сохраняем в БД.",
+                    consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset());
+            return repository.save(SapMessage.builder()
+                    .topic(consumerRecord.topic())
+                    .partition(consumerRecord.partition())
+                    .offset(consumerRecord.offset())
+                    .key(consumerRecord.key())
+                    .bucket(notification.getBucket().toString())
+                    .path(notification.getPath().toString())
+                    .processorVersion(notification.getProcessorVersion().toString())
+                    .server(notification.getServer().toString())
+                    .ts(new Date(Long.parseLong(notification.getTs().toString())))
+                    .state(SapMessageState.NEW)
+                    .build());
+        });
 
         if (StringUtils.isBlank(message.getOrder())) {
             try {
+                log.info("handleConsumerRecord (SAP): Сообщение SAP topic: [{}], partition: [{}], offset: [{}] не содержит заказ. Пробуем получить из S3: bucket: [{}], path: [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), message.getBucket(), message.getPath());
                 String xmlOrder = s3Service.getObjectAsStringFromBucket(message.getBucket(), message.getPath());
                 message.setOrder(xmlOrder);
                 repository.save(message);
@@ -82,10 +90,14 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
         boolean isZorder = message.getBucket().equals(idoczordrsBucketName);
         try {
             if (isZorder) {
+                log.info("handleConsumerRecord (SAP): Заказ из сообщения SAP topic: [{}], partition: [{}], offset: [{}] является ZORDERS051.",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset());
                 ZORDERS051 zorder = s3Service.unmarshalZorder(message.getOrder());
                 psmSender.postZorder(zorder);
                 message.setOrderNum(zorder.getIDOC().getE1EDK01().getBELNR());
             } else {
+                log.info("handleConsumerRecord (SAP): Заказ из сообщения SAP topic: [{}], partition: [{}], offset: [{}] является ZMMORDERS05DOP.",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset());
                 ZMMORDERS05DOP zmmorder = s3Service.unmarshalZmmorder(message.getOrder());
                 psmSender.postZmmorder(zmmorder);
                 message.setOrderNum(zmmorder.getIDOC().getE1EDK01().getBELNR());
