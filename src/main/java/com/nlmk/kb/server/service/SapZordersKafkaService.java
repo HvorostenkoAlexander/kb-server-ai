@@ -15,23 +15,22 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class SapKafkaService {
+public class SapZordersKafkaService {
 
     private final long sleepTime;
     private final SapMessageHandler sapMessageHandler;
 
-    public SapKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
-                           SapMessageHandler sapMessageHandler) {
+    public SapZordersKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                                  SapMessageHandler sapMessageHandler) {
         this.sleepTime = sleepTime;
         this.sapMessageHandler = sapMessageHandler;
-
     }
 
     @KafkaListener(containerFactory = "sapKafkaListenerContainerFactory",
             topics = {"${kafka.sap.topic.s3.idoczordrs}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveZordersMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
+    public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
                                          Acknowledgment ack) {
         log.info("receiveZordersMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
                 consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
@@ -52,36 +51,6 @@ public class SapKafkaService {
             throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
             log.warn("receiveZordersMessageReq, Exception", e);
-            ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException("переброс: " + e);
-        }
-    }
-
-    @KafkaListener(containerFactory = "sapZmmordersKafkaListenerContainerFactory",
-            topics = {"${kafka.sap.topic.s3.zmmordersdop}"}
-    )
-    @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveZmmordersMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
-                                           Acknowledgment ack) {
-        log.info("receiveZmmordersMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
-                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
-
-        try {
-            if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
-                ack.acknowledge();
-                log.debug("receiveZmmordersMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
-                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
-            } else {
-                log.debug("receiveZmmordersMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
-                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
-                ack.nack(sleepTime);
-            }
-        } catch (DateTimeParseException e) {
-            log.warn("receiveZmmordersMessageReq, DateTimeParseException", e);
-            ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + e);
-        } catch (Exception e) {
-            log.warn("receiveZmmordersMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new KafkaMessageProcessingException("переброс: " + e);
         }
