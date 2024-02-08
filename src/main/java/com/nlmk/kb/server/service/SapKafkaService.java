@@ -32,27 +32,57 @@ public class SapKafkaService {
                     "${kafka.sap.topic.s3.zmmordersdop}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
-    public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
-                                  Acknowledgment ack) {
-        log.info("receiveMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
+    public void receiveZordersMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
+                                         Acknowledgment ack) {
+        log.info("receiveZordersMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
                 consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
 
         try {
             if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
                 ack.acknowledge();
-                log.debug("receiveMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
+                log.debug("receiveZordersMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
             } else {
-                log.debug("receiveMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
+                log.debug("receiveZordersMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.nack(sleepTime);
             }
         } catch (DateTimeParseException e) {
-            log.warn("receiveMessageReq, DateTimeParseException", e);
+            log.warn("receiveZordersMessageReq, DateTimeParseException", e);
             ack.acknowledge();
             throw new DateTimeParseException("переброс: " + e);
         } catch (Exception e) {
-            log.warn("receiveMessageReq, Exception", e);
+            log.warn("receiveZordersMessageReq, Exception", e);
+            ack.nack(sleepTime);
+            throw new KafkaMessageProcessingException("переброс: " + e);
+        }
+    }
+
+    @KafkaListener(containerFactory = "sapZmmordersKafkaListenerContainerFactory",
+            topics = {"${kafka.sap.topic.s3.zmmordersdop}"}
+    )
+    @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
+    public void receiveZmmordersMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
+                                           Acknowledgment ack) {
+        log.info("receiveZmmordersMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
+                consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+
+        try {
+            if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
+                ack.acknowledge();
+                log.debug("receiveZmmordersMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+            } else {
+                log.debug("receiveZmmordersMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+                ack.nack(sleepTime);
+            }
+        } catch (DateTimeParseException e) {
+            log.warn("receiveZmmordersMessageReq, DateTimeParseException", e);
+            ack.acknowledge();
+            throw new DateTimeParseException("переброс: " + e);
+        } catch (Exception e) {
+            log.warn("receiveZmmordersMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new KafkaMessageProcessingException("переброс: " + e);
         }
