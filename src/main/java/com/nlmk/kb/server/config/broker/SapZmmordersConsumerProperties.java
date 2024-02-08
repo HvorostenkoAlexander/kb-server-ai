@@ -11,8 +11,8 @@ public class SapZmmordersConsumerProperties extends ConsumerProperties {
                                           @Value("${kafka.sap.group-id}") String kafkaGroupId,
                                           @Value("${kafka.sap.schema.registry.url}") String schemaRegistryUrl,
                                           @Value("${kafka.sap.ssl-enabled}") boolean sslEnabled,
-                                          @Value("${kafka.sslTruststorePassword}") String truststorePassword,
-                                          @Value("${kafka.sslKeystorePassword}") String keystorePassword,
+                                          @Value("${kafka.zmmorders.sslTruststorePassword}") String truststorePassword,
+                                          @Value("${kafka.zmmorders.sslKeystorePassword}") String keystorePassword,
                                           @Value("${kafka.zmmorders-client.truststore-path}") String truststorePath,
                                           @Value("${kafka.zmmorders-client.keystore-path}") String keystorePath) {
         super(kafkaServer,
