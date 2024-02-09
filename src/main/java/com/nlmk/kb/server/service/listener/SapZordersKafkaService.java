@@ -35,26 +35,26 @@ public class SapZordersKafkaService {
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
-                                         Acknowledgment ack) {
-        log.info("receiveZordersMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
+                                  Acknowledgment ack) {
+        log.info("receiveMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
                 consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
 
         try {
             if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
-                ack.acknowledge();
-                log.debug("receiveZordersMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
+                log.debug("receiveMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+                ack.acknowledge();
             } else {
-                log.debug("receiveZordersMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
+                log.debug("receiveMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.nack(sleepTime);
             }
         } catch (DateTimeParseException e) {
-            log.warn("receiveZordersMessageReq, DateTimeParseException", e);
+            log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
             throw new DateTimeParseException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
-            log.warn("receiveZordersMessageReq, Exception", e);
+            log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new KafkaMessageProcessingException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         }

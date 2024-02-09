@@ -25,7 +25,7 @@ public class SapZmmordersKafkaService {
     private final SapMessageHandler sapMessageHandler;
 
     public SapZmmordersKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
-                           SapMessageHandler sapMessageHandler) {
+                                    SapMessageHandler sapMessageHandler) {
         this.sleepTime = sleepTime;
         this.sapMessageHandler = sapMessageHandler;
     }
@@ -36,25 +36,25 @@ public class SapZmmordersKafkaService {
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
                                   Acknowledgment ack) {
-        log.info("receiveZmmordersMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
+        log.info("receiveMessageReq (SAP): topic [{}], partition [{}], offset [{}], key [{}]",
                 consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
 
         try {
             if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
-                ack.acknowledge();
-                log.debug("receiveZmmordersMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
+                log.debug("receiveMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+                ack.acknowledge();
             } else {
-                log.debug("receiveZmmordersMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
+                log.debug("receiveMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.nack(sleepTime);
             }
         } catch (DateTimeParseException e) {
-            log.warn("receiveZmmordersMessageReq, DateTimeParseException", e);
+            log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
             throw new DateTimeParseException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
-            log.warn("receiveZmmordersMessageReq, Exception", e);
+            log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
             throw new KafkaMessageProcessingException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         }
