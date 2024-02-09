@@ -28,7 +28,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import static com.nlmk.kb.server.config.KbConstants.THROW_EXC_MESSAGE_TEMPLATE;
+import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE;
+import static com.nlmk.kb.server.config.KbConstants.MISSING_ATT_RESULT_MESSAGE_TEMPLATE;
 
 @Slf4j
 @Service
@@ -64,7 +65,8 @@ public class CcmPgpKafkaService {
                                   @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("receiveMessageReq (CCM PGP): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
+        log.info("receiveMessageReq (CCM PGP): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]",
+                topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
@@ -76,10 +78,12 @@ public class CcmPgpKafkaService {
             } else {
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);
-                if (attResult.isEmpty()
-                        || Objects.isNull(attResult.get().getResult())) {
-                    throw new AttestationResultException(String.format("Нет результата аттестации для primeId [%s]", requestMessage.getPrimeId()));
+                if (attResult.isEmpty() || Objects.isNull(attResult.get().getResult())) {
+                    log.warn("receiveMessageReq (CCM PGP), нет результата аттестации для primeId {}, partition {}, offset {}, key {}",
+                            requestMessage.getPrimeId(), partition, offset, key);
+                    throw new AttestationResultException(String.format(MISSING_ATT_RESULT_MESSAGE_TEMPLATE, requestMessage.getPrimeId()));
                 }
+
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
@@ -92,27 +96,27 @@ public class CcmPgpKafkaService {
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new DateTimeParseException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultException e) {
             log.warn("receiveMessageReq, AttestationResultException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new AttestationResultException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (KafkaRestConfigException e) {
             log.warn("receiveMessageReq, KafkaRestConfigException", e);
             ack.acknowledge();
-            throw new KafkaRestConfigException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new KafkaRestConfigException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultSenderException e) {
             log.warn("receiveMessageReq, AttestationResultSenderException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultSenderException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new AttestationResultSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (RemoteServiceSenderException e) {
             log.warn("receiveMessageReq, RemoteServiceSenderException", e);
             ack.nack(sleepTime);
-            throw new RemoteServiceSenderException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new RemoteServiceSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 
