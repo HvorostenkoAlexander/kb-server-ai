@@ -165,6 +165,7 @@ class ResultAdapterTest {
                 .setData(RecordData.newBuilder()
                         .setPrimeId("1234567890").setKceh(12L).setMismatch(Status.MATCHED.getValue())
                         .setOrderNum(1024L).setOrderPos(4)
+                        .setProductId(123L)
                         .setCommons(List.of(
                                 RecordCommons.newBuilder()
                                         .setSpecCode(SpecCode.EDGE_CHARACTER.getValue())
