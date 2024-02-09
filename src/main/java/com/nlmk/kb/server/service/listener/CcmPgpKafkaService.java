@@ -12,6 +12,7 @@ import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import static com.nlmk.kb.server.config.KbConstants.THROW_EXC_MESSAGE_TEMPLATE;
+
 @Slf4j
 @Service
 public class CcmPgpKafkaService {
 
-    private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
@@ -90,27 +92,27 @@ public class CcmPgpKafkaService {
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException(String.format(EXC_MESS, e));
+            throw new DateTimeParseException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultException e) {
             log.warn("receiveMessageReq, AttestationResultException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultException(String.format(EXC_MESS, e));
+            throw new AttestationResultException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (KafkaRestConfigException e) {
             log.warn("receiveMessageReq, KafkaRestConfigException", e);
             ack.acknowledge();
-            throw new KafkaRestConfigException(String.format(EXC_MESS, e));
+            throw new KafkaRestConfigException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultSenderException e) {
             log.warn("receiveMessageReq, AttestationResultSenderException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultSenderException(String.format(EXC_MESS, e));
+            throw new AttestationResultSenderException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (RemoteServiceSenderException e) {
             log.warn("receiveMessageReq, RemoteServiceSenderException", e);
             ack.nack(sleepTime);
-            throw new RemoteServiceSenderException(String.format(EXC_MESS, e));
+            throw new RemoteServiceSenderException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 

@@ -13,6 +13,10 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
+
+import static com.nlmk.kb.server.config.KbConstants.THROW_EXC_MESSAGE_TEMPLATE;
+
 @Slf4j
 @Service
 public class SapZordersKafkaService {
@@ -48,11 +52,11 @@ public class SapZordersKafkaService {
         } catch (DateTimeParseException e) {
             log.warn("receiveZordersMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + e);
+            throw new DateTimeParseException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveZordersMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException("переброс: " + e);
+            throw new KafkaMessageProcessingException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 
