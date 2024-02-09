@@ -25,6 +25,7 @@ class ResultAdapterTest {
 
     @Test
     void simpleVerificationProduct() throws IOException {
+        // given
         ProductDto product = new ObjectMapper()
                 //.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                 .readValue(
@@ -53,8 +54,10 @@ class ResultAdapterTest {
                 .filter(attestation -> attestation.getGroup().equals(Group.MET))
                 .collect(Collectors.toList());
 
+        // when
         VerificationResults results = pgpAdapter.adapt(product, true);
 
+        // then
         final var resultMech = results.getData().getMechanical().stream()
                 .map(l -> l.getSpecifications().size()).mapToInt(i -> i).sum();
         final var resultMet = results.getData().getMetallographic().stream()
@@ -69,25 +72,37 @@ class ResultAdapterTest {
 
     @Test
     void verifyPgpResult() {
+        // given
+        // when
         final var result = pgpAdapter.adapt(certifiedProduct(), false);
+        // then
         Assertions.assertEquals(expectedVerificationResultsPgp(), result);
     }
 
     @Test
     void verifyPtsResult() {
+        // given
+        // when
         final var result = ptsAdapter.adapt(certifiedProduct(), false);
+        // then
         Assertions.assertEquals(expectedVerificationResultsPts(), result);
     }
 
     @Test
     void verifyKc1Result() {
+        // given
+        // when
         final var result = kc1Adapter.adapt(certifiedProduct(), false);
+        // then
         Assertions.assertEquals(expectedVerificationResultsKc1(), result);
     }
 
     @Test
     void verifyKc2Result() {
+        // given
+        // when
         final var result = kc2Adapter.adapt(certifiedProduct(), false);
+        // then
         Assertions.assertEquals(expectedVerificationResultsKc2(), result);
     }
 
