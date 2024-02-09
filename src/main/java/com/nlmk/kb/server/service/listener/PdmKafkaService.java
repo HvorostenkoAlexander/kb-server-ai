@@ -28,8 +28,7 @@ public class PdmKafkaService {
         this.pdmMessageHandler = pdmMessageHandler;
     }
 
-    @KafkaListener(
-            containerFactory = "pdmKafkaListenerContainerFactory",
+    @KafkaListener(containerFactory = "pdmKafkaListenerContainerFactory",
             topics = {
                     "${kafka.pdm.topic.microstructure}",
                     "${kafka.pdm.topic.asap-chemical-properties}",

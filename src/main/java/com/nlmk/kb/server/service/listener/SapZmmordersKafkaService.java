@@ -20,6 +20,7 @@ import static com.nlmk.kb.server.config.KbConstants.THROW_EXC_MESSAGE_TEMPLATE;
 @Slf4j
 @Service
 public class SapZmmordersKafkaService {
+
     private final long sleepTime;
     private final SapMessageHandler sapMessageHandler;
 

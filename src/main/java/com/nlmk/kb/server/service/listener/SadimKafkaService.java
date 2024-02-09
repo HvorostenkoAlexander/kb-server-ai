@@ -36,7 +36,8 @@ public class SadimKafkaService {
     }
 
     @KafkaListener(containerFactory = "sadimKafkaListenerContainerFactory",
-            topics = {"${kafka.sadim.topic}"})
+            topics = {"${kafka.sadim.topic}"}
+    )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
                                   Acknowledgment ack) {

@@ -31,9 +31,7 @@ public class CcmKc1KafkaService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-
     private final CcmMessageAdapter<DbAttestRequestVer0> ccmMessageAdapter;
-
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
 
