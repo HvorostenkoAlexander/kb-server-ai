@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.exception.*;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
@@ -7,11 +7,10 @@ import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.l3.apcs.VerificationResultsKc2;
 import nlmk.EnumOp;
-import nlmk.l3.apcs.VerificationResultsPts;
-import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -20,24 +19,27 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static com.nlmk.kb.server.config.KbConstants.THROW_EXC_MESSAGE_TEMPLATE;
+
 @Slf4j
 @Service
-@ConditionalOnProperty(value = "kafka.ccm.pts.enable", matchIfMissing = true)
-public class CcmPtsKafkaService {
+public class CcmKc2KafkaService {
 
-    private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-    private final CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter;
+
+    private final CcmMessageAdapter<DbAttestRequestVer0> ccmMessageAdapter;
+
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
 
-    public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+    public CcmKc2KafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter,
+                              CcmMessageAdapter<DbAttestRequestVer0> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
                               CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
@@ -47,17 +49,19 @@ public class CcmPtsKafkaService {
         this.ccmMessageService = ccmMessageService;
     }
 
-    @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory", topics = {"${kafka.ccm.pts.topicReq}"})
+    @KafkaListener(containerFactory = "ccmKc2KafkaListenerContainerFactory",
+            topics = {"${kafka.ccm.kc2.topicReq}"}
+    )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                   @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload DbAttestationRequestVer1 request,
+                                  @Payload DbAttestRequestVer0 request,
                                   Acknowledgment ack) {
 
-        log.info("receiveMessageReq (CCM PTS): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
+        log.info("receiveMessageReq (CCM KC2): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]", topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
@@ -65,7 +69,7 @@ public class CcmPtsKafkaService {
             if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
                     || requestMessage.getRequest().getValue().getData() == null) {
-                log.warn("receiveMessageReq (CCM PTS), аттестация не выполняется - некорректные Op или Data, partition {}, offset {}, key {}", partition, offset, key);
+                log.warn("receiveMessageReq (CCM KC2), аттестация не выполняется - некорректные Op или Data, partition {}, offset {}, key {}", partition, offset, key);
             } else {
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);
@@ -79,33 +83,33 @@ public class CcmPtsKafkaService {
                     ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString(), LocalDateTime.now());
                 }
                 // отправка ответа с результатами аттестации
-                attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
+                attestationResultSender.send(attResult.get(), VerificationResultsKc2.class);
             }
             ack.acknowledge();
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException(String.format(EXC_MESS, e));
+            throw new DateTimeParseException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultException e) {
             log.warn("receiveMessageReq, AttestationResultException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultException(String.format(EXC_MESS, e));
+            throw new AttestationResultException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (KafkaRestConfigException e) {
             log.warn("receiveMessageReq, KafkaRestConfigException", e);
             ack.acknowledge();
-            throw new KafkaRestConfigException(String.format(EXC_MESS, e));
+            throw new KafkaRestConfigException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultSenderException e) {
             log.warn("receiveMessageReq, AttestationResultSenderException", e);
             ack.nack(sleepTime);
-            throw new AttestationResultSenderException(String.format(EXC_MESS, e));
+            throw new AttestationResultSenderException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (RemoteServiceSenderException e) {
             log.warn("receiveMessageReq, RemoteServiceSenderException", e);
             ack.nack(sleepTime);
-            throw new RemoteServiceSenderException(String.format(EXC_MESS, e));
+            throw new RemoteServiceSenderException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(THROW_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 
