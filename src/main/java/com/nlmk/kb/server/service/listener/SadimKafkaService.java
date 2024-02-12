@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
@@ -15,11 +15,14 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
+
+import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE;
+
 @Slf4j
 @Service
 public class SadimKafkaService {
 
-    private static final String EXC_MESS = "переброс: %s";
     private final long sleepTime;
     private final SadimMessageService messageService;
     private final CcmCommonService ccmCommonService;
@@ -33,7 +36,8 @@ public class SadimKafkaService {
     }
 
     @KafkaListener(containerFactory = "sadimKafkaListenerContainerFactory",
-            topics = {"${kafka.sadim.topic}"})
+            topics = {"${kafka.sadim.topic}"}
+    )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<Object, Object> consumerRecord,
                                   Acknowledgment ack) {
@@ -48,19 +52,19 @@ public class SadimKafkaService {
         } catch (SadimJsonProcessingException e) {
             log.warn("receiveMessageReq, SadimJsonProcessingException", e);
             ack.acknowledge();
-            throw new SadimJsonProcessingException(String.format(EXC_MESS, e));
+            throw new SadimJsonProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException(String.format(EXC_MESS, e));
+            throw new DateTimeParseException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (RemoteServiceSenderException e) {
             log.warn("receiveMessageReq, RemoteServiceSenderException", e);
             ack.nack(sleepTime);
-            throw new RemoteServiceSenderException(String.format(EXC_MESS, e));
+            throw new RemoteServiceSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException(String.format(EXC_MESS, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
 
         // нужна очередь ошибочных сообщений (dead letter queue, DLQ) и отдельный обработчик, чтобы не тормозить основную очередь.

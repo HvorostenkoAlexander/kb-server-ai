@@ -15,7 +15,9 @@ public class KbConstants {
     public static final String REQUEST_PREFIX = "kb-rest-";
     public static final String KAFKA_PREFIX = "kb-topic-";
 
-    public static final String THROW_EXC_MESSAGE_TEMPLATE = "переброс: {0}";
+    public static final String LISTENER_EXC_MESSAGE_TEMPLATE = "переброс: {0}";
+
+    public static final String MISSING_ATT_RESULT_MESSAGE_TEMPLATE = "Нет результата аттестации для primeId [%s]";
 
     public static final String KAFKA_REST_PROXY_TEMPLATE = "%s/topics/%s";
     public static final String KAFKA_REST_CONTENT_TYPE_HEADER = "application/vnd.kafka.avro.v2+json";

@@ -1,5 +1,7 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.kb.server.service.listener.CcmPgpKafkaService;
+import com.nlmk.kb.server.service.listener.CcmPtsKafkaService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

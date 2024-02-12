@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
@@ -13,22 +13,25 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
+
+import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE;
+
 @Slf4j
 @Service
-public class SapKafkaService {
+public class SapZmmordersKafkaService {
 
     private final long sleepTime;
     private final SapMessageHandler sapMessageHandler;
 
-    public SapKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
-                           SapMessageHandler sapMessageHandler) {
+    public SapZmmordersKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                                    SapMessageHandler sapMessageHandler) {
         this.sleepTime = sleepTime;
         this.sapMessageHandler = sapMessageHandler;
-
     }
 
-    @KafkaListener(containerFactory = "sapKafkaListenerContainerFactory",
-            topics = {"${kafka.sap.topic.s3.idoczordrs}"}
+    @KafkaListener(containerFactory = "sapZmmordersKafkaListenerContainerFactory",
+            topics = {"${kafka.sap.topic.s3.zmmordersdop}"}
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
@@ -38,9 +41,9 @@ public class SapKafkaService {
 
         try {
             if (sapMessageHandler.handleConsumerRecord(consumerRecord)) {
-                ack.acknowledge();
                 log.debug("receiveMessageReq (SAP): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+                ack.acknowledge();
             } else {
                 log.debug("receiveMessageReq (SAP): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
@@ -49,12 +52,11 @@ public class SapKafkaService {
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException("переброс: " + e);
+            throw new DateTimeParseException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException("переброс: " + e);
+            throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
-
 }
