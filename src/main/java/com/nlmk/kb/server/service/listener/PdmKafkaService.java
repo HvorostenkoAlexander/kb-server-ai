@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service;
+package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.DateTimeParseException;
@@ -28,8 +28,7 @@ public class PdmKafkaService {
         this.pdmMessageHandler = pdmMessageHandler;
     }
 
-    @KafkaListener(
-            containerFactory = "pdmKafkaListenerContainerFactory",
+    @KafkaListener(containerFactory = "pdmKafkaListenerContainerFactory",
             topics = {
                     "${kafka.pdm.topic.microstructure}",
                     "${kafka.pdm.topic.asap-chemical-properties}",
@@ -69,18 +68,22 @@ public class PdmKafkaService {
 
         try {
             if (pdmMessageHandler.handleConsumerRecord(consumerRecord)) {
+                log.debug("receiveMessageReq (PDM): Sending ack for topic [{}], partition [{}], offset [{}], key [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.acknowledge();
             } else {
+                log.debug("receiveMessageReq (PDM): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
+                        consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.nack(sleepTime);
             }
         } catch (DateTimeParseException e) {
             log.warn("receiveMessageReq, DateTimeParseException", e);
             ack.acknowledge();
-            throw new DateTimeParseException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new DateTimeParseException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
-            throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.THROW_EXC_MESSAGE_TEMPLATE, e));
+            throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
 

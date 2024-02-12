@@ -104,6 +104,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                         .setCutTaskNum(request.getCutTaskNum())
                         .setCutTaskDate(request.getCutTaskDate())
                         .setCutTaskStrNum(request.getCutTaskStrNum())
+                        .setProductId(product.getId())
                         .build()
                 ).build();
     }
