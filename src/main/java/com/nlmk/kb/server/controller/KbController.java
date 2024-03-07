@@ -6,7 +6,6 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.swagger.ErrorResponseDto;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
 import com.nlmk.kb.server.api.PdmMessageDto;
-import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.CcmMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,11 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
-import java.util.Date;
-import java.util.List;
-import javax.validation.Valid;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,6 +29,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 @Validated
 @Tag(name = "Принятие запросов на аттестацию", description = "Контроллер для принятия запросов на Аттестацию Единицы Продукции")

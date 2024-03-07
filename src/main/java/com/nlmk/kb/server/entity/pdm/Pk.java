@@ -15,6 +15,7 @@ public class Pk implements Serializable {
 
     private static final long serialVersionUID = -8548587551703534367L;
 
+    @SuppressWarnings("checkstyle:membername")
     private String Id;
     private String systemCode;
     private String directoryId;

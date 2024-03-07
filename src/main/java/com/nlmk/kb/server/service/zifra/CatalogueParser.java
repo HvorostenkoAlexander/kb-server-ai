@@ -14,7 +14,7 @@ import java.util.Objects;
 public interface CatalogueParser<T> {
 
     String DATE_FORMAT = "yyyy-MM-dd";
-    SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+    SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
     String DATE_PARSER_EXCEPTION_MESSAGE = "Значение даты \"{0}\" не соответствует шаблону \"{1}\"";
     String INT_PARSER_EXCEPTION_MESSAGE = "Ошибка преобразования строки \"{0}\" в целое число";
 
@@ -42,7 +42,7 @@ public interface CatalogueParser<T> {
         }
 
         try {
-            return dateFormatter.parse(value);
+            return DATE_FORMATTER.parse(value);
         } catch (ParseException e) {
             throw new ZifraMessageParserException(MessageFormat.format(DATE_PARSER_EXCEPTION_MESSAGE, value, DATE_FORMAT));
         }
@@ -62,7 +62,7 @@ public interface CatalogueParser<T> {
         }
 
         try {
-            return dateFormatter.parse(value);
+            return DATE_FORMATTER.parse(value);
         } catch (ParseException e) {
             throw new ZifraMessageParserException(MessageFormat.format(DATE_PARSER_EXCEPTION_MESSAGE, value, DATE_FORMAT));
         }

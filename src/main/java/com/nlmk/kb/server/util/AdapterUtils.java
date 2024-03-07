@@ -9,18 +9,21 @@ import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Вспомогательные методы для Адаптации типов
  */
-public class AdapterUtils {
+public final class AdapterUtils {
 
     private AdapterUtils() {
         throw new IllegalStateException("AdapterUtils is util class");
     }
 
-    private static final ObjectMapper objectMapper = new ObjectMapper()
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static BigDecimal toBigDecimal(Float f) {
@@ -116,7 +119,7 @@ public class AdapterUtils {
      */
     public static Optional<DataField> getDataField(Object data) {
         try {
-            return Optional.ofNullable(objectMapper.convertValue(data, DataField.class));
+            return Optional.ofNullable(OBJECT_MAPPER.convertValue(data, DataField.class));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

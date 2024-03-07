@@ -1,18 +1,41 @@
 package com.nlmk.kb.server.service.result.sending.adapter;
 
-import com.nlmk.attestation.product.api.*;
+import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.Group;
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
 import com.nlmk.kb.server.util.AdapterUtils;
-import nlmk.l3.apcs.*;
+import nlmk.l3.apcs.EnumOp;
+import nlmk.l3.apcs.NormChemData;
+import nlmk.l3.apcs.NormMechData;
+import nlmk.l3.apcs.NormMetallData;
+import nlmk.l3.apcs.NormSpecData;
+import nlmk.l3.apcs.RecordChemical;
+import nlmk.l3.apcs.RecordCommons;
+import nlmk.l3.apcs.RecordData;
+import nlmk.l3.apcs.RecordMechanical;
+import nlmk.l3.apcs.RecordMechanicalParameter;
+import nlmk.l3.apcs.RecordMechanicalSpecifications;
+import nlmk.l3.apcs.RecordMettallographic;
+import nlmk.l3.apcs.RecordMettallographicParameter;
+import nlmk.l3.apcs.RecordMettallographicSpecifications;
+import nlmk.l3.apcs.RecordPk;
+import nlmk.l3.apcs.VerificationResults;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,8 +156,8 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormSpecData.newBuilder()
                         .setListAccValues(Objects.isNull(attestation.getEqual())
-                                ? null
-                                : List.of(attestation.getEqual()))
+                                          ? null
+                                          : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
@@ -165,8 +188,8 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormChemData.newBuilder()
                         .setListAccValues(Objects.isNull(attestation.getEqual())
-                                ? null
-                                : List.of(attestation.getEqual()))
+                                          ? null
+                                          : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
@@ -257,8 +280,8 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormMetallData.newBuilder()
                         .setListAccValues(Objects.isNull(attestation.getEqual())
-                                ? null
-                                : List.of(attestation.getEqual()))
+                                          ? null
+                                          : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())
@@ -279,8 +302,8 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setMismatch(attestation.getStatus().getValue())
                 .setNorms(NormMechData.newBuilder()
                         .setListAccValues(Objects.isNull(attestation.getEqual())
-                                ? null
-                                : List.of(attestation.getEqual()))
+                                          ? null
+                                          : List.of(attestation.getEqual()))
                         .setValueMax(attestation.getMax())
                         .setValueMin(attestation.getMin())
                         .build())

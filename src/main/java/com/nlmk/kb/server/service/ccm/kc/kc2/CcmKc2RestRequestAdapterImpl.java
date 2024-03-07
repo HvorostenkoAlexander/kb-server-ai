@@ -1,18 +1,19 @@
 package com.nlmk.kb.server.service.ccm.kc.kc2;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataKc;
 import com.nlmk.attestation.product.api.pam.Pk;
-import com.nlmk.kb.server.api.ccm.kc.request.*;
+import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
-
 import com.nlmk.kb.server.service.ccm.kc.CcmKcRestRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CcmKc2RestRequestAdapterImpl  extends CcmKcRestRequestAdapter implements RestRequestAdapter<CcmKc2Request> {
+public class CcmKc2RestRequestAdapterImpl extends CcmKcRestRequestAdapter implements RestRequestAdapter<CcmKc2Request> {
 
     private final CommonConverter converter;
 

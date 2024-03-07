@@ -1,6 +1,6 @@
 package com.nlmk.kb.server.config;
 
-public class KbConstants {
+public final class KbConstants {
 
     private KbConstants() {
         throw new IllegalStateException("Constants class");

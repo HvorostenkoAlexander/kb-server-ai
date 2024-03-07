@@ -45,6 +45,7 @@ public class CcmPtsResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @SuppressWarnings("checkstyle:illegalidentifiername")
     public static class Record {
         @NotBlank
         private String primeSystemCode; // Система - первоисточник запроса на аттестацию
@@ -113,7 +114,7 @@ public class CcmPtsResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class NormLimit {
-        List<AccValue> listAccValues; // Перечень допустимых значений
+        private List<AccValue> listAccValues; // Перечень допустимых значений
         private Double valueMin; // Минимальное допустимое значение
         private Double valueMax; // Максимальное допустимое значение
     }

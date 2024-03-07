@@ -15,13 +15,13 @@ public interface PdmMessageRepository extends JpaRepository<PdmMessage, Long> {
     List<PdmMessage> findByTopicAndOffsetAndPartition(String topic, long offset, int partition);
 
     @Query(nativeQuery = true,
-            value = "SELECT * FROM pdm_message" +
-                    " WHERE ?1 = topic" +
-                    "   AND (is_posted IS NULL OR ?2 IS NULL " +
-                    " OR CAST(CAST(?2 AS text) AS BOOLEAN) = is_posted )" +
-                    " AND (ts_timestamp IS NULL OR ?3 IS NULL OR ?4 IS NULL " +
-                    " OR ((date(ts_timestamp)) >= date(CAST(?3 AS timestamp with time zone))" +
-                    " AND (date(ts_timestamp)) <= date(CAST(?4 AS timestamp with time zone))))"
+            value = "SELECT * FROM pdm_message"
+                    + " WHERE ?1 = topic"
+                    + "   AND (is_posted IS NULL OR ?2 IS NULL "
+                    + " OR CAST(CAST(?2 AS text) AS BOOLEAN) = is_posted )"
+                    + " AND (ts_timestamp IS NULL OR ?3 IS NULL OR ?4 IS NULL "
+                    + " OR ((date(ts_timestamp)) >= date(CAST(?3 AS timestamp with time zone))"
+                    + " AND (date(ts_timestamp)) <= date(CAST(?4 AS timestamp with time zone))))"
     )
     Page<PdmMessage> getMessages(String topic,
                                  Boolean isPosted,

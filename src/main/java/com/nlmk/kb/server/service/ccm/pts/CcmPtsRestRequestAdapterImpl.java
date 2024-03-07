@@ -1,12 +1,16 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataPts;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor

@@ -1,6 +1,33 @@
 package com.nlmk.kb.server.service.pdm;
 
-import com.nlmk.attestation.product.api.nsi.*;
+import com.nlmk.attestation.product.api.nsi.AsapMechPropertiesDtDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
+import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.CodingSlabDto;
+import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.MacrostructureDto;
+import com.nlmk.attestation.product.api.nsi.MatchRpDto;
+import com.nlmk.attestation.product.api.nsi.MatchTkDto;
+import com.nlmk.attestation.product.api.nsi.MechanicalTkDto;
+import com.nlmk.attestation.product.api.nsi.MicrostructureDto;
+import com.nlmk.attestation.product.api.nsi.MinNumberSampChemDto;
+import com.nlmk.attestation.product.api.nsi.PhysMechPropAnisSteelStandDto;
+import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
+import com.nlmk.attestation.product.api.nsi.RegisterEquivalentsDto;
+import com.nlmk.attestation.product.api.nsi.SchemeStrippingSlabDto;
+import com.nlmk.attestation.product.api.nsi.SpChemicalPropertiesNotesDto;
+import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
+import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.TkNumDto;
+import com.nlmk.attestation.product.api.nsi.TolEvennessDtDto;
+import com.nlmk.attestation.product.api.nsi.TolShapeSlabDto;
+import com.nlmk.attestation.product.api.nsi.TolThickDtDto;
+import com.nlmk.attestation.product.api.nsi.TolWidthDtDto;
+import com.nlmk.attestation.product.api.nsi.ToleranceDto;
+import com.nlmk.attestation.product.api.nsi.TypeSampleMacrostructureDto;
+import com.nlmk.attestation.product.api.nsi.WidthTkLimitDto;
 import com.nlmk.kb.server.entity.pdm.PdmDictionary;
 
 /**

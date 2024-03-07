@@ -44,7 +44,8 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
         if (Objects.isNull(value.getPk())
                 || Objects.isNull(value.getData())
                 || Objects.isNull(value.getOp())) {
-            log.warn("handleConsumerRecord, пропуск, нет нужного набора данных (pk, data, op): topic [{}], partition [{}], offset [{}], key [{}]", consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
+            log.warn("handleConsumerRecord, пропуск, нет нужного набора данных (pk, data, op): topic [{}], partition [{}], offset [{}], key [{}]",
+                    consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
             return true;
         }
 
@@ -62,10 +63,12 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
 
         try {
             final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation);
-            log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]", response, catalogue, catalogue.getPath(), operation);
+            log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]",
+                    response, catalogue, catalogue.getPath(), operation);
             return true;
         } catch (RemoteServiceSenderException e) {
-            log.error("handleConsumerRecord, ошибка отправки в НСИ, DTO [{}], Каталог [{}], сообщение [{}]", dto, catalogue, e.getMessage());
+            log.error("handleConsumerRecord, ошибка отправки в НСИ, DTO [{}], Каталог [{}], сообщение [{}]",
+                    dto, catalogue, e.getMessage());
             return false;
         }
     }

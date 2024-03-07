@@ -10,7 +10,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.Objects;
 import java.util.UUID;
 
-public class SenderUtils {
+public final class SenderUtils {
 
     private SenderUtils() {
         throw new IllegalStateException("SenderUtils is util class");

@@ -19,7 +19,8 @@ public class Data implements Serializable {
     private List<Spec> specifications = new ArrayList<>();
 
     public void addSpec(Spec spec) {
-        if (spec != null)
+        if (spec != null) {
             this.getSpecifications().add(spec);
+            }
     }
 }

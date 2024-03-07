@@ -1,9 +1,19 @@
 package com.nlmk.kb.server.service.ccm.kc;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.KcChemData;
+import com.nlmk.attestation.product.api.pam.KcChemical;
+import com.nlmk.attestation.product.api.pam.KcMarking;
 import com.nlmk.attestation.product.api.pam.PlanTask;
+import com.nlmk.attestation.product.api.pam.Requirement;
+import com.nlmk.attestation.product.api.pam.RequirementChemicalSpec;
 import com.nlmk.attestation.product.api.pam.SpecValue;
-import com.nlmk.kb.server.api.ccm.kc.request.*;
+import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.kb.server.api.ccm.kc.request.ChemData;
+import com.nlmk.kb.server.api.ccm.kc.request.Chemical;
+import com.nlmk.kb.server.api.ccm.kc.request.ChemicalReq;
+import com.nlmk.kb.server.api.ccm.kc.request.Marking;
+import com.nlmk.kb.server.api.ccm.kc.request.Requirements;
+import com.nlmk.kb.server.api.ccm.kc.request.Specification;
 
 import java.util.Collections;
 import java.util.List;
