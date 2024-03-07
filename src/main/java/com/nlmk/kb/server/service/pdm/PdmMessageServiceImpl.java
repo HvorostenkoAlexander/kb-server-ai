@@ -40,15 +40,8 @@ public class PdmMessageServiceImpl implements PdmMessageService {
 
         if (repository.existsByTopicAndOffsetAndPartition(
                 message.getTopic(), message.getOffset(), message.getPartition())) {
-            log.warn("The message from " +
-                            "topic: [{}], " +
-                            "partition: [{}], " +
-                            "offset: [{}] is already present in the database. " +
-                            "message key: {} ",
-                    message.getTopic(),
-                    message.getPartition(),
-                    message.getOffset(),
-                    message.getKey());
+            log.warn("The message from topic: [{}], partition: [{}], offset: [{}] is already present in the database. message key: {} ",
+                    message.getTopic(), message.getPartition(), message.getOffset(), message.getKey());
 
             List<PdmMessage> storedMessages = repository.findByTopicAndOffsetAndPartition(
                     message.getTopic(),
@@ -57,14 +50,8 @@ public class PdmMessageServiceImpl implements PdmMessageService {
             );
 
             if (storedMessages.size() > 1) {
-                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками" +
-                                " topic: {}," +
-                                " partition: {}," +
-                                " offset: {}",
-                        message.getTopic(),
-                        message.getPartition(),
-                        message.getOffset()
-                );
+                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками topic: {}, partition: {}, offset: {}",
+                        message.getTopic(), message.getPartition(), message.getOffset());
             }
             return Optional.of(storedMessages.get(0));
         }

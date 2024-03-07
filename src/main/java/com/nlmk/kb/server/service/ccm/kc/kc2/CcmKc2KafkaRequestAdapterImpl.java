@@ -1,18 +1,42 @@
 package com.nlmk.kb.server.service.ccm.kc.kc2;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.DataKc;
+import com.nlmk.attestation.product.api.pam.KcChemData;
+import com.nlmk.attestation.product.api.pam.KcChemical;
+import com.nlmk.attestation.product.api.pam.KcMarking;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.PlanTask;
+import com.nlmk.attestation.product.api.pam.Requirement;
+import com.nlmk.attestation.product.api.pam.RequirementChemicalSpec;
+import com.nlmk.attestation.product.api.pam.SpecValue;
+import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
+import lombok.RequiredArgsConstructor;
+import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.PkType;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordChemData;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordChemical;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordChemicalReq;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordData;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordDataRequirementsSpecifications;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordDataSpecifications;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordDataSpecificationsListValues;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordMarking;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordMarkingAcc;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordPlanTask;
+import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.RecordRequirements;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import nlmk.nlmk.l3.sus.kc2.DbAttestRequestVer0;
-import nlmk.nlmk.l3.sus.kc2.db.attestrequest.ver0.*;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 /**
  * @link <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=103213250">Спецификация КЦ-2</a>
@@ -179,16 +203,16 @@ public class CcmKc2KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
     private Requirement toPamRequirement(RecordRequirements requirements) {
         return Requirement.builder()
                 .planTask(toPlanTask(requirements.getPlanTask()))
-                .chemicalReq(Objects.nonNull(requirements.getChemicalReq()) ?
-                        requirements.getChemicalReq().stream()
-                                .map(this::toPamChemicalReq)
-                                .collect(Collectors.toUnmodifiableList()) :
-                        null)
-                .specifications(Objects.nonNull(requirements.getSpecifications()) ?
-                        requirements.getSpecifications().stream()
-                                .map(this::toPamSpecs)
-                                .collect(Collectors.toUnmodifiableList()) :
-                        null)
+                .chemicalReq(Objects.nonNull(requirements.getChemicalReq())
+                             ? requirements.getChemicalReq().stream()
+                                     .map(this::toPamChemicalReq)
+                                     .collect(Collectors.toUnmodifiableList())
+                             : null)
+                .specifications(Objects.nonNull(requirements.getSpecifications())
+                                ? requirements.getSpecifications().stream()
+                                        .map(this::toPamSpecs)
+                                        .collect(Collectors.toUnmodifiableList())
+                                : null)
                 .build();
     }
 

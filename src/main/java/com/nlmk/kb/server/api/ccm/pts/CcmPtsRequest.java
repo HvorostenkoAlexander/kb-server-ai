@@ -43,6 +43,7 @@ public class CcmPtsRequest {
     @Data
     @Builder
     @Jacksonized
+    @SuppressWarnings("checkstyle:illegalidentifiername")
     public static class Record {
         private final @NotNull Integer werks; // Код завода
         private final @NotBlank String werksName; // Наименование завода

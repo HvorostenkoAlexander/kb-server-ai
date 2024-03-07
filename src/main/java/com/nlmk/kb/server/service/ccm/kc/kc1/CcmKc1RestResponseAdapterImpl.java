@@ -2,12 +2,15 @@ package com.nlmk.kb.server.service.ccm.kc.kc1;
 
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.api.ccm.kc.response.*;
 import com.nlmk.kb.server.api.ccm.kc.Pk;
+import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
+import com.nlmk.kb.server.api.ccm.kc.response.Mismatch;
+import com.nlmk.kb.server.api.ccm.kc.response.Record;
 import com.nlmk.kb.server.service.ccm.RestResponseAdapter;
 import com.nlmk.kb.server.service.ccm.kc.CcmKcRestResponseAdapter;
-import java.util.*;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class CcmKc1RestResponseAdapterImpl extends CcmKcRestResponseAdapter implements RestResponseAdapter<CcmKc1Response> {

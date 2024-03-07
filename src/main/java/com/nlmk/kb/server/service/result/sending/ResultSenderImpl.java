@@ -9,7 +9,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -17,7 +17,9 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-import static com.nlmk.kb.server.config.KbConstants.*;
+import static com.nlmk.kb.server.config.KbConstants.KAFKA_REST_ACCEPT_HEADER;
+import static com.nlmk.kb.server.config.KbConstants.KAFKA_REST_CONTENT_TYPE_HEADER;
+import static com.nlmk.kb.server.config.KbConstants.KAFKA_REST_PROXY_TEMPLATE;
 
 @Slf4j
 @Service

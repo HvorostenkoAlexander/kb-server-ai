@@ -1,11 +1,12 @@
 package com.nlmk.kb.server.service.ccm.kc.kc1;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataKc;
 import com.nlmk.attestation.product.api.pam.Pk;
-import com.nlmk.kb.server.api.ccm.kc.request.*;
+import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.RestRequestAdapter;
-
 import com.nlmk.kb.server.service.ccm.kc.CcmKcRestRequestAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

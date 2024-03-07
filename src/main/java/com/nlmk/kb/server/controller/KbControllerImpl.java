@@ -160,24 +160,21 @@ public class KbControllerImpl implements KbController {
     public void postProductAttestationResult(ProductAttestationResultDto attestationResult) {
         log.info("postProductAttestationResult, ProductAttestationResultDto [{}]", attestationResult);
         switch (attestationResult.getKceh()) {
-            case PGP: {
+            case PGP:
                 attestationResultSender.send(attestationResult, VerificationResults.class);
                 break;
-            }
-            case PTS: {
+            case PTS:
                 attestationResultSender.send(attestationResult, VerificationResultsPts.class);
                 break;
-            }
-            case KC1: {
+            case KC1:
                 attestationResultSender.send(attestationResult, VerificationResultsKc1.class);
                 break;
-            }
-            case KC2: {
+            case KC2:
                 attestationResultSender.send(attestationResult, VerificationResultsKc2.class);
                 break;
-            }
             default:
-                throw new AttestationResultSenderException("Отправка результата аттестации для цеха [" + attestationResult.getKceh() + "] не реализована");
+                throw new AttestationResultSenderException("Отправка результата аттестации для цеха ["
+                        + attestationResult.getKceh() + "] не реализована");
         }
     }
 

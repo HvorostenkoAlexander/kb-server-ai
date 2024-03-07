@@ -57,7 +57,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     class SourceMessageSaver<T> implements Saver {
         private final CcmMessageSourceRepository sourceRepository;
         private final T sourceMessage;
-        public SourceMessageSaver(CcmMessageSourceRepository sourceRepository, T t) {
+        SourceMessageSaver(CcmMessageSourceRepository sourceRepository, T t) {
             this.sourceRepository = sourceRepository;
             this.sourceMessage = t;
         }
