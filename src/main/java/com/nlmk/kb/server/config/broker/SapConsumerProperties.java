@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SapConsumerProperties extends ConsumerProperties {
 
     public SapConsumerProperties(@Value("${kafka.sap.bootstrap-servers}") String kafkaServer,
-                                 @Value("${kafka.sap.idoczordrs.group-id}") String kafkaGroupId,
+                                 @Value("${kafka.sap.group-id}") String kafkaGroupId,
                                  @Value("${kafka.sap.schema.registry.url}") String schemaRegistryUrl,
                                  @Value("${kafka.sap.ssl-enabled}") boolean sslEnabled,
                                  @Value("${kafka.sslTruststorePassword}") String truststorePassword,
