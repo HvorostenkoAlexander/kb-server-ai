@@ -1,16 +1,34 @@
 package com.nlmk.kb.server.service.ccm.pgp;
 
-import com.nlmk.attestation.product.api.pam.*;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.DataPgp;
+import com.nlmk.attestation.product.api.pam.MechanicalAnalysisData;
+import com.nlmk.attestation.product.api.pam.MechanicalData;
+import com.nlmk.attestation.product.api.pam.MechanicalSpec;
+import com.nlmk.attestation.product.api.pam.MetallographicAnalysisData;
+import com.nlmk.attestation.product.api.pam.MetallographicData;
+import com.nlmk.attestation.product.api.pam.MetallographicSpec;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.util.AdapterUtils;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
+import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
-import nlmk.l3.ccm.pgp.*;
+import nlmk.l3.ccm.pgp.RecordChemical;
+import nlmk.l3.ccm.pgp.RecordData;
+import nlmk.l3.ccm.pgp.RecordMechAnalysisData;
+import nlmk.l3.ccm.pgp.RecordMechData;
+import nlmk.l3.ccm.pgp.RecordMechanical;
+import nlmk.l3.ccm.pgp.RecordMetallographic;
+import nlmk.l3.ccm.pgp.RecordMetgrapAnalysisData;
+import nlmk.l3.ccm.pgp.RecordMetgrapData;
+import nlmk.l3.ccm.pgp.RecordPk;
+import nlmk.l3.ccm.pgp.RecordSpecifications;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @Component
@@ -77,20 +95,20 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                                 .collect(Collectors.toList())
                 ).chemical(
                         recordData.getChemical() == null
-                                ? null
-                                : recordData.getChemical().stream()
+                        ? null
+                        : recordData.getChemical().stream()
                                 .map(this::toPamChemicalSpec)
                                 .collect(Collectors.toList())
                 ).mechanical(
                         recordData.getMechanical() == null
-                                ? null
-                                : recordData.getMechanical().stream()
+                        ? null
+                        : recordData.getMechanical().stream()
                                 .map(this::toPamMechanicalSpec)
                                 .collect(Collectors.toList())
                 ).metallographic(
                         recordData.getMetallographic() == null
-                                ? null
-                                : recordData.getMetallographic().stream()
+                        ? null
+                        : recordData.getMetallographic().stream()
                                 .map(this::toPamMetallographicSpec)
                                 .collect(Collectors.toList())
                 ).build();
@@ -125,8 +143,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .protDate(AdapterUtils.sequenceToString(mechanical.getProtDate()))
                 .mechData(
                         mechanical.getMechData() == null
-                                ? null
-                                : mechanical.getMechData().stream()
+                        ? null
+                        : mechanical.getMechData().stream()
                                 .map(this::toPamMechanicalData)
                                 .collect(Collectors.toList())
                 ).build();
@@ -137,8 +155,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .mechAnalysisId(data.getMechAnalysisId())
                 .mechAnalysisData(
                         data.getMechAnalysisData() == null
-                                ? null
-                                : data.getMechAnalysisData().stream()
+                        ? null
+                        : data.getMechAnalysisData().stream()
                                 .map(this::toPamMechanicalAnalysisData)
                                 .collect(Collectors.toList())
                 ).build();
@@ -163,8 +181,8 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .signAnalysis(metallographic.getSignAnalysis())
                 .metgrapData(
                         metallographic.getMetgrapData() == null
-                                ? null
-                                : metallographic.getMetgrapData().stream()
+                        ? null
+                        : metallographic.getMetgrapData().stream()
                                 .map(this::toPamMetallographicData)
                                 .collect(Collectors.toList())
                 ).build();
@@ -174,10 +192,10 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
         return MetallographicData.builder()
                 .metgrapAnalysisId(data.getMetgrapAnalysisId())
                 .metgrapAnalysisData(data.getMetgrapAnalysisData() == null
-                        ? null
-                        : data.getMetgrapAnalysisData().stream()
-                        .map(this::toPamMetallographicAnalysisData)
-                        .collect(Collectors.toList()))
+                                     ? null
+                                     : data.getMetgrapAnalysisData().stream()
+                                             .map(this::toPamMetallographicAnalysisData)
+                                             .collect(Collectors.toList()))
                 .build();
     }
 

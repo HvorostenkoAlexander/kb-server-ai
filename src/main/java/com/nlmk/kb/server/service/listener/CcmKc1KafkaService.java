@@ -1,15 +1,20 @@
 package com.nlmk.kb.server.service.listener;
 
-import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.exception.AttestationResultException;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.DateTimeParseException;
+import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
+import com.nlmk.kb.server.exception.KafkaRestConfigException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsKc1;
 import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer0;
-import nlmk.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;

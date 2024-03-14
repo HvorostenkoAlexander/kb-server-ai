@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @Builder
 @Jacksonized
+@SuppressWarnings("checkstyle:illegalidentifiername")
 public class Record {
 
     private final @NotBlank String primeId; // id_slab Сквозной идентификатор сляба

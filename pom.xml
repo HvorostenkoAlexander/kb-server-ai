@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.53.4</version>
+    <version>1.53.7</version>
     <name>kb-server</name>
     <description>Module for read Kafka Broker messages</description>
     <properties>
@@ -22,7 +22,7 @@
         <logback-encoder.version>1.0.0.RC1</logback-encoder.version>
         <logback-classic.version>1.2.3</logback-classic.version>
         <keycloak.version>12.0.2</keycloak.version>
-        <springdoc.version>1.5.8</springdoc.version>
+        <springdoc.version>1.7.0</springdoc.version>
         <jacoco.version>0.8.7</jacoco.version>
         <jaeger-web-starter.version>3.3.1</jaeger-web-starter.version>
         <okhttp3.version>4.9.3</okhttp3.version>
@@ -31,7 +31,9 @@
         <minio.version>8.4.1</minio.version>
         <avro.version>1.10.2</avro.version>
 
-        <product-api.version>1.59.0</product-api.version>
+        <checkstyle.version>3.3.1</checkstyle.version>
+
+        <product-api.version>1.59.3</product-api.version>
     </properties>
 
     <dependencyManagement>
@@ -309,7 +311,26 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.version}</version>
+                <configuration>
+                    <failsOnError>true</failsOnError>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

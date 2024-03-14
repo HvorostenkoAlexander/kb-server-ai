@@ -3,7 +3,7 @@ package com.nlmk.kb.server.entity;
 import lombok.Getter;
 
 @Getter
-public class KafkaMessageKey {
+public final class KafkaMessageKey {
 
     private final String key;
     private final String schemaKey;

@@ -1,17 +1,35 @@
 package com.nlmk.kb.server.service.result.sending.adapter;
 
-import com.nlmk.attestation.product.api.*;
+import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.DocId;
+import com.nlmk.attestation.product.api.Group;
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
 import com.nlmk.kb.server.util.AdapterUtils;
-import nlmk.l3.apcs.*;
+import nlmk.l3.apcs.EnumOp;
+import nlmk.l3.apcs.RecordKc1AttList;
+import nlmk.l3.apcs.RecordKc1AttListMismatch;
+import nlmk.l3.apcs.RecordKc1AttListNorms;
+import nlmk.l3.apcs.RecordKc1AttListNormsValues;
+import nlmk.l3.apcs.RecordKc1AttListParams;
+import nlmk.l3.apcs.RecordKc1AttListValues;
+import nlmk.l3.apcs.RecordKc1Data;
+import nlmk.l3.apcs.RecordKc1Mismatch;
+import nlmk.l3.apcs.RecordPk;
+import nlmk.l3.apcs.VerificationResultsKc1;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -135,11 +153,11 @@ public class Kc1ResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                             .setTypeName(specCode.getTypeCode().getDesc())
                             .setValue(attestation.getValue())
                             .setDocId(attestation.getDocId() != null
-                                    ? attestation.getDocId().getValue()
-                                    : DocId.NOT_DEFINED.getValue())
+                                      ? attestation.getDocId().getValue()
+                                      : DocId.NOT_DEFINED.getValue())
                             .setDocName(attestation.getDocId() != null
-                                    ? attestation.getDocId().getDesc()
-                                    : DocId.NOT_DEFINED.getDesc())
+                                        ? attestation.getDocId().getDesc()
+                                        : DocId.NOT_DEFINED.getDesc())
                             .setNormLimits(prepareNormLimit(attestation))
                             .setMismatch(RecordKc1AttListMismatch.newBuilder()
                                     .setCode(attestation.getStatus() != null ? attestation.getStatus().getValue() : -1)

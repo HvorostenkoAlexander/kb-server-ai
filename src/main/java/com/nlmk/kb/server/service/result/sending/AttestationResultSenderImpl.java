@@ -13,7 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,8 +38,8 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
     ) {
         this.resultAdapters = allResultAdapters.stream()
                 .collect(
-                toMap(ResultAdapter::getAvroName, Function.identity())
-        );
+                        toMap(ResultAdapter::getAvroName, Function.identity())
+                );
         this.configService = configService;
         this.conditionFilter = conditionFilter;
         this.resultSender = resultSender;

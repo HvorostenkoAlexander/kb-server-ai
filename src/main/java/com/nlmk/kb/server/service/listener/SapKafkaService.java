@@ -19,19 +19,22 @@ import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLAT
 
 @Slf4j
 @Service
-public class SapZmmordersKafkaService {
+public class SapKafkaService {
 
     private final long sleepTime;
     private final SapMessageHandler sapMessageHandler;
 
-    public SapZmmordersKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
-                                    SapMessageHandler sapMessageHandler) {
+    public SapKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+                           SapMessageHandler sapMessageHandler) {
         this.sleepTime = sleepTime;
         this.sapMessageHandler = sapMessageHandler;
     }
 
-    @KafkaListener(containerFactory = "sapZmmordersKafkaListenerContainerFactory",
-            topics = {"${kafka.sap.topic.s3.zmmordersdop}"}
+    @KafkaListener(containerFactory = "sapKafkaListenerContainerFactory",
+            topics = {
+                    "${kafka.sap.topic.s3.idoczordrs}",
+                    "${kafka.sap.topic.s3.zmmordersdop}"
+            }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Payload ConsumerRecord<String, s3notification> consumerRecord,
@@ -59,4 +62,5 @@ public class SapZmmordersKafkaService {
             throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
+
 }

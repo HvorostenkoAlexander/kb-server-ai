@@ -4,7 +4,12 @@ import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Group;
 import com.nlmk.attestation.product.api.RequestDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.api.ccm.kc.response.*;
+import com.nlmk.kb.server.api.ccm.kc.response.AccValue;
+import com.nlmk.kb.server.api.ccm.kc.response.Attestation;
+import com.nlmk.kb.server.api.ccm.kc.response.AttestationValue;
+import com.nlmk.kb.server.api.ccm.kc.response.Mismatch;
+import com.nlmk.kb.server.api.ccm.kc.response.NormLimit;
+import com.nlmk.kb.server.api.ccm.kc.response.Parameter;
 import com.nlmk.kb.server.util.AdapterUtils;
 
 import java.util.ArrayList;
@@ -42,7 +47,7 @@ public abstract class CcmKcRestResponseAdapter {
 
     }
 
-    private  List<AttestationValue> prepareAttestationValue(List<AttestationDto> attestations, Group group) {
+    private List<AttestationValue> prepareAttestationValue(List<AttestationDto> attestations, Group group) {
         return attestations.stream()
                 .filter(attestation -> group.equals(attestation.getGroup()))
                 .filter(attestation -> Objects.nonNull(attestation.getCode()))

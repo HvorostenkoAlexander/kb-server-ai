@@ -1,10 +1,13 @@
 package com.nlmk.kb.server.service.ccm.pts;
 
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.DataPts;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.util.AdapterUtils;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.PkType;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordData;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
