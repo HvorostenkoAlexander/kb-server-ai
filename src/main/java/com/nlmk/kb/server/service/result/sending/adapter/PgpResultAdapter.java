@@ -127,7 +127,8 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                         .setCutTaskNum(request.getCutTaskNum())
                         .setCutTaskDate(request.getCutTaskDate())
                         .setCutTaskStrNum(request.getCutTaskStrNum())
-                        .setProductId(product.getId())
+                        // TODO APCS-268 return when integration is fixed
+                        // .setProductId(product.getId())
                         .build()
                 ).build();
     }
