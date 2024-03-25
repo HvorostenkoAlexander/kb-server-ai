@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service.zifra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.exception.ZifraMessageParserException;
-import com.nlmk.kb.server.service.sender.NsiSender;
 import nlmk.l3.nsi.zifra.EnumOp;
 import nlmk.l3.nsi.zifra.Reason;
 import okhttp3.mockwebserver.MockResponse;
@@ -25,15 +24,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class ZifraMessageHandlerTest {
 
     @Autowired
     private ZifraMessageHandler zifraMessageHandler;
-    @Autowired
-    private NsiSender nsiSender;
 
     private static MockWebServer mockWebServer;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -65,15 +63,15 @@ class ZifraMessageHandlerTest {
     @Test
     void parseAndSend() throws Exception {
         final var spCustomerRecord = prepareConsumerRecord("src/test/resources/json/SpCustomerExample.json");
-        assertNotNull(spCustomerRecord);
+        assertThat(spCustomerRecord).isNotNull();
         final var spCustomer = (Reason) spCustomerRecord.value();
 
         final var spCustomerGroupRecord = prepareConsumerRecord("src/test/resources/json/SpCustomerGroupExample.json");
-        assertNotNull(spCustomerGroupRecord);
+        assertThat(spCustomerGroupRecord).isNotNull();
         final var spCustomerGroup = (Reason) spCustomerGroupRecord.value();
 
         final var spGroupAndCustomerRecord = prepareConsumerRecord("src/test/resources/json/SpGroupAndCustomerExample.json");
-        assertNotNull(spGroupAndCustomerRecord);
+        assertThat(spGroupAndCustomerRecord).isNotNull();
         final var spGroupAndCustomer = (Reason) spGroupAndCustomerRecord.value();
 
         {
@@ -83,14 +81,12 @@ class ZifraMessageHandlerTest {
                     .setBody(spCustomer.getPk().getLineId().toString())
             );
 
-            final var response = assertDoesNotThrow(
-                    () -> zifraMessageHandler.handleConsumerRecord(spCustomerRecord)
-            );
-            assertTrue(response);
+            final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
+            assertThat(response).isTrue();
 
             RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("POST", request.getMethod());
-            assertEquals("/nsi/dict/mdm/sp_customer", request.getPath());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/nsi/dict/mdm/sp_customer");
         }
         {
             mockWebServer.enqueue(new MockResponse()
@@ -99,14 +95,12 @@ class ZifraMessageHandlerTest {
                     .setBody(spCustomerGroup.getPk().getLineId().toString())
             );
 
-            final var response = assertDoesNotThrow(
-                    () -> zifraMessageHandler.handleConsumerRecord(spCustomerGroupRecord)
-            );
-            assertTrue(response);
+            final var response = zifraMessageHandler.handleConsumerRecord(spCustomerGroupRecord);
+            assertThat(response).isTrue();
 
             RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("POST", request.getMethod());
-            assertEquals("/nsi/dict/mdm/sp_customer_group", request.getPath());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/nsi/dict/mdm/sp_customer_group");
         }
         {
             mockWebServer.enqueue(new MockResponse()
@@ -115,14 +109,12 @@ class ZifraMessageHandlerTest {
                     .setBody(spGroupAndCustomer.getPk().getLineId().toString())
             );
 
-            final var response = assertDoesNotThrow(
-                    () -> zifraMessageHandler.handleConsumerRecord(spGroupAndCustomerRecord)
-            );
-            assertTrue(response);
+            final var response = zifraMessageHandler.handleConsumerRecord(spGroupAndCustomerRecord);
+            assertThat(response).isTrue();
 
             RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("POST", request.getMethod());
-            assertEquals("/nsi/dict/mdm/sp_group_and_customer", request.getPath());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/nsi/dict/mdm/sp_group_and_customer");
         }
         {
             // обновление
@@ -132,14 +124,12 @@ class ZifraMessageHandlerTest {
                     .setResponseCode(HttpStatus.OK.value())
             );
 
-            final var response = assertDoesNotThrow(
-                    () -> zifraMessageHandler.handleConsumerRecord(spCustomerRecord)
-            );
-            assertTrue(response);
+            final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
+            assertThat(response).isTrue();
 
             RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("PUT", request.getMethod());
-            assertEquals("/nsi/dict/mdm/sp_customer", request.getPath());
+            assertThat(request.getMethod()).isEqualTo("PUT");
+            assertThat(request.getPath()).isEqualTo("/nsi/dict/mdm/sp_customer");
         }
         {
             // удаление
@@ -149,14 +139,12 @@ class ZifraMessageHandlerTest {
                     .setResponseCode(HttpStatus.NOT_FOUND.value())
             );
 
-            final var response = assertDoesNotThrow(
-                    () -> zifraMessageHandler.handleConsumerRecord(spCustomerRecord)
-            );
-            assertTrue(response);
+            final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
+            assertThat(response).isTrue();
 
             RecordedRequest request = mockWebServer.takeRequest();
-            assertEquals("DELETE", request.getMethod());
-            assertEquals("/nsi/dict/mdm/sp_customer", request.getPath());
+            assertThat(request.getMethod()).isEqualTo("DELETE");
+            assertThat(request.getPath()).isEqualTo("/nsi/dict/mdm/sp_customer");
         }
         {
             // ошибка обработки: сломаем значение
@@ -167,10 +155,9 @@ class ZifraMessageHandlerTest {
             });
             final var modifyRecord = new ConsumerRecord<Object, Object>("topic1", 0, 0, "key", spGroupAndCustomer);
 
-            final var result = assertThrows(ZifraMessageParserException.class,
-                    () -> zifraMessageHandler.handleConsumerRecord(modifyRecord)
-            );
-            assertEquals("Ошибка преобразования строки \"2A\" в целое число", result.getMessage());
+            assertThatThrownBy(() -> zifraMessageHandler.handleConsumerRecord(modifyRecord))
+                    .isInstanceOf(ZifraMessageParserException.class)
+                    .hasMessage("Ошибка преобразования строки \"2A\" в целое число");
         }
     }
 

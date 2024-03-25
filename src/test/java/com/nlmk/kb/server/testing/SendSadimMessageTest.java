@@ -5,12 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nlmk.sadim.Sadim;
 import nlmk.sadim.Strip;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @Disabled("hand sender")
 class SendSadimMessageTest extends SendMessageToKafka {
@@ -37,7 +38,7 @@ class SendSadimMessageTest extends SendMessageToKafka {
                 mapper.writeValueAsString(value)
         );
 
-        Assertions.assertDoesNotThrow(() -> sendString(record));
+        assertThatCode(() -> sendString(record)).doesNotThrowAnyException();
     }
 
 }

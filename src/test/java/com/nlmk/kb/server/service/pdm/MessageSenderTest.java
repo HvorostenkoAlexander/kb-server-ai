@@ -7,18 +7,47 @@ import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.entity.pdm.Pk;
 import com.nlmk.kb.server.repository.DictionaryConfigRepository;
 import com.nlmk.kb.server.service.CommonConverterImpl;
-import com.nlmk.kb.server.service.pdm.senders.*;
+import com.nlmk.kb.server.service.pdm.senders.AsapChemicalPropSender;
+import com.nlmk.kb.server.service.pdm.senders.AsapMechPropertiesDtSender;
+import com.nlmk.kb.server.service.pdm.senders.AsapMechPropertiesSender;
+import com.nlmk.kb.server.service.pdm.senders.ChemicalPropertiesSender;
+import com.nlmk.kb.server.service.pdm.senders.EquivalentsSender;
+import com.nlmk.kb.server.service.pdm.senders.KatSteelGost4041Sender;
+import com.nlmk.kb.server.service.pdm.senders.MacrostructureSender;
+import com.nlmk.kb.server.service.pdm.senders.MatchRpNumSender;
+import com.nlmk.kb.server.service.pdm.senders.MatchTkNumSender;
+import com.nlmk.kb.server.service.pdm.senders.MechPropertiesSender;
+import com.nlmk.kb.server.service.pdm.senders.MicrostructureSender;
+import com.nlmk.kb.server.service.pdm.senders.MinNumberSampChemSender;
+import com.nlmk.kb.server.service.pdm.senders.PdmMessageSender;
+import com.nlmk.kb.server.service.pdm.senders.PhysMechPropAnisSteelSender;
+import com.nlmk.kb.server.service.pdm.senders.RegisterEquivalentsSender;
+import com.nlmk.kb.server.service.pdm.senders.SchemeStrippingSlabSender;
+import com.nlmk.kb.server.service.pdm.senders.SpChemicalPropertiesNotesSender;
+import com.nlmk.kb.server.service.pdm.senders.SpCodingSlabSender;
+import com.nlmk.kb.server.service.pdm.senders.TkNumSender;
+import com.nlmk.kb.server.service.pdm.senders.TolEvennessDtSender;
+import com.nlmk.kb.server.service.pdm.senders.TolEvennessSender;
+import com.nlmk.kb.server.service.pdm.senders.TolLengthSender;
+import com.nlmk.kb.server.service.pdm.senders.TolShapeSlabSender;
+import com.nlmk.kb.server.service.pdm.senders.TolThickDtSender;
+import com.nlmk.kb.server.service.pdm.senders.TolThickSender;
+import com.nlmk.kb.server.service.pdm.senders.TolWidthDtSender;
+import com.nlmk.kb.server.service.pdm.senders.TolWidthSender;
+import com.nlmk.kb.server.service.pdm.senders.ToleranceSender;
+import com.nlmk.kb.server.service.pdm.senders.TypeSampleMacrostructureSender;
 import com.nlmk.kb.server.service.sender.NsiSender;
-import nlmk.l3.pdm.SpCodingSlab;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @Import({
@@ -27,7 +56,6 @@ import java.util.List;
         PdmDictionaryCreatorImpl.class,
         DictionaryConfigServiceImpl.class,
         DtoConverterImpl.class,
-        //
         AsapChemicalPropSender.class,
         AsapMechPropertiesDtSender.class,
         AsapMechPropertiesSender.class,
@@ -69,7 +97,7 @@ class MessageSenderTest {
 
     @Test
     void send() {
-        Assertions.assertEquals(28, messageSenders.size());
+        assertThat(messageSenders).hasSize(28);
 
         final var message = PdmMessage.builder()
                 .topic("topic-for-all")
@@ -87,19 +115,16 @@ class MessageSenderTest {
                 .enabled(true)
                 .build());
 
+        when(nsiSender.sendBodyReturnLong(any(), any(), any())).thenReturn(321L);
         messageSenders.forEach(sender -> {
-            Mockito.when(nsiSender.sendBodyReturnLong(Mockito.any(), Mockito.any(), Mockito.any()))
-                    .thenReturn(321L);
-
-            final var response = Assertions.assertDoesNotThrow(() -> sender.send(message));
-            Assertions.assertEquals(321L, response);
+            final var response = sender.send(message);
+            assertThat(response).isEqualTo(321L);
         });
-        messageSenders.forEach(sender -> {
-            Mockito.when(nsiSender.sendBodyReturnLong(Mockito.any(), Mockito.any(), Mockito.any()))
-                    .thenReturn(null);
 
-            final var response = Assertions.assertDoesNotThrow(() -> sender.send(message));
-            Assertions.assertNull(response);
+        when(nsiSender.sendBodyReturnLong(any(), any(), any())).thenReturn(null);
+        messageSenders.forEach(sender -> {
+            final var response = sender.send(message);
+            assertThat(response).isNull();
         });
     }
 

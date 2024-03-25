@@ -19,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,8 +68,8 @@ class CcmCommonServiceTest {
         then(pamSender).should(times(1)).postAttestationRequest(any());
         then(pamSender).should().postAttestationRequest(captorRequest.capture());
 
-        assertNotNull(result);
-        assertEquals(22L, captorRequest.getValue().getId());
+        assertThat(result).isNotNull();
+        assertThat(captorRequest.getValue().getId()).isEqualTo(22L);
     }
 
     @Test
@@ -92,7 +92,7 @@ class CcmCommonServiceTest {
         then(attMessageService).should(times(1)).findLastAttestationMessage(any(String.class));
         then(attMessageService).should(times(1)).updateAttestationMessage(any());
 
-        assertNotNull(result);
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -128,8 +128,8 @@ class CcmCommonServiceTest {
         then(pamSender).should().postAttestationRequest(captorRequest.capture());
 
         // выбрано сообщение CcmMessage
-        assertNotNull(result);
-        assertEquals(22L, captorRequest.getValue().getId());
+        assertThat(result).isNotNull();
+        assertThat(captorRequest.getValue().getId()).isEqualTo(22L);
     }
 
     @Test
@@ -167,22 +167,19 @@ class CcmCommonServiceTest {
         then(pamSender).should().postAttestationRequest(captorRequest.capture());
 
         // выбрано сообщение AttestationMessage
-        assertNotNull(result);
-        assertEquals(33L, captorRequest.getValue().getId());
+        assertThat(result).isNotNull();
+        assertThat(captorRequest.getValue().getId()).isEqualTo(33L);
     }
 
     @Test
     void rePostAttestationTestNullBad() {
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> ccmCommonService.rePostAttestation(null)
-        );
+        assertThatThrownBy(() -> ccmCommonService.rePostAttestation(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Невозможно осуществить повторную отправку. primeId is null.");
 
-        then(ccmMessageService).should(times(0)).findLastMessage(any(String.class));
-        then(ccmMessageService).should(times(0)).update(any());
-        then(pamSender).should(times(0)).postAttestationRequest(any());
-
-        assertNotNull(iae);
-        assertEquals("Невозможно осуществить повторную отправку. primeId is null.", iae.getMessage());
+        then(ccmMessageService).should(never()).findLastMessage(any(String.class));
+        then(ccmMessageService).should(never()).update(any());
+        then(pamSender).should(never()).postAttestationRequest(any());
     }
 
     @Test
@@ -190,17 +187,14 @@ class CcmCommonServiceTest {
         given(attMessageService.findLastAttestationMessage(any(String.class))).willReturn(Optional.empty());
         given(ccmMessageService.findLastMessage(any(String.class))).willReturn(Optional.empty());
 
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> ccmCommonService.rePostAttestation("12345")
-        );
+        assertThatThrownBy(() -> ccmCommonService.rePostAttestation("12345"))
+                .isInstanceOf(IllegalArgumentException.class);
 
         then(ccmMessageService).should(times(1)).findLastMessage(any(String.class));
-        then(ccmMessageService).should(times(0)).update(any());
+        then(ccmMessageService).should(never()).update(any());
         then(attMessageService).should(times(1)).findLastAttestationMessage(any(String.class));
-        then(attMessageService).should(times(0)).updateAttestationMessage(any());
-        then(pamSender).should(times(0)).postAttestationRequest(any());
-
-        assertNotNull(iae);
+        then(attMessageService).should(never()).updateAttestationMessage(any());
+        then(pamSender).should(never()).postAttestationRequest(any());
     }
 
 }

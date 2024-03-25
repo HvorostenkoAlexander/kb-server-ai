@@ -3,18 +3,41 @@ package com.nlmk.kb.server.service.kc.kc1;
 import com.nlmk.kb.server.api.ccm.SpecTypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.kc.Pk;
-import com.nlmk.kb.server.api.ccm.kc.request.*;
+import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
+import com.nlmk.kb.server.api.ccm.kc.request.ChemData;
+import com.nlmk.kb.server.api.ccm.kc.request.Chemical;
+import com.nlmk.kb.server.api.ccm.kc.request.ChemicalReq;
+import com.nlmk.kb.server.api.ccm.kc.request.Marking;
+import com.nlmk.kb.server.api.ccm.kc.request.PlanTask;
+import com.nlmk.kb.server.api.ccm.kc.request.Record;
+import com.nlmk.kb.server.api.ccm.kc.request.Requirements;
+import com.nlmk.kb.server.api.ccm.kc.request.SpecValue;
+import com.nlmk.kb.server.api.ccm.kc.request.Specification;
 import com.nlmk.kb.server.service.ccm.kc.kc1.CcmKc1KafkaRequestAdapterImpl;
 import com.nlmk.kb.server.service.ccm.kc.kc1.CcmKc1RestRequestAdapterImpl;
-import java.math.BigDecimal;
-import java.util.List;
 import nlmk.EnumOp;
 import nlmk.nlmk.l3.sus.kc1.DbAttestRequestVer0;
-import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.*;
-import org.junit.jupiter.api.Assertions;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.PkType;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordChemData;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordChemical;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordChemicalReq;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordData;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordDataRequirementsSpecifications;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordDataRequirementsSpecificationsListValues;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordDataSpecifications;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordDataSpecificationsListValues;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordMarking;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordMarkingAcc;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordPlanTask;
+import nlmk.nlmk.l3.sus.kc1.db.attestrequest.ver0.RecordRequirements;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class CcmKc1RequestAdapterTest {
@@ -26,7 +49,7 @@ class CcmKc1RequestAdapterTest {
     private CcmKc1RestRequestAdapterImpl restRequestAdapter;
 
     private static CcmKc1Request getRestTestRequest() {
-        var restRequest = CcmKc1Request.builder()
+        return CcmKc1Request.builder()
                 .ts("2023-04-03T06:59:12.426-03:00")
                 .pk(Pk.builder()
                         .systemCode("6")
@@ -164,11 +187,10 @@ class CcmKc1RequestAdapterTest {
                         ))
                         .build())
                 .build();
-        return restRequest;
     }
 
     private static DbAttestRequestVer0 getKafkaTestRequest() {
-        var kafkaRequest = DbAttestRequestVer0.newBuilder()
+        return DbAttestRequestVer0.newBuilder()
                 .setTs("2023-04-03T06:59:12.426-03:00")
                 .setOp(EnumOp.I)
                 .setPk(PkType.newBuilder()
@@ -307,7 +329,6 @@ class CcmKc1RequestAdapterTest {
                         ))
                         .build())
                 .build();
-        return kafkaRequest;
     }
 
     @Test
@@ -318,8 +339,7 @@ class CcmKc1RequestAdapterTest {
         var kafkaProcessed = kafkaRequestAdapter.adapt(kafkaRequest);
         var restProcessed = restRequestAdapter.adapt(restRequest);
 
-        Assertions.assertEquals(kafkaProcessed, restProcessed);
-
+        assertThat(restProcessed).isEqualTo(kafkaProcessed);
     }
 
 }

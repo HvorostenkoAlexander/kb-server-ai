@@ -1,8 +1,8 @@
 package com.nlmk.kb.server.service.sender;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.product.api.SadimMessageDto;
+import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import okhttp3.mockwebserver.MockResponse;
@@ -22,7 +22,8 @@ import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class PsmSenderTest {
@@ -64,7 +65,7 @@ class PsmSenderTest {
         final var zorders051 = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);
         // when
         // then
-        assertThrows(RemoteServiceSenderException.class, () -> psmSender.postZorder(zorders051));
+        assertThatThrownBy(() -> psmSender.postZorder(zorders051)).isInstanceOf(RemoteServiceSenderException.class);
         mockWebServer.takeRequest();
     }
 
@@ -83,13 +84,13 @@ class PsmSenderTest {
 
         // then
         RecordedRequest request = mockWebServer.takeRequest();
-        assertEquals("POST", request.getMethod());
-        assertEquals("/sap/zorder", request.getPath());
-        assertEquals(100, result);
+        assertThat(request.getMethod()).isEqualTo("POST");
+        assertThat(request.getPath()).isEqualTo("/sap/zorder");
+        assertThat(result).isEqualTo(100);
 
         String body = request.getBody().readUtf8();
         final ZORDERS051 zorderFromBody = objectMapper.readValue(body, ZORDERS051.class);
-        assertEquals("0040452892", zorderFromBody.getIDOC().getE1EDK01().getBELNR());
+        assertThat(zorderFromBody.getIDOC().getE1EDK01().getBELNR()).isEqualTo("0040452892");
     }
 
     @Test
@@ -102,7 +103,7 @@ class PsmSenderTest {
         final var zmmorder = objectMapper.readValue(new ClassPathResource("json/zmmordersExample.json").getFile(), ZMMORDERS05DOP.class);
         // when
         // then
-        assertThrows(RemoteServiceSenderException.class, () -> psmSender.postZmmorder(zmmorder));
+        assertThatThrownBy(() -> psmSender.postZmmorder(zmmorder)).isInstanceOf(RemoteServiceSenderException.class);
         mockWebServer.takeRequest();
     }
 
@@ -121,13 +122,13 @@ class PsmSenderTest {
 
         // then
         RecordedRequest request = mockWebServer.takeRequest();
-        assertEquals("POST", request.getMethod());
-        assertEquals("/sap/zmmorder", request.getPath());
-        assertEquals(20, result);
+        assertThat(request.getMethod()).isEqualTo("POST");
+        assertThat(request.getPath()).isEqualTo("/sap/zmmorder");
+        assertThat(result).isEqualTo(20);
 
         String body = request.getBody().readUtf8();
-        final ZMMORDERS05DOP zorderFromBody = objectMapper.readValue(body, ZMMORDERS05DOP.class);
-        assertEquals("4500745477", zorderFromBody.getIDOC().getE1EDK01().getBELNR());
+        final ZMMORDERS05DOP zmmorderFromBody = objectMapper.readValue(body, ZMMORDERS05DOP.class);
+        assertThat(zmmorderFromBody.getIDOC().getE1EDK01().getBELNR()).isEqualTo("4500745477");
     }
 
     @Test
@@ -138,9 +139,10 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.BAD_REQUEST.value())
         );
         // when
-        final var response = assertThrows(RemoteServiceSenderException.class, () -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO));
         // then
-        assertEquals("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [400]]", response.getMessage());
+        assertThatThrownBy(() -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO))
+                .isInstanceOf(RemoteServiceSenderException.class)
+                .hasMessage("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [400]]");
         mockWebServer.takeRequest();
     }
 
@@ -152,9 +154,10 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.UNAUTHORIZED.value())
         );
         // when
-        final var response = assertThrows(RemoteServiceSenderException.class, () -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO));
         // then
-        assertEquals("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [401]]", response.getMessage());
+        assertThatThrownBy(() -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO))
+                .isInstanceOf(RemoteServiceSenderException.class)
+                .hasMessage("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [401]]");
         mockWebServer.takeRequest();
     }
 
@@ -166,9 +169,10 @@ class PsmSenderTest {
                 .setResponseCode(HttpStatus.FORBIDDEN.value())
         );
         // when
-        final var response = assertThrows(RemoteServiceSenderException.class, () -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO));
         // then
-        assertEquals("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [403]]", response.getMessage());
+        assertThatThrownBy(() -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO))
+                .isInstanceOf(RemoteServiceSenderException.class)
+                .hasMessage("PsmSender, postSadimMessage, primeId [pi100], send error, message [PSM return code [403]]");
         mockWebServer.takeRequest();
     }
 
@@ -181,11 +185,11 @@ class PsmSenderTest {
         );
 
         // when
-        assertDoesNotThrow(() -> psmSender.postSadimMessage(SADIM_MESSAGE_DTO));
+        psmSender.postSadimMessage(SADIM_MESSAGE_DTO);
 
         // then
         RecordedRequest request = mockWebServer.takeRequest();
-        assertEquals("POST", request.getMethod());
-        assertEquals("/sadim", request.getPath());
+        assertThat(request.getMethod()).isEqualTo("POST");
+        assertThat(request.getPath()).isEqualTo("/sadim");
     }
 }

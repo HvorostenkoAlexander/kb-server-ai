@@ -7,9 +7,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CommonConverterTest {
 
@@ -19,22 +18,22 @@ class CommonConverterTest {
     void testParseDouble() {
         String str = "null";
         Double d = cct.parseToDouble(str);
-        assertNull(d);
+        assertThat(d).isNull();
 
         str = null;
         d = cct.parseToDouble(str);
-        assertNull(d);
+        assertThat(d).isNull();
     }
 
     @Test
     void testParseInteger() {
         String str = "null";
         Integer i = cct.parseToInteger(str);
-        assertNull(i);
+        assertThat(i).isNull();
 
         str = null;
         i = cct.parseToInteger(str);
-        assertNull(i);
+        assertThat(i).isNull();
     }
 
     @ParameterizedTest
@@ -45,7 +44,7 @@ class CommonConverterTest {
     })
     void testParseToDate(String stringDate) {
         Date date = cct.parseToDate(stringDate);
-        assertNotNull(date);
+        assertThat(date).isNotNull();
 
         System.out.println("date : " + date);
     }
@@ -54,12 +53,8 @@ class CommonConverterTest {
     void testParseToDateBad() {
         String stringDate = "2021-07-01";
 
-        DateTimeParseException ex = assertThrows(DateTimeParseException.class,
-                () -> cct.parseToDate(stringDate)
-        );
-        assertNotNull(ex);
-
-        System.out.println("ex: " + ex);
+        assertThatThrownBy(() -> cct.parseToDate(stringDate))
+                .isInstanceOf(DateTimeParseException.class);
     }
 
 }

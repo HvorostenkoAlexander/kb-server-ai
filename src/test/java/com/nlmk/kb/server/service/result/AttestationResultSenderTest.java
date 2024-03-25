@@ -18,10 +18,8 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.apache.avro.AvroRuntimeException;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,6 +32,11 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class AttestationResultSenderTest {
@@ -69,19 +72,19 @@ class AttestationResultSenderTest {
                 .result(product).newProduct(false)
                 .build();
 
-        Mockito.when(resultConfigService.getEnabledTopics()).thenReturn(List.of());
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
+        when(resultConfigService.getEnabledTopics()).thenReturn(List.of());
+        assertThatCode(() -> productSender.send(attResult, VerificationResults.class)).doesNotThrowAnyException();
 
         // для заданной AVRO схемы нет подходящей конфигурации (по имени схемы)
-        Mockito.when(resultConfigService.getEnabledTopics())
-                .thenReturn(List.of(
-                        ResultsConfigDto.builder().id(1).topic("topic1").avroName("avro1").enabled(true).build(),
-                        ResultsConfigDto.builder().id(2).topic("topic2").avroName("avro2").enabled(true).build()
-                ));
-        Assertions.assertThrows(AttestationResultSenderException.class, () -> productSender.send(attResult, VerificationResults.class));
+        when(resultConfigService.getEnabledTopics()).thenReturn(List.of(
+                ResultsConfigDto.builder().id(1).topic("topic1").avroName("avro1").enabled(true).build(),
+                ResultsConfigDto.builder().id(2).topic("topic2").avroName("avro2").enabled(true).build()
+        ));
+        assertThatThrownBy(() -> productSender.send(attResult, VerificationResults.class))
+                .isInstanceOf(AttestationResultSenderException.class);
 
         // конфигурация есть, но результат аттестации пустой
-        Mockito.when(resultConfigService.getEnabledTopics())
+        when(resultConfigService.getEnabledTopics())
                 .thenReturn(List.of(
                         ResultsConfigDto.builder().id(1).topic("topic1").condition(null)
                                 .avroName("avro1").enabled(true).build(),
@@ -95,9 +98,9 @@ class AttestationResultSenderTest {
                         ResultsConfigDto.builder().id(5).topic("topic5").condition(null)
                                 .avroName("VerificationResultsKc2").enabled(true).build()
                 ));
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
+        assertThatCode(() -> productSender.send(attResult, VerificationResults.class)).doesNotThrowAnyException();
         // передачи еще не было
-        Assertions.assertEquals(0, mockKafkaRest.getRequestCount());
+        assertThat(mockKafkaRest.getRequestCount()).isEqualTo(0);
 
         // попытка отправки
         product.setId(100L);
@@ -110,18 +113,20 @@ class AttestationResultSenderTest {
                         .build()
         ));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> productSender.send(attResult, VerificationResults.class));
+        assertThatThrownBy(() -> productSender.send(attResult, VerificationResults.class))
+                .isInstanceOf(IllegalArgumentException.class);
         // передачи еще не было
-        Assertions.assertEquals(0, mockKafkaRest.getRequestCount());
+        assertThat(mockKafkaRest.getRequestCount()).isEqualTo(0);
 
         // отправка еще раз
         product.getRequests().get(0).setAttestations(List.of(
                 AttestationDto.builder().code(5).value("50").status(Status.NOT_MATCHED).equal("100").build()
         ));
         // требования AVRO схемы не выполнены
-        Assertions.assertThrows(AvroRuntimeException.class, () -> productSender.send(attResult, VerificationResults.class));
+        assertThatThrownBy(() -> productSender.send(attResult, VerificationResults.class))
+                .isInstanceOf(AvroRuntimeException.class);
         // передачи еще не было
-        Assertions.assertEquals(0, mockKafkaRest.getRequestCount());
+        assertThat(mockKafkaRest.getRequestCount()).isEqualTo(0);
 
         // отправка еще раз
         product.getRequests().get(0).setAttestationTs(new Date(1_000_000_000L));
@@ -132,12 +137,12 @@ class AttestationResultSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value()));
 
-            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
+            assertThatCode(() -> productSender.send(attResult, VerificationResults.class)).doesNotThrowAnyException();
 
             RecordedRequest request = mockKafkaRest.takeRequest();
-            Assertions.assertEquals("POST", request.getMethod());
-            Assertions.assertEquals("/topics/topic2", request.getPath());
-            Assertions.assertEquals(1, mockKafkaRest.getRequestCount());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/topics/topic2");
+            assertThat(mockKafkaRest.getRequestCount()).isEqualTo(1);
         }
         {
             // VerificationResultsPts
@@ -145,12 +150,12 @@ class AttestationResultSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value()));
 
-            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsPts.class));
+            assertThatCode(() -> productSender.send(attResult, VerificationResultsPts.class)).doesNotThrowAnyException();
 
             RecordedRequest request = mockKafkaRest.takeRequest();
-            Assertions.assertEquals("POST", request.getMethod());
-            Assertions.assertEquals("/topics/topic3", request.getPath());
-            Assertions.assertEquals(2, mockKafkaRest.getRequestCount());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/topics/topic3");
+            assertThat(mockKafkaRest.getRequestCount()).isEqualTo(2);
         }
         {
             // VerificationResultsKc1
@@ -158,12 +163,12 @@ class AttestationResultSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value()));
 
-            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsKc1.class));
+            assertThatCode(() -> productSender.send(attResult, VerificationResultsKc1.class)).doesNotThrowAnyException();
 
             RecordedRequest request = mockKafkaRest.takeRequest();
-            Assertions.assertEquals("POST", request.getMethod());
-            Assertions.assertEquals("/topics/topic4", request.getPath());
-            Assertions.assertEquals(3, mockKafkaRest.getRequestCount());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/topics/topic4");
+            assertThat(mockKafkaRest.getRequestCount()).isEqualTo(3);
         }
         {
             // VerificationResultsKc2
@@ -171,12 +176,12 @@ class AttestationResultSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value()));
 
-            Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsKc2.class));
+            assertThatCode(() -> productSender.send(attResult, VerificationResultsKc2.class)).doesNotThrowAnyException();
 
             RecordedRequest request = mockKafkaRest.takeRequest();
-            Assertions.assertEquals("POST", request.getMethod());
-            Assertions.assertEquals("/topics/topic5", request.getPath());
-            Assertions.assertEquals(4, mockKafkaRest.getRequestCount());
+            assertThat(request.getMethod()).isEqualTo("POST");
+            assertThat(request.getPath()).isEqualTo("/topics/topic5");
+            assertThat(mockKafkaRest.getRequestCount()).isEqualTo(4);
         }
     }
 

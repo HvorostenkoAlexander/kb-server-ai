@@ -18,7 +18,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @Import({SapMessageServiceImpl.class})
@@ -49,24 +50,25 @@ class SapMessageServiceTest {
     void getNextSapMessageTest() {
         prepareData();
 
-        assertEquals(6L, repository.count());
+        assertThat(repository.count()).isEqualTo(6L);
 
         var res = sapMessageService.getNextSapMessage(-1L);
-        assertEquals(2L, res.getId());
-        assertEquals(ZORDERS051.class, res.getOrderClass());
+        assertThat(res.getId()).isEqualTo(2L);
+        assertThat(res.getOrderClass()).isEqualTo(ZORDERS051.class);
 
         res = sapMessageService.getNextSapMessage(null);
-        assertEquals(2L, res.getId());
+        assertThat(res.getId()).isEqualTo(2L);
 
         res = sapMessageService.getNextSapMessage(res.getId());
-        assertEquals(3L, res.getId());
-        assertEquals(ZMMORDERS05DOP.class, res.getOrderClass());
+        assertThat(res.getId()).isEqualTo(3L);
+        assertThat(res.getOrderClass()).isEqualTo(ZMMORDERS05DOP.class);
 
         res = sapMessageService.getNextSapMessage(res.getId());
-        assertEquals(5L, res.getId());
+        assertThat(res.getId()).isEqualTo(5L);
 
         var lastId = res.getId();
-        assertThrows(DataNotFoundException.class, () -> sapMessageService.getNextSapMessage(lastId));
+        assertThatThrownBy(() -> sapMessageService.getNextSapMessage(lastId))
+                .isInstanceOf(DataNotFoundException.class);
     }
 
     private void prepareData() {
