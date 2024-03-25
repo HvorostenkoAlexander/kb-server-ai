@@ -2,7 +2,12 @@ package com.nlmk.kb.server.service.zifra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.exception.ZifraMessageParserException;
-import nlmk.l3.nsi.zifra.*;
+import nlmk.l3.nsi.zifra.Data;
+import nlmk.l3.nsi.zifra.EnumOp;
+import nlmk.l3.nsi.zifra.Reason;
+import nlmk.l3.nsi.zifra.lineAttributes_record;
+import nlmk.l3.nsi.zifra.pk;
+import nlmk.l3.nsi.zifra.properties;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,7 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CatalogueParserTest {
 
@@ -23,66 +29,63 @@ class CatalogueParserTest {
     @Test
     void spCustomerParser() throws Exception {
         SpCustomerParser parser = new SpCustomerParser();
-        assertEquals(Catalogue.SP_CUSTOMER, parser.getCatalogue());
+        assertThat(parser.getCatalogue()).isEqualTo(Catalogue.SP_CUSTOMER);
 
         final var obj = objectMapper.readValue(
                 getJsonFromPath("src/test/resources/json/SpCustomerExample.json"),
                 Reason.class
         );
-        assertNotNull(obj);
+        assertThat(obj).isNotNull();
 
         final var dto = parser.parse(obj.getPk(), obj.getData());
-        assertNotNull(dto);
-        assertEquals("90515640-77bc-11ed-bf7c-f39ea38ca6e0", dto.getId());
-        assertEquals("111111111", dto.getCustomerId());
-        assertEquals("ТЕСТ ПОТРЕБИТЕЛЬ", dto.getCustomerName());
-        assertEquals("ТЕСТ", dto.getShortName());
-        assertNull(dto.getDateBegin());
-        assertNull(dto.getDateEnd());
-        assertTrue(dto.getIsActive());
+        assertThat(dto.getId()).isEqualTo("90515640-77bc-11ed-bf7c-f39ea38ca6e0");
+        assertThat(dto.getCustomerId()).isEqualTo("111111111");
+        assertThat(dto.getCustomerName()).isEqualTo("ТЕСТ ПОТРЕБИТЕЛЬ");
+        assertThat(dto.getShortName()).isEqualTo("ТЕСТ");
+        assertThat(dto.getDateBegin()).isNull();
+        assertThat(dto.getDateEnd()).isNull();
+        assertThat(dto.getIsActive()).isTrue();
     }
 
     @Test
     void spCustomerGroupParser() throws Exception {
         SpCustomerGroupParser parser = new SpCustomerGroupParser();
-        assertEquals(Catalogue.SP_CUSTOMER_GROUP, parser.getCatalogue());
+        assertThat(parser.getCatalogue()).isEqualTo(Catalogue.SP_CUSTOMER_GROUP);
 
         final var obj = objectMapper.readValue(
                 getJsonFromPath("src/test/resources/json/SpCustomerGroupExample.json"),
                 Reason.class
         );
-        assertNotNull(obj);
+        assertThat(obj).isNotNull();
 
         final var dto = parser.parse(obj.getPk(), obj.getData());
-        assertNotNull(dto);
-        assertEquals("987e00c0-6b00-11ed-97c4-2b96fc4bacbb", dto.getId());
-        assertEquals(3, dto.getGroupId());
-        assertEquals("ВР", dto.getName());
-        assertNull(dto.getDateBegin());
-        assertNull(dto.getDateEnd());
-        assertTrue(dto.getIsActive());
+        assertThat(dto.getId()).isEqualTo("987e00c0-6b00-11ed-97c4-2b96fc4bacbb");
+        assertThat(dto.getGroupId()).isEqualTo(3);
+        assertThat(dto.getName()).isEqualTo("ВР");
+        assertThat(dto.getDateBegin()).isNull();
+        assertThat(dto.getDateEnd()).isNull();
+        assertThat(dto.getIsActive()).isTrue();
     }
 
     @Test
     void spGroupAndCustomerParser() throws Exception {
         SpGroupAndCustomerParser parser = new SpGroupAndCustomerParser();
-        assertEquals(Catalogue.SP_GROUP_AND_CUSTOMER, parser.getCatalogue());
+        assertThat(parser.getCatalogue()).isEqualTo(Catalogue.SP_GROUP_AND_CUSTOMER);
 
         final var obj = objectMapper.readValue(
                 getJsonFromPath("src/test/resources/json/SpGroupAndCustomerExample.json"),
                 Reason.class
         );
-        assertNotNull(obj);
+        assertThat(obj).isNotNull();
 
         final var dto = parser.parse(obj.getPk(), obj.getData());
-        assertNotNull(dto);
-        assertEquals("a09e7690-77bc-11ed-bf7c-f39ea38ca6e0", dto.getId());
-        assertEquals("7a533980-6b00-11ed-97c4-2b96fc4bacbb", dto.getGroupId());
-        assertEquals("90515640-77bc-11ed-bf7c-f39ea38ca6e0", dto.getCustomerId());
-        assertEquals(1, dto.getPriority());
-        assertNull(dto.getDateBegin());
-        assertNull(dto.getDateEnd());
-        assertTrue(dto.getIsActive());
+        assertThat(dto.getId()).isEqualTo("a09e7690-77bc-11ed-bf7c-f39ea38ca6e0");
+        assertThat(dto.getGroupId()).isEqualTo("7a533980-6b00-11ed-97c4-2b96fc4bacbb");
+        assertThat(dto.getCustomerId()).isEqualTo("90515640-77bc-11ed-bf7c-f39ea38ca6e0");
+        assertThat(dto.getPriority()).isEqualTo(1);
+        assertThat(dto.getDateBegin()).isNull();
+        assertThat(dto.getDateEnd()).isNull();
+        assertThat(dto.getIsActive()).isTrue();
     }
 
     Reason prepareTestObject() {
@@ -139,18 +142,20 @@ class CatalogueParserTest {
         final var attr = reason.getData().getLineAttributes();
         final var prop = reason.getData().getProperties();
 
-        assertEquals("111-222", reason.getPk().getLineId());
-        assertTrue(parser.getActive(attr));
-        assertEquals("value1", parser.getAttrStringValueByName(attr, "name1"));
-        assertNull(parser.getAttrStringValueByName(attr, "xyz"));
-        assertEquals(2, parser.getAttrIntegerValueByName(attr, "name2"));
-        assertNotNull(parser.getBeginDate(prop));
+        assertThat(reason.getPk().getLineId()).isEqualTo("111-222");
+        assertThat(parser.getActive(attr)).isTrue();
+        assertThat(parser.getAttrStringValueByName(attr, "name1")).isEqualTo("value1");
+        assertThat(parser.getAttrStringValueByName(attr, "xyz")).isNull();
+        assertThat(parser.getAttrIntegerValueByName(attr, "name2")).isEqualTo(2);
+        assertThat(parser.getBeginDate(prop)).isNotNull();
 
-        final var err1 = assertThrows(ZifraMessageParserException.class, () -> parser.getEndDate(prop));
-        assertEquals("Значение даты \"20YY-12-12\" не соответствует шаблону \"yyyy-MM-dd\"", err1.getMessage());
+        assertThatThrownBy(() -> parser.getEndDate(prop))
+                .isInstanceOf(ZifraMessageParserException.class)
+                .hasMessage("Значение даты \"20YY-12-12\" не соответствует шаблону \"yyyy-MM-dd\"");
 
-        final var err2 = assertThrows(ZifraMessageParserException.class, () -> parser.getAttrIntegerValueByName(attr, "name21"));
-        assertEquals("Ошибка преобразования строки \"2A\" в целое число", err2.getMessage());
+        assertThatThrownBy(() -> parser.getAttrIntegerValueByName(attr, "name21"))
+                .isInstanceOf(ZifraMessageParserException.class)
+                .hasMessage("Ошибка преобразования строки \"2A\" в целое число");
     }
 
 }

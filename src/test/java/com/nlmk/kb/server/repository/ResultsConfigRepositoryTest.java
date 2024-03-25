@@ -1,9 +1,10 @@
 package com.nlmk.kb.server.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class ResultsConfigRepositoryTest {
@@ -13,31 +14,31 @@ class ResultsConfigRepositoryTest {
 
     @Test
     void init() {
-        Assertions.assertEquals(4, repository.count());
-        Assertions.assertTrue(repository.findByAvroName("-").isEmpty());
+        assertThat(repository.count()).isEqualTo(4L);
+        assertThat(repository.findByAvroName("-")).isEmpty();
         {
             final var res = repository.findByAvroName("VerificationResults");
-            Assertions.assertEquals(1, res.size());
-            Assertions.assertTrue(res.get(0).isEnabled());
-            Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results.0", res.get(0).getTopic());
+            assertThat(res).hasSize(1);
+            assertThat(res.get(0).isEnabled()).isTrue();
+            assertThat(res.get(0).getTopic()).isEqualTo("000-1.l3-apcs.db.nlmk.verification-results.0");
         }
         {
             final var res = repository.findByAvroName("VerificationResultsPts");
-            Assertions.assertEquals(1, res.size());
-            Assertions.assertTrue(res.get(0).isEnabled());
-            Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results-pts.0", res.get(0).getTopic());
+            assertThat(res).hasSize(1);
+            assertThat(res.get(0).isEnabled()).isTrue();
+            assertThat(res.get(0).getTopic()).isEqualTo("000-1.l3-apcs.db.nlmk.verification-results-pts.0");
         }
         {
             final var res = repository.findByAvroName("VerificationResultsKc1");
-            Assertions.assertEquals(1, res.size());
-            Assertions.assertTrue(res.get(0).isEnabled());
-            Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results-kc1.0", res.get(0).getTopic());
+            assertThat(res).hasSize(1);
+            assertThat(res.get(0).isEnabled()).isTrue();
+            assertThat(res.get(0).getTopic()).isEqualTo("000-1.l3-apcs.db.nlmk.verification-results-kc1.0");
         }
         {
             final var res = repository.findByAvroName("VerificationResultsKc2");
-            Assertions.assertEquals(1, res.size());
-            Assertions.assertTrue(res.get(0).isEnabled());
-            Assertions.assertEquals("000-1.l3-apcs.db.nlmk.verification-results-kc2.0", res.get(0).getTopic());
+            assertThat(res).hasSize(1);
+            assertThat(res.get(0).isEnabled()).isTrue();
+            assertThat(res.get(0).getTopic()).isEqualTo("000-1.l3-apcs.db.nlmk.verification-results-kc2.0");
         }
     }
 

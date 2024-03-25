@@ -1,7 +1,19 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.pam.*;
+import com.nlmk.attestation.product.api.pam.AnalysisValue;
+import com.nlmk.attestation.product.api.pam.AttestationRequest;
+import com.nlmk.attestation.product.api.pam.ChemicalSpec;
+import com.nlmk.attestation.product.api.pam.DataPts;
+import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.PtsMechanicalProperty;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzes;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAnalyzesValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAttribute;
+import com.nlmk.attestation.product.api.pam.PtsPropertyAttributeValue;
+import com.nlmk.attestation.product.api.pam.PtsPropertyValue;
+import com.nlmk.attestation.product.api.pam.Specs;
+import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
@@ -9,19 +21,19 @@ import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.CommonConverterImpl;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestRequestAdapterImpl;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import javax.validation.Validation;
-import javax.validation.Validator;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class RestRequestAdapterTest {
@@ -39,17 +51,17 @@ class RestRequestAdapterTest {
     @Test
     void adaptCcmPts() {
         final var request = prepareRequestWithMandatoryData();
-        Assertions.assertTrue(validator.validate(request).isEmpty());
-        final var attestationRequest = Assertions.assertDoesNotThrow(() -> ccmPtsAdapter.adapt(prepareRequestWithMandatoryData()));
-        Assertions.assertEquals(prepareAttestationRequest(), attestationRequest);
+        assertThat(validator.validate(request)).isEmpty();
+        final var attestationRequest = ccmPtsAdapter.adapt(prepareRequestWithMandatoryData());
+        assertThat(attestationRequest).isEqualTo(prepareAttestationRequest());
     }
 
     @Test
     void adaptCcmPtsWithStrip() {
         final var request = prepareRequestWithStrip();
-        Assertions.assertTrue(validator.validate(request).isEmpty());
-        final var attestationRequest = Assertions.assertDoesNotThrow(() -> ccmPtsAdapter.adapt(prepareRequestWithStrip()));
-        Assertions.assertEquals(prepareAttestationRequestWithStrip(), attestationRequest);
+        assertThat(validator.validate(request)).isEmpty();
+        final var attestationRequest = ccmPtsAdapter.adapt(prepareRequestWithStrip());
+        assertThat(attestationRequest).isEqualTo(prepareAttestationRequestWithStrip());
     }
 
     @Test
@@ -57,7 +69,7 @@ class RestRequestAdapterTest {
     void printCcmPtsRequestAsJson() throws Exception {
         final var mapper = new ObjectMapper();
         final var request = prepareRequestWithMandatoryData();
-        Assertions.assertTrue(validator.validate(request).isEmpty());
+        assertThat(validator.validate(request)).isEmpty();
         System.out.println(mapper.writeValueAsString(request));
     }
 

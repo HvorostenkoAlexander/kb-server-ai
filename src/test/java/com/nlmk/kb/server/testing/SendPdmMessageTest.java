@@ -3,11 +3,12 @@ package com.nlmk.kb.server.testing;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @Disabled("hand sender")
 class SendPdmMessageTest extends SendMessageToKafka {
@@ -58,7 +59,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_ASAP_MECH_PROP_DT, randomKey(), value);
 
-        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
 
     @Test
@@ -104,7 +105,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_PHYS_MECH_PROP_ANIS_STEEL, randomKey(), value);
 
-        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
 
     @Test
@@ -160,7 +161,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_SP_TOL_EVENNESS_DT, randomKey(), value);
 
-        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
 
     @Test
@@ -226,7 +227,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_SP_TOL_THICK_DT, randomKey(), value);
 
-        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
 
     @Test
@@ -322,7 +323,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_SP_TOL_WIDTH_DT, randomKey(), value);
 
-        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
 
     @Test
@@ -378,6 +379,6 @@ class SendPdmMessageTest extends SendMessageToKafka {
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_REGISTER_EQUIVALENTS, randomKey(), value);
 
-        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
 }

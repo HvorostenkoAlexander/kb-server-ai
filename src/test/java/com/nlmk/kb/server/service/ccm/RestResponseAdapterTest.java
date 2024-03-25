@@ -1,16 +1,23 @@
 package com.nlmk.kb.server.service.ccm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.*;
+import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.DocId;
+import com.nlmk.attestation.product.api.Group;
+import com.nlmk.attestation.product.api.Params;
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.RequestDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.ccm.pts.CcmPtsRestResponseAdapterImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class RestResponseAdapterTest {
 
@@ -26,13 +33,12 @@ class RestResponseAdapterTest {
         final var expected = expectedCcmPtsResponse();
 
         // однообразие JSON представления
-        Assertions.assertEquals(objectMapper.writeValueAsString(expected), responseJson);
+        assertThat(responseJson).isEqualTo(objectMapper.writeValueAsString(expected));
 
         // формат дата время
         final var tree = objectMapper.readTree(responseJson);
         final var ts = tree.findPath("ts");
-        Assertions.assertNotNull(ts);
-        Assertions.assertEquals("2001-09-09T01:46:40.000Z", ts.asText());
+        assertThat(ts.asText()).isEqualTo("2001-09-09T01:46:40.000Z");
     }
 
     private ProductAttestationResultDto prepareAttestationResult() {

@@ -47,7 +47,7 @@ public class SapMessageServiceImpl implements SapMessageService {
         }
 
         if (idoczordrsBucketName.equals(nextMessage.getBucket())) {
-            log.trace("getNextSapMessage: id [{}]. Found zorder");
+            log.trace("getNextSapMessage: id [{}]. Found zorder", id);
             ZORDERS051 zorder = s3Service.unmarshalZorder(nextMessage.getOrder());
             return SapMessageDto.<ZORDERS051>builder()
                     .id(nextMessage.getId())
@@ -56,7 +56,7 @@ public class SapMessageServiceImpl implements SapMessageService {
                     .orderClass(ZORDERS051.class)
                     .build();
         } else {
-            log.trace("getNextSapMessage: id [{}]. Found zmmorder");
+            log.trace("getNextSapMessage: id [{}]. Found zmmorder", id);
             ZMMORDERS05DOP zmmorder = s3Service.unmarshalZmmorder(nextMessage.getOrder());
             return SapMessageDto.<ZMMORDERS05DOP>builder()
                     .id(nextMessage.getId())

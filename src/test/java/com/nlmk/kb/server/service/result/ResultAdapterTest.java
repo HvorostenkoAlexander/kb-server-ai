@@ -1,11 +1,61 @@
 package com.nlmk.kb.server.service.result;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nlmk.attestation.product.api.*;
+import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.DocId;
+import com.nlmk.attestation.product.api.Group;
+import com.nlmk.attestation.product.api.Params;
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.RequestDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.specification.SpecCode;
-import com.nlmk.kb.server.service.result.sending.adapter.*;
-import nlmk.l3.apcs.*;
-import org.junit.jupiter.api.Assertions;
+import com.nlmk.kb.server.service.result.sending.adapter.Kc1ResultAdapter;
+import com.nlmk.kb.server.service.result.sending.adapter.Kc2ResultAdapter;
+import com.nlmk.kb.server.service.result.sending.adapter.PgpResultAdapter;
+import com.nlmk.kb.server.service.result.sending.adapter.PtsResultAdapter;
+import com.nlmk.kb.server.service.result.sending.adapter.ResultAdapter;
+import nlmk.l3.apcs.EnumOp;
+import nlmk.l3.apcs.NormChemData;
+import nlmk.l3.apcs.NormMechData;
+import nlmk.l3.apcs.NormMetallData;
+import nlmk.l3.apcs.NormSpecData;
+import nlmk.l3.apcs.RecordChemical;
+import nlmk.l3.apcs.RecordCommons;
+import nlmk.l3.apcs.RecordData;
+import nlmk.l3.apcs.RecordKc1AttList;
+import nlmk.l3.apcs.RecordKc1AttListMismatch;
+import nlmk.l3.apcs.RecordKc1AttListNorms;
+import nlmk.l3.apcs.RecordKc1AttListNormsValues;
+import nlmk.l3.apcs.RecordKc1AttListParams;
+import nlmk.l3.apcs.RecordKc1AttListValues;
+import nlmk.l3.apcs.RecordKc1Data;
+import nlmk.l3.apcs.RecordKc1Mismatch;
+import nlmk.l3.apcs.RecordKc2AttList;
+import nlmk.l3.apcs.RecordKc2AttListMismatch;
+import nlmk.l3.apcs.RecordKc2AttListNorms;
+import nlmk.l3.apcs.RecordKc2AttListNormsValues;
+import nlmk.l3.apcs.RecordKc2AttListParams;
+import nlmk.l3.apcs.RecordKc2AttListValues;
+import nlmk.l3.apcs.RecordKc2Data;
+import nlmk.l3.apcs.RecordKc2Mismatch;
+import nlmk.l3.apcs.RecordMechanical;
+import nlmk.l3.apcs.RecordMechanicalParameter;
+import nlmk.l3.apcs.RecordMechanicalSpecifications;
+import nlmk.l3.apcs.RecordMettallographic;
+import nlmk.l3.apcs.RecordMettallographicSpecifications;
+import nlmk.l3.apcs.RecordPk;
+import nlmk.l3.apcs.RecordPtsAttList;
+import nlmk.l3.apcs.RecordPtsAttListMismatch;
+import nlmk.l3.apcs.RecordPtsAttListNorms;
+import nlmk.l3.apcs.RecordPtsAttListNormsValues;
+import nlmk.l3.apcs.RecordPtsAttListParams;
+import nlmk.l3.apcs.RecordPtsAttListValues;
+import nlmk.l3.apcs.RecordPtsData;
+import nlmk.l3.apcs.RecordPtsMismatch;
+import nlmk.l3.apcs.VerificationResults;
+import nlmk.l3.apcs.VerificationResultsKc1;
+import nlmk.l3.apcs.VerificationResultsKc2;
+import nlmk.l3.apcs.VerificationResultsPts;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,8 +63,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ResultAdapterTest {
 
@@ -27,7 +76,6 @@ class ResultAdapterTest {
     void simpleVerificationProduct() throws IOException {
         // given
         ProductDto product = new ObjectMapper()
-                //.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
                 .readValue(
                         getClass().getClassLoader().getResourceAsStream("json/att_result_product_98_20210518.json"),
                         ProductDto.class
@@ -63,11 +111,10 @@ class ResultAdapterTest {
         final var resultMet = results.getData().getMetallographic().stream()
                 .map(l -> l.getSpecifications().size()).mapToInt(i -> i).sum();
 
-        assertNotNull(results);
-        assertEquals(commonAttestation.size(), results.getData().getCommons().size());
-        assertEquals(chemicalAttestation.size(), results.getData().getChemical().size());
-        assertEquals(mechAttestation.size(), resultMech);
-        assertEquals(metallAttestation.size(), resultMet);
+        assertThat(results.getData().getCommons()).hasSize(commonAttestation.size());
+        assertThat(results.getData().getChemical()).hasSize(chemicalAttestation.size());
+        assertThat(resultMech).isEqualTo(mechAttestation.size());
+        assertThat(resultMet).isEqualTo(metallAttestation.size());
     }
 
     @Test
@@ -76,7 +123,7 @@ class ResultAdapterTest {
         // when
         final var result = pgpAdapter.adapt(certifiedProduct(), false);
         // then
-        Assertions.assertEquals(expectedVerificationResultsPgp(), result);
+        assertThat(result).isEqualTo(expectedVerificationResultsPgp());
     }
 
     @Test
@@ -85,7 +132,7 @@ class ResultAdapterTest {
         // when
         final var result = ptsAdapter.adapt(certifiedProduct(), false);
         // then
-        Assertions.assertEquals(expectedVerificationResultsPts(), result);
+        assertThat(result).isEqualTo(expectedVerificationResultsPts());
     }
 
     @Test
@@ -94,7 +141,7 @@ class ResultAdapterTest {
         // when
         final var result = kc1Adapter.adapt(certifiedProduct(), false);
         // then
-        Assertions.assertEquals(expectedVerificationResultsKc1(), result);
+        assertThat(result).isEqualTo(expectedVerificationResultsKc1());
     }
 
     @Test
@@ -103,7 +150,7 @@ class ResultAdapterTest {
         // when
         final var result = kc2Adapter.adapt(certifiedProduct(), false);
         // then
-        Assertions.assertEquals(expectedVerificationResultsKc2(), result);
+        assertThat(result).isEqualTo(expectedVerificationResultsKc2());
     }
 
 
@@ -114,59 +161,56 @@ class ResultAdapterTest {
         return ProductDto.builder()
                 .id(123L)
                 .referenceCode("100")
-                .requests(List.of(
-                        RequestDto.builder()
-                                .id(321L)
-                                .attestationTs(new Date(1_000_000_000L))
-                                .primeID("1234567890")
-                                .orderNum(1024L).orderPos(4)
-                                .kceh(12)
-                                .status(Status.MATCHED)
-                                .attestations(List.of(
-                                        AttestationDto.builder().group(Group.COMMON)
-                                                .code(SpecCode.EDGE_CHARACTER.getValue())
-                                                .value("X").status(Status.MATCHED_MANUALLY).equal("X")
-                                                .comment("Согласно требованиям заказа 2")
-                                                .docId(DocId.ORDER)
-                                                .build(),
-                                        AttestationDto.builder().group(Group.HIM)
-                                                .code(SpecCode.MASS_FRACTION_H.getValue())
-                                                .value("1.5").status(Status.MATCHED).max(2.0)
-                                                .comment("Согласно ГОСТ 1")
-                                                .docId(DocId.STANDARD_ASSORTMENT)
-                                                .build(),
-                                        AttestationDto.builder().group(Group.MEH)
-                                                .code(SpecCode.TEMPORARY_RESISTANCE.getValue())
-                                                .value("100").status(Status.MATCHED).min(90.0).max(110.0)
-                                                .comment("Согласно ГОСТ 2")
-                                                .docId(DocId.STANDARD_PRODUCT)
-                                                .params(Params.builder().signAnalysis(10).build())
-                                                .build(),
-                                        AttestationDto.builder().group(Group.MEH)
-                                                .code(SpecCode.IMPACT_WORK_1.getValue())
-                                                .value("50").status(Status.MATCHED).min(40.0).max(70.0)
-                                                .comment("Согласно ГОСТ 2")
-                                                .docId(DocId.STANDARD_PRODUCT)
-                                                .params(Params.builder().signAnalysis(11)
-                                                        .knctrator("V").temp("20").analysisId(3).build())
-                                                .build(),
-                                        AttestationDto.builder().group(Group.MET)
-                                                .code(SpecCode.SULPHIDES.getValue())
-                                                .value("3.4").status(Status.MATCHED).min(3.0)
-                                                .comment("Согласно ГОСТ 3")
-                                                .docId(DocId.STANDARD_MARK)
-                                                .params(Params.builder().signAnalysis(12).build())
-                                                .build(),
-                                        AttestationDto.builder().group(Group.MET)
-                                                .code(SpecCode.SILICATES.getValue())
-                                                .value("2.3").status(Status.MATCHED).max(3.0)
-                                                .comment("Согласно ГОСТ 3")
-                                                .params(Params.builder().signAnalysis(13).build())
-                                                .build()
-                                ))
-                                .build()
-                ))
-                .build();
+                .requests(List.of(RequestDto.builder()
+                        .id(321L)
+                        .attestationTs(new Date(1_000_000_000L))
+                        .primeID("1234567890")
+                        .orderNum(1024L).orderPos(4)
+                        .kceh(12)
+                        .status(Status.MATCHED)
+                        .attestations(List.of(
+                                AttestationDto.builder().group(Group.COMMON)
+                                        .code(SpecCode.EDGE_CHARACTER.getValue())
+                                        .value("X").status(Status.MATCHED_MANUALLY).equal("X")
+                                        .comment("Согласно требованиям заказа 2")
+                                        .docId(DocId.ORDER)
+                                        .build(),
+                                AttestationDto.builder().group(Group.HIM)
+                                        .code(SpecCode.MASS_FRACTION_H.getValue())
+                                        .value("1.5").status(Status.MATCHED).max(2.0)
+                                        .comment("Согласно ГОСТ 1")
+                                        .docId(DocId.STANDARD_ASSORTMENT)
+                                        .build(),
+                                AttestationDto.builder().group(Group.MEH)
+                                        .code(SpecCode.TEMPORARY_RESISTANCE.getValue())
+                                        .value("100").status(Status.MATCHED).min(90.0).max(110.0)
+                                        .comment("Согласно ГОСТ 2")
+                                        .docId(DocId.STANDARD_PRODUCT)
+                                        .params(Params.builder().signAnalysis(10).build())
+                                        .build(),
+                                AttestationDto.builder().group(Group.MEH)
+                                        .code(SpecCode.IMPACT_WORK_1.getValue())
+                                        .value("50").status(Status.MATCHED).min(40.0).max(70.0)
+                                        .comment("Согласно ГОСТ 2")
+                                        .docId(DocId.STANDARD_PRODUCT)
+                                        .params(Params.builder().signAnalysis(11)
+                                                .knctrator("V").temp("20").analysisId(3).build())
+                                        .build(),
+                                AttestationDto.builder().group(Group.MET)
+                                        .code(SpecCode.SULPHIDES.getValue())
+                                        .value("3.4").status(Status.MATCHED).min(3.0)
+                                        .comment("Согласно ГОСТ 3")
+                                        .docId(DocId.STANDARD_MARK)
+                                        .params(Params.builder().signAnalysis(12).build())
+                                        .build(),
+                                AttestationDto.builder().group(Group.MET)
+                                        .code(SpecCode.SILICATES.getValue())
+                                        .value("2.3").status(Status.MATCHED).max(3.0)
+                                        .comment("Согласно ГОСТ 3")
+                                        .params(Params.builder().signAnalysis(13).build())
+                                        .build()
+                        )).build()
+                )).build();
     }
 
     /**
@@ -224,61 +268,57 @@ class ResultAdapterTest {
                                         )).build(),
                                 RecordMechanical.newBuilder()
                                         .setSignAnalysis(11)
-                                        .setSpecifications(List.of(
-                                                RecordMechanicalSpecifications.newBuilder()
-                                                        .setSpecCode(SpecCode.IMPACT_WORK_1.getValue())
-                                                        .setSpecTypeCode(SpecCode.IMPACT_WORK_1.getTypeCode().getValue())
-                                                        .setSpecTypeName(SpecCode.IMPACT_WORK_1.getTypeCode().getDesc())
-                                                        .setSpecValue("50").setMismatch(Status.MATCHED.getValue())
-                                                        .setNote("Согласно ГОСТ 2")
-                                                        .setNorms(NormMechData.newBuilder()
-                                                                .setValueMin(40.0).setValueMax(70.0)
-                                                                .build())
-                                                        // порядок элементов определяет AdapterUtils.prepareParameters()
-                                                        .setParameters(List.of(
-                                                                RecordMechanicalParameter.newBuilder()
-                                                                        .setCode(SpecCode.TEMPERATURE.getValue())
-                                                                        .setName(SpecCode.TEMPERATURE.getDesc())
-                                                                        .setValue("20")
-                                                                        .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
-                                                                        .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
-                                                                        .build(),
-                                                                RecordMechanicalParameter.newBuilder()
-                                                                        .setCode(SpecCode.CONCENTRATOR.getValue())
-                                                                        .setName(SpecCode.CONCENTRATOR.getDesc())
-                                                                        .setValue("V")
-                                                                        .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
-                                                                        .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
-                                                                        .build(),
-                                                                RecordMechanicalParameter.newBuilder()
-                                                                        .setCode(SpecCode.ANALYSIS_ID.getValue())
-                                                                        .setName(SpecCode.ANALYSIS_ID.getDesc())
-                                                                        .setValue("3")
-                                                                        .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
-                                                                        .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
-                                                                        .build()
-                                                        ))
-                                                        .build()
+                                        .setSpecifications(List.of(RecordMechanicalSpecifications.newBuilder()
+                                                .setSpecCode(SpecCode.IMPACT_WORK_1.getValue())
+                                                .setSpecTypeCode(SpecCode.IMPACT_WORK_1.getTypeCode().getValue())
+                                                .setSpecTypeName(SpecCode.IMPACT_WORK_1.getTypeCode().getDesc())
+                                                .setSpecValue("50").setMismatch(Status.MATCHED.getValue())
+                                                .setNote("Согласно ГОСТ 2")
+                                                .setNorms(NormMechData.newBuilder()
+                                                        .setValueMin(40.0).setValueMax(70.0)
+                                                        .build())
+                                                // порядок элементов определяет AdapterUtils.prepareParameters()
+                                                .setParameters(List.of(
+                                                        RecordMechanicalParameter.newBuilder()
+                                                                .setCode(SpecCode.TEMPERATURE.getValue())
+                                                                .setName(SpecCode.TEMPERATURE.getDesc())
+                                                                .setValue("20")
+                                                                .setTypeCode(SpecCode.TEMPERATURE.getTypeCode().getValue())
+                                                                .setTypeName(SpecCode.TEMPERATURE.getTypeCode().getDesc())
+                                                                .build(),
+                                                        RecordMechanicalParameter.newBuilder()
+                                                                .setCode(SpecCode.CONCENTRATOR.getValue())
+                                                                .setName(SpecCode.CONCENTRATOR.getDesc())
+                                                                .setValue("V")
+                                                                .setTypeCode(SpecCode.CONCENTRATOR.getTypeCode().getValue())
+                                                                .setTypeName(SpecCode.CONCENTRATOR.getTypeCode().getDesc())
+                                                                .build(),
+                                                        RecordMechanicalParameter.newBuilder()
+                                                                .setCode(SpecCode.ANALYSIS_ID.getValue())
+                                                                .setName(SpecCode.ANALYSIS_ID.getDesc())
+                                                                .setValue("3")
+                                                                .setTypeCode(SpecCode.ANALYSIS_ID.getTypeCode().getValue())
+                                                                .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
+                                                                .build()
+                                                )).build()
                                         )).build()
                         ))
                         .setMetallographic(List.of(
                                 RecordMettallographic.newBuilder()
                                         .setSignAnalysis(12)
-                                        .setSpecifications(List.of(
-                                                RecordMettallographicSpecifications.newBuilder()
-                                                        .setSpecCode(SpecCode.SULPHIDES.getValue())
-                                                        .setSpecTypeCode(SpecCode.SULPHIDES.getTypeCode().getValue())
-                                                        .setSpecTypeName(SpecCode.SULPHIDES.getTypeCode().getDesc())
-                                                        .setSpecValue("3.4")
-                                                        .setMismatch(Status.MATCHED.getValue())
-                                                        .setNorms(NormMetallData.newBuilder()
-                                                                .setValueMin(3.0)
-                                                                .build())
-                                                        .setNote("Согласно ГОСТ 3")
-                                                        .setParameters(List.of())
-                                                        .build()
-                                        ))
-                                        .build(),
+                                        .setSpecifications(List.of(RecordMettallographicSpecifications.newBuilder()
+                                                .setSpecCode(SpecCode.SULPHIDES.getValue())
+                                                .setSpecTypeCode(SpecCode.SULPHIDES.getTypeCode().getValue())
+                                                .setSpecTypeName(SpecCode.SULPHIDES.getTypeCode().getDesc())
+                                                .setSpecValue("3.4")
+                                                .setMismatch(Status.MATCHED.getValue())
+                                                .setNorms(NormMetallData.newBuilder()
+                                                        .setValueMin(3.0)
+                                                        .build())
+                                                .setNote("Согласно ГОСТ 3")
+                                                .setParameters(List.of())
+                                                .build()
+                                        )).build(),
                                 RecordMettallographic.newBuilder()
                                         .setSignAnalysis(13)
                                         .setSpecifications(List.of(
@@ -294,10 +334,8 @@ class ResultAdapterTest {
                                                         .setNote("Согласно ГОСТ 3")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build()
-                        ))
-                        .build())
+                                        )).build()
+                        )).build())
                 .build();
     }
 
@@ -320,27 +358,25 @@ class ResultAdapterTest {
                                 RecordPtsAttList.newBuilder()
                                         .setGroupCode(Group.HIM.getCode())
                                         .setGroupName(Group.HIM.name())
-                                        .setListValues(List.of(
-                                                RecordPtsAttListValues.newBuilder()
-                                                        .setCode(SpecCode.MASS_FRACTION_H.getValue())
-                                                        .setName(SpecCode.MASS_FRACTION_H.getDesc())
-                                                        .setTypeCode(SpecCode.MASS_FRACTION_H.getTypeCode().getValue())
-                                                        .setTypeName(SpecCode.MASS_FRACTION_H.getTypeCode().getDesc())
-                                                        .setValue("1.5")
-                                                        .setDocId(DocId.STANDARD_ASSORTMENT.getValue())
-                                                        .setDocName(DocId.STANDARD_ASSORTMENT.getDesc())
-                                                        .setNormLimits(RecordPtsAttListNorms.newBuilder()
-                                                                .setValueMax(2.0)
-                                                                .build())
-                                                        .setMismatch(RecordPtsAttListMismatch.newBuilder()
-                                                                .setCode(Status.MATCHED.getValue())
-                                                                .setName(Status.MATCHED.getDesc())
-                                                                .build())
-                                                        .setNote("Согласно ГОСТ 1")
-                                                        .setParameters(List.of())
-                                                        .build()
-                                        ))
-                                        .build(),
+                                        .setListValues(List.of(RecordPtsAttListValues.newBuilder()
+                                                .setCode(SpecCode.MASS_FRACTION_H.getValue())
+                                                .setName(SpecCode.MASS_FRACTION_H.getDesc())
+                                                .setTypeCode(SpecCode.MASS_FRACTION_H.getTypeCode().getValue())
+                                                .setTypeName(SpecCode.MASS_FRACTION_H.getTypeCode().getDesc())
+                                                .setValue("1.5")
+                                                .setDocId(DocId.STANDARD_ASSORTMENT.getValue())
+                                                .setDocName(DocId.STANDARD_ASSORTMENT.getDesc())
+                                                .setNormLimits(RecordPtsAttListNorms.newBuilder()
+                                                        .setValueMax(2.0)
+                                                        .build())
+                                                .setMismatch(RecordPtsAttListMismatch.newBuilder()
+                                                        .setCode(Status.MATCHED.getValue())
+                                                        .setName(Status.MATCHED.getDesc())
+                                                        .build())
+                                                .setNote("Согласно ГОСТ 1")
+                                                .setParameters(List.of())
+                                                .build()
+                                        )).build(),
                                 RecordPtsAttList.newBuilder()
                                         .setGroupCode(Group.MEH.getCode())
                                         .setGroupName(Group.MEH.name())
@@ -401,10 +437,8 @@ class ResultAdapterTest {
                                                                         .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
                                                                         .setValue("3")
                                                                         .build()
-                                                        ))
-                                                        .build()
-                                        ))
-                                        .build(),
+                                                        )).build()
+                                        )).build(),
                                 RecordPtsAttList.newBuilder()
                                         .setGroupCode(Group.MET.getCode())
                                         .setGroupName(Group.MET.name())
@@ -445,8 +479,7 @@ class ResultAdapterTest {
                                                         .setNote("Согласно ГОСТ 3")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build(),
+                                        )).build(),
                                 RecordPtsAttList.newBuilder()
                                         .setGroupCode(Group.COMMON.getCode())
                                         .setGroupName(Group.COMMON.name())
@@ -473,10 +506,8 @@ class ResultAdapterTest {
                                                         .setDefectSuggestion("Согласно требованиям заказа 2")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build()
-                        ))
-                        .build())
+                                        )).build()
+                        )).build())
                 .build();
     }
 
@@ -518,8 +549,7 @@ class ResultAdapterTest {
                                                         .setNote("Согласно ГОСТ 1")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build(),
+                                        )).build(),
                                 RecordKc1AttList.newBuilder()
                                         .setGroupCode(Group.MEH.getCode())
                                         .setGroupName(Group.MEH.name())
@@ -580,10 +610,8 @@ class ResultAdapterTest {
                                                                         .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
                                                                         .setValue("3")
                                                                         .build()
-                                                        ))
-                                                        .build()
-                                        ))
-                                        .build(),
+                                                        )).build()
+                                        )).build(),
                                 RecordKc1AttList.newBuilder()
                                         .setGroupCode(Group.MET.getCode())
                                         .setGroupName(Group.MET.name())
@@ -624,8 +652,7 @@ class ResultAdapterTest {
                                                         .setNote("Согласно ГОСТ 3")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build(),
+                                        )).build(),
                                 RecordKc1AttList.newBuilder()
                                         .setGroupCode(Group.COMMON.getCode())
                                         .setGroupName(Group.COMMON.name())
@@ -652,10 +679,8 @@ class ResultAdapterTest {
                                                         .setDefectSuggestion("Согласно требованиям заказа 2")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build()
-                        ))
-                        .build())
+                                        )).build()
+                        )).build())
                 .build();
     }
 
@@ -698,8 +723,7 @@ class ResultAdapterTest {
                                                         .setNote("Согласно ГОСТ 1")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build(),
+                                        )).build(),
                                 RecordKc2AttList.newBuilder()
                                         .setGroupCode(Group.MEH.getCode())
                                         .setGroupName(Group.MEH.name())
@@ -760,10 +784,8 @@ class ResultAdapterTest {
                                                                         .setTypeName(SpecCode.ANALYSIS_ID.getTypeCode().getDesc())
                                                                         .setValue("3")
                                                                         .build()
-                                                        ))
-                                                        .build()
-                                        ))
-                                        .build(),
+                                                        )).build()
+                                        )).build(),
                                 RecordKc2AttList.newBuilder()
                                         .setGroupCode(Group.MET.getCode())
                                         .setGroupName(Group.MET.name())
@@ -804,8 +826,7 @@ class ResultAdapterTest {
                                                         .setNote("Согласно ГОСТ 3")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build(),
+                                        )).build(),
                                 RecordKc2AttList.newBuilder()
                                         .setGroupCode(Group.COMMON.getCode())
                                         .setGroupName(Group.COMMON.name())
@@ -832,10 +853,8 @@ class ResultAdapterTest {
                                                         .setDefectSuggestion("Согласно требованиям заказа 2")
                                                         .setParameters(List.of())
                                                         .build()
-                                        ))
-                                        .build()
-                        ))
-                        .build())
+                                        )).build()
+                        )).build())
                 .build();
     }
 }

@@ -1,11 +1,12 @@
 package com.nlmk.kb.server.service.ccm;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class CcmMessageServiceTest {
@@ -15,17 +16,18 @@ class CcmMessageServiceTest {
 
     @Test
     void saveFindTest() {
-        Assertions.assertDoesNotThrow(() -> service.saveSourceMessage(1020L, "1111111111", "{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}", LocalDateTime.now()));
+        service.saveSourceMessage(1020L, "1111111111",
+                "{\"ts\": \"2022-09-02T14:36:25.000+05:00\", \"op\": \"U\"}", LocalDateTime.now());
 
         {
             var found = service.findSourceMessageByRequestId(1020L);
-            Assertions.assertTrue(found.isPresent());
-            Assertions.assertEquals(1020L, found.get().getRequestId());
+            assertThat(found).hasValueSatisfying(ccmMessageSource ->
+                    assertThat(ccmMessageSource.getRequestId()).isEqualTo(1020L));
         }
         {
             var found = service.findSourceMessageByPrimeId("1111111111");
-            Assertions.assertTrue(found.isPresent());
-            Assertions.assertEquals(1020L, found.get().getRequestId());
+            assertThat(found).hasValueSatisfying(ccmMessageSource ->
+                    assertThat(ccmMessageSource.getRequestId()).isEqualTo(1020L));
         }
     }
 

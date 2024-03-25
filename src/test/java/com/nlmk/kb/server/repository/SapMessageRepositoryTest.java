@@ -9,8 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class SapMessageRepositoryTest {
@@ -20,8 +19,7 @@ class SapMessageRepositoryTest {
 
     @Test
     void init() {
-
-        assertEquals(0L, repository.count());
+        assertThat(repository.count()).isEqualTo(0L);
 
         var now = new Date();
 
@@ -51,29 +49,29 @@ class SapMessageRepositoryTest {
         repository.saveAll(sapMessages);
         repository.flush();
 
-        assertEquals(5L, repository.count());
+        assertThat(repository.count()).isEqualTo(5L);
 
         {
             var res = repository.findFirstByIdGreaterThanAndStateOrderById(-1L, SapMessageState.DONE);
-            assertTrue(res.isPresent());
-            assertEquals(1L, res.get().getId());
-            assertTrue(repository.existsByOrderNumAndIdGreaterThanAndState(res.get().getOrderNum(), res.get().getId(), SapMessageState.DONE));
+            assertThat(res).isPresent();
+            assertThat(res.get().getId()).isEqualTo(1L);
+            assertThat(repository.existsByOrderNumAndIdGreaterThanAndState(res.get().getOrderNum(), res.get().getId(), SapMessageState.DONE)).isTrue();
         }
         {
             var res = repository.findFirstByIdGreaterThanAndStateOrderById(1L, SapMessageState.DONE);
-            assertTrue(res.isPresent());
-            assertEquals(2L, res.get().getId());
-            assertFalse(repository.existsByOrderNumAndIdGreaterThanAndState(res.get().getOrderNum(), res.get().getId(), SapMessageState.DONE));
+            assertThat(res).isPresent();
+            assertThat(res.get().getId()).isEqualTo(2L);
+            assertThat(repository.existsByOrderNumAndIdGreaterThanAndState(res.get().getOrderNum(), res.get().getId(), SapMessageState.DONE)).isFalse();
         }
         {
             var res = repository.findFirstByIdGreaterThanAndStateOrderById(2L, SapMessageState.DONE);
-            assertTrue(res.isPresent());
-            assertEquals(4L, res.get().getId());
-            assertFalse(repository.existsByOrderNumAndIdGreaterThanAndState(res.get().getOrderNum(), res.get().getId(), SapMessageState.DONE));
+            assertThat(res).isPresent();
+            assertThat(res.get().getId()).isEqualTo(4L);
+            assertThat(repository.existsByOrderNumAndIdGreaterThanAndState(res.get().getOrderNum(), res.get().getId(), SapMessageState.DONE)).isFalse();
         }
         {
             var res = repository.findFirstByIdGreaterThanAndStateOrderById(4L, SapMessageState.DONE);
-            assertFalse(res.isPresent());
+            assertThat(res).isEmpty();
         }
     }
 
