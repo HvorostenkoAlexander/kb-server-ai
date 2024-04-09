@@ -105,7 +105,7 @@ class PamSenderTest {
             assertThatThrownBy(() -> pamSender.postAttestationRequest(attestationRequest))
                     .isInstanceOf(RemoteServiceSenderException.class)
                     .hasMessage("PamSender, postAttestationRequest, primeId [p100], send error, message "
-                            + "[Did not observe any item or terminal signal within 2000ms "
+                            + "[Did not observe any item or terminal signal within 2500ms "
                             + "in 'flatMap' (and no fallback has been configured)]");
             mockWebServer.takeRequest(100, TimeUnit.MILLISECONDS); // timeout 100 < 1000
         }
