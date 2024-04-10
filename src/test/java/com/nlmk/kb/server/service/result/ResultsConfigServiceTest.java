@@ -13,7 +13,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @Import({ResultConfigServiceImpl.class, ResultsConfigMapperImpl.class})
@@ -48,8 +49,7 @@ class ResultsConfigServiceTest {
     @Test
     void findByPageTest() {
         final var result = service.findPyPage(PageRequest.of(0, 10));
-        assertNotNull(result);
-        assertEquals(4 + 1, result.stream().toArray().length);
+        assertThat(result.stream().toArray().length).isEqualTo(4 + 1);
     }
 
     @Test
@@ -57,23 +57,18 @@ class ResultsConfigServiceTest {
 
         final var actualDto = service.findById(validResultConfig.getId());
 
-        assertNotNull(actualDto);
-        assertEquals(validResultConfig.getId(), actualDto.getId());
-        assertEquals(validResultConfig.getAvroName(), actualDto.getAvroName());
-        assertEquals(validResultConfig.getCondition(), actualDto.getCondition());
-        assertEquals(validResultConfig.getTopic(), actualDto.getTopic());
-        assertEquals(validResultConfig.isEnabled(), actualDto.isEnabled());
+        assertThat(actualDto.getId()).isEqualTo(validResultConfig.getId());
+        assertThat(actualDto.getAvroName()).isEqualTo(validResultConfig.getAvroName());
+        assertThat(actualDto.getCondition()).isEqualTo(validResultConfig.getCondition());
+        assertThat(actualDto.getTopic()).isEqualTo(validResultConfig.getTopic());
+        assertThat(actualDto.isEnabled()).isEqualTo(validResultConfig.isEnabled());
     }
 
     @Test
     void findByIdNotFound() {
-
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.findById(-111)
-        );
-
-        assertNotNull(iae);
-        assertEquals("Не найден объект с id: [-111]", iae.getMessage());
+        assertThatThrownBy(() -> service.findById(-111))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Не найден объект с id: [-111]");
     }
 
     @Test
@@ -89,23 +84,19 @@ class ResultsConfigServiceTest {
 
         final var actualDto = service.create(newDto);
 
-        assertNotNull(actualDto);
-        assertNotNull(actualDto.getId());
-        assertNotEquals(validResultConfig.getId(), actualDto.getId());
-        assertEquals(validResultConfig.getAvroName(), actualDto.getAvroName());
-        assertEquals(validResultConfig.getCondition(), actualDto.getCondition());
-        assertEquals(validResultConfig.getTopic(), actualDto.getTopic());
-        assertEquals(validResultConfig.isEnabled(), actualDto.isEnabled());
+        assertThat(actualDto.getId()).isNotNull();
+        assertThat(actualDto.getId()).isNotEqualTo(validResultConfig.getId());
+        assertThat(actualDto.getAvroName()).isEqualTo(validResultConfig.getAvroName());
+        assertThat(actualDto.getCondition()).isEqualTo(validResultConfig.getCondition());
+        assertThat(actualDto.getTopic()).isEqualTo(validResultConfig.getTopic());
+        assertThat(actualDto.isEnabled()).isEqualTo(validResultConfig.isEnabled());
     }
 
     @Test
     void createTestBad() {
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.create(validResultDto)
-        );
-
-        assertNotNull(iae);
-        assertEquals("При создании нового объекта id должен быть null", iae.getMessage());
+        assertThatThrownBy(() -> service.create(validResultDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("При создании нового объекта id должен быть null");
     }
 
     @Test
@@ -117,47 +108,35 @@ class ResultsConfigServiceTest {
 
         final var actualDto = service.update(validResultDto);
 
-        assertNotNull(actualDto);
-        assertEquals(validResultConfig.getId(), actualDto.getId());
-        assertEquals(validResultConfig.getAvroName(), actualDto.getAvroName());
-        assertEquals(validResultConfig.getCondition(), actualDto.getCondition());
-        assertEquals(validResultConfig.getTopic(), actualDto.getTopic());
-        assertEquals(validResultConfig.isEnabled(), actualDto.isEnabled());
+        assertThat(actualDto.getId()).isEqualTo(validResultConfig.getId());
+        assertThat(actualDto.getAvroName()).isEqualTo(validResultConfig.getAvroName());
+        assertThat(actualDto.getCondition()).isEqualTo(validResultConfig.getCondition());
+        assertThat(actualDto.getTopic()).isEqualTo(validResultConfig.getTopic());
+        assertThat(actualDto.isEnabled()).isEqualTo(validResultConfig.isEnabled());
     }
 
     @Test
     void updateTestBad() {
         validResultDto.setId(null);
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.update(validResultDto)
-        );
-
-        assertNotNull(iae);
-        assertEquals("При изменении объекта id должен быть не null", iae.getMessage());
+        assertThatThrownBy(() -> service.update(validResultDto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("При изменении объекта id должен быть не null");
     }
 
     @Test
     void deleteByIdTestOk() {
-
-        assertTrue(repository.findById(validResultConfig.getId()).isPresent());
+        assertThat(repository.findById(validResultConfig.getId())).isPresent();
 
         service.deleteById(validResultConfig.getId());
 
-        assertTrue(repository.findById(validResultConfig.getId()).isEmpty());
+        assertThat(repository.findById(validResultConfig.getId())).isEmpty();
     }
 
     @Test
     void deleteByIdBad() {
-
-        IllegalArgumentException iae = null;
-        try {
-            service.deleteById(-111);
-        } catch (IllegalArgumentException ex) {
-            iae = ex;
-        }
-
-        assertNotNull(iae);
-        assertEquals("Не найден объект с id: -111", iae.getMessage());
+        assertThatThrownBy(() -> service.deleteById(-111))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Не найден объект с id: -111");
     }
 
 }

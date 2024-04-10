@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class DictionaryConfigServiceTest {
@@ -44,30 +46,28 @@ class DictionaryConfigServiceTest {
 
     @Test
     void findDtoByIdTestOk() {
+        // given
         final var dto = service.findById(validEntity.getId());
 
-        assertNotNull(dto);
-        assertEquals(dto.getId(), validEntity.getId());
-        assertEquals(dto.getTopic(), validEntity.getTopic());
-        assertEquals(dto.getNsiPath(), validEntity.getNsiPath());
-        assertEquals(dto.getEnabled(), validEntity.getEnabled());
-        assertArrayEquals(dto.getCodes(), validEntity.getCodes().toArray());
+        // when
+        // then
+        assertThat(dto.getId()).isEqualTo(validEntity.getId());
+        assertThat(dto.getTopic()).isEqualTo(validEntity.getTopic());
+        assertThat(dto.getNsiPath()).isEqualTo(validEntity.getNsiPath());
+        assertThat(dto.getEnabled()).isEqualTo(validEntity.getEnabled());
+        assertThat(dto.getCodes()).isEqualTo(validEntity.getCodes().toArray());
     }
 
     @Test
     void findByIdTestNotFound() {
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.findById(Long.MAX_VALUE)
-        );
-
-        assertNotNull(iae);
-        assertEquals("Не найден объект с id: [" + Long.MAX_VALUE + "]", iae.getMessage());
-
+        assertThatThrownBy(() -> service.findById(Long.MAX_VALUE))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Не найден объект с id: [" + Long.MAX_VALUE + "]");
     }
 
     @Test
     void updateTestOk() {
-
+        // given
         final var dto = DictionaryConfigDto.builder()
                 .topic("updatedTopic")
                 .nsiPath("/updated/updatedPath")
@@ -76,16 +76,18 @@ class DictionaryConfigServiceTest {
                 .build();
         final var actualDto = service.update(validEntity.getId(), dto);
 
-        assertNotNull(actualDto);
-        assertEquals(validEntity.getId(), actualDto.getId());
-        assertEquals(dto.getTopic(), actualDto.getTopic());
-        assertEquals(dto.getNsiPath(), actualDto.getNsiPath());
-        assertEquals(dto.getEnabled(), actualDto.getEnabled());
-        assertArrayEquals(dto.getCodes(), actualDto.getCodes());
+        // when
+        // then
+        assertThat(actualDto.getId()).isEqualTo(validEntity.getId());
+        assertThat(actualDto.getTopic()).isEqualTo(dto.getTopic());
+        assertThat(actualDto.getNsiPath()).isEqualTo(dto.getNsiPath());
+        assertThat(actualDto.getEnabled()).isEqualTo(dto.getEnabled());
+        assertThat(actualDto.getCodes()).isEqualTo(dto.getCodes());
     }
 
     @Test
     void updateTestBad() {
+        // given
         final var notValidDto = DictionaryConfigDto.builder()
                 .topic("")
                 .nsiPath("/updated/updatedPath")
@@ -93,33 +95,36 @@ class DictionaryConfigServiceTest {
                 .codes(new Integer[]{101, 202, 303, 404})
                 .build();
 
-        Exception ex = assertThrows(Exception.class,
-                () -> service.update(validEntity.getId(), notValidDto)
-        );
-        assertNotNull(ex);
-        assertEquals("update.dto.topic: поле не должно быть пустым", ex.getMessage());
+        // when
+        // then
+        assertThatThrownBy(() -> service.update(validEntity.getId(), notValidDto))
+                .isInstanceOf(ConstraintViolationException.class)
+                .hasMessage("update.dto.topic: поле не должно быть пустым");
 
+        // given
         notValidDto.setTopic("validTopic");
         notValidDto.setNsiPath(null);
 
-        ex = assertThrows(Exception.class,
-                () -> service.update(validEntity.getId(), notValidDto)
-        );
-        assertNotNull(ex);
-        assertEquals("update.dto.nsiPath: поле не должно быть пустым", ex.getMessage());
+        // when
+        // then
+        assertThatThrownBy(() -> service.update(validEntity.getId(), notValidDto))
+                .isInstanceOf(ConstraintViolationException.class)
+                .hasMessage("update.dto.nsiPath: поле не должно быть пустым");
 
+        // given
         notValidDto.setNsiPath("/updated/validPath");
         notValidDto.setEnabled(null);
 
-        ex = assertThrows(Exception.class,
-                () -> service.update(validEntity.getId(), notValidDto)
-        );
-        assertNotNull(ex);
-        assertEquals("update.dto.enabled: поле не должно быть null", ex.getMessage());
+        // when
+        // then
+        assertThatThrownBy(() -> service.update(validEntity.getId(), notValidDto))
+                .isInstanceOf(ConstraintViolationException.class)
+                .hasMessage("update.dto.enabled: поле не должно быть null");
     }
 
     @Test
     void deleteByIdTestOk() {
+        // given
         final var entity = DictionaryConfig.builder()
                 .topic(RandomStringUtils.randomAlphabetic(12))
                 .nsiPath("/dict/path")
@@ -130,49 +135,48 @@ class DictionaryConfigServiceTest {
 
         service.deleteById(entity.getId());
 
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.findById(entity.getId())
-        );
-
-        assertNotNull(iae);
-        assertEquals("Не найден объект с id: [" + entity.getId() + "]", iae.getMessage());
+        // when
+        // then
+        assertThatThrownBy(() -> service.findById(entity.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Не найден объект с id: [" + entity.getId() + "]");
     }
 
     @Test
     void deleteByIdTestNotFound() {
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.deleteById(Long.MAX_VALUE)
-        );
-
-        assertNotNull(iae);
-        assertEquals("Не найден объект с id: [" + Long.MAX_VALUE + "]", iae.getMessage());
+        assertThatThrownBy(() -> service.deleteById(Long.MAX_VALUE))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Не найден объект с id: [" + Long.MAX_VALUE + "]");
     }
 
     @Test
     void findByTopicNameOk() {
+        // given
         final var dto = service.findByTopic(validEntity.getTopic());
 
-        assertNotNull(dto);
-        assertEquals(dto.getId(), validEntity.getId());
-        assertEquals(dto.getTopic(), validEntity.getTopic());
-        assertEquals(dto.getNsiPath(), validEntity.getNsiPath());
-        assertEquals(dto.getEnabled(), validEntity.getEnabled());
-        assertArrayEquals(dto.getCodes(), validEntity.getCodes().toArray());
+        // when
+        // then
+        assertThat(dto.getId()).isEqualTo(validEntity.getId());
+        assertThat(dto.getTopic()).isEqualTo(validEntity.getTopic());
+        assertThat(dto.getNsiPath()).isEqualTo(validEntity.getNsiPath());
+        assertThat(dto.getEnabled()).isEqualTo(validEntity.getEnabled());
+        assertThat(dto.getCodes()).isEqualTo(validEntity.getCodes().toArray());
     }
 
     @Test
     void findByTopicNameNotFound() {
+        // given
         final var topicName = RandomStringUtils.randomAlphabetic(12);
-
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
-                () -> service.findByTopic(topicName)
-        );
-        assertNotNull(iae);
-        assertEquals("Не найден объект с topic: [" + topicName + "]", iae.getMessage());
+        // when
+        // then
+        assertThatThrownBy(() -> service.findByTopic(topicName))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Не найден объект с topic: [" + topicName + "]");
     }
 
     @Test
     void uniqueTopicNameTest() {
+        // given
         final var entity = DictionaryConfig.builder()
                 .topic("newTopicName")
                 .nsiPath("newNsiPath")
@@ -188,11 +192,10 @@ class DictionaryConfigServiceTest {
                 .codes(entity.getCodes().toArray(new Integer[0]))
                 .build();
 
-        DataIntegrityViolationException dive = assertThrows(DataIntegrityViolationException.class,
-                () -> service.update(entity.getId(), nonUniqueTopicDto)
-        );
-
-        assertNotNull(dive);
+        // when
+        // then
+        assertThatThrownBy(() -> service.update(entity.getId(), nonUniqueTopicDto))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
 }

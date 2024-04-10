@@ -1,16 +1,20 @@
 package com.nlmk.kb.server.service.result;
 
-import com.nlmk.attestation.product.api.*;
+import com.nlmk.attestation.product.api.AttestationDto;
+import com.nlmk.attestation.product.api.Group;
+import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.RequestDto;
+import com.nlmk.attestation.product.api.SpecificationDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.service.result.sending.KcehConditionFilterImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class KcehConditionFilterTest {
 
@@ -27,9 +31,9 @@ class KcehConditionFilterTest {
 
         final var product = conditionFilter.filter(validProduct, "kceh=11");
 
-        assertNotNull(product);
-        Assertions.assertTrue(product.isPresent());
-        Assertions.assertEquals(1, product.get().getRequests().size());
+        assertThat(product).isPresent().hasValueSatisfying(productDto ->
+                assertThat(productDto.getRequests()).hasSize(1)
+        );
     }
 
     @Test
@@ -38,9 +42,9 @@ class KcehConditionFilterTest {
 
         final var product = conditionFilter.filter(validProduct, "kceh=0");
 
-        assertNotNull(product);
-        Assertions.assertTrue(product.isPresent());
-        Assertions.assertEquals(0, product.get().getRequests().size());
+        assertThat(product).isPresent().hasValueSatisfying(productDto ->
+                assertThat(productDto.getRequests()).isEmpty()
+        );
     }
 
     @Test
@@ -49,9 +53,9 @@ class KcehConditionFilterTest {
 
         final var product = conditionFilter.filter(validProduct, "kceh=0");
 
-        assertNotNull(product);
-        Assertions.assertTrue(product.isPresent());
-        Assertions.assertEquals(0, product.get().getRequests().size());
+        assertThat(product).isPresent().hasValueSatisfying(productDto ->
+                assertThat(productDto.getRequests()).isEmpty()
+        );
     }
 
     @Test
@@ -60,9 +64,9 @@ class KcehConditionFilterTest {
 
         final var product = conditionFilter.filter(validProduct, null);
 
-        assertNotNull(product);
-        Assertions.assertTrue(product.isPresent());
-        Assertions.assertEquals(1, product.get().getRequests().size());
+        assertThat(product).isPresent().hasValueSatisfying(productDto ->
+                assertThat(productDto.getRequests()).hasSize(1)
+        );
     }
 
     @Test
@@ -71,9 +75,9 @@ class KcehConditionFilterTest {
 
         final var product = conditionFilter.filter(validProduct, "kceh=123XXX");
 
-        assertNotNull(product);
-        Assertions.assertTrue(product.isPresent());
-        Assertions.assertEquals(1, product.get().getRequests().size());
+        assertThat(product).isPresent().hasValueSatisfying(productDto ->
+                assertThat(productDto.getRequests()).hasSize(1)
+        );
     }
 
     private ProductDto createProductWithKceh(Integer kceh) {
@@ -84,15 +88,11 @@ class KcehConditionFilterTest {
                                 .ts(new Date(1_100_000_000L))
                                 .attestationTs(new Date(1_100_000_000L))
                                 .status(Status.NOT_MATCHED)
-                                .specifications(List.of(
-                                        SpecificationDto.builder()
-                                                .code(93).value("993").typeCode(TypeCode.STRING)
-                                                .build()
-                                ))
-                                .attestations(List.of(
-                                        AttestationDto.builder()
-                                                .code(1).value("1").group(Group.ASKIT).status(Status.MATCHED).build()
-                                ))
+                                .specifications(List.of(SpecificationDto.builder()
+                                        .code(93).value("993").typeCode(TypeCode.STRING)
+                                        .build()))
+                                .attestations(List.of(AttestationDto.builder()
+                                        .code(1).value("1").group(Group.ASKIT).status(Status.MATCHED).build()))
                                 .kceh(kceh)
                                 .build()
                 )).build();

@@ -29,12 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.DateUtil.now;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -92,12 +88,12 @@ class SapMessageHandlerTest {
         var res = sapMessageHandler.handleConsumerRecord(createConsumerRecord(ZORDERS_NOTIFICATION));
 
         // then
-        assertFalse(res);
+        assertThat(res).isFalse();
         List<SapMessage> sapMessages = sapMessageRepository.findAll();
-        assertEquals(1, sapMessages.size());
+        assertThat(sapMessages).hasSize(1);
         SapMessage sapMessage = sapMessages.get(0);
-        assertNull(sapMessage.getOrder());
-        assertEquals(SapMessageState.NEW, sapMessage.getState());
+        assertThat(sapMessage.getOrder()).isNull();
+        assertThat(sapMessage.getState()).isEqualTo(SapMessageState.NEW);
     }
 
     @Test
@@ -112,12 +108,12 @@ class SapMessageHandlerTest {
         var res = sapMessageHandler.handleConsumerRecord(createConsumerRecord(ZORDERS_NOTIFICATION));
 
         // then
-        assertTrue(res);
+        assertThat(res).isTrue();
         List<SapMessage> sapMessages = sapMessageRepository.findAll();
-        assertEquals(1, sapMessages.size());
-        SapMessage sapMessage2 = sapMessages.get(0);
-        assertNotNull(sapMessage2.getOrder());
-        assertEquals(SapMessageState.ERROR, sapMessage2.getState());
+        assertThat(sapMessages).hasSize(1);
+        SapMessage sapMessage = sapMessages.get(0);
+        assertThat(sapMessage.getOrder()).isNotNull();
+        assertThat(sapMessage.getState()).isEqualTo(SapMessageState.ERROR);
 
         verify(psmSender, never()).postZorder(any());
     }
@@ -139,12 +135,12 @@ class SapMessageHandlerTest {
         var res = sapMessageHandler.handleConsumerRecord(createConsumerRecord(ZORDERS_NOTIFICATION));
 
         // then
-        assertTrue(res);
+        assertThat(res).isTrue();
         List<SapMessage> sapMessages = sapMessageRepository.findAll();
-        assertEquals(1, sapMessages.size());
-        SapMessage sapMessage3 = sapMessages.get(0);
-        assertNotNull(sapMessage3.getOrder());
-        assertEquals(state, sapMessage3.getState());
+        assertThat(sapMessages).hasSize(1);
+        SapMessage sapMessage = sapMessages.get(0);
+        assertThat(sapMessage.getOrder()).isNotNull();
+        assertThat(sapMessage.getState()).isEqualTo(state);
 
         verify(psmSender, never()).postZorder(any());
     }
@@ -168,15 +164,15 @@ class SapMessageHandlerTest {
         var res = sapMessageHandler.handleConsumerRecord(createConsumerRecord(ZORDERS_NOTIFICATION));
 
         // then
-        assertTrue(res);
+        assertThat(res).isTrue();
         List<SapMessage> sapMessages = sapMessageRepository.findAll();
-        assertEquals(1, sapMessages.size());
-        SapMessage sapMessage5 = sapMessages.get(0);
-        assertNotNull(sapMessage5.getOrder());
-        assertEquals(SapMessageState.DONE, sapMessage5.getState());
+        assertThat(sapMessages).hasSize(1);
+        SapMessage sapMessage = sapMessages.get(0);
+        assertThat(sapMessage.getOrder()).isNotNull();
+        assertThat(sapMessage.getState()).isEqualTo(SapMessageState.DONE);
         final ArgumentCaptor<ZORDERS051> captor = ArgumentCaptor.forClass(ZORDERS051.class);
         verify(psmSender, times(1)).postZorder(captor.capture());
-        assertEquals("0040452892", captor.getValue().getIDOC().getE1EDK01().getBELNR());
+        assertThat(captor.getValue().getIDOC().getE1EDK01().getBELNR()).isEqualTo("0040452892");
     }
 
     @Test
@@ -192,16 +188,16 @@ class SapMessageHandlerTest {
         var res = sapMessageHandler.handleConsumerRecord(createConsumerRecord(ZORDERS_NOTIFICATION));
 
         // then
-        assertTrue(res);
+        assertThat(res).isTrue();
         List<SapMessage> sapMessages = sapMessageRepository.findAll();
-        assertEquals(1, sapMessages.size());
-        SapMessage sapMessage5 = sapMessages.get(0);
-        assertNotNull(sapMessage5.getOrder());
-        assertEquals(SapMessageState.DONE, sapMessage5.getState());
+        assertThat(sapMessages).hasSize(1);
+        SapMessage sapMessage = sapMessages.get(0);
+        assertThat(sapMessage.getOrder()).isNotNull();
+        assertThat(sapMessage.getState()).isEqualTo(SapMessageState.DONE);
 
         final ArgumentCaptor<ZORDERS051> captor = ArgumentCaptor.forClass(ZORDERS051.class);
         verify(psmSender, times(1)).postZorder(captor.capture());
-        assertEquals("0040452892", captor.getValue().getIDOC().getE1EDK01().getBELNR());
+        assertThat(captor.getValue().getIDOC().getE1EDK01().getBELNR()).isEqualTo("0040452892");
     }
 
     @Test
@@ -217,16 +213,16 @@ class SapMessageHandlerTest {
         var res = sapMessageHandler.handleConsumerRecord(createConsumerRecord(ZMMORDERS_NOTIFICATION));
 
         // then
-        assertTrue(res);
+        assertThat(res).isTrue();
         List<SapMessage> sapMessages = sapMessageRepository.findAll();
-        assertEquals(1, sapMessages.size());
-        SapMessage sapMessage5 = sapMessages.get(0);
-        assertNotNull(sapMessage5.getOrder());
-        assertEquals(SapMessageState.DONE, sapMessage5.getState());
+        assertThat(sapMessages).hasSize(1);
+        SapMessage sapMessage = sapMessages.get(0);
+        assertThat(sapMessage.getOrder()).isNotNull();
+        assertThat(sapMessage.getState()).isEqualTo(SapMessageState.DONE);
 
         final ArgumentCaptor<ZMMORDERS05DOP> captor = ArgumentCaptor.forClass(ZMMORDERS05DOP.class);
         verify(psmSender, times(1)).postZmmorder(captor.capture());
-        assertEquals("4500745477", captor.getValue().getIDOC().getE1EDK01().getBELNR());
+        assertThat(captor.getValue().getIDOC().getE1EDK01().getBELNR()).isEqualTo("4500745477");
     }
 
     private static Stream<Arguments> nonRetryableSapMessageStatuses() {

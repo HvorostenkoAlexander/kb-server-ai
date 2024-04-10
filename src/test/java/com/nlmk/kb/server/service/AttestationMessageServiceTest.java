@@ -7,11 +7,9 @@ import com.nlmk.attestation.product.api.pam.ProductAttestationResultDto;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.repository.AttestationMessageRepository;
 import com.nlmk.kb.server.repository.CcmMessageSourceRepository;
-import com.nlmk.kb.server.service.sender.PamSender;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 class AttestationMessageServiceTest {
 
@@ -35,8 +35,6 @@ class AttestationMessageServiceTest {
     private AttestationMessageRepository attestationMessageRepository;
     @Autowired
     private CcmMessageSourceRepository ccmMessageSourceRepository;
-    @Autowired
-    private PamSender pamSender;
     @Autowired
     private AttestationMessageService attestationMessageService;
 
@@ -97,16 +95,15 @@ class AttestationMessageServiceTest {
                 ))
         );
 
-        Assertions.assertDoesNotThrow(() -> attestationMessageService.ccmPtsRequestProcessing(request));
+        attestationMessageService.ccmPtsRequestProcessing(request);
         mockWebServer.takeRequest();
 
         // сообщение с запросом в формате PAM сохранено
         final var attMessage = attestationMessageRepository.findFirstByPrimeIdOrderByReceiptTsDesc("22");
-        Assertions.assertTrue(attMessage.isPresent());
+        assertThat(attMessage).isPresent();
         // сообщение с первоначальным запросом сохранено
         final var sourceMessage = ccmMessageSourceRepository.findByRequestId(200L);
-        Assertions.assertTrue(sourceMessage.isPresent());
-        Assertions.assertEquals(objectMapper.writeValueAsString(request), sourceMessage.get().getMessageSource());
+        assertThat(sourceMessage).isPresent();
+        assertThat(sourceMessage.get().getMessageSource()).isEqualTo(objectMapper.writeValueAsString(request));
     }
-
 }

@@ -2,13 +2,14 @@ package com.nlmk.kb.server.repository;
 
 import com.nlmk.kb.server.entity.AttestationMessage;
 import com.nlmk.kb.server.entity.AttestationMessageSender;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Date;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class AttestationMessageRepositoryTest {
@@ -18,33 +19,37 @@ class AttestationMessageRepositoryTest {
 
     @Test
     void saveFind() {
-        Assertions.assertEquals(0L, repository.count());
-        Assertions.assertDoesNotThrow(() -> repository.saveAll(List.of(
+        // given
+        assertThat(repository.count()).isEqualTo(0L);
+        repository.saveAll(List.of(
                 AttestationMessage.builder().sender(AttestationMessageSender.CCM_PTS)
                         .receiptTs(new Date(1600_000000_000L)).primeId("0001").request("{\"ts\":\"1\"}").build(),
                 AttestationMessage.builder().sender(AttestationMessageSender.CCM_PTS)
                         .receiptTs(new Date(1600_100000_000L)).primeId("0001").request("{\"ts\":\"2\"}").build(),
                 AttestationMessage.builder().sender(AttestationMessageSender.CCM_PTS)
                         .receiptTs(new Date(1600_200000_000L)).primeId("0002").request("{\"ts\":\"3\"}").build()
-        )));
+        ));
         repository.flush();
-        Assertions.assertEquals(3L, repository.count());
+        assertThat(repository.count()).isEqualTo(3L);
 
-        final var fined = repository.findFirstByPrimeIdOrderByReceiptTsDesc("0001");
-        Assertions.assertTrue(fined.isPresent());
-        Assertions.assertEquals(1600_100000_000L, fined.get().getReceiptTs().getTime());
-        Assertions.assertEquals("{\"ts\":\"2\"}", fined.get().getRequest());
+        // when
+        // then
+        final var optionalFound = repository.findFirstByPrimeIdOrderByReceiptTsDesc("0001");
+        assertThat(optionalFound).isPresent();
+        AttestationMessage found = optionalFound.get();
+        assertThat(found.getReceiptTs().getTime()).isEqualTo(1600_100000_000L);
+        assertThat(found.getRequest()).isEqualTo("{\"ts\":\"2\"}");
 
-        fined.get().setAttestationTs(new Date(1600_300000_000L));
-        Assertions.assertDoesNotThrow(() -> repository.save(fined.get()));
+        found.setAttestationTs(new Date(1600_300000_000L));
+        repository.save(optionalFound.get());
         repository.flush();
 
-        final var updated = repository.findById(fined.get().getId());
-        Assertions.assertTrue(updated.isPresent());
-        Assertions.assertEquals("0001", updated.get().getPrimeId());
-        Assertions.assertEquals(1600_300000_000L, fined.get().getAttestationTs().getTime());
+        final var updated = repository.findById(optionalFound.get().getId());
+        assertThat(updated).isPresent();
+        assertThat(updated.get().getPrimeId()).isEqualTo("0001");
+        assertThat(found.getAttestationTs().getTime()).isEqualTo(1600_300000_000L);
 
-        Assertions.assertTrue(repository.findFirstByPrimeIdOrderByReceiptTsDesc("0005").isEmpty());
+        assertThat(repository.findFirstByPrimeIdOrderByReceiptTsDesc("0005")).isEmpty();
     }
 
 }
