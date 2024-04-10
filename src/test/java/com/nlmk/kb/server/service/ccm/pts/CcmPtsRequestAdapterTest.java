@@ -11,13 +11,6 @@ import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import com.nlmk.kb.server.api.ccm.SpecTypeValue;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordAnalyzes;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordBundles;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordChemical;
@@ -31,9 +24,17 @@ import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordGeometry;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordMarking;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordProperties;
 import nlmk.nlmk.l3.ccm.pts.db.attestation.request.ver1.RecordSpecifications;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class CcmPtsRequestAdapterTest {
@@ -92,19 +93,20 @@ class CcmPtsRequestAdapterTest {
 
     @Test
     void calcBundleWeight() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.calcBundleWeight("x.y"));
-        Assertions.assertNull(adapter.calcBundleWeight(null));
-        Assertions.assertNull(adapter.calcBundleWeight(CcmPtsRequest.builder().build()));
-        Assertions.assertEquals(BigDecimal.ZERO, adapter.calcBundleWeight(prepareMinimalRecordData(null)));
+        assertThatThrownBy(() -> adapter.calcBundleWeight("x.y"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(adapter.calcBundleWeight(null)).isNull();
+        assertThat(adapter.calcBundleWeight(CcmPtsRequest.builder().build())).isNull();
+        assertThat(adapter.calcBundleWeight(prepareMinimalRecordData(null))).isEqualTo(BigDecimal.ZERO);
 
-        Assertions.assertEquals(BigDecimal.valueOf(10.1), adapter.calcBundleWeight(CcmPtsRequest.builder()
+        assertThat(adapter.calcBundleWeight(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
                         .weightNet(BigDecimal.valueOf(10.1))
                         .build())
-                .build()));
-        Assertions.assertEquals(BigDecimal.valueOf(20.5), adapter.calcBundleWeight(prepareMinimalRecordData(20.5f)));
+                .build())).isEqualTo(BigDecimal.valueOf(10.1));
+        assertThat(adapter.calcBundleWeight(prepareMinimalRecordData(20.5f))).isEqualTo(BigDecimal.valueOf(20.5));
 
-        Assertions.assertEquals(BigDecimal.valueOf(20.0), adapter.calcBundleWeight(CcmPtsRequest.builder()
+        assertThat(adapter.calcBundleWeight(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
                         .weightNet(BigDecimal.valueOf(10.1))
                         .bundles(List.of(
@@ -113,7 +115,7 @@ class CcmPtsRequestAdapterTest {
                                 CcmPtsRequest.Bundle.builder().stripWeight(BigDecimal.valueOf(2.7)).build()
                         ))
                         .build())
-                .build()));
+                .build())).isEqualTo(BigDecimal.valueOf(20.0));
 
         final var record = prepareMinimalRecordData(20.5f);
         record.setBundles(List.of(
@@ -121,31 +123,28 @@ class CcmPtsRequestAdapterTest {
                 RecordBundles.newBuilder().setStripId(2).setStripNum(2).setStripWidth(2f).setStripWeight(2.5f).build(),
                 RecordBundles.newBuilder().setStripId(3).setStripNum(3).setStripWidth(3f).setStripWeight(5.2f).build()
         ));
-        Assertions.assertEquals(BigDecimal.valueOf(30.5), adapter.calcBundleWeight(record));
+        assertThat(adapter.calcBundleWeight(record)).isEqualTo(BigDecimal.valueOf(30.5));
     }
 
     @Test
     void prepareSpecs() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareSpecs("x.y"));
-        Assertions.assertEquals(List.of(), adapter.prepareSpecs(null));
-        Assertions.assertEquals(List.of(), adapter.prepareSpecs(CcmPtsRequest.builder().build()));
-        Assertions.assertEquals(List.of(), adapter.prepareSpecs(prepareMinimalRecordData(null)));
+        assertThatThrownBy(() -> adapter.prepareSpecs("x.y"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(adapter.prepareSpecs(null)).isEmpty();
+        assertThat(adapter.prepareSpecs(CcmPtsRequest.builder().build())).isEmpty();
+        assertThat(adapter.prepareSpecs(prepareMinimalRecordData(null))).isEmpty();
 
-        Assertions.assertEquals(List.of(), adapter.prepareSpecs(CcmPtsRequest.builder()
+        assertThat(adapter.prepareSpecs(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
                         .specifications(List.of())
                         .build())
-                .build()));
+                .build())).isEmpty();
 
         final var record = prepareMinimalRecordData(null);
         record.setSpecifications(List.of());
-        Assertions.assertEquals(List.of(), adapter.prepareSpecs(record));
+        assertThat(adapter.prepareSpecs(record)).isEmpty();
 
-        Assertions.assertEquals(List.of(
-                Specs.builder().specCode(1).specValue("1").build(),
-                Specs.builder().specCode(3).specValue("31").build(),
-                Specs.builder().specCode(3).specValue("32").build()
-        ), adapter.prepareSpecs(CcmPtsRequest.builder()
+        assertThat(adapter.prepareSpecs(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
                         .specifications(List.of(
                                 CcmPtsRequest.Specification.builder()
@@ -163,7 +162,11 @@ class CcmPtsRequestAdapterTest {
                                         .build()
                         ))
                         .build())
-                .build()));
+                .build())).isEqualTo(List.of(
+                Specs.builder().specCode(1).specValue("1").build(),
+                Specs.builder().specCode(3).specValue("31").build(),
+                Specs.builder().specCode(3).specValue("32").build()
+        ));
 
         record.setSpecifications(List.of(
                 RecordSpecifications.newBuilder().setSpecCode(1).setSpecName("1").setSpecValue("1")
@@ -180,25 +183,22 @@ class CcmPtsRequestAdapterTest {
                         ))
                         .build()
         ));
-        Assertions.assertEquals(List.of(
+        assertThat(adapter.prepareSpecs(record)).isEqualTo(List.of(
                 Specs.builder().specCode(1).specName("1").specValue("1").specTypeCode(1).build(),
                 Specs.builder().specCode(3).specName("3").specValue("31").specTypeCode(2).build(),
                 Specs.builder().specCode(3).specName("3").specValue("32").specTypeCode(2).build()
-        ), adapter.prepareSpecs(record));
+        ));
     }
 
     @Test
     void prepareChemicalSpecs() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareChemicalSpecs("x.y"));
-        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(null));
-        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(CcmPtsRequest.builder().build()));
-        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(prepareMinimalRecordData(null)));
+        assertThatThrownBy(() -> adapter.prepareChemicalSpecs("x.y"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(adapter.prepareChemicalSpecs(null)).isEmpty();
+        assertThat(adapter.prepareChemicalSpecs(CcmPtsRequest.builder().build())).isEmpty();
+        assertThat(adapter.prepareChemicalSpecs(prepareMinimalRecordData(null))).isEmpty();
 
-        Assertions.assertEquals(List.of(
-                ChemicalSpec.builder().build(),
-                ChemicalSpec.builder().chemCode(1).chemValue("1.2").build(),
-                ChemicalSpec.builder().chemCode(2).chemValue("2.3").build()
-        ), adapter.prepareChemicalSpecs(CcmPtsRequest.builder()
+        assertThat(adapter.prepareChemicalSpecs(CcmPtsRequest.builder()
                 .data(CcmPtsRequest.Record.builder()
                         .chemical(List.of(
                                 CcmPtsRequest.Chemical.builder().id(1).listValues(List.of(
@@ -210,11 +210,15 @@ class CcmPtsRequestAdapterTest {
                                 )).build()
                         ))
                         .build())
-                .build()));
+                .build())).isEqualTo(List.of(
+                ChemicalSpec.builder().build(),
+                ChemicalSpec.builder().chemCode(1).chemValue("1.2").build(),
+                ChemicalSpec.builder().chemCode(2).chemValue("2.3").build()
+        ));
 
         final var record = prepareMinimalRecordData(null);
         record.setChemical(List.of());
-        Assertions.assertEquals(List.of(), adapter.prepareChemicalSpecs(record));
+        assertThat(adapter.prepareChemicalSpecs(record)).isEmpty();
 
         record.setChemical(List.of(
                 RecordChemical.newBuilder().setId(1).setListValues(List.of(
@@ -225,19 +229,20 @@ class CcmPtsRequestAdapterTest {
                         RecordDataChemicalListValues.newBuilder().setCode(2).setName("2").setValue(2.3f).build()
                 )).build()
         ));
-        Assertions.assertEquals(List.of(
+        assertThat(adapter.prepareChemicalSpecs(record)).isEqualTo(List.of(
                 ChemicalSpec.builder().chemCode(0).chemName("0").build(),
                 ChemicalSpec.builder().chemCode(1).chemName("1").chemValue("1.2").build(),
                 ChemicalSpec.builder().chemCode(2).chemName("2").chemValue("2.3").build()
-        ), adapter.prepareChemicalSpecs(record));
+        ));
     }
 
     @Test
     void prepareMechanicalProperties() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> adapter.prepareMechanicalProperties("x.y"));
-        Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(null));
-        Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(CcmPtsRequest.builder().build()));
-        Assertions.assertEquals(List.of(), adapter.prepareMechanicalProperties(prepareMinimalRecordData(null)));
+        assertThatThrownBy(() -> adapter.prepareMechanicalProperties("x.y"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(adapter.prepareMechanicalProperties(null)).isEmpty();
+        assertThat(adapter.prepareMechanicalProperties(CcmPtsRequest.builder().build())).isEmpty();
+        assertThat(adapter.prepareMechanicalProperties(prepareMinimalRecordData(null))).isEmpty();
 
         var expected = List.of(
                 PtsMechanicalProperty.builder()
@@ -330,7 +335,7 @@ class CcmPtsRequestAdapterTest {
 
         var result = adapter.prepareMechanicalProperties(request);
 
-        Assertions.assertEquals(expected, result);
+        assertThat(result).isEqualTo(expected);
 
         final var record = prepareMinimalRecordData(null);
         record.setProperties(List.of(
@@ -417,7 +422,7 @@ class CcmPtsRequestAdapterTest {
                                                 PtsPropertyAnalyzesValue.builder().attrCode(99999).attrType(2).attrValue("99999").build()
                                         ))
                                         .build()
-                                ))
+                        ))
                         .listValues(List.of(
                                 PtsPropertyValue.builder().attrCode(1).attrValue(List.of("1")).attrType(1).build(),
                                 PtsPropertyValue.builder().attrCode(1120).attrValue(List.of("2")).attrType(1).build()
@@ -435,7 +440,7 @@ class CcmPtsRequestAdapterTest {
                         .build()
         );
 
-        Assertions.assertEquals(expected2, adapter.prepareMechanicalProperties(record));
+        assertThat(adapter.prepareMechanicalProperties(record)).isEqualTo(expected2);
     }
 
 }

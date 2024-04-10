@@ -20,10 +20,10 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,6 +36,10 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class AttestationResultSenderBasicAuthTest {
@@ -93,34 +97,31 @@ class AttestationResultSenderBasicAuthTest {
         mockKafkaRest.shutdown();
     }
 
-    @Test
-    void basicAuth() {
+    @ParameterizedTest
+    @MethodSource("verificationResultClasses")
+    void basicAuth(Class<?> verificationResultClass) {
         final var attResult = ProductAttestationResultDto.builder()
                 .newProduct(false)
                 .result(ProductDto.builder()
                         .id(100L)
                         .referenceCode("1")
                         .referenceId("100")
-                        .requests(List.of(
-                                RequestDto.builder()
-                                        .id(10L).primeID("100")
+                        .requests(List.of(RequestDto.builder()
+                                .id(10L).primeID("100")
+                                .status(Status.NOT_MATCHED)
+                                .orderNum(12345L).orderPos(4)
+                                .attestationTs(new Date(1_000_000_000L))
+                                .attestations(List.of(AttestationDto.builder()
+                                        .code(5)
+                                        .value("50")
                                         .status(Status.NOT_MATCHED)
-                                        .orderNum(12345L).orderPos(4)
-                                        .attestationTs(new Date(1_000_000_000L))
-                                        .attestations(List.of(
-                                                AttestationDto.builder()
-                                                        .code(5)
-                                                        .value("50")
-                                                        .status(Status.NOT_MATCHED)
-                                                        .equal("100").build()
-                                        ))
-                                        .build()
-                        ))
-                        .build())
-                .build();
+                                        .equal("100").build()
+                                )).build()
+                        )).build()
+                ).build();
 
-        Mockito.when(resultConfigService.getEnabledTopics())
-                .thenReturn(List.of(
+        when(resultConfigService.getEnabledTopics()).thenReturn(
+                List.of(
                         ResultsConfigDto.builder().id(1).topic("topic1").condition(null)
                                 .avroName("avro1").enabled(true).build(),
                         // нужная конфигурация
@@ -132,12 +133,16 @@ class AttestationResultSenderBasicAuthTest {
                                 .avroName("VerificationResultsKc1").enabled(true).build(),
                         ResultsConfigDto.builder().id(5).topic("topic5").condition(null)
                                 .avroName("VerificationResultsKc2").enabled(true).build()
-                ));
+                )
+        );
 
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResults.class));
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsPts.class));
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsKc1.class));
-        Assertions.assertDoesNotThrow(() -> productSender.send(attResult, VerificationResultsKc2.class));
+        assertThatCode(() -> productSender.send(attResult, verificationResultClass)).doesNotThrowAnyException();
     }
 
+    private static Stream<Arguments> verificationResultClasses() {
+        return Stream.of(Arguments.of(VerificationResults.class),
+                Arguments.of(VerificationResultsPts.class),
+                Arguments.of(VerificationResultsKc1.class),
+                Arguments.of(VerificationResultsKc2.class));
+    }
 }

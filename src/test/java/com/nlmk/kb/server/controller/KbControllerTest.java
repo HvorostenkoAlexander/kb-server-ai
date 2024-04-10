@@ -12,16 +12,19 @@ import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.attestation.zorder.ZORDERS051E1EDK01;
 import com.nlmk.attestation.zorder.ZORDRSPORDERS05ZORDERS051;
 import com.nlmk.kb.server.api.CcmMessageSourceDto;
-import com.nlmk.kb.server.exception.*;
+import com.nlmk.kb.server.exception.AttestationResultSenderException;
+import com.nlmk.kb.server.exception.DataNotFoundException;
+import com.nlmk.kb.server.exception.KafkaRestConfigException;
+import com.nlmk.kb.server.exception.RemoteServiceSenderException;
+import com.nlmk.kb.server.exception.S3ClientException;
 import com.nlmk.kb.server.service.AttestationMessageService;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.pdm.PdmMessageService;
-import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
+import com.nlmk.kb.server.service.sap.S3Service;
 import com.nlmk.kb.server.service.sap.SapMessageService;
 import com.nlmk.kb.server.service.sender.PsmSender;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -37,11 +40,15 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(KbController.class)
 class KbControllerTest {
@@ -109,7 +116,7 @@ class KbControllerTest {
                 .andExpect(status().isOk());
         // then
         MvcResult result = resultActions.andReturn();
-        Assertions.assertEquals("BELNR: 12345", result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("BELNR: 12345");
     }
 
     @Test
@@ -154,7 +161,7 @@ class KbControllerTest {
                 .andExpect(status().isOk());
         // then
         MvcResult result = resultActions.andReturn();
-        Assertions.assertEquals("BELNR: 12345", result.getResponse().getContentAsString());
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("BELNR: 12345");
     }
 
     @Test
@@ -282,7 +289,7 @@ class KbControllerTest {
         mvc.perform(MockMvcRequestBuilders.get("/sap_message/next?id=100")
                         .header(HttpHeaders.AUTHORIZATION, "T V"))
                 .andExpect(status().isNotFound());
-     }
+    }
 
     @Test
     void getSapMessageNextIdShouldReturn404IfEncounteredS3ClientException() throws Exception {
@@ -320,15 +327,15 @@ class KbControllerTest {
                 .andExpect(status().isOk());
     }
 
-     private ZORDERS051 getTestZorder() {
-         var E1EDK01 = new ZORDERS051E1EDK01();
-         E1EDK01.setBELNR("12345");
-         var idoc = new ZORDRSPORDERS05ZORDERS051();
-         idoc.setE1EDK01(E1EDK01);
-         ZORDERS051 zorder = new ZORDERS051();
-         zorder.setIDOC(idoc);
-         return zorder;
-     }
+    private ZORDERS051 getTestZorder() {
+        var E1EDK01 = new ZORDERS051E1EDK01();
+        E1EDK01.setBELNR("12345");
+        var idoc = new ZORDRSPORDERS05ZORDERS051();
+        idoc.setE1EDK01(E1EDK01);
+        ZORDERS051 zorder = new ZORDERS051();
+        zorder.setIDOC(idoc);
+        return zorder;
+    }
 
     private ZMMORDERS05DOP getTestZmmorder() {
         var E1EDK01 = new ZMMORDERS05DOP.IDOC.E1EDK01();

@@ -3,15 +3,11 @@ package com.nlmk.kb.server.service.sap;
 import com.nlmk.attestation.product.api.order.SapName;
 import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
+import com.nlmk.attestation.zorder.ZORDERS051E1CUVAL;
 import com.nlmk.kb.server.exception.S3ClientException;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
-
-import java.util.Arrays;
-
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,15 +16,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,8 +66,8 @@ class S3ServiceTest {
         ZORDERS051 result = s3Service.unmarshalZorder(xml);
 
         // then
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals("0040452892", result.getIDOC().getE1EDK01().getBELNR());
+        assertThat(result).isNotNull();
+        assertThat(result.getIDOC().getE1EDK01().getBELNR()).isEqualTo("0040452892");
 
         if (bucketName.equals(IDOCZORDRS_BUCKET_NAME)) {
             verify(idoczordrsS3Client, times(1)).getObject(any());
@@ -92,15 +90,15 @@ class S3ServiceTest {
         // when
         String xml = s3Service.getObjectAsStringFromBucket(bucketName, path);
         ZORDERS051 result = s3Service.unmarshalZorder(xml);
-        var resultValue = result.getIDOC().getE1CUCFG().stream().flatMap(e1CUCFG -> {
-            return e1CUCFG.getE1CUVAL().stream()
-                    .filter(cuval -> cuval.getCHARC().equals(SapName.KOEF_RASTRESK_MAX.getTag()))
-                    .collect(Collectors.toList()).stream();
-        }).findFirst().map(it -> it.getVALUE()).orElse(null);
+        var resultValue = result.getIDOC().getE1CUCFG().stream().flatMap(e1CUCFG -> e1CUCFG.getE1CUVAL().stream()
+                        .filter(cuval -> cuval.getCHARC().equals(SapName.KOEF_RASTRESK_MAX.getTag()))
+                        .collect(Collectors.toList())
+                        .stream()).findFirst()
+                .map(ZORDERS051E1CUVAL::getVALUE).orElse(null);
 
         // then
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals("0.24", resultValue);
+        assertThat(result).isNotNull();
+        assertThat(resultValue).isEqualTo("0.24");
 
         verify(idoczordrsS3Client, times(1)).getObject(any());
     }
@@ -145,44 +143,45 @@ class S3ServiceTest {
                         case STNDRT_PROD:
                         case STNDRT_MARKA:
                         case STNDRT_SORT:
-                            assertEquals("ГОСТ 14918-2020", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("ГОСТ 14918-2020");
                             break;
                         case CEH_PROD:
-                            assertEquals("11", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("11");
                             break;
                         case MARKA:
-                            assertEquals("02", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("02");
                             break;
                         case VID_POSTAVKI:
-                            assertEquals("РЛН", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("РЛН");
                             break;
                         case KROM:
-                            assertEquals("НО", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("НО");
                             break;
                         case TPRK:
-                            assertEquals("ТУ 0027", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("ТУ 0027");
                             break;
                         case TEXK:
                         case RABPL:
                         case GROT:
                         case ROUTE_TK:
-                            assertNull(e1cuval.getVALUE(),
-                                    MessageFormat.format("not NULL value in sapName {0}", sapName));
+                            assertThat(e1cuval.getVALUE())
+                                    .as(MessageFormat.format("not NULL value in sapName {0}", sapName))
+                                    .isNull();
                             break;
                         case SHOT_MIN:
-                            assertEquals("1250.0", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("1250.0");
                             break;
                         case SHOT_MAX:
-                            assertEquals("1234567.8", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("1234567.8");
                             break;
                         case DLIN_MIN:
-                            assertEquals("6000", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("6000");
                             break;
                         case DLIN_MAX:
-                            assertEquals("3000.0", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("3000.0");
                             break;
                         case VN_DIAM_RL:
-                            assertEquals("600", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("600");
                             break;
                     }
                 }));
@@ -201,44 +200,45 @@ class S3ServiceTest {
                         case STNDRT_PROD:
                         case STNDRT_MARKA:
                         case STNDRT_SORT:
-                            assertEquals("ГОСТ 14918-2020", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("ГОСТ 14918-2020");
                             break;
                         case CEH_PROD:
-                            assertEquals("11", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("11");
                             break;
                         case MARKA:
-                            assertEquals("02", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("02");
                             break;
                         case VID_POSTAVKI:
-                            assertEquals("РЛН", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("РЛН");
                             break;
                         case KROM:
-                            assertEquals("НО", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("НО");
                             break;
                         case TPRK:
-                            assertEquals("ТУ 0027", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("ТУ 0027");
                             break;
                         case TEXK:
                         case RABPL:
                         case GROT:
                         case ROUTE_TK:
-                            assertNull(e1cuval.getVALUE(),
-                                    MessageFormat.format("not NULL value in sapName {0}", sapName));
+                            assertThat(e1cuval.getVALUE())
+                                    .as(MessageFormat.format("not NULL value in sapName {0}", sapName))
+                                    .isNull();
                             break;
                         case SHOT_MIN:
-                            assertEquals("1250.0", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("1250.0");
                             break;
                         case SHOT_MAX:
-                            assertEquals("1234567.8", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("1234567.8");
                             break;
                         case DLIN_MIN:
-                            assertEquals("6000", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("6000");
                             break;
                         case DLIN_MAX:
-                            assertEquals("3000.0", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("3000.0");
                             break;
                         case VN_DIAM_RL:
-                            assertEquals("600", e1cuval.getVALUE());
+                            assertThat(e1cuval.getVALUE()).isEqualTo("600");
                             break;
                     }
                 }));
