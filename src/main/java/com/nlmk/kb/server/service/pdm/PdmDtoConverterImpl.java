@@ -371,6 +371,8 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD_02;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD_POINT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.ZAUSENEC;
+import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_MO;
+import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_ALSOL;
 
 @Slf4j
 @Component
@@ -926,6 +928,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .nbV(converter.getLimitSpecValue(specs, NB_V))
                 .nAl(converter.getLimitSpecValue(specs, N_AL))
                 .tiN(converter.getLimitSpecValue(specs, TI_N))
+                .crNiMo(converter.getLimitSpecValue(specs, CR_NI_MO))
+                .alSol(converter.getLimitSpecValue(specs, MASS_FRACTION_ALSOL))
                 .build();
     }
 
