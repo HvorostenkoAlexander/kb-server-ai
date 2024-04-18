@@ -225,7 +225,7 @@ class ResultAdapterTest {
                         .setPrimeId("1234567890").setKceh(12L).setMismatch(Status.MATCHED.getValue())
                         .setOrderNum(1024L).setOrderPos(4)
                         // TODO APCS-268 return when integration is fixed
-//                        .setProductId(123L)
+//                        .setLineId(123L)
                         .setCommons(List.of(
                                 RecordCommons.newBuilder()
                                         .setSpecCode(SpecCode.EDGE_CHARACTER.getValue())
