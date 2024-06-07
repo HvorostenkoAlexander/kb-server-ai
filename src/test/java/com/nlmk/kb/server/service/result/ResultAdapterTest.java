@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.DocId;
 import com.nlmk.attestation.product.api.Group;
+import com.nlmk.attestation.product.api.Kceh;
 import com.nlmk.attestation.product.api.Params;
 import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.RequestDto;
@@ -59,6 +60,7 @@ import nlmk.l3.apcs.VerificationResultsPts;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -121,7 +123,7 @@ class ResultAdapterTest {
     void verifyPgpResult() {
         // given
         // when
-        final var result = pgpAdapter.adapt(certifiedProduct(), false);
+        final var result = pgpAdapter.adapt(certifiedProduct(Kceh.PGP), false);
         // then
         assertThat(result).isEqualTo(expectedVerificationResultsPgp());
     }
@@ -130,7 +132,7 @@ class ResultAdapterTest {
     void verifyPtsResult() {
         // given
         // when
-        final var result = ptsAdapter.adapt(certifiedProduct(), false);
+        final var result = ptsAdapter.adapt(certifiedProduct(Kceh.PTS), false);
         // then
         assertThat(result).isEqualTo(expectedVerificationResultsPts());
     }
@@ -139,7 +141,7 @@ class ResultAdapterTest {
     void verifyKc1Result() {
         // given
         // when
-        final var result = kc1Adapter.adapt(certifiedProduct(), false);
+        final var result = kc1Adapter.adapt(certifiedProduct(Kceh.KC1), false);
         // then
         assertThat(result).isEqualTo(expectedVerificationResultsKc1());
     }
@@ -148,7 +150,7 @@ class ResultAdapterTest {
     void verifyKc2Result() {
         // given
         // when
-        final var result = kc2Adapter.adapt(certifiedProduct(), false);
+        final var result = kc2Adapter.adapt(certifiedProduct(Kceh.KC2), false);
         // then
         assertThat(result).isEqualTo(expectedVerificationResultsKc2());
     }
@@ -157,7 +159,58 @@ class ResultAdapterTest {
     /**
      * Результат Аттестации, условный, только обрабатываемые поля!
      */
-    private ProductDto certifiedProduct() {
+    private ProductDto certifiedProduct(Kceh kceh) {
+        List<AttestationDto> attestations = new ArrayList<>(List.of(
+                AttestationDto.builder().group(Group.COMMON)
+                        .code(SpecCode.EDGE_CHARACTER.getValue())
+                        .value("X").status(Status.MATCHED_MANUALLY).equal("X")
+                        .comment("Согласно требованиям заказа 2")
+                        .docId(DocId.ORDER)
+                        .build(),
+                AttestationDto.builder().group(Group.HIM)
+                        .code(SpecCode.MASS_FRACTION_H.getValue())
+                        .value("1.5").status(Status.MATCHED).max(2.0)
+                        .comment("Согласно ГОСТ 1")
+                        .docId(DocId.STANDARD_ASSORTMENT)
+                        .build(),
+                AttestationDto.builder().group(Group.MEH)
+                        .code(SpecCode.TEMPORARY_RESISTANCE.getValue())
+                        .value("100").status(Status.MATCHED).min(90.0).max(110.0)
+                        .comment("Согласно ГОСТ 2")
+                        .docId(DocId.STANDARD_PRODUCT)
+                        .params(Params.builder().signAnalysis(10).build())
+                        .build(),
+                AttestationDto.builder().group(Group.MEH)
+                        .code(SpecCode.IMPACT_WORK_1.getValue())
+                        .value("50").status(Status.MATCHED).min(40.0).max(70.0)
+                        .comment("Согласно ГОСТ 2")
+                        .docId(DocId.STANDARD_PRODUCT)
+                        .params(Params.builder().signAnalysis(11)
+                                .knctrator("V").temp("20").analysisId(3).build())
+                        .build(),
+                AttestationDto.builder().group(Group.MET)
+                        .code(SpecCode.SULPHIDES.getValue())
+                        .value("3.4").status(Status.MATCHED).min(3.0)
+                        .comment("Согласно ГОСТ 3")
+                        .docId(DocId.STANDARD_MARK)
+                        .params(Params.builder().signAnalysis(12).build())
+                        .build(),
+                AttestationDto.builder().group(Group.MET)
+                        .code(SpecCode.SILICATES.getValue())
+                        .value("2.3").status(Status.MATCHED).max(3.0)
+                        .comment("Согласно ГОСТ 3")
+                        .params(Params.builder().signAnalysis(13).build())
+                        .build()
+        ));
+        if (kceh.equals(Kceh.PGP)) {
+            attestations.add(AttestationDto.builder().group(Group.HIM)
+                    .code(SpecCode.CU_NI.getValue())
+                    .value("1.0").status(Status.MATCHED).equal("1.0")
+                    .comment("Согласно ГОСТ 3")
+                    .docId(DocId.ORDER)
+                    .build());
+        }
+
         return ProductDto.builder()
                 .id(123L)
                 .referenceCode("100")
@@ -168,48 +221,7 @@ class ResultAdapterTest {
                         .orderNum(1024L).orderPos(4)
                         .kceh(12)
                         .status(Status.MATCHED)
-                        .attestations(List.of(
-                                AttestationDto.builder().group(Group.COMMON)
-                                        .code(SpecCode.EDGE_CHARACTER.getValue())
-                                        .value("X").status(Status.MATCHED_MANUALLY).equal("X")
-                                        .comment("Согласно требованиям заказа 2")
-                                        .docId(DocId.ORDER)
-                                        .build(),
-                                AttestationDto.builder().group(Group.HIM)
-                                        .code(SpecCode.MASS_FRACTION_H.getValue())
-                                        .value("1.5").status(Status.MATCHED).max(2.0)
-                                        .comment("Согласно ГОСТ 1")
-                                        .docId(DocId.STANDARD_ASSORTMENT)
-                                        .build(),
-                                AttestationDto.builder().group(Group.MEH)
-                                        .code(SpecCode.TEMPORARY_RESISTANCE.getValue())
-                                        .value("100").status(Status.MATCHED).min(90.0).max(110.0)
-                                        .comment("Согласно ГОСТ 2")
-                                        .docId(DocId.STANDARD_PRODUCT)
-                                        .params(Params.builder().signAnalysis(10).build())
-                                        .build(),
-                                AttestationDto.builder().group(Group.MEH)
-                                        .code(SpecCode.IMPACT_WORK_1.getValue())
-                                        .value("50").status(Status.MATCHED).min(40.0).max(70.0)
-                                        .comment("Согласно ГОСТ 2")
-                                        .docId(DocId.STANDARD_PRODUCT)
-                                        .params(Params.builder().signAnalysis(11)
-                                                .knctrator("V").temp("20").analysisId(3).build())
-                                        .build(),
-                                AttestationDto.builder().group(Group.MET)
-                                        .code(SpecCode.SULPHIDES.getValue())
-                                        .value("3.4").status(Status.MATCHED).min(3.0)
-                                        .comment("Согласно ГОСТ 3")
-                                        .docId(DocId.STANDARD_MARK)
-                                        .params(Params.builder().signAnalysis(12).build())
-                                        .build(),
-                                AttestationDto.builder().group(Group.MET)
-                                        .code(SpecCode.SILICATES.getValue())
-                                        .value("2.3").status(Status.MATCHED).max(3.0)
-                                        .comment("Согласно ГОСТ 3")
-                                        .params(Params.builder().signAnalysis(13).build())
-                                        .build()
-                        )).build()
+                        .attestations(attestations).build()
                 )).build();
     }
 
