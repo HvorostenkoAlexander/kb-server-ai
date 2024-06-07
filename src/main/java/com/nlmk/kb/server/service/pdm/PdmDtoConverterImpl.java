@@ -104,6 +104,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU_M
 import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU_MO_SN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU_SN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_CR_NI_MO_TI;
+import static com.nlmk.attestation.product.api.specification.SpecCode.CU_NI;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_NI_CR_MO_V;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DEPTH_HOLE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DEPTH_WITHOUT_C_LAYER;
@@ -427,6 +428,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .vNbTi(converter.getLimitSpecValue(specs, TI_V_NB))
                 .tiNb(converter.getLimitSpecValue(specs, TI_NB))
                 .ti34n15s(converter.getLimitSpecValue(specs, TI_34N_15S))
+                .cuNi(converter.getLimitSpecValue(specs, CU_NI))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
 
