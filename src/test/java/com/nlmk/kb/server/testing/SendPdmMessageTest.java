@@ -136,8 +136,8 @@ class SendPdmMessageTest extends SendMessageToKafka {
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("7.06").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.WHIDTH_PRODUCT.getValue())
-                                        .setSpecName(SpecCode.WHIDTH_PRODUCT.getDesc())
+                                        .setSpecCode(SpecCode.WIDTH_PRODUCT.getValue())
+                                        .setSpecName(SpecCode.WIDTH_PRODUCT.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("(150..*").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
@@ -187,8 +187,8 @@ class SendPdmMessageTest extends SendMessageToKafka {
                                         .setSpecTypeCode(TypeCode.NUMBER.getValue()).setSpecMeasure("x")
                                         .setSpecValue("2.65").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.WHIDTH_PRODUCT.getValue())
-                                        .setSpecName(SpecCode.WHIDTH_PRODUCT.getDesc())
+                                        .setSpecCode(SpecCode.WIDTH_PRODUCT.getValue())
+                                        .setSpecName(SpecCode.WIDTH_PRODUCT.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("(1000..1020]").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
@@ -258,8 +258,8 @@ class SendPdmMessageTest extends SendMessageToKafka {
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("ДТ 157.00").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()
-                                        .setSpecCode(SpecCode.WHIDTH_PRODUCT.getValue())
-                                        .setSpecName(SpecCode.WHIDTH_PRODUCT.getDesc())
+                                        .setSpecCode(SpecCode.WIDTH_PRODUCT.getValue())
+                                        .setSpecName(SpecCode.WIDTH_PRODUCT.getDesc())
                                         .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
                                         .setSpecValue("(1000..1020]").build(),
                                 nlmk.l3.pdm.Spec.newBuilder()

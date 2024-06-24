@@ -69,7 +69,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.B80;
 import static com.nlmk.attestation.product.api.specification.SpecCode.B800;
 import static com.nlmk.attestation.product.api.specification.SpecCode.B800SST;
 import static com.nlmk.attestation.product.api.specification.SpecCode.BAKE_HARDENING;
-import static com.nlmk.attestation.product.api.specification.SpecCode.BANDING_OF_FERRIE_PEARLITE_STRUCTURE;
+import static com.nlmk.attestation.product.api.specification.SpecCode.BANDING_OF_FERRITE_PEARLITE_STRUCTURE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.BEND_DIAM_180;
 import static com.nlmk.attestation.product.api.specification.SpecCode.BEND_DIAM_90;
 import static com.nlmk.attestation.product.api.specification.SpecCode.BEND_RADIUS_180;
@@ -111,7 +111,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.DEPTH_WITH
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR_FRONT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR_REVERSE;
-import static com.nlmk.attestation.product.api.specification.SpecCode.DROW;
+import static com.nlmk.attestation.product.api.specification.SpecCode.METAL_DRAWING;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EDGE_CHARACTER;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EDGE_CRACKS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EDGE_NARROW;
@@ -121,7 +121,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.EVENNESS_T
 import static com.nlmk.attestation.product.api.specification.SpecCode.EVENNESS_TOLERANCE_PERCENT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EVENNESS_TOLERANCE_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FACTOR_LAMINATION;
-import static com.nlmk.attestation.product.api.specification.SpecCode.FERRIT_GRAIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.FERRITE_GRAIN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FINISH_DATE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FORM_SAP;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H0041000;
@@ -355,10 +355,10 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.TK_NUMBER_
 import static com.nlmk.attestation.product.api.specification.SpecCode.TK_POINT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.TK_SAP_NUMBER;
 import static com.nlmk.attestation.product.api.specification.SpecCode.TYPE;
-import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVENNESS_OF_FERRIT_GRAIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVENNESS_OF_FERRITE_GRAIN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVEN_GAUGE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.VMZ_STEEL_GROUP;
-import static com.nlmk.attestation.product.api.specification.SpecCode.WHIDTH_PRODUCT;
+import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_PRODUCT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WHIDTH_TOLERANCE_PERCENT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_DEFLECTION;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_DEFLECTION_FACTOR;
@@ -471,7 +471,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .rollingThickAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
                 .prYield(converter.getLimitSpecValue(specs, YIELD_POINT))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
-                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .prThickTolMin(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_MIN))
                 .prThickTolMax(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_MAX))
                 .prThickTolMinPerc(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_PERCENT_MIN))
@@ -496,7 +496,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandSteel(converter.getStringSpecValue(specs, MARK_STANDARD))
                 .prFormSap(converter.getStringSpecValue(specs, FORM_SAP))
-                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .prLengthGood(converter.getLimitSpecValue(specs, LENGTH_PRODUCT))
                 .prCrop(converter.getStringSpecValue(specs, EDGE_CHARACTER))
@@ -552,7 +552,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .pr_prod_mark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .pr_stand_mark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .pr_thick_uncoat(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
-                .pr_drow(converter.getStringSpecValue(specs, DROW))
+                .pr_drow(converter.getStringSpecValue(specs, METAL_DRAWING))
                 .pr_scope_group(converter.getStringSpecValue(specs, SCOPE_GROUP))
                 .pr_impact_energy(converter.getLimitSpecValue(specs, IMPACT_ENERGY))
                 .pr_kv_60(converter.getLimitSpecValue(specs, IMPACT_ENERGY_KV60))
@@ -675,7 +675,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .standSort(converter.getStringSpecValue(specs, ASSORTMENT_STANDARD))
-                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .prEvenness(converter.getStringSpecValue(specs, EVENNESS))
                 .prYield(converter.getLimitSpecValue(specs, YIELD_POINT))
@@ -736,7 +736,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .pr_steel_mark(converter.getStringSpecValue(specs, MELTING_MARK))
                 .pr_stand_steel(converter.getStringSpecValue(specs, MELTING_MARK_STANDART))
                 .pr_thick_uncoat(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
-                .pr_drow(converter.getStringSpecValue(specs, DROW))
+                .pr_drow(converter.getStringSpecValue(specs, METAL_DRAWING))
                 .pr_scope_group(converter.getStringSpecValue(specs, SCOPE_GROUP))
                 .pr_kv_60(converter.getLimitSpecValue(specs, IMPACT_ENERGY_KV60))
                 .pr_kv_40(converter.getLimitSpecValue(specs, IMPACT_ENERGY_KV40))
@@ -872,7 +872,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
                 .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
 
-                .prDrow(converter.getStringSpecValue(specs, DROW))
+                .prDrow(converter.getStringSpecValue(specs, METAL_DRAWING))
 
                 .c(converter.getLimitSpecValue(specs, MASS_FRACTION_C))
                 .si(converter.getLimitSpecValue(specs, MASS_FRACTION_SI))
@@ -952,8 +952,8 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
                 .category(converter.getStringSpecValue(specs, CATEGORY_GOST_4041))
                 .attestStand(converter.getStringSpecValue(specs, MICROCTRUCTURE_STANDART))
-                .ferriteGrain(converter.getLimitSpecValue(specs, FERRIT_GRAIN))
-                .unevenessFerriteGrain(converter.getStringSpecValue(specs, UNEVENNESS_OF_FERRIT_GRAIN))
+                .ferriteGrain(converter.getLimitSpecValue(specs, FERRITE_GRAIN))
+                .unevenessFerriteGrain(converter.getStringSpecValue(specs, UNEVENNESS_OF_FERRITE_GRAIN))
                 .structFreeCementite(converter.getLimitSpecValue(specs, CEMENTITE))
                 .unmetallInclusionsOxides(converter.getLimitSpecValue(specs, OXIDES))
                 .unmetallInclusionsSulfides(converter.getLimitSpecValue(specs, SULPHIDES))
@@ -964,7 +964,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .unmetallInclusionsSilicatesC(converter.getLimitSpecValue(specs, SILICATES_TYPE_C))
                 .unmetallInclusionsGlobOxidesD(converter.getLimitSpecValue(specs, OXIDES_TYPE_D))
                 .unmetallInclusions(converter.getLimitSpecValue(specs, NON_METALLIC_INCLUSIONS_ISO_4967_2013))
-                .polFerPerStruct(converter.getLimitSpecValue(specs, BANDING_OF_FERRIE_PEARLITE_STRUCTURE))
+                .polFerPerStruct(converter.getLimitSpecValue(specs, BANDING_OF_FERRITE_PEARLITE_STRUCTURE))
                 .depthDecarbLayer(converter.getLimitSpecValue(specs, DEPTH_WITHOUT_C_LAYER))
                 .perliteGrain(converter.getLimitSpecValue(specs, PERLITE_GRAIN))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
@@ -1203,7 +1203,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_OF_ROLLED_PRODUCTS))
-                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .prEvenness(converter.getStringSpecValue(specs, EVENNESS))
                 .prEvennessTolMax(converter.parseToDouble(
                         converter.getStringSpecValue(specs, EVENNESS_TOLERANCE)
@@ -1225,7 +1225,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .updateTs(dictionary.getTs())
                 .dt(converter.getStringSpecValue(specs, ADDITIONAL_REQUIREMENTS))
                 .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
-                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
 
                 .rollingThickAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
                 .prThickTolMin(converter.getStringSpecValue(specs, THICKNESS_TOLERANCE_MIN))
@@ -1248,7 +1248,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .prThickGood(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
-                .prWidthGood(converter.getLimitSpecValue(specs, WHIDTH_PRODUCT))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .prFormSap(converter.getLimitSpecValue(specs, FORM_SAP))
                 .rollingWidthAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_WIDTH))
 
