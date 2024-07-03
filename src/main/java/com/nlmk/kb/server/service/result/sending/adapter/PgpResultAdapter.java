@@ -174,7 +174,7 @@ public class PgpResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
 
         return attestations.stream()
                 .filter(att -> Group.HIM.equals(att.getGroup()))
-                // Filtering Cu/Ni out because this code does not exist in CCM
+                // Filtering Cu/Ni out because this attribute is APCS evaluated and is not needed in CCM
                 .filter(att -> !SpecCode.CU_NI.getValue().equals(att.getCode()))
                 .map(this::toChemicalRecord)
                 .collect(Collectors.toList());
