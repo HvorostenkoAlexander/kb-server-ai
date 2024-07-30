@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.nsi.AsapMechPropertiesDtDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.ChoiceTestedProductsDto;
 import com.nlmk.attestation.product.api.nsi.CodingSlabDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
@@ -49,6 +50,8 @@ public interface PdmDtoConverter {
      * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=120034208">Химический состав по стандартам</a>
      */
     ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary);
+
+    ChoiceTestedProductsDto toChoiceTestedProducts(PdmDictionary dictionary);
 
     SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary);
 

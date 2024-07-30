@@ -4,6 +4,7 @@ import com.nlmk.attestation.product.api.nsi.AsapMechPropertiesDtDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalEquivalentStdDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
+import com.nlmk.attestation.product.api.nsi.ChoiceTestedProductsDto;
 import com.nlmk.attestation.product.api.nsi.CodingSlabDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
@@ -354,6 +355,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.TI_V_NB;
 import static com.nlmk.attestation.product.api.specification.SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.TK_POINT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.TK_SAP_NUMBER;
+import static com.nlmk.attestation.product.api.specification.SpecCode.TK_SAP_ROUTE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.TYPE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVENNESS_OF_FERRITE_GRAIN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVEN_GAUGE;
@@ -435,6 +437,24 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
         log.debug("--- PDM chemicalStdLimitDto: {} ", chemicalStdLimitDto);
 
         return chemicalStdLimitDto;
+    }
+
+    @Override
+    public ChoiceTestedProductsDto toChoiceTestedProducts(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        return ChoiceTestedProductsDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .tkNum(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
+                .tkRoute(converter.getStringSpecValue(specs, TK_SAP_ROUTE))
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .tkRoute2(converter.getStringSpecValue(specs, ROUTE_TK))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
     }
 
     @Override
