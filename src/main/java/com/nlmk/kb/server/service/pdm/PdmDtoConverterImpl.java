@@ -448,6 +448,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         return ChoiceTestedProductsDto.builder()
                 .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
                 .tkNum(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
                 .tkRoute(converter.getStringSpecValue(specs, TK_SAP_ROUTE))
