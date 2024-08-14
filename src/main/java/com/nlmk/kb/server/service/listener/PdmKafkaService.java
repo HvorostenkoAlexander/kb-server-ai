@@ -58,6 +58,7 @@ public class PdmKafkaService {
                     "${kafka.pdm.topic.macrostructure}",
                     "${kafka.pdm.topic.type-sample-macrostructure}",
                     "${kafka.pdm.topic.coding-slab}",
+                    "${kafka.pdm.topic.choice-tested-products}",
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
