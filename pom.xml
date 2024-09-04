@@ -33,7 +33,7 @@
 
         <checkstyle.version>3.3.1</checkstyle.version>
 
-        <product-api.version>1.63.11</product-api.version>
+        <product-api.version>1.63.13</product-api.version>
     </properties>
 
     <dependencyManagement>
