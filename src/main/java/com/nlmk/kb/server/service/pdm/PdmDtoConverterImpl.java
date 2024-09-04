@@ -104,6 +104,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU_MO;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU_MO_SN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_CU_SN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_MO;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_CR_NI_MO_TI;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_NI;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_NI_CR_MO_V;
@@ -112,7 +113,6 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.DEPTH_WITH
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR_FRONT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR_REVERSE;
-import static com.nlmk.attestation.product.api.specification.SpecCode.METAL_DRAWING;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EDGE_CHARACTER;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EDGE_CRACKS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.EDGE_NARROW;
@@ -177,6 +177,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.MANUFACTUR
 import static com.nlmk.attestation.product.api.specification.SpecCode.MANUFACTURING_PRECISION_BY_WIDTH;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MARK_STANDARD;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_AL;
+import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_ALSOL;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_AS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_B;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_BI;
@@ -208,6 +209,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACT
 import static com.nlmk.attestation.product.api.specification.SpecCode.MELTING_MARK;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MELTING_MARK_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MELT_SLAB;
+import static com.nlmk.attestation.product.api.specification.SpecCode.METAL_DRAWING;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MICROCTRUCTURE_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MN_S;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MN_SI;
@@ -360,22 +362,19 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.TYPE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVENNESS_OF_FERRITE_GRAIN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.UNEVEN_GAUGE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.VMZ_STEEL_GROUP;
-import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_PRODUCT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WHIDTH_TOLERANCE_PERCENT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_DEFLECTION;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_DEFLECTION_FACTOR;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_DEVIATION;
+import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_PRODUCT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_MAX;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_MIN;
-import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_PERCENT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WORK_CENTER_CODE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD_02;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD_POINT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.ZAUSENEC;
-import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_MO;
-import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACTION_ALSOL;
 
 @Slf4j
 @Component
@@ -450,6 +449,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prSteelMark(converter.getStringSpecValue(specs, MELTING_MARK))
                 .tkNum(converter.getStringSpecValue(specs, TK_SAP_NUMBER))
                 .tkRoute(converter.getStringSpecValue(specs, TK_SAP_ROUTE))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
@@ -1363,7 +1363,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .otklLength(converter.getLimitSpecValue(specs, LENGTH_DEVIATION))
                 .prLengthTol(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_LENGTH))
                 .otklWidth(converter.getLimitSpecValue(specs, WIDTH_DEVIATION))
-                .prWidthTol(converter.getLimitSpecValue(specs, WIDTH_TOLERANCE_PERCENT))
+                .prWidthTol(converter.getLimitSpecValue(specs, WHIDTH_TOLERANCE_PERCENT))
                 .otklTlotMm(converter.getLimitSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
                 .otklTlotPr(converter.getLimitSpecValue(specs, THICKNESS_DEVIATION_PERCENT))
                 .prThickTol(converter.getLimitSpecValue(specs, THICKNESS_TOLERANCE))
