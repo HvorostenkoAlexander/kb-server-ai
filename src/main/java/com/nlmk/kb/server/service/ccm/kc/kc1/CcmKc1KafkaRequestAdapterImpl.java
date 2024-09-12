@@ -201,7 +201,8 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
 
     private Requirement toPamRequirement(RecordRequirements requirements) {
         return Requirement.builder()
-                .planTask(toPlanTask(requirements.getPlanTask()))
+                .planTask(toPlanTask(Objects.nonNull(requirements.getPlanTask())
+                            ? requirements.getPlanTask() : null))
                 .chemicalReq(Objects.nonNull(requirements.getChemicalReq())
                              ? requirements.getChemicalReq().stream()
                                      .map(this::toPamChemicalReq)
