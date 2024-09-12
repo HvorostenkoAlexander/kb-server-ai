@@ -200,20 +200,23 @@ public class CcmKc1KafkaRequestAdapterImpl implements KafkaRequestAdapter<DbAtte
     }
 
     private Requirement toPamRequirement(RecordRequirements requirements) {
-        return Requirement.builder()
-                .planTask(toPlanTask(Objects.nonNull(requirements.getPlanTask())
-                            ? requirements.getPlanTask() : null))
-                .chemicalReq(Objects.nonNull(requirements.getChemicalReq())
-                             ? requirements.getChemicalReq().stream()
-                                     .map(this::toPamChemicalReq)
-                                     .collect(Collectors.toUnmodifiableList())
-                             : null)
-                .specifications(Objects.nonNull(requirements.getSpecifications())
-                                ? requirements.getSpecifications().stream()
-                                        .map(this::toPamSpecs)
-                                        .collect(Collectors.toUnmodifiableList())
-                                : null)
-                .build();
+        if (Objects.nonNull(requirements)) {
+            return Requirement.builder()
+                    .planTask(toPlanTask(Objects.nonNull(requirements.getPlanTask())
+                                         ? requirements.getPlanTask() : null))
+                    .chemicalReq(Objects.nonNull(requirements.getChemicalReq())
+                                 ? requirements.getChemicalReq().stream()
+                                         .map(this::toPamChemicalReq)
+                                         .collect(Collectors.toUnmodifiableList())
+                                 : null)
+                    .specifications(Objects.nonNull(requirements.getSpecifications())
+                                    ? requirements.getSpecifications().stream()
+                                            .map(this::toPamSpecs)
+                                            .collect(Collectors.toUnmodifiableList())
+                                    : null)
+                    .build();
+        }
+        return Requirement.builder().build();
     }
 
     private Specs toPamSpecs(RecordDataRequirementsSpecifications specifications) {
