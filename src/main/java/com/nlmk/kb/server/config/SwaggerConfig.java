@@ -30,6 +30,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi allAPI() {
+        return GroupedOpenApi.builder()
+                .group("-- Отобразить все --")
+                .packagesToScan("com.nlmk.kb.server.controller")
+                .build();
+    }
+
+    @Bean
     public GroupedOpenApi attestationRequestsAPI() {
         return GroupedOpenApi.builder()
                 .group("Принятие запросов на аттестацию")
