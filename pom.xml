@@ -11,8 +11,8 @@
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
     <version>1.54.12</version>
-    <name>kb-server</name>
-    <description>Kafka Broker Module</description>
+    <name>Kafka Broker Module</name>
+    <description>Module for read Kafka Broker messages</description>
     <properties>
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
