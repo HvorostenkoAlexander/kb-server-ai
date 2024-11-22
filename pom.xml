@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.54.11</version>
+    <version>1.54.12</version>
     <name>kb-server</name>
-    <description>Module for read Kafka Broker messages</description>
+    <description>Kafka Broker Module</description>
     <properties>
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
