@@ -20,13 +20,22 @@ public class SwaggerConfig {
 
     private final String authServerUrl;
     private final String realm;
+    private final String appVersion;
+    private final String appName;
+    private final String appDescription;
 
     public SwaggerConfig(@Value("${keycloak.auth-server-url}")
                          String authServerUrl,
                          @Value("${keycloak.realm}")
-                         String realm) {
+                         String realm,
+                         @Value("${application.version}") String appVersion,
+                         @Value("${application.name}") String appName,
+                         @Value("${application.description}") String appDescription) {
         this.authServerUrl = authServerUrl;
         this.realm = realm;
+        this.appVersion = appVersion;
+        this.appName = appName;
+        this.appDescription = appDescription;
     }
 
     @Bean
@@ -91,9 +100,9 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("Kafka Broker (KB) Service")
-                        .version("1.0.0")
-                        .description("Модуль интеграции с внешними системами"))
+                        .version(appVersion)
+                        .title(appName)
+                        .description(appDescription))
                 .components(new Components()
                         .addSecuritySchemes("bearer-key", new SecurityScheme()
                                 .type(SecurityScheme.Type.OAUTH2)
