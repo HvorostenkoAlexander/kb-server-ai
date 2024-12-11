@@ -1,4 +1,4 @@
-package com.nlmk.kb.server.service.zifra.senders;
+package com.nlmk.kb.server.service.zifra.creators;
 
 import com.nlmk.kb.server.entity.mdm.MdmDictionary;
 import com.nlmk.kb.server.entity.mdm.MdmMessage;

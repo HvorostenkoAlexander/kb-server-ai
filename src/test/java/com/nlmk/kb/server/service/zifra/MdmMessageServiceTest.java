@@ -2,9 +2,9 @@ package com.nlmk.kb.server.service.zifra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.service.CommonConverterImpl;
-import com.nlmk.kb.server.service.zifra.senders.SpCustomerGroupMdmCreator;
-import com.nlmk.kb.server.service.zifra.senders.SpCustomerMdmCreator;
-import com.nlmk.kb.server.service.zifra.senders.SpGroupAndCustomerMdmCreator;
+import com.nlmk.kb.server.service.zifra.creators.SpCustomerGroupMdmCreator;
+import com.nlmk.kb.server.service.zifra.creators.SpCustomerMdmCreator;
+import com.nlmk.kb.server.service.zifra.creators.SpGroupAndCustomerMdmCreator;
 import nlmk.l3.nsi.zifra.Reason;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeAll;
