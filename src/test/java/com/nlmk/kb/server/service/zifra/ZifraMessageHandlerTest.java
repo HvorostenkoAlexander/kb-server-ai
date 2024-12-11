@@ -12,7 +12,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +25,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class ZifraMessageHandlerTest {
@@ -33,8 +38,24 @@ class ZifraMessageHandlerTest {
     @Autowired
     private ZifraMessageHandler zifraMessageHandler;
 
+    @Autowired
+    private MdmMessageConverter messageConverter;
+
+    @MockBean
+    private MdmMessageService messageService;
+
     private static MockWebServer mockWebServer;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Value("${kafka.zifra.topic.sp-customer}")
+    private String spCustomerTopic;
+
+    @Value("${kafka.zifra.topic.sp-customer-group}")
+    private String spCustomerGroupTopic;
+
+    @Value("${kafka.zifra.topic.sp-group-and-customer}")
+    private String spGroupAndCustomerTopic;
+
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry dpr) {
@@ -52,25 +73,25 @@ class ZifraMessageHandlerTest {
         mockWebServer.shutdown();
     }
 
-    private ConsumerRecord<Object, Object> prepareConsumerRecord(String path) throws IOException {
+    private ConsumerRecord<Object, Object> prepareConsumerRecord(String topic, String path) throws IOException {
         final var json = new String(Files.readAllBytes(Path.of(path)));
         final var value = objectMapper.readValue(json, Reason.class);
         final var key = "key~" + Instant.now().getEpochSecond();
 
-        return new ConsumerRecord<>("topic1", 0, 0, key, value);
+        return new ConsumerRecord<>(topic, 0, 0, key, value);
     }
 
     @Test
     void parseAndSend() throws Exception {
-        final var spCustomerRecord = prepareConsumerRecord("src/test/resources/json/SpCustomerExample.json");
+        final var spCustomerRecord = prepareConsumerRecord(spCustomerTopic,"src/test/resources/json/SpCustomerExample.json");
         assertThat(spCustomerRecord).isNotNull();
         final var spCustomer = (Reason) spCustomerRecord.value();
 
-        final var spCustomerGroupRecord = prepareConsumerRecord("src/test/resources/json/SpCustomerGroupExample.json");
+        final var spCustomerGroupRecord = prepareConsumerRecord(spCustomerGroupTopic,"src/test/resources/json/SpCustomerGroupExample.json");
         assertThat(spCustomerGroupRecord).isNotNull();
         final var spCustomerGroup = (Reason) spCustomerGroupRecord.value();
 
-        final var spGroupAndCustomerRecord = prepareConsumerRecord("src/test/resources/json/SpGroupAndCustomerExample.json");
+        final var spGroupAndCustomerRecord = prepareConsumerRecord(spGroupAndCustomerTopic,"src/test/resources/json/SpGroupAndCustomerExample.json");
         assertThat(spGroupAndCustomerRecord).isNotNull();
         final var spGroupAndCustomer = (Reason) spGroupAndCustomerRecord.value();
 
@@ -81,6 +102,7 @@ class ZifraMessageHandlerTest {
                     .setBody(spCustomer.getPk().getLineId().toString())
             );
 
+            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));
             final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
             assertThat(response).isTrue();
 
@@ -95,6 +117,7 @@ class ZifraMessageHandlerTest {
                     .setBody(spCustomerGroup.getPk().getLineId().toString())
             );
 
+            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerGroupRecord)));
             final var response = zifraMessageHandler.handleConsumerRecord(spCustomerGroupRecord);
             assertThat(response).isTrue();
 
@@ -109,6 +132,7 @@ class ZifraMessageHandlerTest {
                     .setBody(spGroupAndCustomer.getPk().getLineId().toString())
             );
 
+            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spGroupAndCustomerRecord)));
             final var response = zifraMessageHandler.handleConsumerRecord(spGroupAndCustomerRecord);
             assertThat(response).isTrue();
 
@@ -124,6 +148,7 @@ class ZifraMessageHandlerTest {
                     .setResponseCode(HttpStatus.OK.value())
             );
 
+            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));
             final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
             assertThat(response).isTrue();
 
@@ -139,6 +164,7 @@ class ZifraMessageHandlerTest {
                     .setResponseCode(HttpStatus.NOT_FOUND.value())
             );
 
+            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));
             final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
             assertThat(response).isTrue();
 
@@ -153,7 +179,8 @@ class ZifraMessageHandlerTest {
                     a.setAttrValue("2A");
                 }
             });
-            final var modifyRecord = new ConsumerRecord<Object, Object>("topic1", 0, 0, "key", spGroupAndCustomer);
+            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));
+            final var modifyRecord = new ConsumerRecord<Object, Object>(spGroupAndCustomerTopic, 0, 0, "key", spGroupAndCustomer);
 
             assertThatThrownBy(() -> zifraMessageHandler.handleConsumerRecord(modifyRecord))
                     .isInstanceOf(ZifraMessageParserException.class)
