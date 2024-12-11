@@ -1,9 +1,9 @@
 package com.nlmk.kb.server.service.zifra;
 
 import com.nlmk.attestation.product.api.nsi.SpCustomerGroupDto;
-import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.nsi.zifra.Data;
 import nlmk.l3.nsi.zifra.pk;
+import com.nlmk.kb.server.util.AdapterUtils;
 import org.springframework.stereotype.Component;
 
 @Component

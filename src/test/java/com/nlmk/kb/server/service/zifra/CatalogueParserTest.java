@@ -9,6 +9,7 @@ import nlmk.l3.nsi.zifra.lineAttributes_record;
 import nlmk.l3.nsi.zifra.pk;
 import nlmk.l3.nsi.zifra.properties;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SpringBootTest
 class CatalogueParserTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();

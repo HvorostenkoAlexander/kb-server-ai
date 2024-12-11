@@ -50,7 +50,7 @@ public class PdmMessageServiceImpl implements PdmMessageService {
             );
 
             if (storedMessages.size() > 1) {
-                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного сообщения с характеристиками topic: {}, partition: {}, offset: {}",
+                log.warn("ВНИМАНИЕ! В базе данных kb-server больше одного Pdm сообщения с характеристиками topic: {}, partition: {}, offset: {}",
                         message.getTopic(), message.getPartition(), message.getOffset());
             }
             return Optional.of(storedMessages.get(0));
