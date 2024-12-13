@@ -44,13 +44,13 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
 
     private com.nlmk.kb.server.entity.mdm.Data fromData(Data mdmData) {
         com.nlmk.kb.server.entity.mdm.Data data = new com.nlmk.kb.server.entity.mdm.Data();
-        data.setCatalogId(mdmData.getCatalogId());
-        data.setCatalogCode(mdmData.getCatalogCode());
+        data.setCatalogId(mdmData.getCatalogId().toString());
+        data.setCatalogCode(mdmData.getCatalogCode().toString());
         if (mdmData.getHashtagLine() != null) {
             mdmData.getHashtagLine().forEach(
                     hashtagLine -> {
                         if (hashtagLine != null) {
-                            data.addHashtagLine(hashtagLine);
+                            data.addHashtagLine(hashtagLine.toString());
                         }
                     }
             );
@@ -59,7 +59,7 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
             mdmData.getHashtagCatalog().forEach(
                     hashtagCatalog -> {
                         if (hashtagCatalog != null) {
-                            data.addHashtagCatalog(hashtagCatalog);
+                            data.addHashtagCatalog(hashtagCatalog.toString());
                         }
                     }
             );
@@ -83,16 +83,16 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
 
     private LineAttributesRecord fromLineAttributesRecord(lineAttributes_record lineAttributeRecord) {
         LineAttributesRecord lineAttributesRecord = new LineAttributesRecord();
-        lineAttributesRecord.setAttrCode(lineAttributeRecord.getAttrCode());
-        lineAttributesRecord.setAttrName(lineAttributeRecord.getAttrName());
-        lineAttributesRecord.setAttrType(lineAttributeRecord.getAttrType());
-        lineAttributesRecord.setAttrValue(lineAttributeRecord.getAttrValue());
-        lineAttributesRecord.setAttrNameEng(lineAttributeRecord.getAttrNameEng());
+        lineAttributesRecord.setAttrCode(lineAttributeRecord.getAttrCode().toString());
+        lineAttributesRecord.setAttrName(lineAttributeRecord.getAttrName().toString());
+        lineAttributesRecord.setAttrType(lineAttributeRecord.getAttrType().toString());
+        lineAttributesRecord.setAttrValue(lineAttributeRecord.getAttrValue().toString());
+        lineAttributesRecord.setAttrNameEng(lineAttributeRecord.getAttrNameEng().toString());
         if (lineAttributeRecord.getHashtagColumn() != null) {
             lineAttributeRecord.getHashtagColumn().forEach(
                     hashtagColumn -> {
                         if (hashtagColumn != null) {
-                            lineAttributesRecord.addHashtagColumn(hashtagColumn);
+                            lineAttributesRecord.addHashtagColumn(hashtagColumn.toString());
                         }
                     }
             );

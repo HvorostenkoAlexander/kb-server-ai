@@ -16,14 +16,14 @@ public class LineAttributesRecord implements Serializable {
 
     private static final long serialVersionUID = 8442300465558762251L;
 
-    private CharSequence attrCode;
-    private CharSequence attrName;
-    private CharSequence attrType;
-    private CharSequence attrValue;
-    private CharSequence attrNameEng;
-    private List<CharSequence> hashtagColumns = new ArrayList<>();
+    private String attrCode;
+    private String attrName;
+    private String attrType;
+    private String attrValue;
+    private String attrNameEng;
+    private List<String> hashtagColumns = new ArrayList<>();
 
-    public void addHashtagColumn(CharSequence hashtagColumn) {
+    public void addHashtagColumn(String hashtagColumn) {
         if (hashtagColumn != null) {
             hashtagColumns.add(hashtagColumn);
         }
