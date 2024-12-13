@@ -37,20 +37,20 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
 
     private Pk fromPk(pk pk) {
         return Pk.builder()
-                .systemCode(pk.getSystemCode().toString())
-                .lineId(pk.getLineId().toString())
+                .systemCode(stringFromCharSeq(pk.getSystemCode()))
+                .lineId(stringFromCharSeq(pk.getLineId()))
                 .build();
     }
 
     private com.nlmk.kb.server.entity.mdm.Data fromData(Data mdmData) {
         com.nlmk.kb.server.entity.mdm.Data data = new com.nlmk.kb.server.entity.mdm.Data();
-        data.setCatalogId(mdmData.getCatalogId().toString());
-        data.setCatalogCode(mdmData.getCatalogCode().toString());
+        data.setCatalogId(stringFromCharSeq(mdmData.getCatalogId()));
+        data.setCatalogCode(stringFromCharSeq(mdmData.getCatalogCode()));
         if (mdmData.getHashtagLine() != null) {
             mdmData.getHashtagLine().forEach(
                     hashtagLine -> {
                         if (hashtagLine != null) {
-                            data.addHashtagLine(hashtagLine.toString());
+                            data.addHashtagLine(stringFromCharSeq(hashtagLine));
                         }
                     }
             );
@@ -59,7 +59,7 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
             mdmData.getHashtagCatalog().forEach(
                     hashtagCatalog -> {
                         if (hashtagCatalog != null) {
-                            data.addHashtagCatalog(hashtagCatalog.toString());
+                            data.addHashtagCatalog(stringFromCharSeq(hashtagCatalog));
                         }
                     }
             );
@@ -74,25 +74,25 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
 
     private Properties fromProperties(properties mdmProperties) {
         return Properties.builder()
-                .cron(mdmProperties.getCron().toString())
-                .dateEnd(mdmProperties.getDateEnd().toString())
-                .dateBegin(mdmProperties.getDateBegin().toString())
-                .dateChange(mdmProperties.getDateChange().toString())
+                .cron(stringFromCharSeq(mdmProperties.getCron()))
+                .dateEnd(stringFromCharSeq(mdmProperties.getDateEnd()))
+                .dateBegin(stringFromCharSeq(mdmProperties.getDateBegin()))
+                .dateChange(stringFromCharSeq(mdmProperties.getDateChange()))
                 .build();
     }
 
     private LineAttributesRecord fromLineAttributesRecord(lineAttributes_record lineAttributeRecord) {
         LineAttributesRecord lineAttributesRecord = new LineAttributesRecord();
-        lineAttributesRecord.setAttrCode(lineAttributeRecord.getAttrCode().toString());
-        lineAttributesRecord.setAttrName(lineAttributeRecord.getAttrName().toString());
-        lineAttributesRecord.setAttrType(lineAttributeRecord.getAttrType().toString());
-        lineAttributesRecord.setAttrValue(lineAttributeRecord.getAttrValue().toString());
-        lineAttributesRecord.setAttrNameEng(lineAttributeRecord.getAttrNameEng().toString());
+        lineAttributesRecord.setAttrCode(stringFromCharSeq(lineAttributeRecord.getAttrCode()));
+        lineAttributesRecord.setAttrName(stringFromCharSeq(lineAttributeRecord.getAttrName()));
+        lineAttributesRecord.setAttrType(stringFromCharSeq(lineAttributeRecord.getAttrType()));
+        lineAttributesRecord.setAttrValue(stringFromCharSeq(lineAttributeRecord.getAttrValue()));
+        lineAttributesRecord.setAttrNameEng(stringFromCharSeq(lineAttributeRecord.getAttrNameEng()));
         if (lineAttributeRecord.getHashtagColumn() != null) {
             lineAttributeRecord.getHashtagColumn().forEach(
                     hashtagColumn -> {
                         if (hashtagColumn != null) {
-                            lineAttributesRecord.addHashtagColumn(hashtagColumn.toString());
+                            lineAttributesRecord.addHashtagColumn(stringFromCharSeq(hashtagColumn));
                         }
                     }
             );
@@ -100,6 +100,11 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
         return lineAttributesRecord;
     }
 
-
+    private String stringFromCharSeq(CharSequence charSequence) {
+        if (charSequence != null) {
+            return charSequence.toString();
+        }
+        return null;
+    }
 
 }
