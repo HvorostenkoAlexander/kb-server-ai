@@ -37,8 +37,8 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
 
     private Pk fromPk(pk pk) {
         return Pk.builder()
-                .Id(pk.getLineId())
                 .systemCode(pk.getSystemCode())
+                .lineId(pk.getLineId())
                 .build();
     }
 
