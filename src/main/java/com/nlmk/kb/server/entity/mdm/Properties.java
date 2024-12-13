@@ -15,9 +15,9 @@ public class Properties implements Serializable {
 
     private static final long serialVersionUID = 2179928425603170973L;
 
-    private CharSequence cron;
-    private CharSequence dateEnd;
-    private CharSequence dateBegin;
-    private CharSequence dateChange;
+    private String cron;
+    private String dateEnd;
+    private String dateBegin;
+    private String dateChange;
 
 }

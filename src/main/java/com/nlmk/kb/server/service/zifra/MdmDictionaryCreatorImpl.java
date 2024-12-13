@@ -74,10 +74,10 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
 
     private Properties fromProperties(properties mdmProperties) {
         return Properties.builder()
-                .cron(mdmProperties.getCron())
-                .dateEnd(mdmProperties.getDateEnd())
-                .dateBegin(mdmProperties.getDateBegin())
-                .dateChange(mdmProperties.getDateChange())
+                .cron(mdmProperties.getCron().toString())
+                .dateEnd(mdmProperties.getDateEnd().toString())
+                .dateBegin(mdmProperties.getDateBegin().toString())
+                .dateChange(mdmProperties.getDateChange().toString())
                 .build();
     }
 
