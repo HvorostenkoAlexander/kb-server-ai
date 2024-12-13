@@ -16,6 +16,6 @@ public class Pk implements Serializable {
     private static final long serialVersionUID = -9100655361415006750L;
 
     @SuppressWarnings("checkstyle:membername")
-    private CharSequence Id;
     private CharSequence systemCode;
+    private CharSequence lineId;
 }
