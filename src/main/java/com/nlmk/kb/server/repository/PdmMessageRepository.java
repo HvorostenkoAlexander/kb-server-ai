@@ -1,19 +1,13 @@
 package com.nlmk.kb.server.repository;
 
 import com.nlmk.kb.server.entity.pdm.PdmMessage;
+import com.nlmk.kb.server.service.KafkaMessageRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-
-public interface PdmMessageRepository extends JpaRepository<PdmMessage, Long> {
-
-    boolean existsByTopicAndOffsetAndPartition(String topic, long offset, int partition);
-
-    List<PdmMessage> findByTopicAndOffsetAndPartition(String topic, long offset, int partition);
-
+public interface PdmMessageRepository extends JpaRepository<PdmMessage, Long>, KafkaMessageRepository<PdmMessage> {
     @Query(nativeQuery = true,
             value = "SELECT * FROM pdm_message"
                     + " WHERE ?1 = topic"
