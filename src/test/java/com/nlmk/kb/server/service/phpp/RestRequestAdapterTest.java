@@ -100,7 +100,6 @@ public class RestRequestAdapterTest {
                                 .hnum(25217).roll(1)
                                 .length(BigDecimal.valueOf(3000.0)).thickness(BigDecimal.valueOf(30.0)).width(BigDecimal.valueOf(300.0))
                                 .weightNet(BigDecimal.valueOf(140.0))
-                                .workshopNum(Kceh.PHPP.getValue())
                                 .kceh(Kceh.PHPP.getValue())
                                 .specifications(List.of(
                                         Specs.builder()

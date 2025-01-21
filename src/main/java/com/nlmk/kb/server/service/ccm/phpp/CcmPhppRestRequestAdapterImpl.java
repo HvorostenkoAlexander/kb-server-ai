@@ -57,7 +57,6 @@ public class CcmPhppRestRequestAdapterImpl implements RestRequestAdapter<CcmPhpp
                     .thickness(data.getThickness())
                     .width(data.getWidth())
                     .weightNet(data.getWeightNet())
-                    .workshopNum(data.getWorkshopNum())
                     .kceh(data.getWorkshopNum())
                     .orderNum(data.getOrderNum())
                     .orderPos(data.getOrderPos())
