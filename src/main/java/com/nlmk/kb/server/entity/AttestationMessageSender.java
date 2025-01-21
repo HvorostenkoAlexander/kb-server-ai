@@ -6,5 +6,6 @@ package com.nlmk.kb.server.entity;
 public enum AttestationMessageSender {
     CCM_PTS,
     CCM_KC1,
-    CCM_KC2
+    CCM_KC2,
+    CCM_PHPP
 }

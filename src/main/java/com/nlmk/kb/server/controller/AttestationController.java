@@ -5,6 +5,8 @@ import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
 import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc2Response;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppRequest;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppResponse;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.config.KbConstants;
@@ -64,5 +66,14 @@ public interface AttestationController {
     CcmKc2Response postAttestationCcmKc2(@RequestHeader(name = KbConstants.REQUEST_ID_HEADER, required = false) String requestId,
                                          @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Запрос на аттестацию ЕП КЦ2")
                                          @RequestBody @Valid CcmKc2Request attRequest);
+
+    @Operation(summary = "Принятие запроса на аттестацию ЦХПП", description = "Принятие запроса на Аттестацию Единицы Продукции цеха ЦХПП (nlmk.l3.ccm.phpp)", security = {@SecurityRequirement(name = "bearer-key")})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Аттестация Единицы Продукции успешно пройдена", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = CcmPhppResponse.class)))
+    })
+    @PostMapping("/ccm/phpp")
+    CcmPhppResponse postAttestationCcmPhpp(@RequestHeader(name = KbConstants.REQUEST_ID_HEADER, required = false) String requestId,
+                                           @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Запрос на аттестацию ЦХПП")
+                                         @RequestBody @Valid CcmPhppRequest attRequest);
 
 }

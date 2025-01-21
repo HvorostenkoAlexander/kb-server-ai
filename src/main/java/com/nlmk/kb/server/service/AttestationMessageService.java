@@ -5,6 +5,8 @@ import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
 import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc2Response;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppRequest;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppResponse;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
@@ -62,4 +64,12 @@ public interface AttestationMessageService {
      * @return объект ответа тип <code>CcmKc2Response</code>
      */
     CcmKc2Response ccmKc2RequestProcessing(CcmKc2Request request);
+
+    /**
+     * Обработка запроса на Аттестацию для типа <code>CcmPhppRequest</code>
+     *
+     * @param request сообщения с запросом на Аттестацию
+     * @return объект ответа тип <code>CcmPhppResponse</code>
+     */
+    CcmPhppResponse ccmPhppRequestProcessing(CcmPhppRequest request);
 }

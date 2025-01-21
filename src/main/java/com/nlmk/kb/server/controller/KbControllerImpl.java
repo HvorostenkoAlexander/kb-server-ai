@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsKc1;
 import nlmk.l3.apcs.VerificationResultsKc2;
+import nlmk.l3.apcs.VerificationResultsPhpp;
 import nlmk.l3.apcs.VerificationResultsPts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -171,6 +172,9 @@ public class KbControllerImpl implements KbController {
                 break;
             case KC2:
                 attestationResultSender.send(attestationResult, VerificationResultsKc2.class);
+                break;
+            case PHPP:
+                attestationResultSender.send(attestationResult, VerificationResultsPhpp.class);
                 break;
             default:
                 throw new AttestationResultSenderException("Отправка результата аттестации для цеха ["
