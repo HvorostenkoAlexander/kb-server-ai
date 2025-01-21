@@ -4,6 +4,8 @@ import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
 import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc2Response;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppRequest;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppResponse;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.service.AttestationMessageService;
@@ -39,6 +41,12 @@ public class AttestationControllerImpl implements AttestationController {
     public CcmKc2Response postAttestationCcmKc2(String requestId, CcmKc2Request attRequest) {
         log.info("postAttestationCcmKc2, CcmKc2Request [{}]", attRequest);
         return service.ccmKc2RequestProcessing(attRequest);
+    }
+
+    @Override
+    public CcmPhppResponse postAttestationCcmPhpp(String requestId, CcmPhppRequest attRequest) {
+        log.info("postAttestationCcmPhpp, CcmPhppRequest [{}]", attRequest);
+        return service.ccmPhppRequestProcessing(attRequest);
     }
 
 }
