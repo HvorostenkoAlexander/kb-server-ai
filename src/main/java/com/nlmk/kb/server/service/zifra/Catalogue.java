@@ -1,21 +1,41 @@
 package com.nlmk.kb.server.service.zifra;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.text.CaseUtils;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 
 @Getter
-@AllArgsConstructor
 public enum Catalogue {
 
-    SP_CUSTOMER("SpCustomer", "/nsi/dict/mdm/sp_customer"),
-    SP_CUSTOMER_GROUP("SpCustomerGroup", "/nsi/dict/mdm/sp_customer_group"),
-    SP_GROUP_AND_CUSTOMER("SpGroupAndCustomer", "/nsi/dict/mdm/sp_group_and_customer");
+    SP_CUSTOMER,
+    SP_CUSTOMER_GROUP,
+    SP_GROUP_AND_CUSTOMER,
+    SP_OM_DATA_TYPE,
+    SP_ATTRIBUTES,
+    SP_PLACE,
+    SP_ATTRIBUTE_ATTESTATION_GROUP,
+    SP_MEASURE,
+    SP_DATA_TYPE,
+    SP_MARK_LABEL_APP_CHEMICAL_ANALYSIS,
+    SP_CERTIFICATION_STEP_TYPE,
+    SP_SAMPLING_TOPOLOGY;
+
+    private final String nsiDictMdmPath = "/nsi/dict/mdm/";
 
     private final String code;
     private final String path;
+
+    Catalogue() {
+        this.code = CaseUtils.toCamelCase(
+                this.name().toLowerCase(Locale.ROOT),
+                true,
+                '_'
+        );
+        this.path = nsiDictMdmPath + this.name().toLowerCase(Locale.ROOT);
+    }
 
     public static Catalogue fromCode(String code) {
         if (Objects.isNull(code)) {
@@ -28,3 +48,4 @@ public enum Catalogue {
     }
 
 }
+
