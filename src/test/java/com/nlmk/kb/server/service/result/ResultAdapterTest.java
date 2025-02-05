@@ -13,6 +13,7 @@ import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.service.result.sending.adapter.Kc1ResultAdapter;
 import com.nlmk.kb.server.service.result.sending.adapter.Kc2ResultAdapter;
 import com.nlmk.kb.server.service.result.sending.adapter.PgpResultAdapter;
+import com.nlmk.kb.server.service.result.sending.adapter.PhppResultAdapter;
 import com.nlmk.kb.server.service.result.sending.adapter.PtsResultAdapter;
 import com.nlmk.kb.server.service.result.sending.adapter.ResultAdapter;
 import nlmk.l3.apcs.EnumOp;
@@ -56,6 +57,7 @@ import nlmk.l3.apcs.RecordPtsMismatch;
 import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.apcs.VerificationResultsKc1;
 import nlmk.l3.apcs.VerificationResultsKc2;
+import nlmk.l3.apcs.VerificationResultsPhpp;
 import nlmk.l3.apcs.VerificationResultsPts;
 import org.junit.jupiter.api.Test;
 
@@ -73,6 +75,7 @@ class ResultAdapterTest {
     private final ResultAdapter<VerificationResultsPts> ptsAdapter = new PtsResultAdapter();
     private final ResultAdapter<VerificationResultsKc1> kc1Adapter = new Kc1ResultAdapter();
     private final ResultAdapter<VerificationResultsKc2> kc2Adapter = new Kc2ResultAdapter();
+    private final ResultAdapter<VerificationResultsPhpp> phppAdapter = new PhppResultAdapter();
 
     @Test
     void simpleVerificationProduct() throws IOException {
