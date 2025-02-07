@@ -21,7 +21,9 @@ public enum Catalogue {
     SP_DATA_TYPE,
     SP_MARK_LABEL_APP_CHEMICAL_ANALYSIS,
     SP_CERTIFICATION_STEP_TYPE,
-    SP_SAMPLING_TOPOLOGY;
+    SP_SAMPLING_TOPOLOGY,
+    SP_DIMENSION,
+    SP_PLACE_TYPE;
 
     private final String nsiDictMdmPath = "/nsi/dict/mdm/";
 
