@@ -1,6 +1,8 @@
-package com.nlmk.kb.server.service.zifra;
+package com.nlmk.kb.server.service.zifra.parsers;
 
 import com.nlmk.attestation.product.api.nsi.SpGroupAndCustomerDto;
+import com.nlmk.kb.server.service.zifra.Catalogue;
+import com.nlmk.kb.server.service.zifra.CatalogueParser;
 import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.nsi.zifra.Data;
 import nlmk.l3.nsi.zifra.pk;

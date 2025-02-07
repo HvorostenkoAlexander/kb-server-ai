@@ -2,6 +2,9 @@ package com.nlmk.kb.server.service.zifra;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.kb.server.exception.ZifraMessageParserException;
+import com.nlmk.kb.server.service.zifra.parsers.SpCustomerGroupParser;
+import com.nlmk.kb.server.service.zifra.parsers.SpCustomerParser;
+import com.nlmk.kb.server.service.zifra.parsers.SpGroupAndCustomerParser;
 import nlmk.l3.nsi.zifra.Data;
 import nlmk.l3.nsi.zifra.EnumOp;
 import nlmk.l3.nsi.zifra.Reason;

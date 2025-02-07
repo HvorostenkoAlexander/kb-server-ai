@@ -32,7 +32,18 @@ public class ZifraKafkaService {
             topics = {
                     "${kafka.zifra.topic.sp-customer}",
                     "${kafka.zifra.topic.sp-customer-group}",
-                    "${kafka.zifra.topic.sp-group-and-customer}"
+                    "${kafka.zifra.topic.sp-group-and-customer}",
+                    "${kafka.zifra.topic.sp-om-data-type}",
+                    "${kafka.zifra.topic.sp-attributes}",
+                    "${kafka.zifra.topic.sp-l2code-place}",
+                    "${kafka.zifra.topic.sp-attribute-attestation-group}",
+                    "${kafka.zifra.topic.sp-measure}",
+                    "${kafka.zifra.topic.sp-data-type}",
+                    "${kafka.zifra.topic.sp-analysis-type}",
+                    "${kafka.zifra.topic.sp-certification-step-type}",
+                    "${kafka.zifra.topic.sp-sampling-topology}",
+                    "${kafka.zifra.topic.sp-dimension}",
+                    "${kafka.zifra.topic.sp-place-type}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
