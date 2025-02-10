@@ -59,11 +59,11 @@ public class ZifraKafkaService {
             } else {
                 log.debug("receiveMessageReq (ZIFRA): Sending nack for topic [{}], partition [{}], offset [{}], key [{}]",
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
-                ack.nack(sleepTime);
+                ack.acknowledge();
             }
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
-            ack.nack(sleepTime);
+            ack.acknowledge();
             throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
