@@ -26,7 +26,7 @@ public class SpMeasureParser implements CatalogueParser<SpMeasureDto> {
                 .abbr(getAttrStringValueByName(data.getLineAttributes(), "abbr"))
                 .nameEng(getAttrStringValueByName(data.getLineAttributes(), "nameEng"))
                 .abbrEng(getAttrStringValueByName(data.getLineAttributes(), "abbrEng"))
-                .coefficient(getAttrIntegerValueByName(data.getLineAttributes(), "coefficient"))
+                .coefficient(getAttrBigDecimalValueByName(data.getLineAttributes(), "coefficient"))
                 .description(getAttrStringValueByName(data.getLineAttributes(), "description"))
                 .codeIso(getAttrStringValueByName(data.getLineAttributes(), "codeISO"))
                 .dateBegin(getBeginDate(data.getProperties()))

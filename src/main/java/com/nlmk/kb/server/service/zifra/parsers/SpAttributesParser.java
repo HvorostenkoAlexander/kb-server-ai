@@ -26,7 +26,6 @@ public class SpAttributesParser implements CatalogueParser<SpAttributesDto> {
                 .abbr(getAttrStringValueByName(data.getLineAttributes(), "abbr"))
                 .directoryId(getAttrStringValueByName(data.getLineAttributes(), "directoryId"))
                 .directoryField(getAttrStringValueByName(data.getLineAttributes(), "directoryField"))
-                .type(getAttrStringValueByName(data.getLineAttributes(), "type"))
                 .active(getActive(data.getLineAttributes()))
                 .measureId(getAttrStringValueByName(data.getLineAttributes(), "measureId"))
                 .systemMes(getAttrStringValueByName(data.getLineAttributes(), "systemMES"))
