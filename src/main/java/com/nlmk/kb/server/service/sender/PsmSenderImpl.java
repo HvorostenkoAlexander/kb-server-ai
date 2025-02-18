@@ -57,7 +57,7 @@ public class PsmSenderImpl implements PsmSender {
                 .bodyValue(zorderJson)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .timeout(Duration.ofMillis(webClientTimeout), Mono.error(new RemoteServiceInternalErrorException("PsmSender, postZmmorder, server timeout")))
+                .timeout(Duration.ofMillis(webClientTimeout), Mono.error(new RemoteServiceInternalErrorException("PsmSender, postZorder, server timeout")))
                 .onErrorResume(WebClientResponseException.class, e -> {
                         if (e.getRawStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                             return Mono.error(
