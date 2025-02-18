@@ -2,7 +2,6 @@ package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
-import com.nlmk.kb.server.exception.RemoteServiceInternalErrorException;
 import com.nlmk.kb.server.service.zifra.ZifraMessageHandler;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
