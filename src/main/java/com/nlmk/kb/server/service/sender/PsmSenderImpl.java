@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
+import com.nlmk.kb.server.exception.RemoteServiceInternalErrorException;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceTimeoutException;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
@@ -54,10 +57,19 @@ public class PsmSenderImpl implements PsmSender {
                 .bodyValue(zorderJson)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .timeout(Duration.ofMillis(webClientTimeout))
-                .onErrorResume(e -> Mono.error(
-                        new RemoteServiceSenderException(String.format("PsmSender, postZorder, send error, message [%s]", e.getMessage()))
-                ))
+                .timeout(Duration.ofMillis(webClientTimeout), Mono.error(new RemoteServiceInternalErrorException("PsmSender, postZorder, server timeout")))
+                .onErrorResume(WebClientResponseException.class, e -> {
+                        if (e.getRawStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                            return Mono.error(
+                                    new RemoteServiceInternalErrorException(String.format("PsmSender, postZorder, internal server error, message [%s]", e.getMessage()))
+                            );
+                        } else {
+                            return Mono.error(
+                                    new RemoteServiceSenderException(String.format("PsmSender, postZorder, send error, message [%s]", e.getMessage()))
+                            );
+                        }
+                    }
+                )
                 .block();
 
         log.info("postZorder, PSM response [{}], JSON length [{}] byte", response, objectMapper.writeValueAsBytes(zorder).length);
@@ -77,10 +89,19 @@ public class PsmSenderImpl implements PsmSender {
                 .bodyValue(zmmorderJson)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .timeout(Duration.ofMillis(webClientTimeout))
-                .onErrorResume(e -> Mono.error(
-                        new RemoteServiceSenderException(String.format("PsmSender, postZmmorder, send error, message [%s]", e.getMessage()))
-                ))
+                .timeout(Duration.ofMillis(webClientTimeout), Mono.error(new RemoteServiceTimeoutException("PsmSender, postZmmorder, server timeout")))
+                .onErrorResume(WebClientResponseException.class, e -> {
+                            if (e.getRawStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                                return Mono.error(
+                                        new RemoteServiceInternalErrorException(String.format("PsmSender, postZmmorder, internal server error, message [%s]", e.getMessage()))
+                                );
+                            } else {
+                                return Mono.error(
+                                        new RemoteServiceSenderException(String.format("PsmSender, postZmmorder, send error, message [%s]", e.getMessage()))
+                                );
+                            }
+                        }
+                )
                 .block();
 
         log.info("postZmmorder, PSM response [{}], JSON length [{}] byte", response, objectMapper.writeValueAsBytes(zmmorder).length);
