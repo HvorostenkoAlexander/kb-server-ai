@@ -7,6 +7,7 @@ import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.exception.RemoteServiceInternalErrorException;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
+import com.nlmk.kb.server.exception.RemoteServiceTimeoutException;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -56,7 +57,7 @@ public class PsmSenderImpl implements PsmSender {
                 .bodyValue(zorderJson)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .timeout(Duration.ofMillis(webClientTimeout))
+                .timeout(Duration.ofMillis(webClientTimeout), Mono.error(new RemoteServiceInternalErrorException("PsmSender, postZmmorder, server timeout")))
                 .onErrorResume(WebClientResponseException.class, e -> {
                         if (e.getRawStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                             return Mono.error(
@@ -88,7 +89,7 @@ public class PsmSenderImpl implements PsmSender {
                 .bodyValue(zmmorderJson)
                 .retrieve()
                 .bodyToMono(Integer.class)
-                .timeout(Duration.ofMillis(webClientTimeout))
+                .timeout(Duration.ofMillis(webClientTimeout), Mono.error(new RemoteServiceTimeoutException("PsmSender, postZmmorder, server timeout")))
                 .onErrorResume(WebClientResponseException.class, e -> {
                             if (e.getRawStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                                 return Mono.error(
