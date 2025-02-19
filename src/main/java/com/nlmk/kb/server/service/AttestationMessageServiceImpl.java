@@ -8,6 +8,8 @@ import com.nlmk.kb.server.api.ccm.kc.request.CcmKc1Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc1Response;
 import com.nlmk.kb.server.api.ccm.kc.request.CcmKc2Request;
 import com.nlmk.kb.server.api.ccm.kc.response.CcmKc2Response;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppRequest;
+import com.nlmk.kb.server.api.ccm.phpp.CcmPhppResponse;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsRequest;
 import com.nlmk.kb.server.api.ccm.pts.CcmPtsResponse;
 import com.nlmk.kb.server.entity.AttestationMessage;
@@ -44,6 +46,8 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     private final RestResponseAdapter<CcmKc1Response> ccmKc1RestResponseAdapter;
     private final RestRequestAdapter<CcmKc2Request> ccmKc2RestRequestAdapter;
     private final RestResponseAdapter<CcmKc2Response> ccmKc2RestResponseAdapter;
+    private final RestRequestAdapter<CcmPhppRequest> ccmPhppRestRequestAdapter;
+    private final RestResponseAdapter<CcmPhppResponse> ccmPhppRestResponseAdapter;
     private final AttestationMessageRepository attestationMessageRepository;
     private final CcmMessageSourceRepository ccmMessageSourceRepository;
     private final PamSender pamSender;
@@ -116,7 +120,7 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     @Override
     @Transactional
     public CcmKc1Response ccmKc1RequestProcessing(CcmKc1Request request) {
-        log.info("ccKc1RequestProcessing, request [{}]", request);
+        log.info("ccmKc1RequestProcessing, request [{}]", request);
         final var attRequest = ccmKc1RestRequestAdapter.adapt(request);
         return ccmKc1RestResponseAdapter.adapt(processAttestationRequest(attRequest,
                 AttestationMessageSender.CCM_KC1,
@@ -127,12 +131,22 @@ public class AttestationMessageServiceImpl implements AttestationMessageService 
     @Override
     @Transactional
     public CcmKc2Response ccmKc2RequestProcessing(CcmKc2Request request) {
-        log.info("ccKc2RequestProcessing, request [{}]", request);
+        log.info("ccmKc2RequestProcessing, request [{}]", request);
         final var attRequest = ccmKc2RestRequestAdapter.adapt(request);
         return ccmKc2RestResponseAdapter.adapt(processAttestationRequest(attRequest,
                 AttestationMessageSender.CCM_KC2,
                 new SourceMessageSaver<>(ccmMessageSourceRepository, request))
         );
+    }
+
+    @Override
+    @Transactional
+    public CcmPhppResponse ccmPhppRequestProcessing(CcmPhppRequest request) {
+        log.info("ccmPhppRequestProcessing, request [{}]", request);
+        final var attRequest = ccmPhppRestRequestAdapter.adapt(request);
+        return ccmPhppRestResponseAdapter.adapt(processAttestationRequest(attRequest,
+                AttestationMessageSender.CCM_PHPP,
+                new SourceMessageSaver<>(ccmMessageSourceRepository, request)));
     }
 
 

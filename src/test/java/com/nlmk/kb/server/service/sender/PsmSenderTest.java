@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
+import com.nlmk.kb.server.exception.RemoteServiceInternalErrorException;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -70,6 +71,20 @@ class PsmSenderTest {
     }
 
     @Test
+    void postZorderToPsmShouldThrowRemoteServiceInternalErrorExceptionIfResponseCodeInternalServerError() throws IOException, InterruptedException {
+        // given
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        );
+        final var zorders051 = objectMapper.readValue(new ClassPathResource("json/zordersExample.json").getFile(), ZORDERS051.class);
+        // when
+        // then
+        assertThatThrownBy(() -> psmSender.postZorder(zorders051)).isInstanceOf(RemoteServiceInternalErrorException.class);
+        mockWebServer.takeRequest();
+    }
+
+    @Test
     void canPostZorderToPsm() throws InterruptedException, IOException {
         // given
         mockWebServer.enqueue(new MockResponse()
@@ -104,6 +119,20 @@ class PsmSenderTest {
         // when
         // then
         assertThatThrownBy(() -> psmSender.postZmmorder(zmmorder)).isInstanceOf(RemoteServiceSenderException.class);
+        mockWebServer.takeRequest();
+    }
+
+    @Test
+    void postZmmorderToPsmShouldThrowRemoteServiceInternalErrorExceptionIfResponseCodeInternalServerError() throws IOException, InterruptedException {
+        // given
+        mockWebServer.enqueue(new MockResponse()
+                .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        );
+        final var zmmorder = objectMapper.readValue(new ClassPathResource("json/zmmordersExample.json").getFile(), ZMMORDERS05DOP.class);
+        // when
+        // then
+        assertThatThrownBy(() -> psmSender.postZmmorder(zmmorder)).isInstanceOf(RemoteServiceInternalErrorException.class);
         mockWebServer.takeRequest();
     }
 

@@ -5,6 +5,8 @@ import com.nlmk.attestation.zmmorder.ZMMORDERS05DOP;
 import com.nlmk.attestation.zorder.ZORDERS051;
 import com.nlmk.kb.server.entity.SapMessage;
 import com.nlmk.kb.server.entity.SapMessageState;
+import com.nlmk.kb.server.exception.RemoteServiceInternalErrorException;
+import com.nlmk.kb.server.exception.RemoteServiceTimeoutException;
 import com.nlmk.kb.server.exception.S3ClientException;
 import com.nlmk.kb.server.repository.SapMessageRepository;
 import com.nlmk.kb.server.service.sender.PsmSender;
@@ -102,7 +104,7 @@ public class SapMessageHandlerImpl implements SapMessageHandler {
                 psmSender.postZmmorder(zmmorder);
                 message.setOrderNum(zmmorder.getIDOC().getE1EDK01().getBELNR());
             }
-        } catch (S3ClientException e) {
+        } catch (S3ClientException | RemoteServiceInternalErrorException | RemoteServiceTimeoutException e) {
             log.error(MSG_TEMPLATE, e.getMessage());
             message.setState(SapMessageState.ERROR);
             repository.save(message);
