@@ -16,9 +16,10 @@ public class SpSamplingTopologyParser implements CatalogueParser<SpSamplingTopol
     }
 
     @Override
-    public SpSamplingTopologyDto parse(pk pk, Data data) {
+    public SpSamplingTopologyDto parse(pk pk, Data data, Long messageId) {
         return SpSamplingTopologyDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .hierarchyScopeDirectory(getAttrStringValueByName(data.getLineAttributes(), "hierarchyScopeDirectory"))

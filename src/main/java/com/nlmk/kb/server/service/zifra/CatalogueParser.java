@@ -29,7 +29,7 @@ public interface CatalogueParser<T> {
     /**
      * Получение готового Объекта заданного типа <code>T</code> для передачи в НСИ
      */
-    T parse(nlmk.l3.nsi.zifra.pk pk, nlmk.l3.nsi.zifra.Data data);
+    T parse(nlmk.l3.nsi.zifra.pk pk, nlmk.l3.nsi.zifra.Data data, Long messageId);
 
     /**
      * Получение "Начало периода действия записи"

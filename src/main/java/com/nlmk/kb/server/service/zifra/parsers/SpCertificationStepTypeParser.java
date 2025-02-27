@@ -16,9 +16,10 @@ public class SpCertificationStepTypeParser implements CatalogueParser<SpCertific
     }
 
     @Override
-    public SpCertificationStepTypeDto parse(pk pk, Data data) {
+    public SpCertificationStepTypeDto parse(pk pk, Data data, Long messageId) {
         return SpCertificationStepTypeDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .shName(getAttrStringValueByName(data.getLineAttributes(), "shName"))

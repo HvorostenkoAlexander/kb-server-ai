@@ -7,11 +7,11 @@ public interface NsiSender {
     /**
      * Отправка данных в заданный справочник НСИ (ответ число)
      */
-    <T> Long sendBodyReturnLong(T body, String targetPath, Operation operation);
+    <T> Long sendBodyReturnLong(T body, String targetPath, Operation operation, Long messageId);
 
     /**
      * Отправка данных в заданный справочник НСИ (ответ строка)
      */
-    <T> String sendBodyReturnString(T body, String targetPath, Operation operation);
+    <T> String sendBodyReturnString(T body, String targetPath, Operation operation, Long messageId);
 
 }

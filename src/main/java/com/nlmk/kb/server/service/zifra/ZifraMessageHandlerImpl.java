@@ -70,14 +70,17 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
 
             final var operation = transformOperation(value.getOp());
             final var parser = parserMap.get(catalogue);
-            final var dto = parser.parse(value.getPk(), value.getData());
+            final var dto = parser.parse(value.getPk(), value.getData(), mdmMessage.get().getId());
 
             try {
-                final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation);
+                final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation, mdmMessage.get().getId());
                 log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]",
                         response, catalogue, catalogue.getPath(), operation);
-                mdmMessage.get().setNote("OK");
-                messageService.update(mdmMessage.get());
+                if (response != null) {
+                    String[] resp = response.split(":");
+                    mdmMessage.get().setNote(resp[0]);
+                    messageService.update(mdmMessage.get());
+                }
                 return true;
             } catch (RemoteServiceSenderException e) {
                 log.error("handleConsumerRecord, ошибка отправки в НСИ, DTO [{}], Каталог [{}], сообщение [{}]",

@@ -16,9 +16,10 @@ public class SpDataTypeParser implements CatalogueParser<SpDataTypeDto> {
     }
 
     @Override
-    public SpDataTypeDto parse(pk pk, Data data) {
+    public SpDataTypeDto parse(pk pk, Data data, Long messageId) {
         return SpDataTypeDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
                 .abbr(getAttrStringValueByName(data.getLineAttributes(), "abbr"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))

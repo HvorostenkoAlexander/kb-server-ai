@@ -17,10 +17,11 @@ public class SpCustomerGroupParser implements CatalogueParser<SpCustomerGroupDto
     }
 
     @Override
-    public SpCustomerGroupDto parse(pk pk, Data data) {
+    public SpCustomerGroupDto parse(pk pk, Data data, Long messageId) {
 
         return SpCustomerGroupDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .groupId(getAttrIntegerValueByName(data.getLineAttributes(), "groupId"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .dateBegin(getBeginDate(data.getProperties()))

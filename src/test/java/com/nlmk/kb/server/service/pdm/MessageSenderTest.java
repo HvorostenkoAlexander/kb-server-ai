@@ -115,13 +115,13 @@ class MessageSenderTest {
                 .enabled(true)
                 .build());
 
-        when(nsiSender.sendBodyReturnLong(any(), any(), any())).thenReturn(321L);
+        when(nsiSender.sendBodyReturnLong(any(), any(), any(), any())).thenReturn(321L);
         messageSenders.forEach(sender -> {
             final var response = sender.send(message);
             assertThat(response).isEqualTo(321L);
         });
 
-        when(nsiSender.sendBodyReturnLong(any(), any(), any())).thenReturn(null);
+        when(nsiSender.sendBodyReturnLong(any(), any(), any(), any())).thenReturn(null);
         messageSenders.forEach(sender -> {
             final var response = sender.send(message);
             assertThat(response).isNull();
