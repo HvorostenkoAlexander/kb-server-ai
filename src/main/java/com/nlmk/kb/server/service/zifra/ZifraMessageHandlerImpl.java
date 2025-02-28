@@ -11,6 +11,7 @@ import nlmk.l3.nsi.zifra.EnumOp;
 import nlmk.l3.nsi.zifra.Reason;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,10 +77,12 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
                 final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation, mdmMessage.get().getId());
                 log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]",
                         response, catalogue, catalogue.getPath(), operation);
-                if (response != null) {
-                    String[] resp = response.split(":");
-                    mdmMessage.get().setNote(resp[0]);
-                    messageService.update(mdmMessage.get());
+                if (operation != null) {
+                    if (operation.getHttpMethod().equals(HttpMethod.POST) || operation.getHttpMethod().equals(HttpMethod.PUT)) {
+                        String[] resp = response.split(":");
+                        mdmMessage.get().setNote(resp[0]);
+                        messageService.update(mdmMessage.get());
+                    }
                 }
                 return true;
             } catch (RemoteServiceSenderException e) {
