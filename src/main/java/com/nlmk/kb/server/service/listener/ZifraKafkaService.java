@@ -44,7 +44,8 @@ public class ZifraKafkaService {
                     "${kafka.zifra.topic.sp-certification-step-type}",
                     "${kafka.zifra.topic.sp-sampling-topology}",
                     "${kafka.zifra.topic.sp-dimension}",
-                    "${kafka.zifra.topic.sp-place-type}"
+                    "${kafka.zifra.topic.sp-place-type}",
+                    "${kafka.zifra.topic.sp-mapping-attribute-ccm3t}"
             }
     )
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
