@@ -17,9 +17,10 @@ public class SpAttributesParser implements CatalogueParser<SpAttributesDto> {
     }
 
     @Override
-    public SpAttributesDto parse(pk pk, Data data) {
+    public SpAttributesDto parse(pk pk, Data data, Long messageId) {
         return SpAttributesDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .shName(getAttrStringValueByName(data.getLineAttributes(), "shName"))

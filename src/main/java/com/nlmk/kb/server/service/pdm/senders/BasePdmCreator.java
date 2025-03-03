@@ -32,7 +32,8 @@ abstract class BasePdmCreator implements PdmMessageCreator, PdmMessageSender {
         return nsiSender.sendBodyReturnLong(
                 getBody(message),
                 dictionaryConfigService.getDictionaryUrlByTopic(message.getTopic()),
-                message.getOp()
+                message.getOp(),
+                1L
         );
     }
 

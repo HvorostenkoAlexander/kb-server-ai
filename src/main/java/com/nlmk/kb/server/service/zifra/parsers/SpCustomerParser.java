@@ -17,10 +17,11 @@ public class SpCustomerParser implements CatalogueParser<SpCustomerDto> {
     }
 
     @Override
-    public SpCustomerDto parse(pk pk, Data data) {
+    public SpCustomerDto parse(pk pk, Data data, Long messageId) {
 
         return SpCustomerDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .customerId(getAttrStringValueByName(data.getLineAttributes(), "customerId"))
                 .customerName(getAttrStringValueByName(data.getLineAttributes(), "customerName"))
                 .shortName(getAttrStringValueByName(data.getLineAttributes(), "shName"))

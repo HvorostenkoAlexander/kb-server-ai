@@ -40,7 +40,7 @@ class CatalogueParserTest {
         );
         assertThat(obj).isNotNull();
 
-        final var dto = parser.parse(obj.getPk(), obj.getData());
+        final var dto = parser.parse(obj.getPk(), obj.getData(), 1L);
         assertThat(dto.getId()).isEqualTo("90515640-77bc-11ed-bf7c-f39ea38ca6e0");
         assertThat(dto.getCustomerId()).isEqualTo("111111111");
         assertThat(dto.getCustomerName()).isEqualTo("ТЕСТ ПОТРЕБИТЕЛЬ");
@@ -61,7 +61,7 @@ class CatalogueParserTest {
         );
         assertThat(obj).isNotNull();
 
-        final var dto = parser.parse(obj.getPk(), obj.getData());
+        final var dto = parser.parse(obj.getPk(), obj.getData(), 1L);
         assertThat(dto.getId()).isEqualTo("987e00c0-6b00-11ed-97c4-2b96fc4bacbb");
         assertThat(dto.getGroupId()).isEqualTo(3);
         assertThat(dto.getName()).isEqualTo("ВР");
@@ -81,7 +81,7 @@ class CatalogueParserTest {
         );
         assertThat(obj).isNotNull();
 
-        final var dto = parser.parse(obj.getPk(), obj.getData());
+        final var dto = parser.parse(obj.getPk(), obj.getData(), 1L);
         assertThat(dto.getId()).isEqualTo("a09e7690-77bc-11ed-bf7c-f39ea38ca6e0");
         assertThat(dto.getGroupId()).isEqualTo("7a533980-6b00-11ed-97c4-2b96fc4bacbb");
         assertThat(dto.getCustomerId()).isEqualTo("90515640-77bc-11ed-bf7c-f39ea38ca6e0");
@@ -136,7 +136,7 @@ class CatalogueParserTest {
             }
 
             @Override
-            public Object parse(pk pk, Data data) {
+            public Object parse(pk pk, Data data, Long messageId) {
                 return null;
             }
         };

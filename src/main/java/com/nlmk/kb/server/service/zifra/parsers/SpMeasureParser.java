@@ -16,9 +16,10 @@ public class SpMeasureParser implements CatalogueParser<SpMeasureDto> {
     }
 
     @Override
-    public SpMeasureDto parse(pk pk, Data data) {
+    public SpMeasureDto parse(pk pk, Data data, Long messageId) {
         return SpMeasureDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrStringValueByName(data.getLineAttributes(), "code"))
                 .unitId(getAttrStringValueByName(data.getLineAttributes(), "unitId"))
                 .dimension(getAttrStringValueByName(data.getLineAttributes(), "dimension"))
