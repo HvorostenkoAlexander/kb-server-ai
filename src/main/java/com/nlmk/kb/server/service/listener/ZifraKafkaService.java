@@ -2,6 +2,7 @@ package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.config.KbConstants;
 import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
+import com.nlmk.kb.server.exception.ZifraMessageParserException;
 import com.nlmk.kb.server.service.zifra.ZifraMessageHandler;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,10 @@ public class ZifraKafkaService {
                         consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset(), consumerRecord.key());
                 ack.acknowledge();
             }
+        } catch (ZifraMessageParserException e) {
+            log.warn("receiveMessageReq, Exception", e);
+            ack.acknowledge();
+            throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
