@@ -6,7 +6,9 @@ import com.nlmk.kb.server.service.zifra.CatalogueParser;
 import com.nlmk.kb.server.util.AdapterUtils;
 import nlmk.l3.nsi.zifra.Data;
 import nlmk.l3.nsi.zifra.pk;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpMappingAttributeCcm3tParser implements CatalogueParser<SpMappingAttributeCcm3tDto> {
     @Override
     public Catalogue getCatalogue() {
