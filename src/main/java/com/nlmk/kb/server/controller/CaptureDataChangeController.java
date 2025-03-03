@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,6 @@ public interface CaptureDataChangeController {
             @ApiResponse(responseCode = "200", description = "Аттестация Единицы Продукции успешно пройдена", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class))),
     })
     @PostMapping("/update")
-    String updateMdmMessageStatus(String messageId, String status);
+    ResponseEntity<String> updateMdmMessageStatus(String messageId, String status);
 
 }

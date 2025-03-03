@@ -4,6 +4,8 @@ import com.nlmk.kb.server.service.CaptureDataChangeService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +19,8 @@ public class CaptureDataChangeControllerImpl implements CaptureDataChangeControl
 
     private final CaptureDataChangeService captureDataChangeService;
     @Override
-    public String updateMdmMessageStatus(String messageId, String status) {
+    public ResponseEntity<String> updateMdmMessageStatus(String messageId, String status) {
         captureDataChangeService.updateMdmMessage(messageId, status);
-        return "OK";
+        return new ResponseEntity<>(messageId, HttpStatus.OK);
     }
 }
