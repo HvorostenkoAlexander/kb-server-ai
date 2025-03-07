@@ -81,8 +81,10 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
                     if (operation.getHttpMethod().equals(HttpMethod.POST) || operation.getHttpMethod().equals(HttpMethod.PUT)) {
                         String[] resp = response.split(":");
                         mdmMessage.get().setNote(resp[0]);
-                        messageService.update(mdmMessage.get());
+                    } else if (operation.getHttpMethod().equals(HttpMethod.DELETE)) {
+                        mdmMessage.get().setNote("OK");
                     }
+                    messageService.update(mdmMessage.get());
                 }
                 return true;
             } catch (RemoteServiceSenderException e) {
