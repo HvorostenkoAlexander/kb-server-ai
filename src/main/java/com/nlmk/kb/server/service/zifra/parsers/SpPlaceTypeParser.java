@@ -17,9 +17,10 @@ public class SpPlaceTypeParser implements CatalogueParser<SpPlaceTypeDto> {
     }
 
     @Override
-    public SpPlaceTypeDto parse(pk pk, Data data) {
+    public SpPlaceTypeDto parse(pk pk, Data data, Long messageId) {
         return SpPlaceTypeDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
                 .shName(getAttrStringValueByName(data.getLineAttributes(), "shName"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))

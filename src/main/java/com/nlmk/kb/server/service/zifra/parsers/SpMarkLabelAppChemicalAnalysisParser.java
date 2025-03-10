@@ -16,9 +16,10 @@ public class SpMarkLabelAppChemicalAnalysisParser implements CatalogueParser<SpM
     }
 
     @Override
-    public SpMarkLabelAppChemicalAnalysisDto parse(pk pk, Data data) {
+    public SpMarkLabelAppChemicalAnalysisDto parse(pk pk, Data data, Long messageId) {
         return SpMarkLabelAppChemicalAnalysisDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .shName(getAttrStringValueByName(data.getLineAttributes(), "shName"))
                 .signActive(getAttrBooleanValueByName(data.getLineAttributes(), "signActive"))

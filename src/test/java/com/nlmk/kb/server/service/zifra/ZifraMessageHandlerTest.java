@@ -99,10 +99,12 @@ class ZifraMessageHandlerTest {
             mockWebServer.enqueue(new MockResponse()
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value())
-                    .setBody(spCustomer.getPk().getLineId().toString())
+                    .setBody("OK:" + spCustomer.getPk().getLineId().toString())
             );
 
-            when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));
+            when(messageService.save(any())).thenReturn(
+                    Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord))
+            );
             final var response = zifraMessageHandler.handleConsumerRecord(spCustomerRecord);
             assertThat(response).isTrue();
 
@@ -114,7 +116,7 @@ class ZifraMessageHandlerTest {
             mockWebServer.enqueue(new MockResponse()
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value())
-                    .setBody(spCustomerGroup.getPk().getLineId().toString())
+                    .setBody("OK:" + spCustomer.getPk().getLineId().toString())
             );
 
             when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerGroupRecord)));
@@ -129,7 +131,7 @@ class ZifraMessageHandlerTest {
             mockWebServer.enqueue(new MockResponse()
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value())
-                    .setBody(spGroupAndCustomer.getPk().getLineId().toString())
+                    .setBody("OK:" + spCustomer.getPk().getLineId().toString())
             );
 
             when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spGroupAndCustomerRecord)));
@@ -146,6 +148,7 @@ class ZifraMessageHandlerTest {
             mockWebServer.enqueue(new MockResponse()
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.OK.value())
+                    .setBody("OK:" + spCustomer.getPk().getLineId().toString())
             );
 
             when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));
@@ -162,6 +165,7 @@ class ZifraMessageHandlerTest {
             mockWebServer.enqueue(new MockResponse()
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.NOT_FOUND.value())
+                    .setBody("OK:" + spCustomer.getPk().getLineId().toString())
             );
 
             when(messageService.save(any())).thenReturn(Optional.of(messageConverter.fromConsumerRecord(spCustomerRecord)));

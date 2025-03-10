@@ -17,9 +17,10 @@ public class SpOmDataTypeParser implements CatalogueParser<SpOmDataTypeDto> {
     }
 
     @Override
-    public SpOmDataTypeDto parse(pk pk, Data data) {
+    public SpOmDataTypeDto parse(pk pk, Data data, Long messageId) {
         return SpOmDataTypeDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .dataTypePhysicalName(getAttrStringValueByName(data.getLineAttributes(), "dataTypePhysicalName"))
                 .dataTypePhysicalId(getAttrStringValueByName(data.getLineAttributes(), "dataTypePhysicalId"))
                 .dataTypeLogicalName(getAttrStringValueByName(data.getLineAttributes(), "dataTypeLogicalName"))

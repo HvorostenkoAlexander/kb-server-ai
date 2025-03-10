@@ -16,9 +16,10 @@ public class SpAttributeAttestationGroupParser implements CatalogueParser<SpAttr
     }
 
     @Override
-    public SpAttributeAttestationGroupDto parse(pk pk, Data data) {
+    public SpAttributeAttestationGroupDto parse(pk pk, Data data, Long messageId) {
         return SpAttributeAttestationGroupDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .shName(getAttrStringValueByName(data.getLineAttributes(), "shName"))

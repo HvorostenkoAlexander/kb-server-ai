@@ -35,16 +35,16 @@ public class NsiSenderImpl implements NsiSender {
     }
 
     @Override
-    public <T> Long sendBodyReturnLong(T body, String targetPath, Operation operation) {
-        return exchange(body, Long.class, targetPath, operation);
+    public <T> Long sendBodyReturnLong(T body, String targetPath, Operation operation, Long messageId) {
+        return exchange(body, Long.class, targetPath, operation, messageId);
     }
 
     @Override
-    public <T> String sendBodyReturnString(T body, String targetPath, Operation operation) {
-        return exchange(body, String.class, targetPath, operation);
+    public <T> String sendBodyReturnString(T body, String targetPath, Operation operation, Long messageId) {
+        return exchange(body, String.class, targetPath, operation, messageId);
     }
 
-    private <T, R> R exchange(T body, Class<R> returned, String targetPath, Operation operation) {
+    private <T, R> R exchange(T body, Class<R> returned, String targetPath, Operation operation, Long messageId) {
         if (body == null) {
             throw new RemoteServiceSenderException("NsiSender, exchange, пустое тело");
         }
