@@ -3,9 +3,9 @@ package com.nlmk.kb.server.service.ccm.phpp;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.DataPhpp;
 import com.nlmk.attestation.product.api.pam.PhppChemical;
-import com.nlmk.attestation.product.api.pam.PhppMechanicalAnalysisData;
-import com.nlmk.attestation.product.api.pam.PhppMechanicalData;
-import com.nlmk.attestation.product.api.pam.PhppMechanicalSpec;
+import com.nlmk.attestation.product.api.pam.PhppTestData;
+import com.nlmk.attestation.product.api.pam.PhppTestSpecification;
+import com.nlmk.attestation.product.api.pam.PhppTestType;
 import com.nlmk.attestation.product.api.pam.Pk;
 import com.nlmk.attestation.product.api.pam.SpecValue;
 import com.nlmk.attestation.product.api.pam.Specs;
@@ -67,7 +67,7 @@ public class CcmPhppRestRequestAdapterImpl implements RestRequestAdapter<CcmPhpp
                                     .collect(Collectors.toList())
                     )
                     .chemical(toPamChemicalList(data))
-                    .mechanical(toPamMechanicalList(data))
+                    .testData(toPamTestDataList(data))
                     .build();
         }
 
@@ -117,53 +117,55 @@ public class CcmPhppRestRequestAdapterImpl implements RestRequestAdapter<CcmPhpp
         return record.getChemical().stream()
                 .map(this::toPamChemical)
                 .collect(Collectors.toList());
-
-    }
-
-    private PhppMechanicalAnalysisData toPamMechanicalAnalysisData(CcmPhppRequest.TestData testData) {
-        return PhppMechanicalAnalysisData.builder()
-                .mechCode(testData.getMechCode())
-                .mechName(testData.getMechName())
-                .mechTypeCode(testData.getMechTypeCode())
-                .mechValue(testData.getMechValue())
-                .build();
-    }
-
-    private PhppMechanicalData toPamMechanicalData(CcmPhppRequest.MechanicData mechanicData) {
-        return PhppMechanicalData.builder()
-                .analysisId(mechanicData.getAnalysisId())
-                .testData(
-                        mechanicData.getTestData().stream()
-                                .map(this::toPamMechanicalAnalysisData)
-                                .collect(Collectors.toList())
-                )
-                .build();
-    }
-
-    private PhppMechanicalSpec toPamMechanical(CcmPhppRequest.Mechanic mechanic) {
-        return PhppMechanicalSpec.builder()
-                .hnum(mechanic.getHnum())
-                .tnum(mechanic.getTnum())
-                .protNum(mechanic.getProtNum())
-                .protDate(mechanic.getProtDate())
-                .sampleNum(mechanic.getSampleNum())
-                .signAnalysis(mechanic.getSignAnalysis())
-                .mechData(
-                        mechanic.getMechData().stream()
-                                .map(this::toPamMechanicalData)
-                                .collect(Collectors.toList())
-                )
-                .build();
     }
 
     @SuppressWarnings("checkstyle:illegalidentifiername")
-    private List<PhppMechanicalSpec> toPamMechanicalList(CcmPhppRequest.Record record) {
-        if (record.getMechanical() == null || record.getMechanical().isEmpty()) {
+    private List<PhppTestData> toPamTestDataList(CcmPhppRequest.Record record) {
+        if (record.getTestData() == null || record.getTestData().isEmpty()) {
             return List.of();
         }
-        return record.getMechanical().stream()
-                .map(this::toPamMechanical)
+        return record.getTestData().stream()
+                .map(this::toPamTestData)
                 .collect(Collectors.toList());
+    }
+
+    private PhppTestData toPamTestData(CcmPhppRequest.TestData testData) {
+        return PhppTestData.builder()
+                .accompanyingCardNum(testData.getAccompanyingCardNum())
+                .distributionType(testData.getDistributionType())
+                .type(toPamTestType(testData))
+                .specifications(toPamTestSpecificationsList(testData))
+                .build();
+    }
+
+    private PhppTestType toPamTestType(CcmPhppRequest.TestData testData) {
+        if (testData.getType() != null) {
+            var testType = testData.getType();
+            return PhppTestType.builder()
+                    .code(testType.getCode())
+                    .name(testType.getName())
+                    .build();
+        }
+        return null;
+    }
+
+    private List<PhppTestSpecification> toPamTestSpecificationsList(CcmPhppRequest.TestData testData) {
+        if (testData.getSpecifications() == null || testData.getSpecifications().isEmpty()) {
+            return List.of();
+        }
+        return testData.getSpecifications().stream()
+                .map(this::toPamTestSpecification)
+                .collect(Collectors.toList());
+    }
+
+    private PhppTestSpecification toPamTestSpecification(CcmPhppRequest.TestSpecification testSpecification) {
+        return PhppTestSpecification.builder()
+                .specCode(testSpecification.getSpecCode())
+                .specName(testSpecification.getSpecName())
+                .specTypeCode(testSpecification.getSpecTypeCode())
+                .specTypeName(testSpecification.getSpecTypeName())
+                .specValue(testSpecification.getSpecValue())
+                .build();
     }
 
 }
