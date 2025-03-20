@@ -6,6 +6,7 @@ import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChoiceTestedProductsDto;
 import com.nlmk.attestation.product.api.nsi.CodingSlabDto;
+import com.nlmk.attestation.product.api.nsi.CorrosivePropertiesDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MacrostructureDto;
@@ -52,6 +53,8 @@ public interface PdmDtoConverter {
     ChemicalStdLimitDto toChemicalStdLimitDto(PdmDictionary dictionary);
 
     ChoiceTestedProductsDto toChoiceTestedProducts(PdmDictionary dictionary);
+
+    CorrosivePropertiesDto toCorrosivePropertiesDto(PdmDictionary dictionary);
 
     SteelCategoryG4041Dto toKatSteel4041Dto(PdmDictionary dictionary);
 
