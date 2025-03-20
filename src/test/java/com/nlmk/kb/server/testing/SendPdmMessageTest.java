@@ -21,6 +21,7 @@ class SendPdmMessageTest extends SendMessageToKafka {
     private static final String PDM_TOPIC_SP_TOL_WIDTH_DT = "000-0.l3-pdm.cdc.sp-tol-width-dt.0";
     private static final String PDM_TOPIC_REGISTER_EQUIVALENTS = "000-0.l3-pdm.cdc.sp-register-parameters.0";
     private static final String PDM_TOPIC_CHOICE_TESTED_PRODUCTS = "000-0.l3-pdm.cdc.sp-choice-tested-products.0";
+    private static final String PDM_TOPIC_CORROSIVE_PROPERTIES = "000-0.l3-pdm.cdc.sp-corrosive-properties.0";
 
     @Test
     void sendPdmSpAsapMechPropertiesDt() {
@@ -430,6 +431,72 @@ class SendPdmMessageTest extends SendMessageToKafka {
                 .build();
 
         ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_CHOICE_TESTED_PRODUCTS, randomKey(), value);
+
+        assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void sendPdmCorrosiveProperties() {
+        nlmk.l3.pdm.SpCorrosiveProperties value = nlmk.l3.pdm.SpCorrosiveProperties.newBuilder()
+                .setTs("2023-01-16T10:25:25.123+05:00")
+                .setOp(nlmk.l3.pdm.opEnum.I) // I -> U -> D
+                .setPk(nlmk.l3.pdm.Pk.newBuilder()
+                        .setId("42")
+                        .setSystemCode("16")
+                        .setDirectoryId("4242")
+                        .build())
+                .setData(nlmk.l3.pdm.Data.newBuilder()
+                        .setSpecifications(List.of(
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.STEEL_MARK.getValue())
+                                        .setSpecName(SpecCode.STEEL_MARK.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("3414").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
+                                        .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("ТУ 14-106-131-2009").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getValue())
+                                        .setSpecName(SpecCode.TK_NUMBER_OR_VTK_VERSION_ROUTE.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("1").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.ROUTE_TK.getValue())
+                                        .setSpecName(SpecCode.ROUTE_TK.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("53").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.METAL_CORROSION_RATE.getValue())
+                                        .setSpecName(SpecCode.METAL_CORROSION_RATE.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("10").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.LIMIT_KOEF_CRL.getValue())
+                                        .setSpecName(SpecCode.LIMIT_KOEF_CRL.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("10").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.LIMIT_KOEF_CTR.getValue())
+                                        .setSpecName(SpecCode.LIMIT_KOEF_CTR.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("10").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.LIMIT_KOEF_CKPH.getValue())
+                                        .setSpecName(SpecCode.LIMIT_KOEF_CKPH.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("10").build(),
+                                nlmk.l3.pdm.Spec.newBuilder()
+                                        .setSpecCode(SpecCode.NOTE.getValue())
+                                        .setSpecName(SpecCode.NOTE.getDesc())
+                                        .setSpecTypeCode(TypeCode.STRING.getValue()).setSpecMeasure("x")
+                                        .setSpecValue("TEST").build()
+                        ))
+                        .build())
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(PDM_TOPIC_CORROSIVE_PROPERTIES, randomKey(), value);
 
         assertThatCode(() -> sendAvro(record)).doesNotThrowAnyException();
     }
