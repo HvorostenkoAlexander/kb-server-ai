@@ -19,8 +19,9 @@ public class CaptureDataChangeControllerImpl implements CaptureDataChangeControl
 
     private final CaptureDataChangeService captureDataChangeService;
     @Override
-    public ResponseEntity<String> updateMdmMessageStatus(String messageId, String status) {
-        captureDataChangeService.updateMdmMessage(messageId, status);
-        return new ResponseEntity<>(messageId, HttpStatus.OK);
+    public ResponseEntity<String> updateMdmMessageStatus(String message) {
+        log.info("Обновление записи CDC: [{}]", message);
+        captureDataChangeService.updateMdmMessage(message);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
