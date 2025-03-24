@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.kb.CdcUpdate;
 import com.nlmk.kb.server.service.CaptureDataChangeService;
 import io.micrometer.core.annotation.Timed;
