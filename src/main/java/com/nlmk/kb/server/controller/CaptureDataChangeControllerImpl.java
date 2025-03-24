@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nlmk.attestation.product.api.kb.CdcUpdate;
 import com.nlmk.kb.server.service.CaptureDataChangeService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,9 @@ public class CaptureDataChangeControllerImpl implements CaptureDataChangeControl
 
     private final CaptureDataChangeService captureDataChangeService;
     @Override
-    public ResponseEntity<String> updateMdmMessageStatus(Object message) {
-        String msg = new ObjectMapper().convertValue(message, String.class);
-        log.info("Обновление записи CDC: [{}]", message);
-        captureDataChangeService.updateMdmMessage(msg);
-        return new ResponseEntity<>(msg, HttpStatus.OK);
+    public ResponseEntity<String> updateMdmMessageStatus(CdcUpdate cdcUpdate) {
+        log.info("Обновление записи CDC: [{}]", cdcUpdate.toString());
+        captureDataChangeService.updateMdmMessage(cdcUpdate);
+        return new ResponseEntity<>(cdcUpdate.getMessageId(), HttpStatus.OK);
     }
 }

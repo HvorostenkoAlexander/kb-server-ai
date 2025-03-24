@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.controller;
 
+import com.nlmk.attestation.product.api.kb.CdcUpdate;
 import com.nlmk.attestation.product.api.swagger.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,6 +36,6 @@ public interface CaptureDataChangeController {
             @ApiResponse(responseCode = "200", description = "Аттестация Единицы Продукции успешно пройдена", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class))),
     })
     @PostMapping("/update")
-    ResponseEntity<String> updateMdmMessageStatus(@RequestBody Object message);
+    ResponseEntity<String> updateMdmMessageStatus(@Parameter(description = "Обновление записи mdm") @RequestBody CdcUpdate cdcUpdate);
 
 }
