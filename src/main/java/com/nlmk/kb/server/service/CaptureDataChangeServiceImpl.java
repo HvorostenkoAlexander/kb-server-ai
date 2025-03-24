@@ -12,10 +12,11 @@ public class CaptureDataChangeServiceImpl implements CaptureDataChangeService {
 
     private final MdmMessageRepository mdmMessageRepository;
     @Override
-    public void updateMdmMessage(String messageId, String status) {
-        var mdmMessage = mdmMessageRepository.findById(Long.parseLong(messageId));
+    public void updateMdmMessage(String message) {
+        String[] msg = message.split(":");
+        var mdmMessage = mdmMessageRepository.findById(Long.parseLong(msg[1]));
         if (mdmMessage.isPresent()) {
-            mdmMessage.get().setNote(status);
+            mdmMessage.get().setNote(msg[0]);
             mdmMessageRepository.save(mdmMessage.get());
         }
     }
