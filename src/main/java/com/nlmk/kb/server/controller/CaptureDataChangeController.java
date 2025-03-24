@@ -34,6 +34,6 @@ public interface CaptureDataChangeController {
             @ApiResponse(responseCode = "200", description = "Аттестация Единицы Продукции успешно пройдена", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class))),
     })
     @PostMapping("/update")
-    ResponseEntity<String> updateMdmMessageStatus(@RequestBody String message);
+    ResponseEntity<String> updateMdmMessageStatus(@RequestBody Object message);
 
 }
