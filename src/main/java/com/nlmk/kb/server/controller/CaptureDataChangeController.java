@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+
 /**
  * Контроллер для принятия запросов связанных с CaptureDataChanges механизма справочников
  */
@@ -36,6 +38,7 @@ public interface CaptureDataChangeController {
             @ApiResponse(responseCode = "200", description = "Аттестация Единицы Продукции успешно пройдена", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = String.class))),
     })
     @PostMapping("/update")
-    ResponseEntity<String> updateMdmMessageStatus(@Parameter(description = "Обновление записи mdm") @RequestBody CdcUpdate cdcUpdate);
+    ResponseEntity<String> updateMdmMessageStatus(
+            @Parameter(description = "Обновление записи mdm") @RequestBody @Valid CdcUpdate cdcUpdate);
 
 }
