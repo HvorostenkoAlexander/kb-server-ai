@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.controller;
 
+import com.nlmk.attestation.product.api.kb.CdcUpdate;
 import com.nlmk.kb.server.service.CaptureDataChangeService;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,9 @@ public class CaptureDataChangeControllerImpl implements CaptureDataChangeControl
 
     private final CaptureDataChangeService captureDataChangeService;
     @Override
-    public ResponseEntity<String> updateMdmMessageStatus(String messageId, String status) {
-        captureDataChangeService.updateMdmMessage(messageId, status);
-        return new ResponseEntity<>(messageId, HttpStatus.OK);
+    public ResponseEntity<String> updateMdmMessageStatus(CdcUpdate cdcUpdate) {
+        log.info("Обновление записи CDC: [{}]", cdcUpdate.toString());
+        captureDataChangeService.updateMdmMessage(cdcUpdate);
+        return new ResponseEntity<>(cdcUpdate.getMessageId(), HttpStatus.OK);
     }
 }

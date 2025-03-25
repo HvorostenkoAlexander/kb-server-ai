@@ -81,8 +81,8 @@ public class RestRequestAdapterTest {
                                         .build()
                         ))
                         // TODO
-                        // Добавить механику
-                        .mechanical(List.of())
+                        // Добавить тестовые данные
+                        .testData(List.of())
                         .build()
                 )
                 .build();
@@ -119,7 +119,7 @@ public class RestRequestAdapterTest {
                                                 .chemValue("13.4")
                                                 .build()
                                 ))
-                                .mechanical(List.of())
+                                .testData(List.of())
                                 .build()
                         )
                         .build())
