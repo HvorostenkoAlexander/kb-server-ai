@@ -17,9 +17,10 @@ public class SpDimensionParser implements CatalogueParser<SpDimensionDto> {
     }
 
     @Override
-    public SpDimensionDto parse(pk pk, Data data) {
+    public SpDimensionDto parse(pk pk, Data data, Long messageId) {
         return SpDimensionDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
+                .messageId(messageId)
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .nameEng(getAttrStringValueByName(data.getLineAttributes(), "nameEng"))
                 .baseUnit(getAttrStringValueByName(data.getLineAttributes(), "baseUnit"))

@@ -51,7 +51,7 @@ class NsiSenderTest {
         final var urlDictionary = "/nsi/dict/width";
 
         {
-            assertThatThrownBy(() -> nsiSender.sendBodyReturnLong((TolWidthDtDto) null, urlDictionary, Operation.I))
+            assertThatThrownBy(() -> nsiSender.sendBodyReturnLong((TolWidthDtDto) null, urlDictionary, Operation.I, 1L))
                     .isInstanceOf(RemoteServiceSenderException.class)
                     .hasMessage("NsiSender, exchange, пустое тело");
         }
@@ -63,7 +63,7 @@ class NsiSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.BAD_REQUEST.value())
             );
-            assertThatThrownBy(() -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I))
+            assertThatThrownBy(() -> nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I, 1L))
                     .isInstanceOf(RemoteServiceSenderException.class)
                     .hasMessage(String.format("NsiSender, exchange, ошибка при отправке "
                                     + "[%d Bad Request from POST http://localhost:%d/nsi/dict/width]",
@@ -76,7 +76,7 @@ class NsiSenderTest {
                     .setResponseCode(HttpStatus.OK.value())
                     .setBody("123")
             );
-            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I);
+            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.I, 1L);
             assertThat(response).isEqualTo(123L);
             RecordedRequest request = mockWebServer.takeRequest();
             assertThat(request.getMethod()).isEqualTo("POST");
@@ -88,7 +88,7 @@ class NsiSenderTest {
                     .setResponseCode(HttpStatus.OK.value())
                     .setBody("123")
             );
-            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.U);
+            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.U, 1L);
             assertThat(response).isEqualTo(123L);
             RecordedRequest request = mockWebServer.takeRequest();
             assertThat(request.getMethod()).isEqualTo("PUT");
@@ -100,7 +100,7 @@ class NsiSenderTest {
                     .setResponseCode(HttpStatus.OK.value())
                     .setBody("123")
             );
-            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D);
+            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D, 1L);
             assertThat(response).isEqualTo(123L);
             RecordedRequest request = mockWebServer.takeRequest();
             assertThat(request.getMethod()).isEqualTo("DELETE");
@@ -111,7 +111,7 @@ class NsiSenderTest {
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .setResponseCode(HttpStatus.NOT_FOUND.value())
             );
-            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D);
+            final var response = nsiSender.sendBodyReturnLong(dto, urlDictionary, Operation.D, 1L);
             assertThat(response).isNull();
             RecordedRequest request = mockWebServer.takeRequest();
             assertThat(request.getMethod()).isEqualTo("DELETE");

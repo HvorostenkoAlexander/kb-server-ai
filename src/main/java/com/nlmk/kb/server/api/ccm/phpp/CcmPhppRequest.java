@@ -54,20 +54,36 @@ public class CcmPhppRequest {
         private final Integer attestationPoint; // Точка аттестации (6 - Аттестация перед порезкой, 7 - Аттестация формировочной, 8 - Аттестация сертификата)
         private final @NotEmpty List<@Valid Specification> specifications; // Основные характеристики единицы продукции
         private final List<@Valid Chemical> chemical; // 	Химический анализ плавки
-        private final List<@Valid Mechanic> mechanical; // Физ. мех. свойства
+        private final List<@Valid TestData> testData; // Характеристики единицы продукции (по результатам испытаний)
     }
 
     @Data
     @Builder
     @Jacksonized
-    public static class Mechanic {
-        private final Integer hnum; // Номер испытуемой горячекатаной партии
-        private final Integer tnum; // Номер испытуемой холоднокатаной партии
-        private final Integer protNum; // Номер протокола
-        private final String protDate; // Дата протокола
-        private final Integer sampleNum; // Номер пробы (образца)
-        private final Integer signAnalysis; // Признак испытаний
-        private final @NotEmpty List<@Valid MechanicData> mechData; // 	Данные мех. испытаний
+    public static class TestData {
+        private final String accompanyingCardNum; // Номер сопроводительной карточки
+        private final Integer distributionType; // Тип распространения (1 - прямые испытания, 2 - наследование от родителя, 3 - распространение)
+        private final @NotNull TestType type; // Тип испытаний
+        private final @NotEmpty List<@Valid TestSpecification> specifications; // Результаты испытания
+    }
+
+    @Data
+    @Builder
+    @Jacksonized
+    public static class TestType {
+        private final @NotNull Integer code; // Код типа испытания
+        private final @NotNull String name; // Наименование типа испытаний (Первичное, повторное, предварительное, доп. испытание)
+    }
+
+    @Data
+    @Builder
+    @Jacksonized
+    public static class TestSpecification {
+        private final @NotNull Integer specCode; // Код характеристики
+        private final @NotBlank String specName; // Наименование характеристики
+        private final @NotBlank String specValue; // Значение
+        private final @NotNull Integer specTypeCode; // Тип данных
+        private final @NotBlank String specTypeName; // Наименование типа данных
     }
 
     @Data
@@ -76,16 +92,6 @@ public class CcmPhppRequest {
     public static class MechanicData {
         private final Integer analysisId; // Id анализа
         private final @NotEmpty List<@Valid TestData> testData; // Данные анализа мех. испытаний
-    }
-
-    @Data
-    @Builder
-    @Jacksonized
-    public static class TestData {
-        private final @NotNull Integer mechCode; // Код характеристики
-        private final @NotBlank String mechName; // Наименование характеристики
-        private final String mechValue; // Значение характеристики
-        private final @NotNull Integer mechTypeCode; // Тип данных
     }
 
     @Data

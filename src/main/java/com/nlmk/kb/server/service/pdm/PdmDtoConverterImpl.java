@@ -6,6 +6,7 @@ import com.nlmk.attestation.product.api.nsi.ChemicalStdLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChemicalTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.ChoiceTestedProductsDto;
 import com.nlmk.attestation.product.api.nsi.CodingSlabDto;
+import com.nlmk.attestation.product.api.nsi.CorrosivePropertiesDto;
 import com.nlmk.attestation.product.api.nsi.EvennessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.LengthTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.MacrostructureDto;
@@ -170,6 +171,9 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.LENGTH_PRO
 import static com.nlmk.attestation.product.api.specification.SpecCode.LENGTH_TOLERANCE_MAX;
 import static com.nlmk.attestation.product.api.specification.SpecCode.LENGTH_TOLERANCE_PERCENT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.LENGTH_TOLERANCE_STANDART;
+import static com.nlmk.attestation.product.api.specification.SpecCode.LIMIT_KOEF_CKPH;
+import static com.nlmk.attestation.product.api.specification.SpecCode.LIMIT_KOEF_CRL;
+import static com.nlmk.attestation.product.api.specification.SpecCode.LIMIT_KOEF_CTR;
 import static com.nlmk.attestation.product.api.specification.SpecCode.LONG_THICK_DIFF;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MACRO_MANN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MANUFACTURING_PRECISION_BY_LENGTH;
@@ -209,6 +213,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.MASS_FRACT
 import static com.nlmk.attestation.product.api.specification.SpecCode.MELTING_MARK;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MELTING_MARK_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MELT_SLAB;
+import static com.nlmk.attestation.product.api.specification.SpecCode.METAL_CORROSION_RATE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.METAL_DRAWING;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MICROCTRUCTURE_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.MN_S;
@@ -454,6 +459,28 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .tkRoute(converter.getStringSpecValue(specs, TK_SAP_ROUTE))
                 .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
                 .tkRoute2(converter.getStringSpecValue(specs, ROUTE_TK))
+                .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public CorrosivePropertiesDto toCorrosivePropertiesDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        return CorrosivePropertiesDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK))
+                .prStandMark(converter.getStringSpecValue(specs, PRODUCT_STANDARD))
+                .tkNum(converter.getStringSpecValue(specs, TK_NUMBER_OR_VTK_VERSION_ROUTE))
+                .tkRoute(converter.getStringSpecValue(specs, ROUTE_TK))
+                .metalCorrosionRate(converter.getStringSpecValue(specs, METAL_CORROSION_RATE))
+                .limitKoefClr(converter.getStringSpecValue(specs, LIMIT_KOEF_CRL))
+                .limitKoefCtr(converter.getStringSpecValue(specs, LIMIT_KOEF_CTR))
+                .limitKoefCkph(converter.getStringSpecValue(specs, LIMIT_KOEF_CKPH))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
                 .build();
     }

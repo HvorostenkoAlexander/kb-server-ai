@@ -11,6 +11,7 @@ import nlmk.l3.nsi.zifra.EnumOp;
 import nlmk.l3.nsi.zifra.Reason;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,14 +71,21 @@ public class ZifraMessageHandlerImpl implements ZifraMessageHandler {
 
             final var operation = transformOperation(value.getOp());
             final var parser = parserMap.get(catalogue);
-            final var dto = parser.parse(value.getPk(), value.getData());
+            final var dto = parser.parse(value.getPk(), value.getData(), mdmMessage.get().getId());
 
             try {
-                final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation);
+                final var response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation, mdmMessage.get().getId());
                 log.info("handleConsumerRecord, объект отправлен, ответ НСИ [{}], Каталог [{}], путь [{}], операция [{}]",
                         response, catalogue, catalogue.getPath(), operation);
-                mdmMessage.get().setNote("OK");
-                messageService.update(mdmMessage.get());
+                if (operation != null) {
+                    if (operation.getHttpMethod().equals(HttpMethod.POST) || operation.getHttpMethod().equals(HttpMethod.PUT)) {
+                        String[] resp = response.split(":");
+                        mdmMessage.get().setNote(resp[0]);
+                    } else if (operation.getHttpMethod().equals(HttpMethod.DELETE)) {
+                        mdmMessage.get().setNote("OK");
+                    }
+                    messageService.update(mdmMessage.get());
+                }
                 return true;
             } catch (RemoteServiceSenderException e) {
                 log.error("handleConsumerRecord, ошибка отправки в НСИ, DTO [{}], Каталог [{}], сообщение [{}]",
