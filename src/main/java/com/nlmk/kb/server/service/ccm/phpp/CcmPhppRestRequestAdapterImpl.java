@@ -5,7 +5,6 @@ import com.nlmk.attestation.product.api.pam.DataPhpp;
 import com.nlmk.attestation.product.api.pam.PhppChemical;
 import com.nlmk.attestation.product.api.pam.PhppTestData;
 import com.nlmk.attestation.product.api.pam.PhppTestSpecification;
-import com.nlmk.attestation.product.api.pam.PhppTestType;
 import com.nlmk.attestation.product.api.pam.Pk;
 import com.nlmk.attestation.product.api.pam.SpecValue;
 import com.nlmk.attestation.product.api.pam.Specs;
@@ -133,20 +132,9 @@ public class CcmPhppRestRequestAdapterImpl implements RestRequestAdapter<CcmPhpp
         return PhppTestData.builder()
                 .accompanyingCardNum(testData.getAccompanyingCardNum())
                 .distributionType(testData.getDistributionType())
-                .type(toPamTestType(testData))
+                .testTypeRequest(testData.getTestTypeRequest())
                 .specifications(toPamTestSpecificationsList(testData))
                 .build();
-    }
-
-    private PhppTestType toPamTestType(CcmPhppRequest.TestData testData) {
-        if (testData.getType() != null) {
-            var testType = testData.getType();
-            return PhppTestType.builder()
-                    .code(testType.getCode())
-                    .name(testType.getName())
-                    .build();
-        }
-        return null;
     }
 
     private List<PhppTestSpecification> toPamTestSpecificationsList(CcmPhppRequest.TestData testData) {
