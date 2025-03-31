@@ -63,8 +63,16 @@ public class CcmPhppRequest {
     public static class TestData {
         private final String accompanyingCardNum; // Номер сопроводительной карточки
         private final Integer distributionType; // Тип распространения (1 - прямые испытания, 2 - наследование от родителя, 3 - распространение)
-        private final @NotNull Integer testTypeRequest; // Тип испытаний
+        private final @NotNull TestType type; // Тип испытаний
         private final @NotEmpty List<@Valid TestSpecification> specifications; // Результаты испытания
+    }
+
+    @Data
+    @Builder
+    @Jacksonized
+    public static class TestType {
+        private final @NotNull Integer code; // Код типа испытания
+        private final @NotNull String name; // Наименование типа испытаний (Первичное, повторное, предварительное, доп. испытание)
     }
 
     @Data
