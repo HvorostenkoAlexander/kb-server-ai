@@ -2,10 +2,12 @@ package com.nlmk.kb.server.config.broker;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Getter
 @Component
+@ConditionalOnProperty("kafka.sadim.enabled")
 public class SadimConsumerProperties {
 
     private final String kafkaServer;

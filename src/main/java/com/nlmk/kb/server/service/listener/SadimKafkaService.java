@@ -10,6 +10,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -21,6 +22,7 @@ import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLAT
 
 @Slf4j
 @Service
+@ConditionalOnProperty("kafka.sadim.enabled")
 public class SadimKafkaService {
 
     private final long sleepTime;
