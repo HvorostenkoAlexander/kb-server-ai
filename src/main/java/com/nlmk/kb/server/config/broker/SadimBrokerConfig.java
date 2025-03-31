@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
+@ConditionalOnProperty("kafka.sadim.enabled")
 public class SadimBrokerConfig {
 
     private final SadimConsumerProperties consumerProperties;
