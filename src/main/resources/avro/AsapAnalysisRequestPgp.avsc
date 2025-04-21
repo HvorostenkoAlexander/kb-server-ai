@@ -1,0 +1,387 @@
+{
+  "type": "record",
+  "name": "AttestationRequest",
+  "namespace": "nlmk.l3.mes.pgp",
+  "doc": "Запрос на проведение аттестации единицы продукции из MES",
+  "fields": [
+    {
+      "name": "ts",
+      "type": "string",
+      "doc": "Дата и время передачи"
+    },
+    {
+      "name": "op",
+      "type": {
+        "type": "enum",
+        "name": "EnumOp",
+        "symbols": [
+          "D",
+          "I",
+          "U"
+        ]
+      },
+      "doc": "Операция"
+    },
+    {
+      "name": "pk",
+      "type": {
+        "type": "record",
+        "name": "RecordPk",
+        "fields": [
+          {
+            "name": "systemCode",
+            "type": "string",
+            "doc": "Код системы"
+          },
+          {
+            "name": "metalUnitId",
+            "type": "string",
+            "doc": "Идентификатор единицы складского учета"
+          }
+        ]
+      },
+      "doc": "Первичный ключ"
+    },
+    {
+      "name": "sys",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Sys",
+          "namespace": "nlmk",
+          "fields": [
+            {
+              "name": "seqID",
+              "type": "long",
+              "doc": "Монотонно возрастающий счетчик для проверки или восстановления оригинальной последовательности",
+              "default": -1
+            },
+            {
+              "name": "traceID",
+              "type": "string",
+              "doc": "Сквозной Trace ID (обычно UUID)",
+              "default": ""
+            }
+          ]
+        }
+      ],
+      "doc": "Системные поля, заполняемые источником",
+      "default": null
+    },
+    {
+      "name": "metadata",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Metadata",
+          "namespace": "nlmk",
+          "fields": [
+            {
+              "name": "kafkaKeySchemaID",
+              "type": "int",
+              "doc": "Версия схемы ключа",
+              "default": -1
+            },
+            {
+              "name": "kafkaValueSchemaID",
+              "type": "int",
+              "doc": "Версия схемы значения",
+              "default": -1
+            },
+            {
+              "name": "kafkaKey",
+              "type": "string",
+              "doc": "Ключ в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaPartition",
+              "type": "int",
+              "doc": "Номер партиции",
+              "default": -1
+            },
+            {
+              "name": "kafkaOffset",
+              "type": "long",
+              "doc": "Offset в Kafka",
+              "default": -1
+            },
+            {
+              "name": "kafkaTimestamp",
+              "type": "string",
+              "doc": "Время сообщения в Kafka",
+              "default": ""
+            },
+            {
+              "name": "kafkaTopic",
+              "type": "string",
+              "doc": "Имя топика",
+              "default": ""
+            },
+            {
+              "name": "kafkaHeaders",
+              "type": [
+                "null",
+                {
+                  "type": "map",
+                  "values": "string"
+                }
+              ],
+              "doc": "kafkaHeaders",
+              "default": null
+            }
+          ]
+        }
+      ],
+      "doc": "Мета структура, заполняется Подписчиком после чтения",
+      "default": null
+    },
+    {
+      "name": "data",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "RecordData",
+          "fields": [
+            {
+              "name": "workshopId",
+              "type": "string",
+              "doc": "Код цеха",
+              "default": ""
+            },
+            {
+              "name": "workshopName",
+              "type": "string",
+              "doc": "Наименование цеха"
+            },
+            {
+              "name": "orderNum",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "N заказа",
+              "default": null
+            },
+            {
+              "name": "orderPosition",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "Позиция заказа",
+              "default": null
+            },
+            {
+              "name": "marking",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "RecordMarking",
+                  "fields": [
+                    {
+                      "name": "attrCode",
+                      "type": "int",
+                      "doc": "Код атрибута маркировки"
+                    },
+                    {
+                      "name": "attrId",
+                      "type": "string",
+                      "doc": "Guid атрибута маркировки "
+                    },
+                    {
+                      "name": "attrName",
+                      "type": "string",
+                      "doc": "Наименование атрибута маркировки"
+                    },
+                    {
+                      "name": "dataTypePhysical",
+                      "type": "string",
+                      "doc": "Константа обозначения физического типа AVRO"
+                    },
+                    {
+                      "name": "value",
+                      "type": "string",
+                      "doc": "Значение атрибута маркировки"
+                    }
+                  ]
+                },
+                "doc": "Список передаваемых данных"
+              }
+            },
+            {
+              "name": "analyzes",
+              "type": {
+                "type": "array",
+                "items":
+                {
+                  "type": "record",
+                  "name": "RecordAnalyzes",
+                  "doc": "Массив групп качественных характеристик проведенных испытаний",
+                  "fields": [
+                    {
+                      "name": "groupId",
+                      "type": "string",
+                      "doc": "Guid группы качественных характеристик"
+                    },
+                    {
+                      "name": "groupName",
+                      "type": "string",
+                      "doc": "Полное наименование группы качественных характеристик"
+                    },
+                    {
+                      "name": "protNum",
+                      "type": "string",
+                      "doc": "Номер протокола",
+                      "default": ""
+                    },
+                    {
+                      "name": "protDate",
+                      "type": "string",
+                      "doc": "Дата протокола",
+                      "default": ""
+                    },
+                    {
+                      "name": "testTypeRequestId",
+                      "type": "string",
+                      "doc": "Код типа запроса на испытания",
+                      "default": ""
+                    },
+                    {
+                      "name": "qualityIndicators",
+                      "type":
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "RecordQualityIndicators",
+                          "doc": "Массив качественных характеристик проведенных испытаний",
+                          "fields": [
+                            {
+                              "name": "attrId",
+                              "type": "string",
+                              "doc": "Guid качественной характеристики"
+                            },
+                            {
+                              "name": "attrName",
+                              "type": "string",
+                              "doc": "Наименование качественной характеристики"
+                            },
+                            {
+                              "name": "dataTypePhysical",
+                              "type": "string",
+                              "doc": "Константа обозначения физического типа AVRO"
+                            },
+                            {
+                              "name": "relation",
+                              "type": "string",
+                              "doc": "Оператор сравнения"
+                            },
+                            {
+                              "name": "value",
+                              "type": "string",
+                              "doc": "Значение качественной характеристики"
+                            },
+                            {
+                              "name": "measure",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "record",
+                                  "name": "RecordMeasureIndicators",
+                                  "doc": "Единица измерения",
+                                  "fields": [
+                                    {
+                                      "name": "measureId",
+                                      "type": "string",
+                                      "doc": "Guid единицы измерения"
+                                    },
+                                    {
+                                      "name": "measureName",
+                                      "type": "string",
+                                      "doc": "Наименование единицы измерения"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "name": "addProperties",
+                              "type":
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "RecordAddProperties",
+                                  "doc": "Дополнительные свойства характеристики",
+                                  "fields": [
+                                    {
+                                      "name": "attrId",
+                                      "type": "string",
+                                      "doc": "Guid качественной характеристики"
+                                    },
+                                    {
+                                      "name": "attrName",
+                                      "type": "string",
+                                      "doc": "Наименование качественной характеристики"
+                                    },
+                                    {
+                                      "name": "dataTypePhysical",
+                                      "type": "string",
+                                      "doc": "Константа обозначения физического типа AVRO"
+                                    },
+                                    {
+                                      "name": "relation",
+                                      "type": "string",
+                                      "doc": "Оператор сравнения"
+                                    },
+                                    {
+                                      "name": "value",
+                                      "type": "string",
+                                      "doc": "Значение качественной характеристики"
+                                    },
+                                    {
+                                      "name": "measure",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "record",
+                                          "name": "RecordMeasureProperties",
+                                          "doc": "Единица измерения",
+                                          "fields": [
+                                            {
+                                              "name": "measureId",
+                                              "type": "string",
+                                              "doc": "Guid единицы измерения"
+                                            },
+                                            {
+                                              "name": "measureName",
+                                              "type": "string",
+                                              "doc": "Наименование единицы измерения"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
