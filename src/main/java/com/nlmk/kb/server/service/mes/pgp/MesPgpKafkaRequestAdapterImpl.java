@@ -22,11 +22,11 @@ import com.nlmk.kb.server.service.client.NsiClient;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.mes.pgp.RecordAddProperties;
-import nlmk.l3.mes.pgp.RecordAnalyzes;
-import nlmk.l3.mes.pgp.RecordData;
-import nlmk.l3.mes.pgp.RecordPk;
-import nlmk.l3.mes.pgp.AttestationRequest;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.PkType;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordAddProperties;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordAnalyzes;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordData;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -49,7 +49,7 @@ import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_HNUM;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AttestationRequest> {
+public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAnalysisRequestVer0> {
 
 
 
@@ -70,7 +70,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
     );
 
     @Override
-    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(AttestationRequest requestMessagePgp) {
+    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(AsapAnalysisRequestVer0 requestMessagePgp) {
         Assert.notNull(requestMessagePgp, "requestMessagePgp is null");
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
@@ -88,7 +88,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
                 .build();
     }
 
-    private Pk toPamPk(RecordPk recordPk) {
+    private Pk toPamPk(PkType recordPk) {
         if (recordPk == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
                 .build();
     }
 
-    private DataPgp toPamDataField(RecordData recordData, RecordPk pk) {
+    private DataPgp toPamDataField(RecordData recordData, PkType pk) {
         if (recordData == null) {
             return null;
         }
@@ -181,7 +181,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
 
                 propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
                 propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
-                propertyBuilder.relation((String) qIndicator.getRelation());
+                propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
                 paramsBuilder.property(propertyBuilder.build());
@@ -228,7 +228,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
 
                 propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
                 propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
-                propertyBuilder.relation((String) qIndicator.getRelation());
+                propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -302,7 +302,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
 
                 propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
                 propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
-                propertyBuilder.relation((String) qIndicator.getRelation());
+                propertyBuilder.relation((String) qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -368,7 +368,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<Attest
                 addPropertyBuilder.value((String) prop.getValue());
                 addPropertyBuilder.measureId((String) prop.getMeasure().getMeasureId());
                 addPropertyBuilder.measureName((String) prop.getMeasure().getMeasureName());
-                addPropertyBuilder.relation((String) prop.getRelation());
+                addPropertyBuilder.relation(prop.getRelation().toString());
                 addPropertyBuilder.dataTypePhysical((String) prop.getDataTypePhysical());
 
                 additionalProperties.add(addPropertyBuilder.build());

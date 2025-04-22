@@ -11,8 +11,8 @@ import com.nlmk.kb.server.service.mes.MesMessageAdapter;
 import com.nlmk.kb.server.service.mes.MesMessageService;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.mes.pgp.EnumOp;
-import nlmk.l3.mes.pgp.AttestationRequest;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v0.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -36,12 +36,12 @@ public class MesPgpKafkaService {
 
     private final long sleepTime;
     private final MesCommonService mesCommonService;
-    private final MesMessageAdapter<AttestationRequest> mesMessageAdapter;
+    private final MesMessageAdapter<AsapAnalysisRequestVer0> mesMessageAdapter;
     private final MesMessageService mesMessageService;
 
     public MesPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                                 MesCommonService mesCommonService,
-                                MesMessageAdapter<AttestationRequest> mesMessageAdapter,
+                                MesMessageAdapter<AsapAnalysisRequestVer0> mesMessageAdapter,
                                 MesMessageService mesMessageService) {
         this.sleepTime = sleepTime;
         this.mesCommonService = mesCommonService;
@@ -58,7 +58,7 @@ public class MesPgpKafkaService {
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload AttestationRequest request,
+                                  @Payload AsapAnalysisRequestVer0 request,
                                   Acknowledgment ack) {
 
         log.info("receiveMessageReq (MES PGP): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.metalUnitId [{}]",
