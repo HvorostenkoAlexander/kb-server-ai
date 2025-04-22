@@ -241,9 +241,12 @@
                     },
                     {
                       "name": "protDate",
-                      "type": "string",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
                       "doc": "Дата протокола",
-                      "default": ""
+                      "default": null
                     },
                     {
                       "name": "testTypeRequestId",
