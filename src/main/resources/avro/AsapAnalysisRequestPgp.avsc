@@ -2,12 +2,12 @@
   "type": "record",
   "name": "AsapAnalysisRequestVer0",
   "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v0",
-  "doc": "Запрос на проведение аттестации единицы продукции из MES",
+  "doc": "Передача данных для аттестации из сервиса-адаптера в АСАП.",
   "fields": [
     {
       "name": "ts",
       "type": "string",
-      "doc": "Дата и время передачи"
+      "doc": "Дата и время передачи (YYYY-MM-DD'T'HH24:MI:SS.FF3+/-HH:MM)"
     },
     {
       "name": "op",
@@ -15,18 +15,18 @@
         "type": "enum",
         "name": "EnumOp",
         "symbols": [
-          "D",
           "I",
-          "U"
+          "U",
+          "D"
         ]
       },
-      "doc": "Операция"
+      "doc": "Вид операции U - Update, D - Delete, I - Insert"
     },
     {
       "name": "pk",
       "type": {
         "type": "record",
-        "name": "RecordPk",
+        "name": "PkType",
         "fields": [
           {
             "name": "systemCode",
@@ -49,7 +49,6 @@
         {
           "type": "record",
           "name": "Sys",
-          "namespace": "nlmk",
           "fields": [
             {
               "name": "seqID",
@@ -76,7 +75,6 @@
         {
           "type": "record",
           "name": "Metadata",
-          "namespace": "nlmk",
           "fields": [
             {
               "name": "kafkaKeySchemaID",
@@ -129,7 +127,7 @@
                   "values": "string"
                 }
               ],
-              "doc": "kafkaHeaders",
+              "doc": "Заголовки сообщения",
               "default": null
             }
           ]
@@ -148,9 +146,12 @@
           "fields": [
             {
               "name": "workshopId",
-              "type": "string",
-              "doc": "Код цеха",
-              "default": ""
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "Guid цеха",
+              "default": null
             },
             {
               "name": "workshopName",
@@ -161,9 +162,9 @@
               "name": "orderNum",
               "type": [
                 "null",
-                "int"
+                "long"
               ],
-              "doc": "N заказа",
+              "doc": "Номер заказа",
               "default": null
             },
             {
@@ -172,53 +173,56 @@
                 "null",
                 "int"
               ],
-              "doc": "Позиция заказа",
+              "doc": "Номер позиции заказа",
               "default": null
             },
             {
               "name": "marking",
-              "type": {
-                "type": "array",
-                "items": {
-                  "type": "record",
-                  "name": "RecordMarking",
-                  "fields": [
-                    {
-                      "name": "attrCode",
-                      "type": "int",
-                      "doc": "Код атрибута маркировки"
-                    },
-                    {
-                      "name": "attrId",
-                      "type": "string",
-                      "doc": "Guid атрибута маркировки "
-                    },
-                    {
-                      "name": "attrName",
-                      "type": "string",
-                      "doc": "Наименование атрибута маркировки"
-                    },
-                    {
-                      "name": "dataTypePhysical",
-                      "type": "string",
-                      "doc": "Константа обозначения физического типа AVRO"
-                    },
-                    {
-                      "name": "value",
-                      "type": "string",
-                      "doc": "Значение атрибута маркировки"
-                    }
-                  ]
-                },
-                "doc": "Список передаваемых данных"
-              }
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "RecordMarking",
+                    "doc": "Маркировка единицы аттестации",
+                    "fields": [
+                      {
+                        "name": "attrCode",
+                        "type": "int",
+                        "doc": "Код атрибута маркировки"
+                      },
+                      {
+                        "name": "attrId",
+                        "type": "string",
+                        "doc": "Guid атрибута маркировки"
+                      },
+                      {
+                        "name": "attrName",
+                        "type": "string",
+                        "doc": "Наименование атрибута маркировки"
+                      },
+                      {
+                        "name": "dataTypePhysical",
+                        "type": "string",
+                        "doc": "Константа обозначения физического типа AVRO"
+                      },
+                      {
+                        "name": "value",
+                        "type": "string",
+                        "doc": "Значение атрибута маркировки"
+                      }
+                    ]
+                  },
+                  "default": null
+                }
+              ]
             },
             {
               "name": "analyzes",
               "type": {
                 "type": "array",
-                "items":
-                {
+                "items": {
                   "type": "record",
                   "name": "RecordAnalyzes",
                   "doc": "Массив групп качественных характеристик проведенных испытаний",
@@ -235,9 +239,12 @@
                     },
                     {
                       "name": "protNum",
-                      "type": "string",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
                       "doc": "Номер протокола",
-                      "default": ""
+                      "default": null
                     },
                     {
                       "name": "protDate",
@@ -245,19 +252,21 @@
                         "null",
                         "string"
                       ],
-                      "doc": "Дата протокола",
+                      "doc": "Дата формирования протокола",
                       "default": null
                     },
                     {
                       "name": "testTypeRequestId",
-                      "type": "string",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
                       "doc": "Код типа запроса на испытания",
-                      "default": ""
+                      "default": null
                     },
                     {
                       "name": "qualityIndicators",
-                      "type":
-                      {
+                      "type": {
                         "type": "array",
                         "items": {
                           "type": "record",
@@ -281,8 +290,16 @@
                             },
                             {
                               "name": "relation",
-                              "type": "string",
-                              "doc": "Оператор сравнения"
+                              "type": {
+                                "type": "enum",
+                                "name": "Relation",
+                                "doc": "Оператор сравнения",
+                                "symbols": [
+                                  "EQUAL",
+                                  "MORE",
+                                  "LESS"
+                                ]
+                              }
                             },
                             {
                               "name": "value",
@@ -295,8 +312,7 @@
                                 "null",
                                 {
                                   "type": "record",
-                                  "name": "RecordMeasureIndicators",
-                                  "doc": "Единица измерения",
+                                  "name": "RecordMeasure",
                                   "fields": [
                                     {
                                       "name": "measureId",
@@ -340,8 +356,7 @@
                                       },
                                       {
                                         "name": "relation",
-                                        "type": "string",
-                                        "doc": "Оператор сравнения"
+                                        "type": "Relation"
                                       },
                                       {
                                         "name": "value",
@@ -352,27 +367,12 @@
                                         "name": "measure",
                                         "type": [
                                           "null",
-                                          {
-                                            "type": "record",
-                                            "name": "RecordMeasureProperties",
-                                            "doc": "Единица измерения",
-                                            "fields": [
-                                              {
-                                                "name": "measureId",
-                                                "type": "string",
-                                                "doc": "Guid единицы измерения"
-                                              },
-                                              {
-                                                "name": "measureName",
-                                                "type": "string",
-                                                "doc": "Наименование единицы измерения"
-                                              }
-                                            ]
-                                          }
+                                          "RecordMeasure"
                                         ]
                                       }
                                     ]
-                                  }
+                                  },
+                                  "default": null
                                 }
                               ]
                             }
@@ -386,7 +386,8 @@
             }
           ]
         }
-      ]
+      ],
+      "doc": "Список передаваемых данных"
     }
   ]
 }
