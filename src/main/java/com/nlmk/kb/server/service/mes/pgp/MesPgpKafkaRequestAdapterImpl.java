@@ -178,7 +178,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<ChemicalSpec> chemicalSpecs = new ArrayList<>();
         for (var qIndicator: recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes((String) qIndicator.getAttrId(), primeId);
+            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
 
             if (attributesDto.isPresent()) {
 
@@ -226,7 +226,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<MechanicalSpec> mechanicalSpecs = new ArrayList<>();
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes((String) qIndicator.getAttrId(), primeId);
+            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
 
             if (attributesDto.isPresent()) {
 
@@ -305,7 +305,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<MetallographicSpec> metallographicSpecs = new ArrayList<>();
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes((String) qIndicator.getAttrId(), primeId);
+            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
 
             if (attributesDto.isPresent()) {
 
@@ -376,7 +376,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes((String) qIndicator.getAttrId(), primeId);
+            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
 
             if (attributesDto.isPresent()) {
 
@@ -419,7 +419,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<AdditionalProperty> additionalProperties = new ArrayList<>();
 
         for (var prop : properties) {
-            var attributesDto = nsiClient.getAttributes((String) prop.getAttrId(), primeId);
+            var attributesDto = nsiClient.getAttributes(prop.getAttrId().toString(), primeId);
             if (attributesDto.isPresent()) {
                 var attributes = attributesDto.get();
                 var addPropertyBuilder = AdditionalProperty.builder();
