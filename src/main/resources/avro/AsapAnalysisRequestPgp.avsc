@@ -311,65 +311,67 @@
                             },
                             {
                               "name": "addProperties",
-                              "type":
-                              {
-                                "type": "array",
-                                "items": {
-                                  "type": "record",
-                                  "name": "RecordAddProperties",
-                                  "doc": "Дополнительные свойства характеристики",
-                                  "fields": [
-                                    {
-                                      "name": "attrId",
-                                      "type": "string",
-                                      "doc": "Guid качественной характеристики"
-                                    },
-                                    {
-                                      "name": "attrName",
-                                      "type": "string",
-                                      "doc": "Наименование качественной характеристики"
-                                    },
-                                    {
-                                      "name": "dataTypePhysical",
-                                      "type": "string",
-                                      "doc": "Константа обозначения физического типа AVRO"
-                                    },
-                                    {
-                                      "name": "relation",
-                                      "type": "string",
-                                      "doc": "Оператор сравнения"
-                                    },
-                                    {
-                                      "name": "value",
-                                      "type": "string",
-                                      "doc": "Значение качественной характеристики"
-                                    },
-                                    {
-                                      "name": "measure",
-                                      "type": [
-                                        "null",
-                                        {
-                                          "type": "record",
-                                          "name": "RecordMeasureProperties",
-                                          "doc": "Единица измерения",
-                                          "fields": [
-                                            {
-                                              "name": "measureId",
-                                              "type": "string",
-                                              "doc": "Guid единицы измерения"
-                                            },
-                                            {
-                                              "name": "measureName",
-                                              "type": "string",
-                                              "doc": "Наименование единицы измерения"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
+                              "type": [
+                                "null",
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "record",
+                                    "name": "RecordAddProperties",
+                                    "doc": "Дополнительные свойства характеристики",
+                                    "fields": [
+                                      {
+                                        "name": "attrId",
+                                        "type": "string",
+                                        "doc": "Guid качественной характеристики"
+                                      },
+                                      {
+                                        "name": "attrName",
+                                        "type": "string",
+                                        "doc": "Наименование качественной характеристики"
+                                      },
+                                      {
+                                        "name": "dataTypePhysical",
+                                        "type": "string",
+                                        "doc": "Константа обозначения физического типа AVRO"
+                                      },
+                                      {
+                                        "name": "relation",
+                                        "type": "string",
+                                        "doc": "Оператор сравнения"
+                                      },
+                                      {
+                                        "name": "value",
+                                        "type": "string",
+                                        "doc": "Значение качественной характеристики"
+                                      },
+                                      {
+                                        "name": "measure",
+                                        "type": [
+                                          "null",
+                                          {
+                                            "type": "record",
+                                            "name": "RecordMeasureProperties",
+                                            "doc": "Единица измерения",
+                                            "fields": [
+                                              {
+                                                "name": "measureId",
+                                                "type": "string",
+                                                "doc": "Guid единицы измерения"
+                                              },
+                                              {
+                                                "name": "measureName",
+                                                "type": "string",
+                                                "doc": "Наименование единицы измерения"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
                                 }
-                              }
+                              ]
                             }
                           ]
                         }
