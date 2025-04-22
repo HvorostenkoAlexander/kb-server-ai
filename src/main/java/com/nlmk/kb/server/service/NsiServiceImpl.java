@@ -25,6 +25,7 @@ import reactor.util.retry.Retry;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -37,9 +38,6 @@ public class NsiServiceImpl implements NsiSender, NsiClient {
     private final int webClientTimeout;
     private final String nsiUrlDict;
 
-    private static final String RETRY_ERROR_TEMPLATE = "завершение повтора, последняя ошибка [%s]";
-    private static final long MAX_ATTEMPTS = 2;
-    private static final long MIN_BACKOFF = 1;
 
     public NsiServiceImpl(@Value("${service-web-client.nsi-server.url}") String nsiUrlDict,
                           @Value("${service-web-client.timeout:5000}") int timeout,
@@ -134,19 +132,12 @@ public class NsiServiceImpl implements NsiSender, NsiClient {
                 .retrieve()
                 .bodyToMono(responseType)
                 .timeout(Duration.ofMillis(webClientTimeout))
-                .retryWhen(
-                        Retry.backoff(MAX_ATTEMPTS, Duration.ofSeconds(MIN_BACKOFF))
-                                .onRetryExhaustedThrow((backOffSpec, signal) -> {
-                                    throw new RuntimeException(
-                                            String.format(RETRY_ERROR_TEMPLATE, signal.failure().getMessage())
-                                    );
-                                })
-                )
-                .onErrorResume(e -> Mono.error(
-                        new RuntimeException(
-                                String.format("getResponseBody, uri [%s], exception: [%s]", uri, e.getMessage())
-                        )
-                ))
+                .onErrorResume(e -> {
+                    log.error("getResponseBody, ошибка получения данных из NSI, [{}]",
+                            e.getMessage());
+                    return Mono.empty();
+                })
                 .block();
     }
+
 }
