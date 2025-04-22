@@ -14,6 +14,7 @@ import com.nlmk.attestation.product.api.pam.MetallographicAnalysisData;
 import com.nlmk.attestation.product.api.pam.MetallographicData;
 import com.nlmk.attestation.product.api.pam.MetallographicSpec;
 import com.nlmk.attestation.product.api.pam.Pk;
+import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.kb.server.service.CommonConverter;
@@ -241,6 +242,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
+                paramsBuilder.property(propertyBuilder.build());
+
                 if (!qIndicator.getAddProperties().isEmpty()) {
                     var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
                     paramsBuilder.additionalProperties(additionalProperties);
@@ -279,6 +282,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
                 mechanicalData.add(metData);
                 mechanicSpecBuilder.mechData(mechanicalData);
+                mechanicSpecBuilder.params(paramsBuilder.build());
 
                 mechanicalSpecs.add(mechanicSpecBuilder.build());
 
@@ -317,6 +321,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
+                paramsBuilder.property(propertyBuilder.build());
+
                 if (!qIndicator.getAddProperties().isEmpty()) {
                     var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
                     paramsBuilder.additionalProperties(additionalProperties);
@@ -353,6 +359,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                         .build();
                 metallographicData.add(metData);
                 metallographicSpecBuilder.metgrapData(metallographicData);
+                metallographicSpecBuilder.params(paramsBuilder.build());
 
                 metallographicSpecs.add(metallographicSpecBuilder.build());
 
@@ -365,6 +372,47 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
     }
 
     private void buildSpec(DataPgp.DataPgpBuilder<?, ?> builder, RecordAnalyzes recordAnalyzes, String primeId) {
+        List<Specs> specsList = new ArrayList<>();
+
+        for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
+
+            var attributesDto = nsiClient.getAttributes((String) qIndicator.getAttrId(), primeId);
+
+            if (attributesDto.isPresent()) {
+
+                var attributes = attributesDto.get();
+                var paramsBuilder = Params.builder();
+                var propertyBuilder = Property.builder();
+                var specsBuilder = Specs.builder();
+
+                if (qIndicator.getMeasure() != null) {
+                    propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
+                    propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
+                }
+                propertyBuilder.relation(qIndicator.getRelation().toString());
+                propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
+
+                paramsBuilder.property(propertyBuilder.build());
+
+                if (!qIndicator.getAddProperties().isEmpty()) {
+                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                    paramsBuilder.additionalProperties(additionalProperties);
+                }
+
+                specsBuilder.specCode(attributes.getCode());
+                specsBuilder.specName(attributes.getName());
+                specsBuilder.specValue((String) qIndicator.getValue());
+                specsBuilder.params(paramsBuilder.build());
+
+                specsList.add(specsBuilder.build());
+
+            } else {
+                log.warn("Не найдены аттрибуты в справочнике NSI для металлографии, код: [{}], наименование \"[{}]\", пропущено",
+                        qIndicator.getAttrId(), qIndicator.getAttrName());
+            }
+
+        }
+        builder.specifications(specsList);
     }
 
     private List<AdditionalProperty> buildAndParseAdditionalProperties(List<RecordAddProperties> properties, String primeId) {
