@@ -110,7 +110,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         builder.primeId(primeId);
         builder.kceh(Kceh.PGP.getValue());
-        builder.orderNum(Long.valueOf(recordData.getOrderNum()));
+        builder.orderNum(recordData.getOrderNum());
         builder.orderPos(recordData.getOrderPosition());
 
         String hnum = "";
@@ -144,8 +144,14 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                         || attGroup.getCode().equals(AttributeAttestationGroup.MECH.getCode())) {
 
                     var testTypeRequestId = analyze.getTestTypeRequestId(); // signAnalyses
-                    var protNum = (String) analyze.getProtNum();
-                    var protDate = (String) analyze.getProtDate();
+                    String protNum = null;
+                    String protDate = null;
+                    if (analyze.getProtNum() != null) {
+                        protNum = (String) analyze.getProtNum();
+                    }
+                    if (analyze.getProtDate() != null) {
+                        protDate = (String) analyze.getProtDate();
+                    }
 
                     if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())) {
                         buildMetallographicSpec(builder, analyze, primeId, (String) testTypeRequestId, hnum, protNum, protDate);
@@ -179,8 +185,10 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 var paramsBuilder = Params.builder();
                 var propertyBuilder = Property.builder();
 
-                propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
-                propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
+                if (qIndicator.getMeasure() != null) {
+                    propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
+                    propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
+                }
                 propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
@@ -226,8 +234,10 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 var propertyBuilder = Property.builder();
                 var mechanicSpecBuilder = MechanicalSpec.builder();
 
-                propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
-                propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
+                if (qIndicator.getMeasure() != null) {
+                    propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
+                    propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
+                }
                 propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
@@ -300,9 +310,11 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 var propertyBuilder = Property.builder();
                 var metallographicSpecBuilder = MetallographicSpec.builder();
 
-                propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
-                propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
-                propertyBuilder.relation((String) qIndicator.getRelation().toString());
+                if (qIndicator.getMeasure() != null) {
+                    propertyBuilder.measureId((String) qIndicator.getMeasure().getMeasureId());
+                    propertyBuilder.measureName((String) qIndicator.getMeasure().getMeasureName());
+                }
+                propertyBuilder.relation(qIndicator.getRelation().toString());
                 propertyBuilder.dataTypePhysical((String) qIndicator.getDataTypePhysical());
 
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -366,8 +378,10 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
                 addPropertyBuilder.propCode(attributes.getCode());
                 addPropertyBuilder.value((String) prop.getValue());
-                addPropertyBuilder.measureId((String) prop.getMeasure().getMeasureId());
-                addPropertyBuilder.measureName((String) prop.getMeasure().getMeasureName());
+                if (prop.getMeasure() != null) {
+                    addPropertyBuilder.measureId((String) prop.getMeasure().getMeasureId());
+                    addPropertyBuilder.measureName((String) prop.getMeasure().getMeasureName());
+                }
                 addPropertyBuilder.relation(prop.getRelation().toString());
                 addPropertyBuilder.dataTypePhysical((String) prop.getDataTypePhysical());
 
