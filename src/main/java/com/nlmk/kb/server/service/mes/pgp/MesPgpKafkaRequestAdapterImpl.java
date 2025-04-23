@@ -178,40 +178,31 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<ChemicalSpec> chemicalSpecs = new ArrayList<>();
         for (var qIndicator: recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
+            var paramsBuilder = Params.builder();
+            var propertyBuilder = Property.builder();
 
-            if (attributesDto.isPresent()) {
-
-                var attributes = attributesDto.get();
-                var paramsBuilder = Params.builder();
-                var propertyBuilder = Property.builder();
-
-                if (qIndicator.getMeasure() != null) {
-                    propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                    propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
-                }
-                propertyBuilder.relation(qIndicator.getRelation().toString());
-                propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
-
-                paramsBuilder.property(propertyBuilder.build());
-
-                if (!qIndicator.getAddProperties().isEmpty()) {
-                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                    paramsBuilder.additionalProperties(additionalProperties);
-                }
-
-                chemicalSpecs.add(ChemicalSpec.builder()
-                        .chemCode(attributes.getCode())
-                        .chemName(attributes.getName())
-                        .chemValue((String) qIndicator.getValue())
-                        .chemValue((String) qIndicator.getDataTypePhysical())
-                        .params(paramsBuilder.build())
-                        .build());
-
-            } else {
-                log.warn("Не найдены аттрибуты в справочнике NSI для химии, код: [{}], наименование \"[{}]\", пропущено",
-                        qIndicator.getAttrId(), qIndicator.getAttrName());
+            if (qIndicator.getMeasure() != null) {
+                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
+            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+
+            paramsBuilder.property(propertyBuilder.build());
+
+            if (!qIndicator.getAddProperties().isEmpty()) {
+                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                paramsBuilder.additionalProperties(additionalProperties);
+            }
+
+            chemicalSpecs.add(ChemicalSpec.builder()
+                    .chemCode(qIndicator.getAttrCode())
+                    .chemName(qIndicator.getAttrName().toString())
+                    .chemValue((String) qIndicator.getValue())
+                    .chemValue((String) qIndicator.getDataTypePhysical())
+                    .params(paramsBuilder.build())
+                    .build());
+
         }
         builder.chemical(chemicalSpecs);
     }
@@ -226,70 +217,60 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<MechanicalSpec> mechanicalSpecs = new ArrayList<>();
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
+            var paramsBuilder = Params.builder();
+            var propertyBuilder = Property.builder();
+            var mechanicSpecBuilder = MechanicalSpec.builder();
 
-            if (attributesDto.isPresent()) {
-
-                var attributes = attributesDto.get();
-                var paramsBuilder = Params.builder();
-                var propertyBuilder = Property.builder();
-                var mechanicSpecBuilder = MechanicalSpec.builder();
-
-                if (qIndicator.getMeasure() != null) {
-                    propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                    propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
-                }
-                propertyBuilder.relation(qIndicator.getRelation().toString());
-                propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
-
-                paramsBuilder.property(propertyBuilder.build());
-
-                if (!qIndicator.getAddProperties().isEmpty()) {
-                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                    paramsBuilder.additionalProperties(additionalProperties);
-                }
-
-                // testTypeRequestId используется как signAnalysis в случае металлографии
-                parseIntegerFromString(testTypeRequestId, TEMPLATE_TEST_TYPE_REQUEST_ID, TEMPLATE_MECHANIC)
-                        .ifPresent(mechanicSpecBuilder::signAnalysis);
-                if (!hnum.isEmpty()) {
-                    parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_MECHANIC)
-                            .ifPresent(mechanicSpecBuilder::hnum);
-                }
-                parseIntegerFromString(protNum, TEMPLATE_PROT_NUM, TEMPLATE_MECHANIC)
-                        .ifPresent(mechanicSpecBuilder::protNum);
-
-                mechanicSpecBuilder.protDate(protDate);
-                // TODO sampleNum - откуда брать?
-
-                List<MechanicalData> mechanicalData = new ArrayList<>();
-
-                // TODO mechAnalysisId - откуда брать?
-                var metData = MechanicalData.builder()
-                        //.mechAnalysisId()
-                        .mechAnalysisData(
-                                Collections.singletonList(
-                                        MechanicalAnalysisData.builder()
-                                                .mechCode(attributes.getCode())
-                                                .mechName(attributes.getName())
-                                                .mechValue(qIndicator.getValue().toString())
-                                                // TODO measure - что добавлять?
-                                                .mechValue(qIndicator.getMeasure().getMeasureId().toString())
-                                                .build()
-                                )
-                        )
-                        .build();
-
-                mechanicalData.add(metData);
-                mechanicSpecBuilder.mechData(mechanicalData);
-                mechanicSpecBuilder.params(paramsBuilder.build());
-
-                mechanicalSpecs.add(mechanicSpecBuilder.build());
-
-            } else {
-                log.warn("Не найдены аттрибуты в справочнике NSI для механики, код: [{}], наименование \"[{}]\", пропущено",
-                        qIndicator.getAttrId(), qIndicator.getAttrName());
+            if (qIndicator.getMeasure() != null) {
+                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
+            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+
+            paramsBuilder.property(propertyBuilder.build());
+
+            if (!qIndicator.getAddProperties().isEmpty()) {
+                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                paramsBuilder.additionalProperties(additionalProperties);
+            }
+
+            // testTypeRequestId используется как signAnalysis в случае металлографии
+            parseIntegerFromString(testTypeRequestId, TEMPLATE_TEST_TYPE_REQUEST_ID, TEMPLATE_MECHANIC)
+                    .ifPresent(mechanicSpecBuilder::signAnalysis);
+            if (!hnum.isEmpty()) {
+                parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_MECHANIC)
+                        .ifPresent(mechanicSpecBuilder::hnum);
+            }
+            parseIntegerFromString(protNum, TEMPLATE_PROT_NUM, TEMPLATE_MECHANIC)
+                    .ifPresent(mechanicSpecBuilder::protNum);
+
+            mechanicSpecBuilder.protDate(protDate);
+            // TODO sampleNum - откуда брать?
+
+            List<MechanicalData> mechanicalData = new ArrayList<>();
+
+            // TODO mechAnalysisId - откуда брать?
+            var metData = MechanicalData.builder()
+                    //.mechAnalysisId()
+                    .mechAnalysisData(
+                            Collections.singletonList(
+                                    MechanicalAnalysisData.builder()
+                                            .mechCode(qIndicator.getAttrCode())
+                                            .mechName(qIndicator.getAttrName().toString())
+                                            .mechValue(qIndicator.getValue().toString())
+                                            // TODO measure - что добавлять?
+                                            .mechValue(qIndicator.getMeasure().getMeasureId().toString())
+                                            .build()
+                            )
+                    )
+                    .build();
+
+            mechanicalData.add(metData);
+            mechanicSpecBuilder.mechData(mechanicalData);
+            mechanicSpecBuilder.params(paramsBuilder.build());
+
+            mechanicalSpecs.add(mechanicSpecBuilder.build());
 
         }
         builder.mechanical(mechanicalSpecs);
@@ -305,68 +286,59 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<MetallographicSpec> metallographicSpecs = new ArrayList<>();
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
+            var paramsBuilder = Params.builder();
+            var propertyBuilder = Property.builder();
+            var metallographicSpecBuilder = MetallographicSpec.builder();
 
-            if (attributesDto.isPresent()) {
-
-                var attributes = attributesDto.get();
-                var paramsBuilder = Params.builder();
-                var propertyBuilder = Property.builder();
-                var metallographicSpecBuilder = MetallographicSpec.builder();
-
-                if (qIndicator.getMeasure() != null) {
-                    propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                    propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
-                }
-                propertyBuilder.relation(qIndicator.getRelation().toString());
-                propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
-
-                paramsBuilder.property(propertyBuilder.build());
-
-                if (!qIndicator.getAddProperties().isEmpty()) {
-                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                    paramsBuilder.additionalProperties(additionalProperties);
-                }
-
-                // testTypeRequestId используется как signAnalysis в случае металлографии
-                parseIntegerFromString(testTypeRequestId, TEMPLATE_TEST_TYPE_REQUEST_ID, TEMPLATE_METALLOGRAPHIC)
-                        .ifPresent(metallographicSpecBuilder::signAnalysis);
-                if (!hnum.isEmpty()) {
-                    parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_METALLOGRAPHIC)
-                            .ifPresent(metallographicSpecBuilder::hnum);
-                }
-                parseIntegerFromString(protNum, TEMPLATE_PROT_NUM, TEMPLATE_METALLOGRAPHIC)
-                        .ifPresent(metallographicSpecBuilder::protNum);
-
-                metallographicSpecBuilder.protDate(protDate);
-
-                List<MetallographicData> metallographicData = new ArrayList<>();
-
-                // TODO metgrapAnalysisId - откуда брать?
-                var metData = MetallographicData.builder()
-                        //.metgrapAnalysisId()
-                        .metgrapAnalysisData(
-                                Collections.singletonList(
-                                        MetallographicAnalysisData.builder()
-                                                .metgrapCode(attributes.getCode())
-                                                .metgrapName(attributes.getName())
-                                                .metgrapValue(qIndicator.getValue().toString())
-                                                // TODO measure - что добавлять?
-                                                .metgrapMeasure(qIndicator.getMeasure().getMeasureId().toString())
-                                                .build()
-                                )
-                        )
-                        .build();
-                metallographicData.add(metData);
-                metallographicSpecBuilder.metgrapData(metallographicData);
-                metallographicSpecBuilder.params(paramsBuilder.build());
-
-                metallographicSpecs.add(metallographicSpecBuilder.build());
-
-            } else {
-                log.warn("Не найдены аттрибуты в справочнике NSI для металлографии, код: [{}], наименование \"[{}]\", пропущено",
-                        qIndicator.getAttrId(), qIndicator.getAttrName());
+            if (qIndicator.getMeasure() != null) {
+                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
+            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+
+            paramsBuilder.property(propertyBuilder.build());
+
+            if (!qIndicator.getAddProperties().isEmpty()) {
+                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                paramsBuilder.additionalProperties(additionalProperties);
+            }
+
+            // testTypeRequestId используется как signAnalysis в случае металлографии
+            parseIntegerFromString(testTypeRequestId, TEMPLATE_TEST_TYPE_REQUEST_ID, TEMPLATE_METALLOGRAPHIC)
+                    .ifPresent(metallographicSpecBuilder::signAnalysis);
+            if (!hnum.isEmpty()) {
+                parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_METALLOGRAPHIC)
+                        .ifPresent(metallographicSpecBuilder::hnum);
+            }
+            parseIntegerFromString(protNum, TEMPLATE_PROT_NUM, TEMPLATE_METALLOGRAPHIC)
+                    .ifPresent(metallographicSpecBuilder::protNum);
+
+            metallographicSpecBuilder.protDate(protDate);
+
+            List<MetallographicData> metallographicData = new ArrayList<>();
+
+            // TODO metgrapAnalysisId - откуда брать?
+            var metData = MetallographicData.builder()
+                    //.metgrapAnalysisId()
+                    .metgrapAnalysisData(
+                            Collections.singletonList(
+                                    MetallographicAnalysisData.builder()
+                                            .metgrapCode(qIndicator.getAttrCode())
+                                            .metgrapName(qIndicator.getAttrName().toString())
+                                            .metgrapValue(qIndicator.getValue().toString())
+                                            // TODO measure - что добавлять?
+                                            .metgrapMeasure(qIndicator.getMeasure().getMeasureId().toString())
+                                            .build()
+                            )
+                    )
+                    .build();
+            metallographicData.add(metData);
+            metallographicSpecBuilder.metgrapData(metallographicData);
+            metallographicSpecBuilder.params(paramsBuilder.build());
+
+            metallographicSpecs.add(metallographicSpecBuilder.build());
+
         }
         builder.metallographic(metallographicSpecs);
     }
@@ -376,40 +348,30 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
-            var attributesDto = nsiClient.getAttributes(qIndicator.getAttrId().toString(), primeId);
+            var paramsBuilder = Params.builder();
+            var propertyBuilder = Property.builder();
+            var specsBuilder = Specs.builder();
 
-            if (attributesDto.isPresent()) {
-
-                var attributes = attributesDto.get();
-                var paramsBuilder = Params.builder();
-                var propertyBuilder = Property.builder();
-                var specsBuilder = Specs.builder();
-
-                if (qIndicator.getMeasure() != null) {
-                    propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                    propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
-                }
-                propertyBuilder.relation(qIndicator.getRelation().toString());
-                propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
-
-                paramsBuilder.property(propertyBuilder.build());
-
-                if (!qIndicator.getAddProperties().isEmpty()) {
-                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                    paramsBuilder.additionalProperties(additionalProperties);
-                }
-
-                specsBuilder.specCode(attributes.getCode());
-                specsBuilder.specName(attributes.getName());
-                specsBuilder.specValue(qIndicator.getValue().toString());
-                specsBuilder.params(paramsBuilder.build());
-
-                specsList.add(specsBuilder.build());
-
-            } else {
-                log.warn("Не найдены аттрибуты в справочнике NSI для металлографии, код: [{}], наименование \"[{}]\", пропущено",
-                        qIndicator.getAttrId(), qIndicator.getAttrName());
+            if (qIndicator.getMeasure() != null) {
+                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
+            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+
+            paramsBuilder.property(propertyBuilder.build());
+
+            if (!qIndicator.getAddProperties().isEmpty()) {
+                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                paramsBuilder.additionalProperties(additionalProperties);
+            }
+
+            specsBuilder.specCode(qIndicator.getAttrCode());
+            specsBuilder.specName(qIndicator.getAttrName().toString());
+            specsBuilder.specValue(qIndicator.getValue().toString());
+            specsBuilder.params(paramsBuilder.build());
+
+            specsList.add(specsBuilder.build());
 
         }
         builder.specifications(specsList);
@@ -419,26 +381,18 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         List<AdditionalProperty> additionalProperties = new ArrayList<>();
 
         for (var prop : properties) {
-            var attributesDto = nsiClient.getAttributes(prop.getAttrId().toString(), primeId);
-            if (attributesDto.isPresent()) {
-                var attributes = attributesDto.get();
-                var addPropertyBuilder = AdditionalProperty.builder();
+            var addPropertyBuilder = AdditionalProperty.builder();
 
-                addPropertyBuilder.propCode(attributes.getCode());
-                addPropertyBuilder.value((String) prop.getValue());
-                if (prop.getMeasure() != null) {
-                    addPropertyBuilder.measureId(prop.getMeasure().getMeasureId().toString());
-                    addPropertyBuilder.measureName(prop.getMeasure().getMeasureName().toString());
-                }
-                addPropertyBuilder.relation(prop.getRelation().toString());
-                addPropertyBuilder.dataTypePhysical(prop.getDataTypePhysical().toString());
-
-                additionalProperties.add(addPropertyBuilder.build());
-
-            } else {
-                log.warn("addProperty с кодом [{}], \"[{}]\" не найдена в справочнике, пропуск",
-                        prop.getAttrId(), prop.getAttrName());
+            addPropertyBuilder.propCode(prop.getAttrCode());
+            addPropertyBuilder.value((String) prop.getValue());
+            if (prop.getMeasure() != null) {
+                addPropertyBuilder.measureId(prop.getMeasure().getMeasureId().toString());
+                addPropertyBuilder.measureName(prop.getMeasure().getMeasureName().toString());
             }
+            addPropertyBuilder.relation(prop.getRelation().toString());
+            addPropertyBuilder.dataTypePhysical(prop.getDataTypePhysical().toString());
+
+            additionalProperties.add(addPropertyBuilder.build());
         }
 
         return additionalProperties;
