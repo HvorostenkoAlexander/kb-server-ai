@@ -15,7 +15,11 @@ import java.util.UUID;
 public class IntegralParams {
 
     private UUID attrId;
-    private Long attrCode;
+    private Integer attrCode;
     private BigDecimal attrValue;
+
+    public IntegralParams(Integer attrCode) {
+        this.attrCode = attrCode;
+    }
 
 }
