@@ -18,7 +18,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     private static final String CLIENT_REGISTRATION_ID = "keycloak";
-    private static final String CLIENT_REGISTRATION_ID_MES_ROLLING = "mes-rolling";
     private static final int MAX_IN_MEMORY_SIZE = 2 * 1024 * 1024;
 
     @Value("${service-web-client.kafka-rest.login}")
@@ -43,26 +42,6 @@ public class WebClientConfig {
     public WebClient defaultWebClient(OAuth2AuthorizedClientManager authorizedClientManager) {
         var oauth2Client = new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
         oauth2Client.setDefaultClientRegistrationId(CLIENT_REGISTRATION_ID);
-
-        return WebClient.builder()
-                .defaultHeaders(headers -> headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .apply(oauth2Client.oauth2Configuration())
-                .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(MAX_IN_MEMORY_SIZE))
-                        .build())
-                .build();
-    }
-
-    /**
-     * Создает WebClient для отправки запросов в НЛМК MES ЦГП c получением токена в realms mes-rolling
-     *
-     * @param authorizedClientManager - OAuth2AuthorizedClientManager
-     * @return webClient
-     */
-    @Bean
-    public WebClient pgpWebClient(OAuth2AuthorizedClientManager authorizedClientManager) {
-        var oauth2Client = new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-        oauth2Client.setDefaultClientRegistrationId(CLIENT_REGISTRATION_ID_MES_ROLLING);
 
         return WebClient.builder()
                 .defaultHeaders(headers -> headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
