@@ -84,29 +84,33 @@ public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .thickness(AdapterUtils.toBigDecimal(recordData.getThickness()))
                 .width(AdapterUtils.toBigDecimal(recordData.getWidth()))
                 .weightNet(AdapterUtils.toBigDecimal(recordData.getWeightNet()))
-                .bundles(ObjectUtils.isEmpty(recordData.getBundles())
-                        ? List.of()
-                        : recordData.getBundles().stream()
-                                .map(this::toPamBundles)
-                                .collect(Collectors.toList()))
+                .bundles(
+                        recordData.getBundles() == null
+                                ? null
+                                : recordData.getBundles().stream()
+                                        .map(this::toPamBundles)
+                                        .collect(Collectors.toList())
+                )
                 .kceh(recordData.getWorkshopNum())
                 .orderNum(recordData.getOrderNum())
                 .orderPos(recordData.getOrderPos())
                 .attestationPoint(recordData.getAttestationPoint())
                 .specifications(
-                        recordData.getSpecifications().stream()
-                                .map(this::toPamSpecs)
-                                .collect(Collectors.toList())
+                        ObjectUtils.isEmpty(recordData.getSpecifications())
+                                ? List.of()
+                                : recordData.getSpecifications().stream()
+                                        .map(this::toPamSpecs)
+                                        .collect(Collectors.toList())
                 )
                 .chemical(
-                        ObjectUtils.isEmpty(recordData.getChemical())
-                                ? List.of()
+                        recordData.getChemical() == null
+                                ? null
                                 : recordData.getChemical().stream()
                                         .map(this::toPamChemical)
                                         .collect(Collectors.toList()))
                 .testData(
-                        ObjectUtils.isEmpty(recordData.getTestData())
-                                ? List.of()
+                        recordData.getTestData() == null
+                                ? null
                                 : recordData.getTestData().stream()
                                         .map(this::toPamTestDataList)
                                         .collect(Collectors.toList()))
@@ -120,12 +124,11 @@ public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
     }
 
     private List<SpecValue> toPamSpecValueList(RecordSpecifications specification) {
-        if (specification.getListValues() == null || specification.getListValues().isEmpty()) {
-            return List.of();
-        }
-        return specification.getListValues().stream()
-                .map(this::toPamSpecValue)
-                .collect(Collectors.toList());
+        return specification.getListValues() == null
+                ? null
+                : specification.getListValues().stream()
+                        .map(this::toPamSpecValue)
+                        .collect(Collectors.toList());
     }
 
     private Specs toPamSpecs(RecordSpecifications specifications) {
