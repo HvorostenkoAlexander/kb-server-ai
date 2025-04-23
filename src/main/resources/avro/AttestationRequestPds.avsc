@@ -1,0 +1,390 @@
+{
+	"type": "record",
+	"name": "AttestationRequest",
+	"namespace": "nlmk.l3.ccm.pds",
+	"doc": "Проведение аттестации ЕМ (АСАП)",
+	"fields": [
+		{
+			"name": "ts",
+			"type": "string",
+			"doc": "Дата и время передачи"
+		},
+		{
+			"name": "op",
+			"type": {
+				"type": "enum",
+				"name": "EnumOp",
+				"symbols": [
+					"I",
+					"U",
+					"D"
+				]
+			},
+			"doc": "Операция"
+		},
+		{
+			"name": "pk",
+			"type": {
+				"type": "record",
+				"name": "RecordPk",
+				"fields": [
+					{
+						"name": "systemCode",
+						"type": "string",
+						"doc": "Код системы"
+					},
+					{
+						"name": "id",
+						"type": "string",
+						"doc": "ИД ЕМ"
+					}
+				]
+			},
+			"doc": "Первичный ключ"
+		},
+		{
+			"name": "data",
+			"type": [
+				"null",
+				{
+					"type": "record",
+					"name": "RecordRootData",
+					"fields": [
+						{
+							"name": "heat",
+							"type": [
+								"null",
+								"int"
+							],
+							"doc": "Плавка / номер плавки",
+							"default": null
+						},
+						{
+							"name": "hnum",
+							"type": [
+								"null",
+								"int"
+							],
+							"doc": "Номер ГК партии",
+							"default": null
+						},
+						{
+							"name": "tnum",
+							"type": [
+								"null",
+								"int"
+							],
+							"doc": "Номер ХК партии",
+							"default": null
+						},
+						{
+							"name": "roll",
+							"type": "int",
+							"doc": "Номер рулона"
+						},
+						{
+							"name": "length",
+							"type": [
+								"null",
+								"float"
+							],
+							"doc": "Длина",
+							"default": null
+						},
+						{
+							"name": "thickness",
+							"type": "float",
+							"doc": "Толщина"
+						},
+						{
+							"name": "width",
+							"type": "float",
+							"doc": "Ширина"
+						},
+						{
+							"name": "weightNet",
+							"type": "float",
+							"doc": "Вес/Масса нетто"
+						},
+						{
+							"name": "bundles",
+							"type": [
+								"null",
+								{
+									"type": "array",
+									"items": {
+										"type": "record",
+										"name": "RecordBundles",
+										"fields": [
+											{
+												"name": "stripId",
+												"type": "string",
+												"doc": "Идентификатор бунта"
+											},
+											{
+												"name": "strip",
+												"type": "int",
+												"doc": "Номер бунта"
+											},
+											{
+												"name": "stripWidth",
+												"type": "float",
+												"doc": "Ширина бунта"
+											},
+											{
+												"name": "stripWeight",
+												"type": "float",
+												"doc": "Вес бунта (т.)"
+											}
+										]
+									}
+								}
+							],
+							"doc": "Список бунтов, входящих в упаковку",
+							"default": null
+						},
+						{
+							"name": "workshopNum",
+							"type": "int",
+							"doc": "Номер цеха"
+						},
+						{
+							"name": "orderNum",
+							"type": [
+								"null",
+								"int"
+							],
+							"doc": "Номер заказа",
+							"default": null
+						},
+						{
+							"name": "orderPos",
+							"type": [
+								"null",
+								"int"
+							],
+							"doc": "Позиция заказа",
+							"default": null
+						},
+						{
+							"name": "attestationPoint",
+							"type": [
+								"null",
+								"int"
+							],
+							"doc": "Точка аттестации",
+							"default": null
+						},
+						{
+							"name": "specifications",
+							"type": {
+								"type": "array",
+								"items": {
+									"type": "record",
+									"name": "RecordSpecifications",
+									"fields": [
+										{
+											"name": "specCode",
+											"type": "int",
+											"doc": "Код характеристики"
+										},
+										{
+											"name": "specName",
+											"type": "string",
+											"doc": "Наименование характеристики"
+										},
+										{
+											"name": "specValue",
+											"type": [
+												"null",
+												"string"
+											],
+											"doc": "Значение",
+											"default": null
+										},
+										{
+											"name": "specTypeCode",
+											"type": "int",
+											"doc": "Тип данных (1 - строка, 2 - число, 3 - дата)"
+										},
+										{
+											"name": "specTypeName",
+											"type": "string",
+											"doc": "Наименование типа данных"
+										},
+										{
+											"name": "specTypeValue",
+											"type": "int",
+											"doc": "Тип значения (1 - простое, 2 - перечислимое)"
+										},
+										{
+											"name": "listValues",
+											"type": [
+												"null",
+												{
+													"type": "array",
+													"items": {
+														"type": "record",
+														"name": "RecordListValues",
+														"fields": [
+															{
+																"name": "value",
+																"type": [
+																	"null",
+																	"string"
+																],
+																"doc": "Значение",
+																"default": null
+															}
+														]
+													}
+												}
+											],
+											"doc": "Cписок значений",
+											"default": null
+										}
+									]
+								}
+							},
+							"doc": "Атрибуты ЕМ"
+						},
+						{
+							"name": "chemical",
+							"type": [
+								"null",
+								{
+									"type": "array",
+									"items": {
+										"type": "record",
+										"name": "RecordChemical",
+										"fields": [
+											{
+												"name": "chemCode",
+												"type": "int",
+												"doc": "Код химического элемента"
+											},
+											{
+												"name": "chemName",
+												"type": "string",
+												"doc": "Наименование химического элемента"
+											},
+											{
+												"name": "chemValue",
+												"type": [
+													"null",
+													"string"
+												],
+												"doc": "Значение химического элемента",
+												"default": null
+											}
+										]
+									}
+								}
+							],
+							"doc": "Химический состав",
+							"default": null
+						},
+						{
+							"name": "testData",
+							"type": [
+								"null",
+								{
+									"type": "array",
+									"items": {
+										"type": "record",
+										"name": "RecordTestData",
+										"fields": [
+											{
+												"name": "tnum",
+												"type": [
+													"null",
+													"int"
+												],
+												"doc": "Номер испытуемой холоднокатаной партии",
+												"default": null
+											},
+											{
+												"name": "testDate",
+												"type": [
+													"null",
+													"string"
+												],
+												"doc": "Дата  испытания",
+												"default": null
+											},
+											{
+												"name": "sampleNum",
+												"type": [
+													"null",
+													"int"
+												],
+												"doc": "Номер пробы (образца)",
+												"default": null
+											},
+											{
+												"name": "signAnalysis",
+												"type": [
+													"null",
+													"int"
+												],
+												"doc": "Признак испытаний",
+												"default": null
+											},
+											{
+												"name": "testTypeName",
+												"type": "string",
+												"doc": "Вид испытания"
+											},
+											{
+												"name": "data",
+												"type": {
+													"type": "array",
+													"items": {
+														"type": "record",
+														"name": "RecordTestDataData",
+														"fields": [
+															{
+																"name": "code",
+																"type": "int",
+																"doc": "Код характеристики"
+															},
+															{
+																"name": "name",
+																"type": "string",
+																"doc": "Наименование характеристики"
+															},
+															{
+																"name": "typeCode",
+																"type": "int",
+																"doc": "Тип данных (1 - строка, 2 - число)"
+															},
+															{
+																"name": "specTypeName",
+																"type": "string",
+																"doc": "Наименование типа данных"
+															},
+															{
+																"name": "value",
+																"type": "string",
+																"doc": "Значение характеристики"
+															}
+														]
+													}
+												},
+												"doc": "Данные испытаний"
+											}
+										]
+									}
+								}
+							],
+							"doc": "Данные испытаний",
+							"default": null
+						}
+					]
+				}
+			],
+			"doc": "Данные",
+			"default": null
+		}
+	]
+}
