@@ -42,7 +42,7 @@ import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_PRIME_ID;
 @Service
 public class CcmPgpKafkaService {
 
-    // TODO: В будущем заменить value значениями из SpecCode product-api
+    // В будущем заменить value значениями из SpecCode product-api
     private static final List<IntegralParams> INTEGRAL_PARAMS_ATTRS = List.of(
             new IntegralParams(9617), new IntegralParams(9615),
             new IntegralParams(9653), new IntegralParams(9654),
