@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class IntegralParamsRequest {
 
-    private List<String> metalUnitId;
+    private List<String> materialIds;
     private List<IntegralParams> integralParameters;
 
 }

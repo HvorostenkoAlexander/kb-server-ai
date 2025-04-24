@@ -7,6 +7,7 @@ import com.nlmk.kb.server.util.SenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -26,7 +28,7 @@ public class PgpSenderImpl implements PgpSender {
 
     public PgpSenderImpl(@Value("${service-web-client.pgp-server.url}") String pgpUrl,
                          @Value("${service-web-client.timeout:5000}") int timeout,
-                         @Qualifier("defaultWebClient") WebClient pgpWebClient
+                         @Qualifier("pgpWebClient") WebClient pgpWebClient
     ) {
         this.pgpWebClient = pgpWebClient;
         this.webClientTimeout = timeout;
@@ -34,23 +36,23 @@ public class PgpSenderImpl implements PgpSender {
     }
 
     @Override
-    public IntegralParamsResponse getIntegralParams(IntegralParamsRequest integralParamsRequest) {
+    public List<IntegralParamsResponse> getIntegralParams(IntegralParamsRequest integralParamsRequest) {
         if (integralParamsRequest == null
-                || CollectionUtils.isEmpty(integralParamsRequest.getMetalUnitId())
+                || CollectionUtils.isEmpty(integralParamsRequest.getMaterialIds())
                 || CollectionUtils.isEmpty(integralParamsRequest.getIntegralParameters())) {
             throw new RemoteServiceSenderException("PgpSender, IntegralParamsRequest is NULL");
         }
 
-        var metalUtilId = integralParamsRequest.getMetalUnitId().get(0);
+        var metalUtilId = integralParamsRequest.getMaterialIds().get(0);
 
-        final var response = pgpWebClient.post()
+        var response = pgpWebClient.post()
                 .uri(pgpIntegralParamsUrl)
                 .accept(MediaType.APPLICATION_JSON)
                 .acceptCharset(StandardCharsets.UTF_8)
                 .headers(SenderUtils::addRequestId)
                 .bodyValue(integralParamsRequest)
                 .retrieve()
-                .bodyToMono(IntegralParamsResponse.class)
+                .bodyToMono(new ParameterizedTypeReference<List<IntegralParamsResponse>>() {})
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
                         new RemoteServiceSenderException(String.format("PgpSender, getIntegralParams, metalUnitId [%s], send error, message [%s]",
