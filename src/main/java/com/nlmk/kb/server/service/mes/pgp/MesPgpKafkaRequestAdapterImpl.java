@@ -154,10 +154,12 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                         protDate = analyze.getProtDate().toString();
                     }
 
-                    if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())) {
-                        buildMetallographicSpec(builder, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
-                    } else {
-                        buildMechanicalSpec(builder, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
+                    if (testTypeRequestId != null) {
+                        if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())) {
+                            buildMetallographicSpec(builder, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
+                        } else {
+                            buildMechanicalSpec(builder, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
+                        }
                     }
 
                 } else {
