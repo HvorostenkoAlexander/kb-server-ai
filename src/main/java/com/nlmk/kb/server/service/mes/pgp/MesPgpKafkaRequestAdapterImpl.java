@@ -200,8 +200,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             chemicalSpecs.add(ChemicalSpec.builder()
                     .chemCode(qIndicator.getAttrCode())
                     .chemName(qIndicator.getAttrName().toString())
-                    .chemValue((String) qIndicator.getValue())
-                    .chemValue((String) qIndicator.getDataTypePhysical())
+                    .chemValue(qIndicator.getValue().toString())
+                    .chemValue(qIndicator.getDataTypePhysical().toString())
                     .params(paramsBuilder.build())
                     .build());
 
@@ -392,7 +392,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             var addPropertyBuilder = AdditionalProperty.builder();
 
             addPropertyBuilder.propCode(prop.getAttrCode());
-            addPropertyBuilder.value((String) prop.getValue());
+            addPropertyBuilder.value(prop.getValue().toString());
             if (prop.getMeasure() != null) {
                 addPropertyBuilder.measureId(prop.getMeasure().getMeasureId().toString());
                 addPropertyBuilder.measureName(prop.getMeasure().getMeasureName().toString());
