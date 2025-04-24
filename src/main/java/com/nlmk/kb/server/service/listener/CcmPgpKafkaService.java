@@ -26,6 +26,7 @@ import nlmk.l3.apcs.VerificationResults;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import nlmk.l3.ccm.pgp.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -38,6 +39,7 @@ import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLAT
 import static com.nlmk.kb.server.config.KbConstants.MISSING_ATT_RESULT_MESSAGE_TEMPLATE;
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_PRIME_ID;
 
+@Profile("!test")
 @Slf4j
 @Service
 public class CcmPgpKafkaService {
