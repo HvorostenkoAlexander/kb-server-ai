@@ -190,9 +190,11 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
             paramsBuilder.property(propertyBuilder.build());
 
-            if (!qIndicator.getAddProperties().isEmpty()) {
-                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                paramsBuilder.additionalProperties(additionalProperties);
+            if (qIndicator.getAddProperties() != null) {
+                if (!qIndicator.getAddProperties().isEmpty()) {
+                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                    paramsBuilder.additionalProperties(additionalProperties);
+                }
             }
 
             chemicalSpecs.add(ChemicalSpec.builder()
@@ -230,9 +232,11 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
             paramsBuilder.property(propertyBuilder.build());
 
-            if (!qIndicator.getAddProperties().isEmpty()) {
-                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                paramsBuilder.additionalProperties(additionalProperties);
+            if (qIndicator.getAddProperties() != null) {
+                if (!qIndicator.getAddProperties().isEmpty()) {
+                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                    paramsBuilder.additionalProperties(additionalProperties);
+                }
             }
 
             // testTypeRequestId используется как signAnalysis в случае металлографии
@@ -299,9 +303,11 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
             paramsBuilder.property(propertyBuilder.build());
 
-            if (!qIndicator.getAddProperties().isEmpty()) {
-                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                paramsBuilder.additionalProperties(additionalProperties);
+            if (qIndicator.getAddProperties() != null) {
+                if (!qIndicator.getAddProperties().isEmpty()) {
+                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                    paramsBuilder.additionalProperties(additionalProperties);
+                }
             }
 
             // testTypeRequestId используется как signAnalysis в случае металлографии
@@ -361,9 +367,11 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
             paramsBuilder.property(propertyBuilder.build());
 
-            if (!qIndicator.getAddProperties().isEmpty()) {
-                var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
-                paramsBuilder.additionalProperties(additionalProperties);
+            if (qIndicator.getAddProperties() != null) {
+                if (!qIndicator.getAddProperties().isEmpty()) {
+                    var additionalProperties = buildAndParseAdditionalProperties(qIndicator.getAddProperties(), primeId);
+                    paramsBuilder.additionalProperties(additionalProperties);
+                }
             }
 
             specsBuilder.specCode(qIndicator.getAttrCode());
