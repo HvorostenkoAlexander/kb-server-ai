@@ -21,6 +21,11 @@ public class WebClientConfig {
     }
 
     @Bean
+    public WebClient pgpWebClient() {
+        return WebClient.builder().build();
+    }
+
+    @Bean
     public WebClient basicAuthWebClient() {
         return WebClient.builder()
                 .defaultHeaders(headers -> {
