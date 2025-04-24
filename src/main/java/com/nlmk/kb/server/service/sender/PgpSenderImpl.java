@@ -52,7 +52,7 @@ public class PgpSenderImpl implements PgpSender {
                 .headers(SenderUtils::addRequestId)
                 .bodyValue(integralParamsRequest)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<IntegralParamsResponse>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<IntegralParamsResponse>>() { })
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> Mono.error(
                         new RemoteServiceSenderException(String.format("PgpSender, getIntegralParams, metalUnitId [%s], send error, message [%s]",
