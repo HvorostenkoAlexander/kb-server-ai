@@ -145,13 +145,15 @@ public class CcmPgpKafkaService {
 
     private void processIntegralParams(CcmMessage ccmMessage) {
         var integralParamsRequest = IntegralParamsRequest.builder()
-                .metalUnitId(List.of(ccmMessage.getPrimeId()))
+                .materialIds(List.of(ccmMessage.getPrimeId()))
                 .integralParameters(INTEGRAL_PARAMS_ATTRS)
                 .build();
 
         var response = pgpSender.getIntegralParams(integralParamsRequest);
 
-        integralParamsMessageService.save(response);
+        if (!CollectionUtils.isEmpty(response)) {
+            integralParamsMessageService.save(response.get(0));
+        }
     }
 
 }
