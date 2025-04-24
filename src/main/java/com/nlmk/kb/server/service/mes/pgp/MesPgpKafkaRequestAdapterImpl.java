@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -379,6 +380,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             specsBuilder.specCode(qIndicator.getAttrCode());
             specsBuilder.specName(qIndicator.getAttrName().toString());
             specsBuilder.specValue(qIndicator.getValue().toString());
+            specsBuilder.specTypeCode(getIntegerValueOfDataType(qIndicator.getDataTypePhysical().toString()));
             specsBuilder.params(paramsBuilder.build());
 
             specsList.add(specsBuilder.build());
@@ -459,6 +461,13 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             log.warn(TEMPLATE_INTEGER_PARSE_EXCEPTION, attributeTemplate, str, groupTemplate);
         }
         return Optional.empty();
+    }
+
+    private Integer getIntegerValueOfDataType(String dataType) {
+        if (Objects.equals(dataType, "int") || Objects.equals(dataType, "long")) {
+            return 2;
+        }
+        return 1;
     }
 
 }
