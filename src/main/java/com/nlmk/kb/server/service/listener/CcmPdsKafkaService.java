@@ -11,10 +11,12 @@ import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
-import nlmk.nlmk.l3.ccm.pts.DbAttestationRequestVer1;
+import nlmk.l3.ccm.pds.AttestationRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,28 +27,23 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE;
 import static com.nlmk.kb.server.config.KbConstants.MISSING_ATT_RESULT_MESSAGE_TEMPLATE;
-import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_PRIME_ID;
 
 @Slf4j
 @Service
-@ConditionalOnProperty(value = "kafka.ccm.pts.enable", matchIfMissing = true)
-public class CcmPtsKafkaService {
+@ConditionalOnProperty(value = "kafka.ccm.pds.enable", matchIfMissing = true)
+public class CcmPdsKafkaService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-    private final CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter;
+    private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
 
-    public CcmPtsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
+    public CcmPdsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter,
+                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
                               CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
@@ -56,39 +53,45 @@ public class CcmPtsKafkaService {
         this.ccmMessageService = ccmMessageService;
     }
 
-    @KafkaListener(containerFactory = "ccmPtsKafkaListenerContainerFactory", topics = {"${kafka.ccm.pts.topicReq}"})
+    @KafkaListener(containerFactory = "ccmPdsKafkaListenerContainerFactory", topics = {"${kafka.ccm.pds.topicReq}"})
     @Timed(value = "kafka_listener", percentiles = {0.99, 0.95})
     public void receiveMessageReq(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                   @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload DbAttestationRequestVer1 request,
+                                  @Payload AttestationRequest request,
                                   Acknowledgment ack) {
 
-        log.info("receiveMessageReq (CCM PTS): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]",
+        log.info(
+                "receiveMessageReq (CCM PDS): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.id [{}]",
                 topic, partition, offset, key, timestamp, request.getTs(), request.getOp(), request.getPk().getId());
 
         try {
             final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
 
-            if (request.getOp() == EnumOp.D
+            if (request.getOp() == nlmk.l3.ccm.pds.EnumOp.D
                     || requestMessage.getRequest().getValue() == null
                     || requestMessage.getRequest().getValue().getData() == null) {
-                log.warn("receiveMessageReq (CCM PTS), аттестация не выполняется - некорректные Op или Data, partition {}, offset {}, key {}", partition, offset, key);
+                log.warn(
+                        "receiveMessageReq (CCM PDS), аттестация не выполняется - некорректные Op или Data, partition {}, offset {}, key {}",
+                        partition, offset, key);
             } else {
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);
                 if (attResult.isEmpty() || Objects.isNull(attResult.get().getResult())) {
-                    log.warn("receiveMessageReq (CCM PTS), нет результата аттестации для primeId {}, partition {}, offset {}, key {}",
+                    log.warn(
+                            "receiveMessageReq (CCM PDS), нет результата аттестации для primeId {}, partition {}, offset {}, key {}",
                             requestMessage.getPrimeId(), partition, offset, key);
-                    throw new AttestationResultException(String.format(MISSING_ATT_RESULT_MESSAGE_TEMPLATE, TEMPLATE_PRIME_ID, requestMessage.getPrimeId()));
+                    throw new AttestationResultException(
+                            String.format(MISSING_ATT_RESULT_MESSAGE_TEMPLATE, requestMessage.getPrimeId()));
                 }
 
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
-                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString(), LocalDateTime.now());
+                    ccmMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(),
+                            request.toString(), LocalDateTime.now());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsPts.class);
@@ -112,7 +115,7 @@ public class CcmPtsKafkaService {
             throw new AttestationResultSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (RemoteServiceSenderException e) {
             log.warn("receiveMessageReq, RemoteServiceSenderException", e);
-            ack.nack(sleepTime);
+            ack.acknowledge(); // измеить на nack после реализации аттестации
             throw new RemoteServiceSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
@@ -120,5 +123,4 @@ public class CcmPtsKafkaService {
             throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
-
 }
