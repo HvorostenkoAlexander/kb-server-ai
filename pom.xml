@@ -240,7 +240,30 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Maven Plugin Repository</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <finalName>kb-server</finalName>
@@ -349,6 +372,26 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- В случае необходимости запуска миграций вручную(дебаг) -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>10.17.0</version>
+                <configuration>
+                    <sqlMigrationSeparator>__</sqlMigrationSeparator>
+                    <locations>
+                        <location>filesystem:src/main/resources/db</location>
+                    </locations>
+                    <driver>org.postgresql.Driver</driver>
+                    <user>kbs</user>
+                    <password>somepassword</password>
+                    <schemas>
+                        <schema>public</schema>
+                    </schemas>
+                    <url>jdbc:postgresql://localhost/kbs</url>
+                </configuration>
             </plugin>
         </plugins>
     </build>
