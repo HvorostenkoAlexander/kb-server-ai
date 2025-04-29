@@ -267,8 +267,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                                             .mechName(qIndicator.getAttrName().toString())
                                             .mechValue(qIndicator.getValue().toString())
                                             // TODO measure - что добавлять?
-                                            .mechValue(qIndicator.getMeasure() == null ?
-                                                       null : qIndicator.getMeasure().getMeasureId().toString())
+                                            .mechValue(qIndicator.getMeasure() == null
+                                                       ? null : qIndicator.getMeasure().getMeasureId().toString())
                                             .build()
                             )
                     )
@@ -338,8 +338,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                                             .metgrapName(qIndicator.getAttrName().toString())
                                             .metgrapValue(qIndicator.getValue().toString())
                                             // TODO measure - что добавлять?
-                                            .metgrapMeasure(qIndicator.getMeasure() == null ?
-                                                            null : qIndicator.getMeasure().getMeasureId().toString())
+                                            .metgrapMeasure(qIndicator.getMeasure() == null
+                                                            ? null : qIndicator.getMeasure().getMeasureId().toString())
                                             .build()
                             )
                     )
