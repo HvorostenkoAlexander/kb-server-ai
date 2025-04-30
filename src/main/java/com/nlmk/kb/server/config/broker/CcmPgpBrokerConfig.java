@@ -3,8 +3,10 @@ package com.nlmk.kb.server.config.broker;
 import nlmk.l3.ccm.pgp.AttestationRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 
+@Profile("!test")
 @Configuration
 public class CcmPgpBrokerConfig extends BrokerConfigBase {
 
