@@ -17,10 +17,20 @@ public final class KbConstants {
 
     public static final String LISTENER_EXC_MESSAGE_TEMPLATE = "переброс: {0}";
 
-    public static final String MISSING_ATT_RESULT_MESSAGE_TEMPLATE = "Нет результата аттестации для primeId [%s]";
+    public static final String MISSING_ATT_RESULT_MESSAGE_TEMPLATE = "Нет результата аттестации для [%s] [%s]";
+    public static final String TEMPLATE_PRIME_ID = "primeId";
+    public static final String TEMPLATE_METAL_UNIT_ID = "messageUnitId";
 
     public static final String KAFKA_REST_PROXY_TEMPLATE = "%s/topics/%s";
     public static final String KAFKA_REST_CONTENT_TYPE_HEADER = "application/vnd.kafka.avro.v2+json";
     public static final String KAFKA_REST_ACCEPT_HEADER = "application/vnd.kafka.v2+json";
+
+    public static final String TEMPLATE_INTEGER_PARSE_EXCEPTION = "Не удалось преобразовать [{}] [{}] для [{}], ожидалось int";
+    public static final String TEMPLATE_METALLOGRAPHIC = "металлографии";
+    public static final String TEMPLATE_MECHANIC = "механики";
+
+    public static final String TEMPLATE_HNUM = "hnum";
+    public static final String TEMPLATE_PROT_NUM = "protNum";
+    public static final String TEMPLATE_TEST_TYPE_REQUEST_ID = "testTypeRequestId";
 
 }

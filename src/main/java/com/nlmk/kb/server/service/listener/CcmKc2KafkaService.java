@@ -30,6 +30,7 @@ import java.util.Objects;
 
 import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE;
 import static com.nlmk.kb.server.config.KbConstants.MISSING_ATT_RESULT_MESSAGE_TEMPLATE;
+import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_PRIME_ID;
 
 @Slf4j
 @Service
@@ -81,7 +82,7 @@ public class CcmKc2KafkaService {
                 if (attResult.isEmpty() || Objects.isNull(attResult.get().getResult())) {
                     log.warn("receiveMessageReq (CCM KC2), нет результата аттестации для primeId {}, partition {}, offset {}, key {}",
                             requestMessage.getPrimeId(), partition, offset, key);
-                    throw new AttestationResultException(String.format(MISSING_ATT_RESULT_MESSAGE_TEMPLATE, requestMessage.getPrimeId()));
+                    throw new AttestationResultException(String.format(MISSING_ATT_RESULT_MESSAGE_TEMPLATE, TEMPLATE_PRIME_ID, requestMessage.getPrimeId()));
                 }
 
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())

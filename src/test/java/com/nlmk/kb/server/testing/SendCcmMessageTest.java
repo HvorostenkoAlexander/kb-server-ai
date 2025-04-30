@@ -2,10 +2,11 @@ package com.nlmk.kb.server.testing;
 
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.*;
-
 import java.util.List;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 @Disabled("hand sender")
 class SendCcmMessageTest extends SendMessageToKafka {
@@ -15,6 +16,96 @@ class SendCcmMessageTest extends SendMessageToKafka {
     private static final String CCM_PTS_TOPIC = "000-1.l3-ccm-pts.db.Attestation-Request.0";
     private static final String CCM_KC1_TOPIC = "000-1.l3-sus-kc1.db.attest-request.0";
     private static final String CCM_KC2_TOPIC = "000-1.l3-sus-kc2.db.attest-request.0";
+    private static final String CCM_PDS_TOPIC = "000-1.l3-ccm-pds.db.attestation-request.0";
+
+    @Test
+    void sendCcmPdsMessage() {
+        final var data = nlmk.l3.ccm.pds.RecordRootData.newBuilder()
+                .setHeat(123)
+                .setHnum(25217)
+                .setTnum(321)
+                .setRoll(1)
+                .setLength(2.65f)
+                .setThickness(2.65f)
+                .setWidth(1232.0f)
+                .setWeightNet(10.86f)
+                .setBundles(List.of(nlmk.l3.ccm.pds.RecordBundles.newBuilder()
+                        .setStrip(1)
+                        .setStripId("BUNDLE001")
+                        .setStripWidth(1232.0f)
+                        .setStripWeight(10.86f)
+                        .build()))
+                .setWorkshopNum(6)
+                .setOrderNum(1270)
+                .setOrderPos(3)
+                .setAttestationPoint(0)
+                .setSpecifications(List.of(
+                        nlmk.l3.ccm.pds.RecordSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.STEEL_MARK.getValue())
+                                .setSpecName(SpecCode.STEEL_MARK.getDesc())
+                                .setSpecTypeCode(1)
+                                .setSpecValue("0404")
+                                .setSpecTypeName("typeName")
+                                .setSpecTypeValue(1)
+                                .setListValues(List.of(nlmk.l3.ccm.pds.RecordListValues.newBuilder()
+                                        .setValue("Значение")
+                                        .build()))
+                                .build(),
+                        nlmk.l3.ccm.pds.RecordSpecifications.newBuilder()
+                                .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
+                                .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
+                                .setSpecTypeCode(2)
+                                .setSpecValue("-")
+                                .setSpecTypeName("typeName")
+                                .setSpecTypeValue(1)
+                                .setListValues(List.of(nlmk.l3.ccm.pds.RecordListValues.newBuilder()
+                                        .setValue("Значение")
+                                        .build()))
+                                .build()
+                ))
+                .setChemical(List.of(
+                        nlmk.l3.ccm.pds.RecordChemical.newBuilder()
+                                .setChemCode(9006)
+                                .setChemName("C")
+                                .setChemValue("0.12")
+                                .build(),
+                        nlmk.l3.ccm.pds.RecordChemical.newBuilder()
+                                .setChemCode(9014)
+                                .setChemName("Si")
+                                .setChemValue("0.12")
+                                .build()
+                ))
+                .setTestData(List.of(nlmk.l3.ccm.pds.RecordTestData.newBuilder()
+                                .setTnum(1)
+                                .setTestDate("2023-11-10")
+                                .setSampleNum(2)
+                                .setSignAnalysis(1)
+                                .setTestTypeName("testType")
+                                .setData(List.of(nlmk.l3.ccm.pds.RecordTestDataData.newBuilder()
+                                        .setCode(1)
+                                        .setName("testName")
+                                        .setTypeCode(1)
+                                        .setSpecTypeName("testType")
+                                        .setValue("value")
+                                        .build()))
+                                .build()
+                        )
+                ).build();
+
+        final var value = nlmk.l3.ccm.pds.AttestationRequest.newBuilder()
+                .setTs("2022-11-24T13:00:25.194+05:00")
+                .setOp(nlmk.l3.ccm.pds.EnumOp.U)
+                .setPk(nlmk.l3.ccm.pds.RecordPk.newBuilder()
+                        .setId("task-1271")
+                        .setSystemCode("17")
+                        .build())
+                .setData(data)
+                .build();
+
+        ProducerRecord<Object, Object> record = new ProducerRecord<>(CCM_PDS_TOPIC, randomKey(), value);
+
+        Assertions.assertDoesNotThrow(() -> sendAvro(record));
+    }
 
     @Test
     void sendCcmPgpMessage() {
