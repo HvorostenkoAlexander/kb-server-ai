@@ -1,6 +1,7 @@
 package com.nlmk.kb.server.service.listener;
 
 import com.nlmk.kb.server.config.KbConstants;
+import com.nlmk.kb.server.exception.DateTimeParseException;
 import com.nlmk.kb.server.exception.KafkaMessageProcessingException;
 import com.nlmk.kb.server.exception.ZifraMessageParserException;
 import com.nlmk.kb.server.service.zifra.ZifraMessageHandler;
@@ -14,6 +15,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+
+import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE;
 
 @Slf4j
 @Service
@@ -69,6 +72,10 @@ public class ZifraKafkaService {
             log.warn("receiveMessageReq, Exception", e);
             ack.acknowledge();
             throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
+        } catch (DateTimeParseException e) {
+            log.warn("receiveMessageReq, DateTimeParseException", e);
+            ack.acknowledge();
+            throw new DateTimeParseException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
             ack.nack(sleepTime);
