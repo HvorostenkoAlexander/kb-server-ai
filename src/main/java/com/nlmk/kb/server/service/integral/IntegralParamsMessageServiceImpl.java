@@ -17,12 +17,19 @@ public class IntegralParamsMessageServiceImpl implements IntegralParamsMessageSe
 
     @Override
     @Transactional
-    public IntegralParamsMessage save(IntegralParamsResponse integralParamsResponse) {
-        var message = IntegralParamsMessage.builder()
-                .primeId(integralParamsResponse.getMetalUnitId())
-                .response(integralParamsResponse)
-                .build();
+    public IntegralParamsMessage upsert(IntegralParamsResponse integralParamsResponse) {
+        var paramsMessage = integralParamsMessageRepository.findByPrimeId(integralParamsResponse.getMetalUnitId())
+                .orElse(null);
 
-        return integralParamsMessageRepository.save(message);
+        if (paramsMessage != null) {
+            paramsMessage.setResponse(integralParamsResponse);
+        } else {
+            paramsMessage = IntegralParamsMessage.builder()
+                    .primeId(integralParamsResponse.getMetalUnitId())
+                    .response(integralParamsResponse)
+                    .build();
+        }
+
+        return integralParamsMessageRepository.save(paramsMessage);
     }
 }

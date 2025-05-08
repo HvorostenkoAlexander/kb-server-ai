@@ -1,8 +1,5 @@
 package com.nlmk.kb.server.service.listener;
 
-import com.nlmk.kb.server.api.IntegralParamsRequest;
-import com.nlmk.kb.server.entity.CcmMessage;
-import com.nlmk.kb.server.entity.integral.IntegralParams;
 import com.nlmk.kb.server.exception.AttestationResultException;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.exception.DateTimeParseException;
@@ -12,14 +9,10 @@ import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.ccm.CcmCommonService;
 import com.nlmk.kb.server.service.ccm.CcmMessageAdapter;
 import com.nlmk.kb.server.service.ccm.CcmMessageService;
-import com.nlmk.kb.server.service.integral.IntegralParamsMessageService;
 import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
-import com.nlmk.kb.server.service.sender.PgpSender;
 import io.micrometer.core.annotation.Timed;
-
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.apcs.VerificationResults;
@@ -44,37 +37,22 @@ import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_PRIME_ID;
 @Service
 public class CcmPgpKafkaService {
 
-    // В будущем заменить value значениями из SpecCode product-api
-    private static final List<IntegralParams> INTEGRAL_PARAMS_ATTRS = List.of(
-            new IntegralParams(9617), new IntegralParams(9615),
-            new IntegralParams(9653), new IntegralParams(9654),
-            new IntegralParams(18), new IntegralParams(9666),
-            new IntegralParams(9767), new IntegralParams(17),
-            new IntegralParams(15), new IntegralParams(16),
-            new IntegralParams(9560));
-
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
     private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
-    private final PgpSender pgpSender;
-    private final IntegralParamsMessageService integralParamsMessageService;
 
     public CcmPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
                               CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
-                              CcmMessageService ccmMessageService,
-                              PgpSender pgpSender,
-                              IntegralParamsMessageService integralParamsMessageService) {
+                              CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
         this.ccmCommonService = ccmCommonService;
         this.ccmMessageAdapter = ccmMessageAdapter;
         this.attestationResultSender = attestationResultSender;
         this.ccmMessageService = ccmMessageService;
-        this.pgpSender = pgpSender;
-        this.integralParamsMessageService = integralParamsMessageService;
     }
 
     @KafkaListener(containerFactory = "ccmPgpKafkaListenerContainerFactory",
@@ -100,7 +78,6 @@ public class CcmPgpKafkaService {
                     || requestMessage.getRequest().getValue().getData() == null) {
                 log.warn("receiveMessageReq (CCM PGP), аттестация не выполняется - некорректные Op или Data, partition {}, offset {}, key {}", partition, offset, key);
             } else {
-                processIntegralParams(requestMessage);
                 // отправка запроса при наличии тела и правильной операции
                 final var attResult = ccmCommonService.postAttestation(requestMessage);
                 if (attResult.isEmpty() || Objects.isNull(attResult.get().getResult())) {
@@ -144,18 +121,4 @@ public class CcmPgpKafkaService {
             throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
-
-    private void processIntegralParams(CcmMessage ccmMessage) {
-        var integralParamsRequest = IntegralParamsRequest.builder()
-                .materialIds(List.of(ccmMessage.getPrimeId()))
-                .integralParameters(INTEGRAL_PARAMS_ATTRS)
-                .build();
-
-        var response = pgpSender.getIntegralParams(integralParamsRequest);
-
-        if (!CollectionUtils.isEmpty(response)) {
-            integralParamsMessageService.save(response.get(0));
-        }
-    }
-
 }
