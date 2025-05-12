@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.ccm.pgp;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.ChemicalSpec;
 import com.nlmk.attestation.product.api.pam.DataPgp;
+import com.nlmk.attestation.product.api.pam.IntegralParam;
 import com.nlmk.attestation.product.api.pam.MechanicalAnalysisData;
 import com.nlmk.attestation.product.api.pam.MechanicalData;
 import com.nlmk.attestation.product.api.pam.MechanicalSpec;
@@ -12,9 +13,16 @@ import com.nlmk.attestation.product.api.pam.MetallographicSpec;
 import com.nlmk.attestation.product.api.pam.Pk;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.pam.Value;
+import com.nlmk.kb.server.api.IntegralParamsRequest;
+import com.nlmk.kb.server.entity.integral.IntegralParams;
 import com.nlmk.kb.server.service.CommonConverter;
 import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
+import com.nlmk.kb.server.service.integral.IntegralParamsMessageService;
+import com.nlmk.kb.server.service.sender.PgpSender;
 import com.nlmk.kb.server.util.AdapterUtils;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nlmk.l3.ccm.pgp.RecordChemical;
 import nlmk.l3.ccm.pgp.RecordData;
@@ -28,14 +36,39 @@ import nlmk.l3.ccm.pgp.RecordPk;
 import nlmk.l3.ccm.pgp.RecordSpecifications;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
-import java.util.stream.Collectors;
+import static com.nlmk.attestation.product.api.specification.SpecCode.COIL_TEMPERATURE_MAX;
+import static com.nlmk.attestation.product.api.specification.SpecCode.COIL_TEMPERATURE_MIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.END_ROLLING_TEMPERATURE_MAX;
+import static com.nlmk.attestation.product.api.specification.SpecCode.END_ROLLING_TEMPERATURE_MIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE_12;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE_23;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE_FULL;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PROFILE;
+import static com.nlmk.attestation.product.api.specification.SpecCode.WEDGE;
 
 @Component
 @RequiredArgsConstructor
 public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pgp.AttestationRequest> {
 
     private final CommonConverter converter;
+    private final PgpSender pgpSender;
+    private final IntegralParamsMessageService integralParamsMessageService;
+
+    private static final List<IntegralParams> INTEGRAL_PARAMS_ATTRS = List.of(
+            new IntegralParams(END_ROLLING_TEMPERATURE_MIN.getValue()),
+            new IntegralParams(END_ROLLING_TEMPERATURE_MAX.getValue()),
+            new IntegralParams(COIL_TEMPERATURE_MIN.getValue()),
+            new IntegralParams(COIL_TEMPERATURE_MAX.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE.getValue()),
+            new IntegralParams(PROFILE.getValue()),
+            new IntegralParams(WEDGE.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE_FULL.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE_12.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE_23.getValue()));
 
     @Override
     public AttestationRequest adapt(nlmk.l3.ccm.pgp.AttestationRequest requestMessagePgp) {
@@ -111,7 +144,38 @@ public class CcmPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                         : recordData.getMetallographic().stream()
                                 .map(this::toPamMetallographicSpec)
                                 .collect(Collectors.toList())
-                ).build();
+                ).integralParameters(processIntegralParams(recordData.getPrimeId().toString()))
+                .build();
+    }
+
+    private List<IntegralParam> processIntegralParams(String primeId) {
+        var integralParamsRequest = IntegralParamsRequest.builder()
+                .materialIds(List.of(primeId))
+                .integralParameters(INTEGRAL_PARAMS_ATTRS)
+                .build();
+
+        var responses = pgpSender.getIntegralParams(integralParamsRequest);
+        if (CollectionUtils.isEmpty(responses)) {
+            return Collections.emptyList();
+        }
+
+        var paramsMessage = integralParamsMessageService.upsert(responses.get(0));
+        var response = paramsMessage.getResponse();
+        if (ObjectUtils.isEmpty(response)) {
+            return Collections.emptyList();
+        }
+
+        return response.getIntegralParameters().stream()
+                .map(this::toIntegralPam)
+                .collect(Collectors.toList());
+    }
+
+    private IntegralParam toIntegralPam(IntegralParams integralParams) {
+        return IntegralParam.builder()
+                .attrId(integralParams.getAttrId())
+                .attrCode(integralParams.getAttrCode())
+                .attrValue(integralParams.getAttrValue())
+                .build();
     }
 
     private Specs toPamSpecs(RecordSpecifications specifications) {

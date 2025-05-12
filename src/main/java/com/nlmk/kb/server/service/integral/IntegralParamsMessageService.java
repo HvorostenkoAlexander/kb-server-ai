@@ -6,8 +6,8 @@ import com.nlmk.kb.server.entity.integral.IntegralParamsResponse;
 public interface IntegralParamsMessageService {
 
     /**
-     * Сохранение интегральных параметров
+     * Сохранение/обновление интегральных параметров
      */
-    IntegralParamsMessage save(IntegralParamsResponse integralParamsResponse);
+    IntegralParamsMessage upsert(IntegralParamsResponse integralParamsResponse);
 
 }
