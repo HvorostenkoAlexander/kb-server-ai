@@ -590,12 +590,6 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                         converter.getStringSpecValue(specs, LENGTH_K)
                 ))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
-                .prCode(converter.getStringSpecValue(specs, DELIVERY_TYPE))
-                .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK_PRODUCT))
-                .prFormSap(converter.getLimitSpecValue(specs, FORM_SAP))
-                .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
-                .rollingThickAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
-                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .build();
     }
 
@@ -1109,6 +1103,12 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .standTolLength(converter.getStringSpecValue(specs, LENGTH_TOLERANCE_STANDART))
                 .standTolEvenness(converter.getStringSpecValue(specs, EVENNESS_TOLERANCE_STANDART))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .prCode(converter.getStringSpecValue(specs, DELIVERY_TYPE))
+                .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK_PRODUCT))
+                .prFormSap(converter.getLimitSpecValue(specs, FORM_SAP))
+                .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
+                .rollingThickAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .build();
     }
 
