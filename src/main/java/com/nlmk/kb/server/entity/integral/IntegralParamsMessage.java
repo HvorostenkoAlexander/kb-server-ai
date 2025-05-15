@@ -7,13 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -38,12 +37,7 @@ public class IntegralParamsMessage {
     @Column(nullable = false)
     private IntegralParamsResponse response;
 
+    @CreationTimestamp
     @Column(nullable = false)
     private Instant createdAt;
-
-    @PrePersist
-    @PreUpdate
-    public void updateTimestamps() {
-        this.createdAt = Instant.now();
-    }
 }
