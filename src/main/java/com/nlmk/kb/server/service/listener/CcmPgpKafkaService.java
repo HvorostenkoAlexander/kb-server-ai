@@ -50,8 +50,7 @@ public class CcmPgpKafkaService {
             new IntegralParams(9653), new IntegralParams(9654),
             new IntegralParams(18), new IntegralParams(9666),
             new IntegralParams(9767), new IntegralParams(17),
-            new IntegralParams(15), new IntegralParams(16),
-            new IntegralParams(9560));
+            new IntegralParams(15), new IntegralParams(16));
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
