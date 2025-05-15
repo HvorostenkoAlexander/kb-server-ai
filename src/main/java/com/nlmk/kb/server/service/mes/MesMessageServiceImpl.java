@@ -1,7 +1,9 @@
 package com.nlmk.kb.server.service.mes;
 
 import com.nlmk.kb.server.entity.MesMessage;
+import com.nlmk.kb.server.entity.MesMessageSource;
 import com.nlmk.kb.server.repository.MesMessageRepository;
+import com.nlmk.kb.server.repository.MesMessageSourceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class MesMessageServiceImpl implements MesMessageService {
 
     private final MesMessageRepository repository;
+    private final MesMessageSourceRepository sourceRepository;
 
     @Override
     @Transactional
@@ -49,7 +52,12 @@ public class MesMessageServiceImpl implements MesMessageService {
 
     @Override
     public void saveSourceMessage(Long requestId, String primeId, String mesSourceMessageString, LocalDateTime createdAt) {
-
+        sourceRepository.save(MesMessageSource.builder()
+                .requestId(requestId)
+                .primeId(primeId)
+                .messageSource(mesSourceMessageString)
+                .createdAt(createdAt)
+                .build());
     }
 
 }

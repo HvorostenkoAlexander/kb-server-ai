@@ -14,7 +14,7 @@ class ResultsConfigRepositoryTest {
 
     @Test
     void init() {
-        assertThat(repository.count()).isEqualTo(5L);
+        assertThat(repository.count()).isEqualTo(6L);
         assertThat(repository.findByAvroName("-")).isEmpty();
         {
             final var res = repository.findByAvroName("VerificationResults");
@@ -45,6 +45,12 @@ class ResultsConfigRepositoryTest {
             assertThat(res).hasSize(1);
             assertThat(res.get(0).isEnabled()).isTrue();
             assertThat(res.get(0).getTopic()).isEqualTo("000-1.l3-apcs.db.verification-results-phpp.0");
+        }
+        {
+            final var res = repository.findByAvroName("VerificationResultsCgp");
+            assertThat(res).hasSize(1);
+            assertThat(res.get(0).isEnabled()).isTrue();
+            assertThat(res.get(0).getTopic()).isEqualTo("000-1.l3-apcs.db.verification-results-cgp.0");
         }
     }
 
