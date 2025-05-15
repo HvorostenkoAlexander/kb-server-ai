@@ -1,22 +1,21 @@
 package com.nlmk.kb.server.entity.integral;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Column;
-import javax.persistence.Table;
-import javax.persistence.GenerationType;
-import java.time.Instant;
 
 @Data
 @Builder
@@ -45,6 +44,6 @@ public class IntegralParamsMessage {
     @PrePersist
     @PreUpdate
     public void updateTimestamps() {
-        this.createdAt = Instant.from(LocalDateTime.now());
+        this.createdAt = Instant.now();
     }
 }
