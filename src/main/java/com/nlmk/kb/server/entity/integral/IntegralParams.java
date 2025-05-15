@@ -16,7 +16,7 @@ public class IntegralParams {
 
     private UUID attrId;
     private Integer attrCode;
-    private BigDecimal attrValue;
+    private String attrValue;
 
     public IntegralParams(Integer attrCode) {
         this.attrCode = attrCode;
