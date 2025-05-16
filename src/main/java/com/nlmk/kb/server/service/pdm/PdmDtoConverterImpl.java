@@ -109,6 +109,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.CR_NI_MO;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_CR_NI_MO_TI;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_NI;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CU_NI_CR_MO_V;
+import static com.nlmk.attestation.product.api.specification.SpecCode.DELIVERY_TYPE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DEPTH_HOLE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DEPTH_WITHOUT_C_LAYER;
 import static com.nlmk.attestation.product.api.specification.SpecCode.DRAG_FACTOR;
@@ -126,6 +127,9 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.FACTOR_LAM
 import static com.nlmk.attestation.product.api.specification.SpecCode.FERRITE_GRAIN;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FINISH_DATE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FORM_SAP;
+import static com.nlmk.attestation.product.api.specification.SpecCode.FRACTION_KSV_20_DVS;
+import static com.nlmk.attestation.product.api.specification.SpecCode.FRACTION_KSV_40_DVS;
+import static com.nlmk.attestation.product.api.specification.SpecCode.FRACTION_KSV_60_DVS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H0041000;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H004500;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H011000;
@@ -158,6 +162,8 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.KCV15;
 import static com.nlmk.attestation.product.api.specification.SpecCode.KCV20;
 import static com.nlmk.attestation.product.api.specification.SpecCode.KCV35;
 import static com.nlmk.attestation.product.api.specification.SpecCode.KCV40;
+import static com.nlmk.attestation.product.api.specification.SpecCode.KCV5;
+import static com.nlmk.attestation.product.api.specification.SpecCode.KCV60;
 import static com.nlmk.attestation.product.api.specification.SpecCode.KCV_PLUS_10;
 import static com.nlmk.attestation.product.api.specification.SpecCode.KCV_PLUS_20;
 import static com.nlmk.attestation.product.api.specification.SpecCode.LAYER_OPENING_WIDTH;
@@ -332,6 +338,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.SNAKE_WIDE
 import static com.nlmk.attestation.product.api.specification.SpecCode.SP;
 import static com.nlmk.attestation.product.api.specification.SpecCode.START_DATE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.STEEL_MARK;
+import static com.nlmk.attestation.product.api.specification.SpecCode.STEEL_MARK_PRODUCT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.STRENGTH_CLASS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.STRENGTH_N90;
 import static com.nlmk.attestation.product.api.specification.SpecCode.SULPHIDES;
@@ -825,6 +832,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
                 .pr_kcu_0(converter.getLimitSpecValue(specs, KCU0))
                 .pr_kcv_0(converter.getLimitSpecValue(specs, KCV0))
+                .pr_kcv_5(converter.getLimitSpecValue(specs, KCV5))
                 .pr_kcv_10(converter.getLimitSpecValue(specs, KCV10))
                 .pr_kcv10(converter.getLimitSpecValue(specs, KCV_PLUS_10))
                 .pr_kcv_15(converter.getLimitSpecValue(specs, KCV15))
@@ -838,6 +846,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .pr_kcv_40(converter.getLimitSpecValue(specs, KCV40))
                 .pr_kcu_50(converter.getLimitSpecValue(specs, KCU50))
                 .pr_kcu_60(converter.getLimitSpecValue(specs, KCU60))
+                .pr_kcv_60(converter.getLimitSpecValue(specs, KCV60))
                 .pr_kcu_70(converter.getLimitSpecValue(specs, KCU70))
                 .pr_kcu_mech_old(converter.getLimitSpecValue(specs, IMPACT_STRENGTH_AGING))
 
@@ -897,6 +906,9 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .uglov_tr(converter.getStringSpecValue(specs, ANGLE_CRACKS))
                 .pr_bake_hardening(converter.getStringSpecValue(specs, BAKE_HARDENING))
                 .pr_annotation(converter.getStringSpecValue(specs, NOTE))
+                .fraction_ksv_40_dvs(converter.getStringSpecValue(specs, FRACTION_KSV_40_DVS))
+                .fraction_ksv_60_dvs(converter.getStringSpecValue(specs, FRACTION_KSV_60_DVS))
+                .fraction_ksv_20_dvs(converter.getStringSpecValue(specs, FRACTION_KSV_20_DVS))
                 .build();
     }
 
@@ -1091,6 +1103,12 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .standTolLength(converter.getStringSpecValue(specs, LENGTH_TOLERANCE_STANDART))
                 .standTolEvenness(converter.getStringSpecValue(specs, EVENNESS_TOLERANCE_STANDART))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .prCode(converter.getStringSpecValue(specs, DELIVERY_TYPE))
+                .prProdMark(converter.getStringSpecValue(specs, STEEL_MARK_PRODUCT))
+                .prFormSap(converter.getLimitSpecValue(specs, FORM_SAP))
+                .prThickUncoat(converter.getLimitSpecValue(specs, THICKNESS_PRODUCTS))
+                .rollingThickAccuracy(converter.getStringSpecValue(specs, MANUFACTURING_PRECISION_BY_THICKNESS))
+                .prWidthGood(converter.getLimitSpecValue(specs, WIDTH_PRODUCT))
                 .build();
     }
 
