@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IntegralParamsMessageRepository extends JpaRepository<IntegralParamsMessage, Long> {
 
+    void deleteByPrimeId(String primeId);
 }
