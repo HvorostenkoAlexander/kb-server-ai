@@ -419,6 +419,21 @@
                                         ],
                                         "doc": "Максимально допустимое значение",
                                         "default": null
+                                      },
+                                      {
+                                        "name": "listAccValues",
+                                        "type": [
+                                          "null",
+                                          {
+                                            "type": "array",
+                                            "items": {
+                                              "name": "value",
+                                              "type": "string",
+                                              "doc": "Допустимое значение"
+                                            }
+                                          }
+                                        ],
+                                        "default": null
                                       }
                                     ]
                                   }

@@ -9,6 +9,7 @@ import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
 import nlmk.apcs.verification.results.cgp.v0.AsapResponse;
 import nlmk.apcs.verification.results.cgp.v0.Comparison;
 import nlmk.apcs.verification.results.cgp.v0.EnumOp;
+import nlmk.apcs.verification.results.cgp.v0.Norms;
 import nlmk.apcs.verification.results.cgp.v0.RecordAddProperties;
 import nlmk.apcs.verification.results.cgp.v0.RecordAnalyzes;
 import nlmk.apcs.verification.results.cgp.v0.RecordData;
@@ -158,7 +159,9 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                         .setProtDate(source.getProtDate())
                         .setProtNum(source.getProtNum())
                         .setTestTypeRequestId(source.getTestTypeRequestId())
-                        .setQualityIndicators(prepareQualityIndicatorsList(source.getQualityIndicators(), attestations))
+                        .setQualityIndicators(
+                                prepareQualityIndicatorsList(source.getQualityIndicators(), attestations)
+                        )
                         .build();
                 analyzes.add(analyze);
             }
@@ -173,6 +176,9 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     ) {
         final var indicators = new ArrayList<nlmk.apcs.verification.results.cgp.v0.RecordQualityIndicators>();
         for (var source : sourceIndicators) {
+            var attestation = attestations.stream()
+                    .filter(attestationDto -> attestationDto.getCode().equals(source.getAttrCode()))
+                    .findFirst();
             var indicator = RecordQualityIndicators.newBuilder()
                     .setAttrId(source.getAttrId())
                     .setAttrCode(source.getAttrCode())
@@ -182,16 +188,30 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                     .setValue(source.getValue())
                     .setMeasure(mapMeasure(source.getMeasure()))
                     .setAddProperties(prepareAddPropertiesList(source.getAddProperties()))
-                    .setAsapResponse(prepareAsapResponse(attestations))
+                    .setAsapResponse(
+                            attestation.map(this::prepareAsapResponse).orElse(null)
+                    )
                     .build();
             indicators.add(indicator);
         }
         return indicators;
     }
 
-    private AsapResponse prepareAsapResponse(List<AttestationDto> attestations) {
-
-        return null;
+    private AsapResponse prepareAsapResponse(AttestationDto attestation) {
+        return AsapResponse.newBuilder()
+                .setMismatch(attestation.getStatus().getValue())
+                .setNote(attestation.getComment())
+                .setNorms(Norms.newBuilder()
+                        .setValueMin(attestation.getMin().toString())
+                        .setValueMax(attestation.getMax().toString())
+                        .setListAccValues(
+                                Objects.isNull(attestation.getEqual())
+                                ? null
+                                : List.of(attestation.getEqual())
+                        )
+                        .build()
+                )
+                .build();
     }
 
     private List<RecordAddProperties> prepareAddPropertiesList(List<nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordAddProperties> addPropertiesList) {
