@@ -21,7 +21,6 @@ import nlmk.apcs.verification.results.cgp.v0.RecordQualityIndicators;
 import nlmk.apcs.verification.results.cgp.v0.RecordSys;
 import nlmk.apcs.verification.results.cgp.v0.VerificationResultsCgp;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.Relation;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
@@ -184,7 +183,11 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                     .setAttrCode(source.getAttrCode())
                     .setAttrName(source.getAttrName())
                     .setDataTypePhysical(source.getDataTypePhysical())
-                    .setComparison(relationToComparison(source.getRelation()))
+                    .setComparison(
+                            source.getComparison() != null
+                            ? Comparison.valueOf(source.getComparison().name())
+                            : null
+                    )
                     .setValue(source.getValue())
                     .setMeasure(mapMeasure(source.getMeasure()))
                     .setAddProperties(prepareAddPropertiesList(source.getAddProperties()))
@@ -223,7 +226,11 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                         .setAttrCode(source.getAttrCode())
                         .setAttrName(source.getAttrName())
                         .setDataTypePhysical(source.getDataTypePhysical())
-                        .setComparison(relationToComparison(source.getRelation()))
+                        .setComparison(
+                                source.getComparison() != null
+                                ? Comparison.valueOf(source.getComparison().name())
+                                : null
+                        )
                         .setValue(source.getValue())
                         .setMeasure(mapMeasure(source.getMeasure()))
                         .build();
@@ -240,15 +247,6 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                     .setMeasureId(recordMeasure.getMeasureId())
                     .setMeasureName(recordMeasure.getMeasureName())
                     .build();
-        }
-        return null;
-    }
-
-    private Comparison relationToComparison(Relation relation) {
-        for (var comp : Comparison.values()) {
-            if (comp.name().equals(relation.name())) {
-                return comp;
-            }
         }
         return null;
     }
