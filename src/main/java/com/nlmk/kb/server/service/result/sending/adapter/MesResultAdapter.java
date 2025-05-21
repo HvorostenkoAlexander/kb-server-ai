@@ -74,11 +74,11 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         final var primeId = request.getPrimeID();
 
         // В ответе MES требуется отправлять данные Sys, Metadata
-        final var ccmMessageSource = sourceRepository.findByRequestId(request.getId());
+        final var mesMessageSource = sourceRepository.findByRequestId(request.getId());
         AsapAnalysisRequestVer1 sourceRequest = null;
-        if (ccmMessageSource.isPresent()) {
+        if (mesMessageSource.isPresent()) {
             try {
-                sourceRequest = objectMapper.readValue(ccmMessageSource.get().getMessageSource(), AsapAnalysisRequestVer1.class);
+                sourceRequest = objectMapper.readValue(mesMessageSource.get().getMessageSource(), AsapAnalysisRequestVer1.class);
             } catch (Exception e) {
                 throw new AttestationResultSenderException("adapt, ошибка конвертации sourceRequest");
             }
