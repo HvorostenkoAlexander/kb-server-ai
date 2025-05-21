@@ -25,7 +25,6 @@ public class MesPgpMessageAdapterImpl implements MesMessageAdapter<AsapAnalysisR
                             int offset) {
 
         final var attestationRequest = adapter.adapt(requestMessage);
-        //final var ts = new Date();
 
         final var mesMessageBuilder = MesMessage.builder()
                 .partition(partition)
