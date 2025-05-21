@@ -383,7 +383,16 @@
                               "name": "AsapResponse",
                               "fields": [
                                 {
-                                  "name": "mismatch",
+                                  "name": "apcsAttestationResultId",
+                                  "type": [
+                                    "null",
+                                    "string"
+                                  ],
+                                  "doc": "Код результата аттестации АСАП",
+                                  "default": null
+                                },
+                                {
+                                  "name": "apcsAttestationResultCode",
                                   "type": "int",
                                   "doc": "Код результата аттестации АСАП"
                                 },

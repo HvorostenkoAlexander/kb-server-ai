@@ -202,7 +202,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
 
     private AsapResponse prepareAsapResponse(AttestationDto attestation) {
         return AsapResponse.newBuilder()
-                .setMismatch(attestation.getStatus().getValue())
+                .setApcsAttestationResultCode(attestation.getStatus().getValue())
                 .setNote(attestation.getComment())
                 .setNorms(Norms.newBuilder()
                         .setValueMin(attestation.getMin().toString())
