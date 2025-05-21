@@ -94,6 +94,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         return Pk.builder()
                 .id(AdapterUtils.sequenceToString(recordPk.getMetalUnitId()))
+                .systemCode("MES")
                 .build();
     }
 
