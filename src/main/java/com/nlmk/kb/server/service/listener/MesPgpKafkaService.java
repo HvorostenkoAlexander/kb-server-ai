@@ -9,8 +9,10 @@ import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.service.mes.MesCommonService;
 import com.nlmk.kb.server.service.mes.MesMessageAdapter;
 import com.nlmk.kb.server.service.mes.MesMessageService;
+import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.apcs.verification.results.cgp.v0.VerificationResultsCgp;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v0.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,15 +40,18 @@ public class MesPgpKafkaService {
     private final MesCommonService mesCommonService;
     private final MesMessageAdapter<AsapAnalysisRequestVer0> mesMessageAdapter;
     private final MesMessageService mesMessageService;
+    private final AttestationResultSender attestationResultSender;
 
     public MesPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                                 MesCommonService mesCommonService,
                                 MesMessageAdapter<AsapAnalysisRequestVer0> mesMessageAdapter,
+                                AttestationResultSender attestationResultSender,
                                 MesMessageService mesMessageService) {
         this.sleepTime = sleepTime;
         this.mesCommonService = mesCommonService;
         this.mesMessageAdapter = mesMessageAdapter;
         this.mesMessageService = mesMessageService;
+        this.attestationResultSender = attestationResultSender;
     }
 
     @KafkaListener(containerFactory = "mesPgpKafkaListenerContainerFactory",
@@ -87,8 +92,7 @@ public class MesPgpKafkaService {
                     mesMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString(), LocalDateTime.now());
                 }
                 // отправка ответа с результатами аттестации
-                // TODO реализовать отправку результатов
-                // attestationResultSender.send(attResult.get(), VerificationResults.class);
+                attestationResultSender.send(attResult.get(), VerificationResultsCgp.class);
             }
 
             ack.acknowledge();

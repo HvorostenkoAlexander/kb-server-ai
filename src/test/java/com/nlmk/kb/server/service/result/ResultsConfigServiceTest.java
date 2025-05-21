@@ -49,7 +49,7 @@ class ResultsConfigServiceTest {
     @Test
     void findByPageTest() {
         final var result = service.findPyPage(PageRequest.of(0, 10));
-        assertThat(result.stream().toArray().length).isEqualTo(5 + 1);
+        assertThat(result.stream().toArray().length).isEqualTo(6 + 1);
     }
 
     @Test
