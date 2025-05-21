@@ -20,7 +20,7 @@ import nlmk.apcs.verification.results.cgp.v0.RecordPk;
 import nlmk.apcs.verification.results.cgp.v0.RecordQualityIndicators;
 import nlmk.apcs.verification.results.cgp.v0.RecordSys;
 import nlmk.apcs.verification.results.cgp.v0.VerificationResultsCgp;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v1.AsapAnalysisRequestVer1;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
@@ -75,10 +75,10 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
 
         // В ответе MES требуется отправлять данные Sys, Metadata
         final var ccmMessageSource = sourceRepository.findByRequestId(request.getId());
-        AsapAnalysisRequestVer0 sourceRequest = null;
+        AsapAnalysisRequestVer1 sourceRequest = null;
         if (ccmMessageSource.isPresent()) {
             try {
-                sourceRequest = objectMapper.readValue(ccmMessageSource.get().getMessageSource(), AsapAnalysisRequestVer0.class);
+                sourceRequest = objectMapper.readValue(ccmMessageSource.get().getMessageSource(), AsapAnalysisRequestVer1.class);
             } catch (Exception e) {
                 throw new AttestationResultSenderException("adapt, ошибка конвертации sourceRequest");
             }
@@ -130,7 +130,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .build();
     }
 
-    private List<RecordMarking> prepareMarkingList(AsapAnalysisRequestVer0 sourceRequest) {
+    private List<RecordMarking> prepareMarkingList(AsapAnalysisRequestVer1 sourceRequest) {
         if (sourceRequest != null && sourceRequest.getData() != null && !sourceRequest.getData().getMarking().isEmpty()) {
             final var markings = new ArrayList<RecordMarking>();
             for (var source : sourceRequest.getData().getMarking()) {
@@ -148,7 +148,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         return List.of();
     }
 
-    private List<RecordAnalyzes> prepareAnalyzesList(AsapAnalysisRequestVer0 sourceRequest, List<AttestationDto> attestations) {
+    private List<RecordAnalyzes> prepareAnalyzesList(AsapAnalysisRequestVer1 sourceRequest, List<AttestationDto> attestations) {
         if (sourceRequest != null && sourceRequest.getData() != null && !sourceRequest.getData().getAnalyzes().isEmpty()) {
             final var analyzes = new ArrayList<RecordAnalyzes>();
             for (var source : sourceRequest.getData().getAnalyzes()) {
@@ -170,7 +170,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<nlmk.apcs.verification.results.cgp.v0.RecordQualityIndicators> prepareQualityIndicatorsList(
-            List<nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordQualityIndicators> sourceIndicators,
+            List<nlmk.mes.cgp.asap.adapter.analysis.request.v1.RecordQualityIndicators> sourceIndicators,
             List<AttestationDto> attestations
     ) {
         final var indicators = new ArrayList<nlmk.apcs.verification.results.cgp.v0.RecordQualityIndicators>();
@@ -217,7 +217,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .build();
     }
 
-    private List<RecordAddProperties> prepareAddPropertiesList(List<nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordAddProperties> addPropertiesList) {
+    private List<RecordAddProperties> prepareAddPropertiesList(List<nlmk.mes.cgp.asap.adapter.analysis.request.v1.RecordAddProperties> addPropertiesList) {
         if (!addPropertiesList.isEmpty()) {
             final var properties = new ArrayList<RecordAddProperties>();
             for (var source : addPropertiesList) {
@@ -241,7 +241,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         return List.of();
     }
 
-    private RecordMeasure mapMeasure(nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordMeasure recordMeasure) {
+    private RecordMeasure mapMeasure(nlmk.mes.cgp.asap.adapter.analysis.request.v1.RecordMeasure recordMeasure) {
         if (recordMeasure != null) {
             return RecordMeasure.newBuilder()
                     .setMeasureId(recordMeasure.getMeasureId())

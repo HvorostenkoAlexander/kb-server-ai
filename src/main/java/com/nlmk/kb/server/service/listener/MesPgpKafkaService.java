@@ -13,8 +13,8 @@ import com.nlmk.kb.server.service.result.sending.AttestationResultSender;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.apcs.verification.results.cgp.v0.VerificationResultsCgp;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.EnumOp;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v1.AsapAnalysisRequestVer1;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v1.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -38,13 +38,13 @@ public class MesPgpKafkaService {
 
     private final long sleepTime;
     private final MesCommonService mesCommonService;
-    private final MesMessageAdapter<AsapAnalysisRequestVer0> mesMessageAdapter;
+    private final MesMessageAdapter<AsapAnalysisRequestVer1> mesMessageAdapter;
     private final MesMessageService mesMessageService;
     private final AttestationResultSender attestationResultSender;
 
     public MesPgpKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                                 MesCommonService mesCommonService,
-                                MesMessageAdapter<AsapAnalysisRequestVer0> mesMessageAdapter,
+                                MesMessageAdapter<AsapAnalysisRequestVer1> mesMessageAdapter,
                                 AttestationResultSender attestationResultSender,
                                 MesMessageService mesMessageService) {
         this.sleepTime = sleepTime;
@@ -63,7 +63,7 @@ public class MesPgpKafkaService {
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload AsapAnalysisRequestVer0 request,
+                                  @Payload AsapAnalysisRequestVer1 request,
                                   Acknowledgment ack) {
 
         log.info("receiveMessageReq (MES PGP): topic [{}], partition [{}], offset [{}], key [{}], timestamp [{}], request.ts [{}], request.op [{}], request.pk.metalUnitId [{}]",
