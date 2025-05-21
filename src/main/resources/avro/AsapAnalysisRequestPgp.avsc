@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "AsapAnalysisRequestVer0",
-  "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v0",
+  "name": "AsapAnalysisRequestVer1",
+  "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v1",
   "doc": "Передача данных для аттестации из сервиса-адаптера в АСАП.",
   "fields": [
     {
@@ -208,10 +208,10 @@
                         "doc": "Значение атрибута маркировки"
                       }
                     ]
-                  },
-                  "default": null
+                  }
                 }
-              ]
+              ],
+              "default": null
             },
             {
               "name": "analyzes",
@@ -326,7 +326,8 @@
                                     }
                                   ]
                                 }
-                              ]
+                              ],
+                              "default": null
                             },
                             {
                               "name": "addProperties",
@@ -373,13 +374,14 @@
                                         "type": [
                                           "null",
                                           "RecordMeasure"
-                                        ]
+                                        ],
+                                        "default": null
                                       }
                                     ]
-                                  },
-                                  "default": null
+                                  }
                                 }
-                              ]
+                              ],
+                              "default": null
                             }
                           ]
                         }
@@ -392,7 +394,8 @@
           ]
         }
       ],
-      "doc": "Список передаваемых данных"
+      "doc": "Список передаваемых данных",
+      "default": null
     }
   ]
 }
