@@ -120,9 +120,13 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
 
         final var results = adapter.get().adapt(product, isNew);
 
+        if (Objects.isNull(results)) {
+            throw new AttestationResultSenderException("Results не определены");
+        }
+
         var pk = adapter.get().getPk(results);
 
-        if (Objects.isNull(results) || Objects.isNull(pk)) {
+        if (Objects.isNull(pk)) {
             throw new AttestationResultSenderException("PK сообщения не найден");
         }
 
