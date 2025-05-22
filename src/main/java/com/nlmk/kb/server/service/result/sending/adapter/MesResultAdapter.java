@@ -72,7 +72,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                     .setSystemCode(null)
                     .build();
         } catch (Exception e) {
-            throw new AttestationResultSenderException("getPk, PK сообщения не найден");
+            throw new AttestationResultSenderException("getPk, PK сообщения не найден, ошибка: " + e.getMessage());
         }
     }
 
