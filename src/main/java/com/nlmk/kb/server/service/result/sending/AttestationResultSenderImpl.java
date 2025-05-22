@@ -126,7 +126,12 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
             throw new AttestationResultSenderException("PK сообщения не найден");
         }
 
-        final var key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
+        String key;
+        if (pk.getSystemCode() != null) {
+            key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
+        } else {
+            key = String.valueOf(pk.getId());
+        }
 
         resultSender.send(results, config.getTopic(), key);
     }

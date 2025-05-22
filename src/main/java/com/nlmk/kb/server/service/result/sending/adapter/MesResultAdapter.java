@@ -66,7 +66,11 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     @Override
     public nlmk.l3.apcs.RecordPk getPk(SpecificRecordBase recordBase) {
         try {
-            return ((nlmk.l3.apcs.VerificationResultsCgp) recordBase).getPk();
+            var apcsPk = ((VerificationResultsCgp) recordBase).getPk();
+            return nlmk.l3.apcs.RecordPk.newBuilder()
+                    .setId(apcsPk.getId())
+                    .setSystemCode(null)
+                    .build();
         } catch (Exception e) {
             throw new AttestationResultSenderException("getPk, PK сообщения не найден");
         }
@@ -283,12 +287,4 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
         return VerificationResultsCgp.class;
     }
 
-    @Override
-    public nlmk.apcs.verification.results.cgp.v0.RecordPk getMesPk(SpecificRecordBase recordBase) {
-        try {
-            return ((VerificationResultsCgp) recordBase).getPk();
-        } catch (Exception e) {
-            throw new AttestationResultSenderException("getPk, PK сообщения не найден");
-        }
-    }
 }

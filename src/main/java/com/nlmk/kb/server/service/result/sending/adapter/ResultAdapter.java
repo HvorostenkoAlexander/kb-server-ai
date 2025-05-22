@@ -25,16 +25,7 @@ public interface ResultAdapter<T extends SpecificRecordBase> {
     /**
      * Получение первичного ключа
      */
-    default RecordPk getPk(SpecificRecordBase recordBase) {
-        return null;
-    }
-
-    /**
-     * Получение первичного ключа системы MES
-     */
-    default nlmk.apcs.verification.results.cgp.v0.RecordPk getMesPk(SpecificRecordBase recordBase) {
-        return null;
-    }
+    RecordPk getPk(SpecificRecordBase recordBase);
 
     default void checkProduct(ProductDto product) {
         Assert.notNull(product, "product не может быть null");
