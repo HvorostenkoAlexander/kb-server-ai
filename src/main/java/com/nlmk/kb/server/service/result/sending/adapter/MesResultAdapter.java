@@ -3,6 +3,7 @@ package com.nlmk.kb.server.service.result.sending.adapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.ProductDto;
+import com.nlmk.attestation.product.api.Status;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.repository.MesMessageSourceRepository;
 import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
@@ -192,7 +193,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                     .setMeasure(mapMeasure(source.getMeasure()))
                     .setAddProperties(prepareAddPropertiesList(source.getAddProperties()))
                     .setAsapResponse(
-                            attestation.map(this::prepareAsapResponse).orElse(null)
+                            attestation.map(this::prepareAsapResponse).orElse(prepareNotAttestedAsapResponse())
                     )
                     .build();
             indicators.add(indicator);
@@ -209,11 +210,23 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                         .setValueMax(attestation.getMax().toString())
                         .setListAccValues(
                                 Objects.isNull(attestation.getEqual())
-                                ? null
+                                ? List.of()
                                 : List.of(attestation.getEqual())
                         )
                         .build()
                 )
+                .build();
+    }
+
+    private AsapResponse prepareNotAttestedAsapResponse() {
+        return AsapResponse.newBuilder()
+                .setApcsAttestationResultCode(Status.NO_NEED_ATTESTATION.getValue())
+                .setNote("Алгоритм не реализован в АСАП")
+                .setNorms(Norms.newBuilder()
+                        .setValueMin(null)
+                        .setValueMax(null)
+                        .setListAccValues(List.of())
+                        .build())
                 .build();
     }
 
