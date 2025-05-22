@@ -64,6 +64,15 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     @Override
+    public nlmk.l3.apcs.RecordPk getPk(SpecificRecordBase recordBase) {
+        try {
+            return ((nlmk.l3.apcs.VerificationResultsCgp) recordBase).getPk();
+        } catch (Exception e) {
+            throw new AttestationResultSenderException("getPk, PK сообщения не найден");
+        }
+    }
+
+    @Override
     public VerificationResultsCgp adapt(ProductDto product, boolean isNew) {
 
         checkProduct(product);
