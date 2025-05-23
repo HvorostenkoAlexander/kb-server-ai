@@ -69,7 +69,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
             var apcsPk = ((VerificationResultsCgp) recordBase).getPk();
             return nlmk.l3.apcs.RecordPk.newBuilder()
                     .setId(apcsPk.getId())
-                    .setSystemCode(null)
+                    .setSystemCode("MES")
                     .build();
         } catch (Exception e) {
             throw new AttestationResultSenderException("getPk, PK сообщения не найден, ошибка: " + e.getMessage());
