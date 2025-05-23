@@ -150,13 +150,21 @@
           },
           {
             "name": "orderNum",
-            "type": "long",
-            "doc": "Номер заказа"
+            "type": [
+              "null",
+              "long"
+            ],
+            "doc": "Номер заказа",
+            "default": null
           },
           {
             "name": "orderPosition",
-            "type": "int",
-            "doc": "Номер позиции заказа"
+            "type": [
+              "null",
+              "int"
+            ],
+            "doc": "Номер позиции заказа",
+            "default": null
           },
           {
             "name": "metalUnitId",
