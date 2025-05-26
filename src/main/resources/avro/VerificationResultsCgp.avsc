@@ -1,12 +1,15 @@
 {
-  "namespace": "nlmk.apcs.verification.results.cgp.v0",
   "type": "record",
-  "doc": "Передача результатов аттестации APCS. Version: [1]",
   "name": "VerificationResultsCgp",
+  "namespace": "nlmk.apcs.verification.results.cgp.v0",
+  "doc": "Передача результатов аттестации APCS. Version: [1]",
   "fields": [
     {
       "name": "ts",
-      "type": "string",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
       "doc": "Дата и время передачи данных в формате YYYY-MM-DDThh:mm:ss[.SSS]±hh:mm)"
     },
     {
@@ -51,7 +54,10 @@
             },
             {
               "name": "traceID",
-              "type": "string",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              },
               "doc": "Сквозной Trace ID (обычно UUID)",
               "default": ""
             }
@@ -83,7 +89,10 @@
             },
             {
               "name": "kafkaKey",
-              "type": "string",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              },
               "doc": "Ключ в Kafka",
               "default": ""
             },
@@ -101,13 +110,19 @@
             },
             {
               "name": "kafkaTimestamp",
-              "type": "string",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              },
               "doc": "Время сообщения в Kafka",
               "default": ""
             },
             {
               "name": "kafkaTopic",
-              "type": "string",
+              "type": {
+                "type": "string",
+                "avro.java.string": "String"
+              },
               "doc": "Имя топика",
               "default": ""
             },
@@ -117,7 +132,11 @@
                 "null",
                 {
                   "type": "map",
-                  "values": "string"
+                  "values": {
+                    "type": "string",
+                    "avro.java.string": "String"
+                  },
+                  "avro.java.string": "String"
                 }
               ],
               "doc": "kafkaHeaders",
@@ -139,38 +158,39 @@
             "name": "workshopId",
             "type": [
               "null",
-              "string"
+              {
+                "type": "string",
+                "avro.java.string": "String"
+              }
             ],
             "doc": "Guid цеха"
           },
           {
             "name": "workshopName",
-            "type": "string",
+            "type": {
+              "type": "string",
+              "avro.java.string": "String"
+            },
             "doc": "Наименование цеха"
           },
           {
             "name": "orderNum",
-            "type": [
-              "null",
-              "long"
-            ],
-            "doc": "Номер заказа",
-            "default": null
+            "type": "long",
+            "doc": "Номер заказа"
           },
           {
             "name": "orderPosition",
-            "type": [
-              "null",
-              "int"
-            ],
-            "doc": "Номер позиции заказа",
-            "default": null
+            "type": "int",
+            "doc": "Номер позиции заказа"
           },
           {
             "name": "metalUnitId",
             "type": [
               "null",
-              "string"
+              {
+                "type": "string",
+                "avro.java.string": "String"
+              }
             ],
             "doc": "Идентификатор единицы складского учета"
           },
@@ -192,22 +212,34 @@
                     },
                     {
                       "name": "attrId",
-                      "type": "string",
+                      "type": {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      },
                       "doc": "Guid атрибута маркировки"
                     },
                     {
                       "name": "attrName",
-                      "type": "string",
+                      "type": {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      },
                       "doc": "Наименование атрибута маркировки"
                     },
                     {
                       "name": "dataTypePhysical",
-                      "type": "string",
+                      "type": {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      },
                       "doc": "Константа обозначения физического типа AVRO"
                     },
                     {
                       "name": "value",
-                      "type": "string",
+                      "type": {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      },
                       "doc": "Значение атрибута маркировки"
                     }
                   ]
@@ -227,19 +259,28 @@
                 "fields": [
                   {
                     "name": "groupId",
-                    "type": "string",
+                    "type": {
+                      "type": "string",
+                      "avro.java.string": "String"
+                    },
                     "doc": "Guid группы качественных характеристик"
                   },
                   {
                     "name": "groupName",
-                    "type": "string",
+                    "type": {
+                      "type": "string",
+                      "avro.java.string": "String"
+                    },
                     "doc": "Полное наименование группы качественных характеристик"
                   },
                   {
                     "name": "protNum",
                     "type": [
                       "null",
-                      "string"
+                      {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      }
                     ],
                     "doc": "Номер протокола",
                     "default": null
@@ -248,7 +289,10 @@
                     "name": "protDate",
                     "type": [
                       "null",
-                      "string"
+                      {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      }
                     ],
                     "doc": "Дата формирования протокола",
                     "default": null
@@ -257,7 +301,10 @@
                     "name": "testTypeRequestId",
                     "type": [
                       "null",
-                      "string"
+                      {
+                        "type": "string",
+                        "avro.java.string": "String"
+                      }
                     ],
                     "doc": "Код типа запроса на испытания",
                     "default": null
@@ -273,7 +320,10 @@
                         "fields": [
                           {
                             "name": "attrId",
-                            "type": "string",
+                            "type": {
+                              "type": "string",
+                              "avro.java.string": "String"
+                            },
                             "doc": "Guid качественной характеристики"
                           },
                           {
@@ -283,12 +333,18 @@
                           },
                           {
                             "name": "attrName",
-                            "type": "string",
+                            "type": {
+                              "type": "string",
+                              "avro.java.string": "String"
+                            },
                             "doc": "Наименование качественной характеристики"
                           },
                           {
                             "name": "dataTypePhysical",
-                            "type": "string",
+                            "type": {
+                              "type": "string",
+                              "avro.java.string": "String"
+                            },
                             "doc": "Константа обозначения физического типа AVRO"
                           },
                           {
@@ -306,7 +362,10 @@
                           },
                           {
                             "name": "value",
-                            "type": "string",
+                            "type": {
+                              "type": "string",
+                              "avro.java.string": "String"
+                            },
                             "doc": "Значение качественной характеристики"
                           },
                           {
@@ -319,12 +378,18 @@
                                 "fields": [
                                   {
                                     "name": "measureId",
-                                    "type": "string",
+                                    "type": {
+                                      "type": "string",
+                                      "avro.java.string": "String"
+                                    },
                                     "doc": "Guid единицы измерения"
                                   },
                                   {
                                     "name": "measureName",
-                                    "type": "string",
+                                    "type": {
+                                      "type": "string",
+                                      "avro.java.string": "String"
+                                    },
                                     "doc": "Наименование единицы измерения"
                                   }
                                 ]
@@ -344,7 +409,10 @@
                                   "fields": [
                                     {
                                       "name": "attrId",
-                                      "type": "string",
+                                      "type": {
+                                        "type": "string",
+                                        "avro.java.string": "String"
+                                      },
                                       "doc": "Guid качественной характеристики"
                                     },
                                     {
@@ -354,12 +422,18 @@
                                     },
                                     {
                                       "name": "attrName",
-                                      "type": "string",
+                                      "type": {
+                                        "type": "string",
+                                        "avro.java.string": "String"
+                                      },
                                       "doc": "Наименование качественной характеристики"
                                     },
                                     {
                                       "name": "dataTypePhysical",
-                                      "type": "string",
+                                      "type": {
+                                        "type": "string",
+                                        "avro.java.string": "String"
+                                      },
                                       "doc": "Константа обозначения физического типа AVRO"
                                     },
                                     {
@@ -368,7 +442,10 @@
                                     },
                                     {
                                       "name": "value",
-                                      "type": "string",
+                                      "type": {
+                                        "type": "string",
+                                        "avro.java.string": "String"
+                                      },
                                       "doc": "Значение качественной характеристики"
                                     },
                                     {
@@ -394,7 +471,10 @@
                                   "name": "apcsAttestationResultId",
                                   "type": [
                                     "null",
-                                    "string"
+                                    {
+                                      "type": "string",
+                                      "avro.java.string": "String"
+                                    }
                                   ],
                                   "doc": "Код результата аттестации АСАП",
                                   "default": null
@@ -408,7 +488,10 @@
                                   "name": "note",
                                   "type": [
                                     "null",
-                                    "string"
+                                    {
+                                      "type": "string",
+                                      "avro.java.string": "String"
+                                    }
                                   ],
                                   "doc": "Источник допустимых значений показателей качества",
                                   "default": null
@@ -423,7 +506,10 @@
                                         "name": "valueMin",
                                         "type": [
                                           "null",
-                                          "string"
+                                          {
+                                            "type": "string",
+                                            "avro.java.string": "String"
+                                          }
                                         ],
                                         "doc": "Минимально допустимое значение",
                                         "default": null
@@ -432,7 +518,10 @@
                                         "name": "valueMax",
                                         "type": [
                                           "null",
-                                          "string"
+                                          {
+                                            "type": "string",
+                                            "avro.java.string": "String"
+                                          }
                                         ],
                                         "doc": "Максимально допустимое значение",
                                         "default": null
@@ -444,9 +533,8 @@
                                           {
                                             "type": "array",
                                             "items": {
-                                              "name": "value",
                                               "type": "string",
-                                              "doc": "Допустимое значение"
+                                              "avro.java.string": "String"
                                             }
                                           }
                                         ],
