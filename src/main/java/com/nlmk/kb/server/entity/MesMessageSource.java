@@ -23,8 +23,11 @@ public class MesMessageSource {
     @Column(nullable = false)
     private Long requestId;
 
-    @Column(nullable = false)
+    @Column
     private String primeId;
+
+    @Column
+    private String metalUnitId;
 
     @Column(nullable = false)
     private String messageSource;
