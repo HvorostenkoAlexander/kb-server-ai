@@ -23,11 +23,11 @@ import com.nlmk.kb.server.service.client.NsiClient;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v1.AsapAnalysisRequestVer1;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v1.PkType;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v1.RecordAddProperties;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v1.RecordAnalyzes;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v1.RecordData;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.AsapAnalysisRequestVer2;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.PkType;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAddProperties;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAnalyzes;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordData;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -52,7 +52,7 @@ import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_HNUM;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAnalysisRequestVer1> {
+public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAnalysisRequestVer2> {
 
     private final CommonConverter converter;
     private final NsiClient nsiClient;
@@ -70,7 +70,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
     );
 
     @Override
-    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(AsapAnalysisRequestVer1 requestMessagePgp) {
+    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(AsapAnalysisRequestVer2 requestMessagePgp) {
         Assert.notNull(requestMessagePgp, "requestMessagePgp is null");
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");

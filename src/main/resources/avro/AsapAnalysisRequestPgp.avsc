@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "AsapAnalysisRequestVer1",
-  "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v1",
+  "name": "AsapAnalysisRequestVer2",
+  "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v2",
   "doc": "Передача данных для аттестации из сервиса-адаптера в АСАП.",
   "fields": [
     {
