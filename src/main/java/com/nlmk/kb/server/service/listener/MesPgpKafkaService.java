@@ -89,7 +89,11 @@ public class MesPgpKafkaService {
                 if (!CollectionUtils.isEmpty(attResult.get().getResult().getRequests())
                         && Objects.nonNull(attResult.get().getResult().getRequests().get(0).getId())) {
                     var resultRequest = attResult.get().getResult().getRequests().get(0);
-                    mesMessageService.saveSourceMessage(resultRequest.getId(), resultRequest.getPrimeID(), request.toString(), LocalDateTime.now());
+                    mesMessageService.saveSourceMessage(resultRequest.getId(),
+                            resultRequest.getPrimeID(),
+                            resultRequest.getMetalUnitId().toString(),
+                            request.toString(),
+                            LocalDateTime.now());
                 }
                 // отправка ответа с результатами аттестации
                 attestationResultSender.send(attResult.get(), VerificationResultsCgp.class);

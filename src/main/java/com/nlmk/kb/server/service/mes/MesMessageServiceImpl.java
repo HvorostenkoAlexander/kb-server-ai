@@ -51,10 +51,11 @@ public class MesMessageServiceImpl implements MesMessageService {
     }
 
     @Override
-    public void saveSourceMessage(Long requestId, String primeId, String mesSourceMessageString, LocalDateTime createdAt) {
+    public void saveSourceMessage(Long requestId, String primeId, String metalUnitId, String mesSourceMessageString, LocalDateTime createdAt) {
         sourceRepository.save(MesMessageSource.builder()
                 .requestId(requestId)
                 .primeId(primeId)
+                .metalUnitId(metalUnitId)
                 .messageSource(mesSourceMessageString)
                 .createdAt(createdAt)
                 .build());
