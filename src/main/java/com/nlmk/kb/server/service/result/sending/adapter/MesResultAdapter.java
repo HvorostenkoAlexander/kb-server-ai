@@ -85,7 +85,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
 
         final var request = product.getRequests().get(0);
         final var attestations = request.getAttestations();
-        final var primeId = request.getPrimeID();
+        final var metalUnitId = request.getMetalUnitId();
 
         // В ответе MES требуется отправлять данные Sys, Metadata
         final var mesMessageSource = sourceRepository.findByRequestId(request.getId());
@@ -137,7 +137,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                         .setWorkshopName(sourceRequest.getData().getWorkshopName())
                         .setOrderNum(request.getOrderNum())
                         .setOrderPosition(request.getOrderPos())
-                        .setMetalUnitId(primeId)
+                        .setMetalUnitId(metalUnitId.toString())
                         .setMarking(prepareMarkingList(sourceRequest))
                         .setAnalyzes(prepareAnalyzesList(sourceRequest, attestations))
                         .build())
