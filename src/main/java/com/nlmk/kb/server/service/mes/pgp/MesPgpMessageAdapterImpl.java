@@ -5,7 +5,7 @@ import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
 import com.nlmk.kb.server.service.mes.MesMessageAdapter;
 import com.nlmk.kb.server.util.SenderUtils;
 import lombok.RequiredArgsConstructor;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v1.AsapAnalysisRequestVer1;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.AsapAnalysisRequestVer2;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -13,12 +13,12 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class MesPgpMessageAdapterImpl implements MesMessageAdapter<AsapAnalysisRequestVer1> {
+public class MesPgpMessageAdapterImpl implements MesMessageAdapter<AsapAnalysisRequestVer2> {
 
-    private final KafkaRequestAdapter<AsapAnalysisRequestVer1> adapter;
+    private final KafkaRequestAdapter<AsapAnalysisRequestVer2> adapter;
 
     @Override
-    public MesMessage adapt(AsapAnalysisRequestVer1 requestMessage,
+    public MesMessage adapt(AsapAnalysisRequestVer2 requestMessage,
                             String topic,
                             String key,
                             int partition,
