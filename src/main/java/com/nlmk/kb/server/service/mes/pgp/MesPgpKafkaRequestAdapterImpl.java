@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_INTEGER_PARSE_EXCEPTION;
@@ -107,7 +108,9 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         var primeId = AdapterUtils.sequenceToString(pk.getMetalUnitId());
 
-        builder.primeId(primeId);
+        if (primeId != null) {
+            builder.metalUnitId(UUID.fromString(primeId));
+        }
         builder.kceh(Kceh.PGP.getValue());
         builder.orderNum(recordData.getOrderNum());
         builder.orderPos(recordData.getOrderPosition());

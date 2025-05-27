@@ -130,11 +130,13 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
             throw new AttestationResultSenderException("PK сообщения не найден");
         }
 
-        String key;
+        String key = "";
         if (pk.getSystemCode() != null) {
-            key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
-        } else {
-            key = String.valueOf(pk.getId());
+            if (!pk.getSystemCode().equals("MES")) {
+                key = String.valueOf(pk.getId());
+            } else {
+                key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
+            }
         }
 
         resultSender.send(results, config.getTopic(), key);
