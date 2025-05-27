@@ -35,7 +35,7 @@ public class MesPgpMessageAdapterImpl implements MesMessageAdapter<AsapAnalysisR
 
         if (attestationRequest.getValue().getData() != null) {
             mesMessageBuilder.metalUnitId(
-                    UUID.fromString(Objects.requireNonNull(SenderUtils.getPrimeId(attestationRequest)))
+                    UUID.fromString(String.valueOf(Objects.requireNonNull(SenderUtils.getMetalUnitId(attestationRequest))))
             );
         }
         return mesMessageBuilder.build();

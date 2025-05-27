@@ -2,6 +2,7 @@ package com.nlmk.kb.server.util;
 
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.DataPgp;
 import com.nlmk.kb.server.config.KbConstants;
 import java.util.Objects;
 import java.util.UUID;
@@ -33,6 +34,16 @@ public final class SenderUtils {
                 && Objects.nonNull(attRequest.getValue().getData())) {
 
             return AdapterUtils.getDataField(attRequest.getValue().getData()).map(DataField::getPrimeId).orElse(null);
+        }
+        return null;
+    }
+
+    public static UUID getMetalUnitId(AttestationRequest attRequest) {
+        if (Objects.nonNull(attRequest)
+                && Objects.nonNull(attRequest.getValue())
+                && Objects.nonNull(attRequest.getValue().getData())) {
+
+            return AdapterUtils.getDataPgp(attRequest.getValue().getData()).map(DataPgp::getMetalUnitId).orElse(null);
         }
         return null;
     }
