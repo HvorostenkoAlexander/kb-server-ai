@@ -120,13 +120,24 @@ public class AttestationResultSenderImpl implements AttestationResultSender {
 
         final var results = adapter.get().adapt(product, isNew);
 
+        if (Objects.isNull(results)) {
+            throw new AttestationResultSenderException("Results не определены");
+        }
+
         var pk = adapter.get().getPk(results);
 
-        if (Objects.isNull(results) || Objects.isNull(pk)) {
+        if (Objects.isNull(pk)) {
             throw new AttestationResultSenderException("PK сообщения не найден");
         }
 
-        final var key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
+        String key = "";
+        if (pk.getSystemCode() != null) {
+            if (!pk.getSystemCode().equals("MES")) {
+                key = String.valueOf(pk.getId());
+            } else {
+                key = StringUtils.joinWith("~", pk.getSystemCode(), pk.getId());
+            }
+        }
 
         resultSender.send(results, config.getTopic(), key);
     }

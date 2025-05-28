@@ -23,11 +23,11 @@ import com.nlmk.kb.server.service.client.NsiClient;
 import com.nlmk.kb.server.util.AdapterUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.AsapAnalysisRequestVer0;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.PkType;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordAddProperties;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordAnalyzes;
-import nlmk.mes.cgp.asap.adapter.analysis.request.v0.RecordData;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.AsapAnalysisRequestVer2;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.PkType;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAddProperties;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAnalyzes;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordData;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_INTEGER_PARSE_EXCEPTION;
@@ -51,10 +52,7 @@ import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_HNUM;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAnalysisRequestVer0> {
-
-
-
+public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAnalysisRequestVer2> {
 
     private final CommonConverter converter;
     private final NsiClient nsiClient;
@@ -72,7 +70,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
     );
 
     @Override
-    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(AsapAnalysisRequestVer0 requestMessagePgp) {
+    public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(AsapAnalysisRequestVer2 requestMessagePgp) {
         Assert.notNull(requestMessagePgp, "requestMessagePgp is null");
         Assert.notNull(requestMessagePgp.getTs(), "requestMessagePgp.getTs() is null");
         Assert.notNull(requestMessagePgp.getOp(), "requestMessagePgp.getOp() is null");
@@ -96,8 +94,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         }
 
         return Pk.builder()
-                .systemCode(AdapterUtils.sequenceToString(recordPk.getSystemCode()))
                 .id(AdapterUtils.sequenceToString(recordPk.getMetalUnitId()))
+                .systemCode("MES")
                 .build();
     }
 
@@ -110,7 +108,9 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         var primeId = AdapterUtils.sequenceToString(pk.getMetalUnitId());
 
-        builder.primeId(primeId);
+        if (primeId != null) {
+            builder.metalUnitId(UUID.fromString(primeId));
+        }
         builder.kceh(Kceh.PGP.getValue());
         builder.orderNum(recordData.getOrderNum());
         builder.orderPos(recordData.getOrderPosition());
@@ -188,7 +188,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
                 propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.comparison(qIndicator.getComparison().toString());
             propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
             paramsBuilder.property(propertyBuilder.build());
@@ -230,7 +230,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
                 propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.comparison(qIndicator.getComparison().toString());
             propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
             paramsBuilder.property(propertyBuilder.build());
@@ -302,7 +302,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
                 propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.comparison(qIndicator.getComparison().toString());
             propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
             paramsBuilder.property(propertyBuilder.build());
@@ -367,7 +367,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
                 propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.relation(qIndicator.getRelation().toString());
+            propertyBuilder.comparison(qIndicator.getComparison().toString());
             propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
             paramsBuilder.property(propertyBuilder.build());
@@ -403,7 +403,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 addPropertyBuilder.measureId(prop.getMeasure().getMeasureId().toString());
                 addPropertyBuilder.measureName(prop.getMeasure().getMeasureName().toString());
             }
-            addPropertyBuilder.relation(prop.getRelation().toString());
+            addPropertyBuilder.comparison(prop.getComparison().toString());
             addPropertyBuilder.dataTypePhysical(prop.getDataTypePhysical().toString());
 
             additionalProperties.add(addPropertyBuilder.build());

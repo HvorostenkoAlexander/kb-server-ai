@@ -1,14 +1,13 @@
 package com.nlmk.kb.server.util;
 
-import com.nlmk.attestation.product.api.SadimMessageDto;
 import com.nlmk.attestation.product.api.pam.AttestationRequest;
 import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.DataPgp;
 import com.nlmk.kb.server.config.KbConstants;
-import org.slf4j.MDC;
-import org.springframework.http.HttpHeaders;
-
 import java.util.Objects;
 import java.util.UUID;
+import org.slf4j.MDC;
+import org.springframework.http.HttpHeaders;
 
 public final class SenderUtils {
 
@@ -39,11 +38,13 @@ public final class SenderUtils {
         return null;
     }
 
-    public static String getPrimeId(SadimMessageDto dto) {
-        if (Objects.isNull(dto) || Objects.isNull(dto.getParam())) {
-            return null;
-        }
-        return dto.getParam().getPrimeId();
-    }
+    public static UUID getMetalUnitId(AttestationRequest attRequest) {
+        if (Objects.nonNull(attRequest)
+                && Objects.nonNull(attRequest.getValue())
+                && Objects.nonNull(attRequest.getValue().getData())) {
 
+            return AdapterUtils.getDataPgp(attRequest.getValue().getData()).map(DataPgp::getMetalUnitId).orElse(null);
+        }
+        return null;
+    }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.Status;
 import com.nlmk.attestation.product.api.pam.DataField;
+import com.nlmk.attestation.product.api.pam.DataPgp;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 
@@ -120,6 +121,17 @@ public final class AdapterUtils {
     public static Optional<DataField> getDataField(Object data) {
         try {
             return Optional.ofNullable(OBJECT_MAPPER.convertValue(data, DataField.class));
+        } catch (IllegalArgumentException ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Конвертация поля к типу DataPgp
+     */
+    public static Optional<DataPgp> getDataPgp(Object data) {
+        try {
+            return Optional.ofNullable(OBJECT_MAPPER.convertValue(data, DataPgp.class));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

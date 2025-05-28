@@ -92,7 +92,7 @@ public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                                         .collect(Collectors.toList())
                 )
                 .kceh(recordData.getWorkshopNum())
-                .orderNum(recordData.getOrderNum())
+                .orderNum(Long.valueOf(recordData.getOrderNum()))
                 .orderPos(recordData.getOrderPos())
                 .attestationPoint(recordData.getAttestationPoint())
                 .specifications(
