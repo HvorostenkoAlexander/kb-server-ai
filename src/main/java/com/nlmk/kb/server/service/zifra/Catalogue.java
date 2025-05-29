@@ -26,7 +26,8 @@ public enum Catalogue {
     SP_PLACE_TYPE,
     SP_MAPPING_ATTRIBUTE_CCM3T,
     SP_TEST_TYPE_REQUEST,
-    SP_DISTRIBUTION_TYPE;
+    SP_DISTRIBUTION_TYPE,
+    SP_APCS_ATTESTATION_RESULT;
 
     private final String nsiDictMdmPath = "/nsi/dict/mdm/";
 
