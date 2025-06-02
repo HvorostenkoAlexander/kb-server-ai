@@ -1,8 +1,10 @@
 package com.nlmk.kb.server.service.client;
 
+import com.nlmk.attestation.product.api.nsi.SpApcsAttestationResultDto;
 import com.nlmk.attestation.product.api.nsi.SpAttributeAttestationGroupDto;
 import com.nlmk.attestation.product.api.nsi.SpAttributesDto;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NsiClient {
@@ -13,7 +15,7 @@ public interface NsiClient {
      * @param id UUID группы аттестации
      * @return Группа аттестации
      */
-    Optional<SpAttributeAttestationGroupDto> getAttributeAttestationGroup(String id, String primeId);
+    Optional<SpAttributeAttestationGroupDto> getAttributeAttestationGroup(String id, String requestId);
 
     /**
      * Справочник атрибутов
@@ -21,6 +23,13 @@ public interface NsiClient {
      * @param id UUID атрибутов
      * @return Атрибуты
      */
-    Optional<SpAttributesDto> getAttributes(String id, String primeId);
+    Optional<SpAttributesDto> getAttributes(String id, String requestId);
+
+    /**
+     * Справочник статусов аттестации
+     *
+     * @return Список статусов
+     */
+    List<SpApcsAttestationResultDto> getApcsAttestationResults();
 
 }
