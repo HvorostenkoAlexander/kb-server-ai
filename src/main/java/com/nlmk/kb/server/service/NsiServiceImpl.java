@@ -1,5 +1,6 @@
 package com.nlmk.kb.server.service;
 
+import com.nlmk.attestation.product.api.nsi.SpApcsAttestationResultDto;
 import com.nlmk.attestation.product.api.nsi.SpAttributeAttestationGroupDto;
 import com.nlmk.attestation.product.api.nsi.SpAttributesDto;
 import com.nlmk.kb.server.config.KbConstants;
@@ -24,6 +25,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -88,7 +90,7 @@ public class NsiServiceImpl implements NsiSender, NsiClient {
     }
 
     @Override
-    public Optional<SpAttributeAttestationGroupDto> getAttributeAttestationGroup(String id, String primeId) {
+    public Optional<SpAttributeAttestationGroupDto> getAttributeAttestationGroup(String id, String requestId) {
 
         final var uriBuilder = UriComponentsBuilder.fromHttpUrl(nsiUrlDict)
                 .path(NsiPath.GET_ATTRIBUTE_ATTESTATION_GROUP.getValue())
@@ -98,13 +100,13 @@ public class NsiServiceImpl implements NsiSender, NsiClient {
                 getResponseBody(
                         ParameterizedTypeReference.forType(SpAttributeAttestationGroupDto.class),
                         uriBuilder.encode().build().toUri(),
-                        primeId
+                        requestId
                 )
         );
     }
 
     @Override
-    public Optional<SpAttributesDto> getAttributes(String id, String primeId) {
+    public Optional<SpAttributesDto> getAttributes(String id, String requestId) {
 
         final var uriBuilder = UriComponentsBuilder.fromHttpUrl(nsiUrlDict)
                 .path(NsiPath.GET_ATTRIBUTES.getValue())
@@ -114,8 +116,23 @@ public class NsiServiceImpl implements NsiSender, NsiClient {
                 getResponseBody(
                         ParameterizedTypeReference.forType(SpAttributesDto.class),
                         uriBuilder.encode().build().toUri(),
-                        primeId
+                        requestId
                 )
+        );
+    }
+
+    @Override
+    public List<SpApcsAttestationResultDto> getApcsAttestationResults() {
+
+        final var uriBuilder = UriComponentsBuilder.fromHttpUrl(nsiUrlDict)
+                .path(NsiPath.GET_APCS_ATTESTATION_RESULT.getValue());
+
+        ParameterizedTypeReference<List<SpApcsAttestationResultDto>> responseType = new ParameterizedTypeReference<>() {
+        };
+
+        return getResponseBodyAsList(
+                responseType,
+                uriBuilder.encode().build().toUri()
         );
     }
 
@@ -132,6 +149,23 @@ public class NsiServiceImpl implements NsiSender, NsiClient {
                 .timeout(Duration.ofMillis(webClientTimeout))
                 .onErrorResume(e -> {
                     log.error("getResponseBody, ошибка получения данных из NSI, [{}]",
+                            e.getMessage());
+                    return Mono.empty();
+                })
+                .block();
+    }
+
+    private <T> List<T> getResponseBodyAsList(ParameterizedTypeReference<List<T>> responseType,
+                                              URI uri) {
+        return webClient.get()
+                .uri(uri)
+                .accept(MediaType.APPLICATION_JSON)
+                .acceptCharset(StandardCharsets.UTF_8)
+                .retrieve()
+                .bodyToMono(responseType)
+                .timeout(Duration.ofMillis(webClientTimeout))
+                .onErrorResume(e -> {
+                    log.error("getResponseBodyAsList, ошибка получения данных из NSI, [{}]",
                             e.getMessage());
                     return Mono.empty();
                 })
