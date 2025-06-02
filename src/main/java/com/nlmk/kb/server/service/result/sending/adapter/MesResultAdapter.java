@@ -6,7 +6,9 @@ import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.Status;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.repository.MesMessageSourceRepository;
+import com.nlmk.kb.server.service.AttestationResultsService;
 import com.nlmk.kb.server.service.result.configuration.ApcsAvro;
+import lombok.extern.slf4j.Slf4j;
 import nlmk.apcs.verification.results.cgp.v0.AsapResponse;
 import nlmk.apcs.verification.results.cgp.v0.Comparison;
 import nlmk.apcs.verification.results.cgp.v0.EnumOp;
@@ -26,6 +28,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 @Service
+@Slf4j
 public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationResultsCgp> {
 
     private static final Schema SCHEMA = VerificationResultsCgp.SCHEMA$;
@@ -40,12 +44,17 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     private final MesMessageSourceRepository sourceRepository;
     private final ObjectMapper objectMapper;
 
+    private final AttestationResultsService resultsService;
 
-    public MesResultAdapter(MesMessageSourceRepository repository, ObjectMapper mapper) {
+
+    public MesResultAdapter(MesMessageSourceRepository repository,
+                            ObjectMapper mapper,
+                            @Nullable AttestationResultsService attestationResultsService) {
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         sourceRepository = repository;
         objectMapper = mapper;
+        resultsService = attestationResultsService;
     }
 
     @Override
@@ -215,7 +224,13 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private AsapResponse prepareAsapResponse(AttestationDto attestation) {
+        var status = resultsService.getAttestationResultByCode(attestation.getStatus().getValue());
         return AsapResponse.newBuilder()
+                .setApcsAttestationResultId(
+                        status.isPresent()
+                        ? status.get().getId()
+                        : ""
+                )
                 .setApcsAttestationResultCode(attestation.getStatus().getValue())
                 .setNote(attestation.getComment())
                 .setNorms(Norms.newBuilder()
