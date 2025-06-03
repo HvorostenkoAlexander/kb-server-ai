@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "AsapAnalysisRequestVer0",
-  "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v0",
+  "name": "AsapAnalysisRequestVer2",
+  "namespace": "nlmk.mes.cgp.asap.adapter.analysis.request.v2",
   "doc": "Передача данных для аттестации из сервиса-адаптера в АСАП.",
   "fields": [
     {
@@ -28,11 +28,6 @@
         "type": "record",
         "name": "PkType",
         "fields": [
-          {
-            "name": "systemCode",
-            "type": "string",
-            "doc": "Код системы"
-          },
           {
             "name": "metalUnitId",
             "type": "string",
@@ -213,10 +208,10 @@
                         "doc": "Значение атрибута маркировки"
                       }
                     ]
-                  },
-                  "default": null
+                  }
                 }
-              ]
+              ],
+              "default": null
             },
             {
               "name": "analyzes",
@@ -294,10 +289,10 @@
                               "doc": "Константа обозначения физического типа AVRO"
                             },
                             {
-                              "name": "relation",
+                              "name": "comparison",
                               "type": {
                                 "type": "enum",
-                                "name": "Relation",
+                                "name": "Comparison",
                                 "doc": "Оператор сравнения",
                                 "symbols": [
                                   "EQUAL",
@@ -331,7 +326,8 @@
                                     }
                                   ]
                                 }
-                              ]
+                              ],
+                              "default": null
                             },
                             {
                               "name": "addProperties",
@@ -365,8 +361,8 @@
                                         "doc": "Константа обозначения физического типа AVRO"
                                       },
                                       {
-                                        "name": "relation",
-                                        "type": "Relation"
+                                        "name": "comparison",
+                                        "type": "Comparison"
                                       },
                                       {
                                         "name": "value",
@@ -378,13 +374,14 @@
                                         "type": [
                                           "null",
                                           "RecordMeasure"
-                                        ]
+                                        ],
+                                        "default": null
                                       }
                                     ]
-                                  },
-                                  "default": null
+                                  }
                                 }
-                              ]
+                              ],
+                              "default": null
                             }
                           ]
                         }
@@ -397,7 +394,8 @@
           ]
         }
       ],
-      "doc": "Список передаваемых данных"
+      "doc": "Список передаваемых данных",
+      "default": null
     }
   ]
 }

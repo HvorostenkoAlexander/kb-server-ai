@@ -18,11 +18,12 @@ public interface MesMessageService {
     /**
      * Сохранить исходное сообщение
      *
-     * @param requestId              requestId запроса ccm_message таблицы
-     * @param primeId                primeId запроса ccm_message таблицы
+     * @param requestId              requestId запроса mes_message таблицы
+     * @param primeId                primeId запроса mes_message таблицы
+     * @param metalUnitId            metalUnitId запроса
      * @param mesSourceMessageString строка исходное сообщение
      * @param createdAt              дата создания
      */
-    void saveSourceMessage(Long requestId, String primeId, String mesSourceMessageString, LocalDateTime createdAt);
+    void saveSourceMessage(Long requestId, String primeId, String metalUnitId, String mesSourceMessageString, LocalDateTime createdAt);
 
 }
