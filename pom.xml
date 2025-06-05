@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nlmk.kb</groupId>
     <artifactId>kb-server</artifactId>
-    <version>1.60.12</version>
+    <version>1.60.13</version>
     <name>Kafka Broker Module</name>
     <description>Module for read Kafka Broker messages</description>
     <properties>
