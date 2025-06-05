@@ -381,6 +381,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_DEVI
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_PRODUCT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_MAX;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_MIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_PERCENT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WIDTH_TOLERANCE_STANDART;
 import static com.nlmk.attestation.product.api.specification.SpecCode.WORK_CENTER_CODE;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD;
@@ -562,7 +563,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .prWidthTolMax(converter.parseToDouble(
                         converter.getStringSpecValue(specs, WIDTH_TOLERANCE_MAX)
                 ))
-                .prWidthTolPerc(converter.getStringSpecValue(specs, WHIDTH_TOLERANCE_PERCENT))
+                .prWidthTolPerc(converter.getStringSpecValue(specs, WIDTH_TOLERANCE_PERCENT))
                 .crescent(converter.getLimitSpecValue(specs, SICKLE_SHAPE))
                 .burr(converter.getLimitSpecValue(specs, ZAUSENEC))
                 .build();
