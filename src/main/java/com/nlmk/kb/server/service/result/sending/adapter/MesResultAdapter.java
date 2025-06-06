@@ -259,7 +259,7 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private List<RecordAddProperties> prepareAddPropertiesList(List<nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAddProperties> addPropertiesList) {
-        if (!addPropertiesList.isEmpty()) {
+        if (addPropertiesList != null && !addPropertiesList.isEmpty()) {
             final var properties = new ArrayList<RecordAddProperties>();
             for (var source : addPropertiesList) {
                 var property = RecordAddProperties.newBuilder()
