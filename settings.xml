@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
             <id>nlmk-apcs-central</id>
@@ -9,28 +9,96 @@
             <password>${env.ATTESTATION_MAVEN_REPO_PASS_RW}</password>
         </server>
     </servers>
+
+    <mirrors>
+        <mirror>
+            <id>nlmk-mirror</id>
+            <url>https://repos.dp.nlmk.com/artifactory/maven</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+
     <profiles>
         <profile>
-            <properties>
-                <nlmk.repo.central>${env.ATTESTATION_MAVEN_REPO_PATH}</nlmk.repo.central>
-            </properties>
             <repositories>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Central Repository</name>
+                    <url>https://repo.maven.apache.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
                 <repository>
                     <id>nlmk-apcs-central</id>
                     <name>Хранилище артефактов maven APCS</name>
-                    <url>${nlmk.repo.central}</url>
+                    <url>https://repos.dp.nlmk.com/artifactory/attestation-maven</url>
+                    <layout>default</layout>
                     <releases>
                         <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>confluent</id>
+                    <name>Хранилище артефактов Kafka Confluent Platform</name>
+                    <url>https://packages.confluent.io/maven/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
                     </snapshots>
                 </repository>
             </repositories>
-            <id>artifactory</id>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central</id>
+                    <name>Maven Central Repository</name>
+                    <url>https://repo.maven.apache.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>nlmk-apcs-central</id>
+                    <name>Хранилище плагинов maven APCS</name>
+                    <url>https://repos.dp.nlmk.com/artifactory/mes-adp-maven</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+            <id>default</id>
         </profile>
     </profiles>
+
     <activeProfiles>
-        <activeProfile>artifactory</activeProfile>
+        <activeProfile>default</activeProfile>
     </activeProfiles>
 </settings>
