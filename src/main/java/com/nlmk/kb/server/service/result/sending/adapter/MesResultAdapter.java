@@ -234,8 +234,8 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
                 .setApcsAttestationResultCode(attestation.getStatus().getValue())
                 .setNote(attestation.getComment())
                 .setNorms(Norms.newBuilder()
-                        .setValueMin(attestation.getMin().toString())
-                        .setValueMax(attestation.getMax().toString())
+                        .setValueMin(attestation.getMin() != null ? attestation.getMin().toString() : null)
+                        .setValueMax(attestation.getMax() != null ? attestation.getMax().toString() : null)
                         .setListAccValues(
                                 Objects.isNull(attestation.getEqual())
                                 ? List.of()
