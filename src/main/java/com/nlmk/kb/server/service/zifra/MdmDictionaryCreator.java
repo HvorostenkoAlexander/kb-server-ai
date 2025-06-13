@@ -11,5 +11,4 @@ public interface MdmDictionaryCreator {
                                       EnumOp op,
                                       pk pk,
                                       Data data);
-
 }

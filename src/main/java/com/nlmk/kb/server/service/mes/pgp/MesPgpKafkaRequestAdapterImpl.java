@@ -4,7 +4,7 @@ import com.nlmk.attestation.product.api.AdditionalProperty;
 import com.nlmk.attestation.product.api.AttributeAttestationGroup;
 import com.nlmk.attestation.product.api.Kceh;
 import com.nlmk.attestation.product.api.Params;
-import com.nlmk.attestation.product.api.Property;
+import com.nlmk.attestation.product.api.QualityIndicator;
 import com.nlmk.attestation.product.api.pam.ChemicalSpec;
 import com.nlmk.attestation.product.api.pam.DataPgp;
 import com.nlmk.attestation.product.api.pam.MechanicalAnalysisData;
@@ -182,7 +182,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         for (var qIndicator: recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = Property.builder();
+            var propertyBuilder = QualityIndicator.builder();
 
             if (qIndicator.getMeasure() != null) {
                 propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
@@ -223,7 +223,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = Property.builder();
+            var propertyBuilder = QualityIndicator.builder();
             var mechanicSpecBuilder = MechanicalSpec.builder();
 
             if (qIndicator.getMeasure() != null) {
@@ -295,7 +295,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = Property.builder();
+            var propertyBuilder = QualityIndicator.builder();
             var metallographicSpecBuilder = MetallographicSpec.builder();
 
             if (qIndicator.getMeasure() != null) {
@@ -360,7 +360,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = Property.builder();
+            var propertyBuilder = QualityIndicator.builder();
             var specsBuilder = Specs.builder();
 
             if (qIndicator.getMeasure() != null) {
