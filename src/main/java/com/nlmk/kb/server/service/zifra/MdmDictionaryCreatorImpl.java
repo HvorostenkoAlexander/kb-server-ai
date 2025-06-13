@@ -5,6 +5,7 @@ import com.nlmk.kb.server.entity.mdm.MdmDictionary;
 import com.nlmk.kb.server.entity.mdm.Pk;
 import com.nlmk.kb.server.entity.mdm.Properties;
 import com.nlmk.kb.server.service.CommonConverter;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.l3.nsi.zifra.Data;
@@ -105,6 +106,79 @@ public class MdmDictionaryCreatorImpl implements MdmDictionaryCreator {
             return charSequence.toString();
         }
         return null;
+    }
+
+
+    public Data fromMdmData(com.nlmk.kb.server.entity.mdm.Data mdmData) {
+        Data data = new Data();
+        data.setCatalogId(stringToCharSeq(mdmData.getCatalogId()));
+        data.setCatalogCode(stringToCharSeq(mdmData.getCatalogCode()));
+
+        if (mdmData.getHashtagLine() != null) {
+            mdmData.getHashtagLine().forEach(
+                    hashtagLine -> {
+                        if (hashtagLine != null) {
+                            data.getHashtagLine().add(stringToCharSeq(hashtagLine));
+                        }
+                    }
+            );
+        }
+
+        if (mdmData.getHashtagCatalog() != null) {
+            mdmData.getHashtagCatalog().forEach(
+                    hashtagCatalog -> {
+                        if (hashtagCatalog != null) {
+                            data.getHashtagCatalog().add(stringToCharSeq(hashtagCatalog));
+                        }
+                    }
+            );
+        }
+
+        data.setProperties(fromProperties(mdmData.getProperties()));
+
+        if (mdmData.getLineAttributesRecords() != null) {
+            data.setLineAttributes(new ArrayList<>());
+            mdmData.getLineAttributesRecords().forEach(
+                    lineAttributesRecord ->
+                            data.getLineAttributes().add(fromLineAttributesRecord(lineAttributesRecord))
+            );
+        }
+
+        return data;
+    }
+
+    private properties fromProperties(Properties mdmProperties) {
+        properties props = new properties();
+        props.setCron(stringToCharSeq(mdmProperties.getCron()));
+        props.setDateEnd(stringToCharSeq(mdmProperties.getDateEnd()));
+        props.setDateBegin(stringToCharSeq(mdmProperties.getDateBegin()));
+        props.setDateChange(stringToCharSeq(mdmProperties.getDateChange()));
+        return props;
+    }
+
+    private lineAttributes_record fromLineAttributesRecord(LineAttributesRecord lineAttributeRecord) {
+        lineAttributes_record lineAttributesRecord = new lineAttributes_record();
+        lineAttributesRecord.setAttrCode(stringToCharSeq(lineAttributeRecord.getAttrCode()));
+        lineAttributesRecord.setAttrName(stringToCharSeq(lineAttributeRecord.getAttrName()));
+        lineAttributesRecord.setAttrType(stringToCharSeq(lineAttributeRecord.getAttrType()));
+        lineAttributesRecord.setAttrValue(stringToCharSeq(lineAttributeRecord.getAttrValue()));
+        lineAttributesRecord.setAttrNameEng(stringToCharSeq(lineAttributeRecord.getAttrNameEng()));
+
+        if (lineAttributeRecord.getHashtagColumns() != null) {
+            lineAttributeRecord.getHashtagColumns().forEach(
+                    hashtagColumn -> {
+                        if (hashtagColumn != null) {
+                            lineAttributesRecord.getHashtagColumn().add(stringToCharSeq(hashtagColumn));
+                        }
+                    }
+            );
+        }
+
+        return lineAttributesRecord;
+    }
+
+    private CharSequence stringToCharSeq(String str) {
+        return str != null ? str : null;
     }
 
 }
