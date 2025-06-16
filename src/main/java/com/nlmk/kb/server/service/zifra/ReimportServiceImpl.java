@@ -16,6 +16,7 @@ import com.nlmk.kb.server.service.sender.NsiSender;
 import com.nlmk.kb.server.util.AdapterUtils;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -48,6 +49,7 @@ public class ReimportServiceImpl implements ReimportService {
     private final NsiSender nsiSender;
     private final MdmMessageService messageService;
     private final MdmDictionaryCreatorImpl mdmDictionaryCreator;
+    private final ReimportStateService reimportStateService;
     private final ReimportMapper reimportMapper;
     private final EntityManager entityManager;
 
@@ -81,7 +83,7 @@ public class ReimportServiceImpl implements ReimportService {
         // Инициализация реимпорта
         initReimport(reimport);
 
-        ReimportResult result = processMessages(reimportType, requestDto, reimport);
+        ReimportResult result = processMessages(requestDto, reimport);
 
         completeReimport(reimport, result);
 
@@ -90,7 +92,7 @@ public class ReimportServiceImpl implements ReimportService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ReimportDto stopReimport(ReimportType reimportType) {
         var state = reimportRepository.findById(reimportType)
                 .orElse(Reimport.builder().name(reimportType).build());
@@ -112,9 +114,9 @@ public class ReimportServiceImpl implements ReimportService {
                         .build());
     }
 
-    private ReimportResult processMessages(ReimportType reimportType,
-                                           ReimportRequestDto requestDto,
-                                           Reimport reimport) {
+    private ReimportResult processMessages(
+            ReimportRequestDto requestDto,
+            Reimport reimport) {
         ReimportResult result = new ReimportResult();
         Long lastProcessedId = null;
 
@@ -133,7 +135,6 @@ public class ReimportServiceImpl implements ReimportService {
                     log.info("Успешно обработано сообщение ID={}", message.getId());
                     lastProcessedId = message.getId();
                     updateReimportProgress(reimport, lastProcessedId);
-                    reimport = reimportRepository.findById(reimportType).orElse(reimport);
                 }
             }
         } catch (Exception e) {
@@ -149,8 +150,10 @@ public class ReimportServiceImpl implements ReimportService {
     }
 
     private void updateReimportProgress(Reimport reimport, Long lastProcessedId) {
+        ReimportState refreshed = reimportStateService.getLatestState(reimport.getName());
         reimport.setLastImportedId(lastProcessedId);
         reimport.setLastImportDate(Instant.now());
+        reimport.setState(refreshed);
         reimportRepository.save(reimport);
         log.debug("Обновлен прогресс реимпорта: последний обработанный ID={}", lastProcessedId);
     }
@@ -176,10 +179,11 @@ public class ReimportServiceImpl implements ReimportService {
             predicates.add(cb.like(root.get("note"), "%" + filter.getNote() + "%"));
         }
         if (filter.getDstart() != null) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("tsTimestamp"), filter.getDstart()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get("ts"),
+                    Date.from(filter.getDstart())));
         }
         if (filter.getDend() != null) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("tsTimestamp"), filter.getDend()));
+            predicates.add(cb.lessThanOrEqualTo(root.get("ts"), Date.from(filter.getDend())));
         }
 
         query.where(cb.and(predicates.toArray(new Predicate[0])))
