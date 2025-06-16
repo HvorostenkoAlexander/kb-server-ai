@@ -5,6 +5,7 @@ import com.nlmk.attestation.product.api.AttributeAttestationGroup;
 import com.nlmk.attestation.product.api.Kceh;
 import com.nlmk.attestation.product.api.Params;
 import com.nlmk.attestation.product.api.QualityIndicator;
+import com.nlmk.attestation.product.api.RequestSource;
 import com.nlmk.attestation.product.api.pam.ChemicalSpec;
 import com.nlmk.attestation.product.api.pam.DataPgp;
 import com.nlmk.attestation.product.api.pam.MechanicalAnalysisData;
@@ -28,6 +29,7 @@ import nlmk.mes.cgp.asap.adapter.analysis.request.v2.PkType;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAddProperties;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordAnalyzes;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordData;
+import nlmk.mes.cgp.asap.adapter.analysis.request.v2.RecordMarking;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -59,14 +61,14 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
     // Список кодов, которые используются для сборки DataPgp, передаваемые в коллекции marking
     private final List<SpecCode> pgpMarkingCodes = Arrays.asList(
+            SpecCode.STEEL_MARK, // 3 - Марка (prProdMark)
             SpecCode.MELTING_ID, // 93 - № плавки (nplv)
-            SpecCode.HOT_ROLLED_STEEL_NUMBER, // 37 - Номер ГК партии (hnum)
+            SpecCode.HNUM, // 5750 - Номер ГК партии (hnum)
             SpecCode.ROLL_PACKAGE_SHEET_NUMBER, // 463 - Номер рулона/пачки (roll)
-            SpecCode.LENGTH_PRODUCT, // 592 - Длина продукции (length)
-            SpecCode.THICKNESS_PRODUCTS, // 596 - Толщина проката (thickness)
+            SpecCode.THICKNESS_OF_ROLLED_PRODUCTS, // 416 - Толщина проката (thickness)
             SpecCode.WIDTH_PRODUCT, // 587 - Ширина продукции (width)
-            SpecCode.UNIT_WEIGHT, // 91 - Масса единицы продукции (weightNet)
-            SpecCode.BUNDLE_MASS // 461 - Масса связки (bundleWeight)
+            SpecCode.WEIGHT_NET, // 1203 - Масса единицы продукции (weightNet)
+            SpecCode.SMENA_NUMBER // 1045 - Номер прокатной смены (smenaNumber)
     );
 
     @Override
@@ -105,6 +107,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         }
 
         DataPgp.DataPgpBuilder<?, ?> builder = DataPgp.builder();
+        builder.requestSource(RequestSource.MES);
 
         var primeId = AdapterUtils.sequenceToString(pk.getMetalUnitId());
 
@@ -117,6 +120,8 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
         String hnum = "";
 
+        var specs = new ArrayList<Specs>();
+
         // Разбор маркировки
         for (var mark : recordData.getMarking()) {
             for (var specCode : pgpMarkingCodes) {
@@ -127,6 +132,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     }
                 }
             }
+            specs.add(buildSpecFromMarking(mark));
         }
 
         for (var analyze : recordData.getAnalyzes()) {
@@ -164,7 +170,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     }
 
                 } else {
-                    buildSpec(builder, analyze, primeId);
+                    buildSpec(builder, analyze, specs, primeId);
                 }
 
             } else {
@@ -177,21 +183,30 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         return builder.build();
     }
 
+    private Specs buildSpecFromMarking(RecordMarking marking) {
+        var builder = Specs.builder();
+        builder.specCode(marking.getAttrCode());
+        builder.specValue((String) marking.getValue());
+        builder.specFormat((String) marking.getDataTypePhysical());
+        builder.specName((String) marking.getAttrName());
+        return builder.build();
+    }
+
     private void buildChemicalSpec(DataPgp.DataPgpBuilder<?, ?> builder, RecordAnalyzes recordAnalyzes, String primeId) {
         List<ChemicalSpec> chemicalSpecs = new ArrayList<>();
         for (var qIndicator: recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = QualityIndicator.builder();
+            var indicatorBuilder = QualityIndicator.builder();
 
             if (qIndicator.getMeasure() != null) {
-                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
+                indicatorBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                indicatorBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.comparison(qIndicator.getComparison().toString());
-            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+            indicatorBuilder.comparison(qIndicator.getComparison().toString());
+            indicatorBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
-            paramsBuilder.property(propertyBuilder.build());
+            paramsBuilder.property(indicatorBuilder.build());
 
             if (qIndicator.getAddProperties() != null) {
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -223,17 +238,17 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = QualityIndicator.builder();
+            var indicatorBuilder = QualityIndicator.builder();
             var mechanicSpecBuilder = MechanicalSpec.builder();
 
             if (qIndicator.getMeasure() != null) {
-                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
+                indicatorBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                indicatorBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.comparison(qIndicator.getComparison().toString());
-            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+            indicatorBuilder.comparison(qIndicator.getComparison().toString());
+            indicatorBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
-            paramsBuilder.property(propertyBuilder.build());
+            paramsBuilder.property(indicatorBuilder.build());
 
             if (qIndicator.getAddProperties() != null) {
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -295,17 +310,17 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = QualityIndicator.builder();
+            var indicatorBuilder = QualityIndicator.builder();
             var metallographicSpecBuilder = MetallographicSpec.builder();
 
             if (qIndicator.getMeasure() != null) {
-                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
+                indicatorBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                indicatorBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.comparison(qIndicator.getComparison().toString());
-            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+            indicatorBuilder.comparison(qIndicator.getComparison().toString());
+            indicatorBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
-            paramsBuilder.property(propertyBuilder.build());
+            paramsBuilder.property(indicatorBuilder.build());
 
             if (qIndicator.getAddProperties() != null) {
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -354,23 +369,25 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         builder.metallographic(metallographicSpecs);
     }
 
-    private void buildSpec(DataPgp.DataPgpBuilder<?, ?> builder, RecordAnalyzes recordAnalyzes, String primeId) {
-        List<Specs> specsList = new ArrayList<>();
+    private void buildSpec(DataPgp.DataPgpBuilder<?, ?> builder,
+                           RecordAnalyzes recordAnalyzes,
+                           ArrayList<Specs> specs,
+                           String primeId) {
 
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
-            var propertyBuilder = QualityIndicator.builder();
+            var indicatorBuilder = QualityIndicator.builder();
             var specsBuilder = Specs.builder();
 
             if (qIndicator.getMeasure() != null) {
-                propertyBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
-                propertyBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
+                indicatorBuilder.measureId(qIndicator.getMeasure().getMeasureId().toString());
+                indicatorBuilder.measureName(qIndicator.getMeasure().getMeasureName().toString());
             }
-            propertyBuilder.comparison(qIndicator.getComparison().toString());
-            propertyBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
+            indicatorBuilder.comparison(qIndicator.getComparison().toString());
+            indicatorBuilder.dataTypePhysical(qIndicator.getDataTypePhysical().toString());
 
-            paramsBuilder.property(propertyBuilder.build());
+            paramsBuilder.property(indicatorBuilder.build());
 
             if (qIndicator.getAddProperties() != null) {
                 if (!qIndicator.getAddProperties().isEmpty()) {
@@ -383,12 +400,13 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             specsBuilder.specName(qIndicator.getAttrName().toString());
             specsBuilder.specValue(qIndicator.getValue().toString());
             specsBuilder.specTypeCode(getIntegerValueOfDataType(qIndicator.getDataTypePhysical().toString()));
+            specsBuilder.specFormat(qIndicator.getDataTypePhysical().toString());
             specsBuilder.params(paramsBuilder.build());
 
-            specsList.add(specsBuilder.build());
+            specs.add(specsBuilder.build());
 
         }
-        builder.specifications(specsList);
+        builder.specifications(specs);
     }
 
     private List<AdditionalProperty> buildAndParseAdditionalProperties(List<RecordAddProperties> properties, String primeId) {
@@ -419,7 +437,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     builder.nplv(Integer.valueOf(value));
                     break;
                 }
-                case HOT_ROLLED_STEEL_NUMBER: {
+                case HNUM: {
                     builder.hnum(Integer.valueOf(value));
                     break;
                 }
@@ -431,7 +449,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     builder.length(new BigDecimal(value));
                     break;
                 }
-                case THICKNESS_PRODUCTS: {
+                case THICKNESS_OF_ROLLED_PRODUCTS: {
                     builder.thickness(new BigDecimal(value));
                     break;
                 }
@@ -439,12 +457,12 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     builder.width(new BigDecimal(value));
                     break;
                 }
-                case UNIT_WEIGHT: {
+                case WEIGHT_NET: {
                     builder.weightNet(new BigDecimal(value));
                     break;
                 }
-                case BUNDLE_MASS: {
-                    builder.bundleWeight(new BigDecimal(value));
+                case SMENA_NUMBER: {
+                    builder.smenaNumber(Long.valueOf(value));
                     break;
                 }
                 default: {
