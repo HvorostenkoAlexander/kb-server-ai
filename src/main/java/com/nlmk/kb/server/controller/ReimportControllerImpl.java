@@ -20,7 +20,7 @@ public class ReimportControllerImpl implements ReimportController {
     private final ReimportService reimportService;
 
     @Override
-    public String getReimportStart(ReimportRequestDto requestDto) {
+    public String postReimportStart(ReimportRequestDto requestDto) {
         log.info("getReimportStart");
        return reimportService.startReimport(ReimportType.MDM_MESSAGE, requestDto);
     }
