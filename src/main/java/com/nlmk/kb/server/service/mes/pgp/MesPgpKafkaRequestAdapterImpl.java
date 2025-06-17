@@ -196,6 +196,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         builder.specCode(marking.getAttrCode());
         builder.specValue(marking.getValue().toString());
         builder.specFormat(marking.getDataTypePhysical().toString());
+        builder.specTypeCode(getIntegerValueOfDataType(marking.getDataTypePhysical().toString()));
         builder.specName(marking.getAttrName().toString());
         return builder.build();
     }
