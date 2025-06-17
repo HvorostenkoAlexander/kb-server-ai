@@ -186,9 +186,9 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
     private Specs buildSpecFromMarking(RecordMarking marking) {
         var builder = Specs.builder();
         builder.specCode(marking.getAttrCode());
-        builder.specValue((String) marking.getValue());
-        builder.specFormat((String) marking.getDataTypePhysical());
-        builder.specName((String) marking.getAttrName());
+        builder.specValue(marking.getValue().toString());
+        builder.specFormat(marking.getDataTypePhysical().toString());
+        builder.specName(marking.getAttrName().toString());
         return builder.build();
     }
 
