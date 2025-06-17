@@ -121,6 +121,9 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         String hnum = "";
 
         var specs = new ArrayList<Specs>();
+        var chemical = new ArrayList<ChemicalSpec>();
+        var metallographic = new ArrayList<MetallographicSpec>();
+        var mechanical = new ArrayList<MechanicalSpec>();
 
         // Разбор маркировки
         for (var mark : recordData.getMarking()) {
@@ -147,7 +150,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                 var attGroup = attestationGroup.get();
 
                 if (attGroup.getCode().equals(AttributeAttestationGroup.HIM.getCode())) {
-                    buildChemicalSpec(builder, analyze, primeId);
+                    buildChemicalSpec(chemical, analyze, primeId);
                 } else if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())
                         || attGroup.getCode().equals(AttributeAttestationGroup.MECH.getCode())) {
 
@@ -163,14 +166,14 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
 
                     if (testTypeRequestId != null) {
                         if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())) {
-                            buildMetallographicSpec(builder, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
+                            buildMetallographicSpec(metallographic, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
                         } else {
-                            buildMechanicalSpec(builder, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
+                            buildMechanicalSpec(mechanical, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
                         }
                     }
 
                 } else {
-                    buildSpec(builder, analyze, specs, primeId);
+                    buildSpec(analyze, specs, primeId);
                 }
 
             } else {
@@ -179,6 +182,11 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             }
 
         }
+
+        builder.chemical(chemical);
+        builder.metallographic(metallographic);
+        builder.mechanical(mechanical);
+        builder.specifications(specs);
 
         return builder.build();
     }
@@ -192,8 +200,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
         return builder.build();
     }
 
-    private void buildChemicalSpec(DataPgp.DataPgpBuilder<?, ?> builder, RecordAnalyzes recordAnalyzes, String primeId) {
-        List<ChemicalSpec> chemicalSpecs = new ArrayList<>();
+    private void buildChemicalSpec(ArrayList<ChemicalSpec> chemicalSpecs, RecordAnalyzes recordAnalyzes, String primeId) {
         for (var qIndicator: recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
@@ -224,17 +231,15 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     .build());
 
         }
-        builder.chemical(chemicalSpecs);
     }
 
-    private void buildMechanicalSpec(DataPgp.DataPgpBuilder<?, ?> builder,
+    private void buildMechanicalSpec(ArrayList<MechanicalSpec> mechanicalSpecs,
                                      RecordAnalyzes recordAnalyzes,
                                      String primeId,
                                      String testTypeRequestId,
                                      String hnum,
                                      String protNum,
                                      String protDate) {
-        List<MechanicalSpec> mechanicalSpecs = new ArrayList<>();
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
@@ -296,17 +301,15 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             mechanicalSpecs.add(mechanicSpecBuilder.build());
 
         }
-        builder.mechanical(mechanicalSpecs);
     }
 
-    private void buildMetallographicSpec(DataPgp.DataPgpBuilder<?, ?> builder,
+    private void buildMetallographicSpec(ArrayList<MetallographicSpec> metallographicSpecs,
                                          RecordAnalyzes recordAnalyzes,
                                          String primeId,
                                          String testTypeRequestId,
                                          String hnum,
                                          String protNum,
                                          String protDate) {
-        List<MetallographicSpec> metallographicSpecs = new ArrayList<>();
         for (var qIndicator : recordAnalyzes.getQualityIndicators()) {
 
             var paramsBuilder = Params.builder();
@@ -366,11 +369,9 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             metallographicSpecs.add(metallographicSpecBuilder.build());
 
         }
-        builder.metallographic(metallographicSpecs);
     }
 
-    private void buildSpec(DataPgp.DataPgpBuilder<?, ?> builder,
-                           RecordAnalyzes recordAnalyzes,
+    private void buildSpec(RecordAnalyzes recordAnalyzes,
                            ArrayList<Specs> specs,
                            String primeId) {
 
@@ -406,7 +407,6 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
             specs.add(specsBuilder.build());
 
         }
-        builder.specifications(specs);
     }
 
     private List<AdditionalProperty> buildAndParseAdditionalProperties(List<RecordAddProperties> properties, String primeId) {
