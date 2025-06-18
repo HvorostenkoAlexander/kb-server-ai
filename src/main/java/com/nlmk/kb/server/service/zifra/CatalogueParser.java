@@ -118,6 +118,22 @@ public interface CatalogueParser<T> {
     }
 
     /**
+     * Получение значения Атрибута в виде целого числа из строки с/без плавающей точкой
+     */
+    default Integer getAttrIntegerValueByNameWithPoint(List<nlmk.l3.nsi.zifra.lineAttributes_record> lineAttributes, String name) {
+        final var value = getAttrStringValueByName(lineAttributes, name);
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        try {
+            double doubleValue = Double.parseDouble(value);
+            return (int) doubleValue;
+        } catch (NumberFormatException e) {
+            throw new ZifraMessageParserException(MessageFormat.format(NUMBER_PARSER_EXCEPTION_MESSAGE, value));
+        }
+    }
+
+    /**
      * Получение значения Атрибута в виде строки
      */
     default String getAttrStringValueByName(List<nlmk.l3.nsi.zifra.lineAttributes_record> lineAttributes, String name) {
