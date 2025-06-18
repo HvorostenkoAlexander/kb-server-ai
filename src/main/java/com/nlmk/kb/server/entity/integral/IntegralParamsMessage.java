@@ -2,6 +2,7 @@ package com.nlmk.kb.server.entity.integral;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.time.Instant;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,8 +31,8 @@ public class IntegralParamsMessage {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
     private String primeId;
+    private UUID metalUnitId;
 
     @Type(type = "jsonb")
     @Column(nullable = false)

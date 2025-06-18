@@ -18,11 +18,13 @@ import com.nlmk.attestation.product.api.pam.Pk;
 import com.nlmk.attestation.product.api.pam.Specs;
 import com.nlmk.attestation.product.api.pam.Value;
 import com.nlmk.attestation.product.api.specification.SpecCode;
+import com.nlmk.kb.server.entity.integral.IntegralParams;
 import com.nlmk.kb.server.service.CommonConverter;
-import com.nlmk.kb.server.service.ccm.KafkaRequestAdapter;
+import com.nlmk.kb.server.service.CommonKafkaRequestAdapter;
 import com.nlmk.kb.server.service.client.NsiClient;
+import com.nlmk.kb.server.service.integral.IntegralParamsMessageService;
+import com.nlmk.kb.server.service.sender.PgpSender;
 import com.nlmk.kb.server.util.AdapterUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.AsapAnalysisRequestVer2;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.PkType;
@@ -43,6 +45,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+import static com.nlmk.attestation.product.api.specification.SpecCode.COIL_TEMPERATURE_MAX;
+import static com.nlmk.attestation.product.api.specification.SpecCode.COIL_TEMPERATURE_MIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.END_ROLLING_TEMPERATURE_MAX;
+import static com.nlmk.attestation.product.api.specification.SpecCode.END_ROLLING_TEMPERATURE_MIN;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE_12;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE_23;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PERCENTAGE_STRIP_LENGTH_TOLERANCE_FULL;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PROFILE;
+import static com.nlmk.attestation.product.api.specification.SpecCode.WEDGE;
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_INTEGER_PARSE_EXCEPTION;
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_MECHANIC;
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_METALLOGRAPHIC;
@@ -52,12 +64,34 @@ import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_TEST_TYPE_REQUEST_I
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_HNUM;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
-public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAnalysisRequestVer2> {
+public class MesPgpKafkaRequestAdapterImpl extends CommonKafkaRequestAdapter<AsapAnalysisRequestVer2> {
 
     private final CommonConverter converter;
     private final NsiClient nsiClient;
+
+    public MesPgpKafkaRequestAdapterImpl(
+            CommonConverter converter,
+            NsiClient client,
+            PgpSender sender,
+            IntegralParamsMessageService integralParamsMessageService
+    ) {
+        super(sender, integralParamsMessageService);
+        this.converter = converter;
+        this.nsiClient = client;
+    }
+
+    private static final List<IntegralParams> INTEGRAL_PARAMS_ATTRS = List.of(
+            new IntegralParams(END_ROLLING_TEMPERATURE_MIN.getValue()),
+            new IntegralParams(END_ROLLING_TEMPERATURE_MAX.getValue()),
+            new IntegralParams(COIL_TEMPERATURE_MIN.getValue()),
+            new IntegralParams(COIL_TEMPERATURE_MAX.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE.getValue()),
+            new IntegralParams(PROFILE.getValue()),
+            new IntegralParams(WEDGE.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE_FULL.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE_12.getValue()),
+            new IntegralParams(PERCENTAGE_STRIP_LENGTH_TOLERANCE_23.getValue()));
 
     // Список кодов, которые используются для сборки DataPgp, передаваемые в коллекции marking
     private final List<SpecCode> pgpMarkingCodes = Arrays.asList(
@@ -228,7 +262,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                     .chemCode(qIndicator.getAttrCode())
                     .chemName(qIndicator.getAttrName().toString())
                     .chemValue(qIndicator.getValue().toString())
-                    .chemValue(qIndicator.getDataTypePhysical().toString())
+                    .chemFormat(qIndicator.getDataTypePhysical().toString())
                     .params(paramsBuilder.build())
                     .build());
 
@@ -288,8 +322,10 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                                             .mechCode(qIndicator.getAttrCode())
                                             .mechName(qIndicator.getAttrName().toString())
                                             .mechValue(qIndicator.getValue().toString())
+                                            .mechFormat(qIndicator.getDataTypePhysical().toString())
+                                            .mechTypeCode(getIntegerValueOfDataType(qIndicator.getDataTypePhysical().toString()))
                                             // TODO measure - что добавлять?
-                                            .mechValue(qIndicator.getMeasure() == null
+                                            .mechMeasure(qIndicator.getMeasure() == null
                                                        ? null : qIndicator.getMeasure().getMeasureId().toString())
                                             .build()
                             )
@@ -357,6 +393,7 @@ public class MesPgpKafkaRequestAdapterImpl implements KafkaRequestAdapter<AsapAn
                                             .metgrapCode(qIndicator.getAttrCode())
                                             .metgrapName(qIndicator.getAttrName().toString())
                                             .metgrapValue(qIndicator.getValue().toString())
+                                            .metgrapTypeCode(getIntegerValueOfDataType(qIndicator.getDataTypePhysical().toString()))
                                             // TODO measure - что добавлять?
                                             .metgrapMeasure(qIndicator.getMeasure() == null
                                                             ? null : qIndicator.getMeasure().getMeasureId().toString())
