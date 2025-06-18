@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nlmk.attestation.product.api.AttestationDto;
 import com.nlmk.attestation.product.api.ProductDto;
 import com.nlmk.attestation.product.api.Status;
+import com.nlmk.attestation.product.api.nsi.BaseMdmDto;
 import com.nlmk.kb.server.exception.AttestationResultSenderException;
 import com.nlmk.kb.server.repository.MesMessageSourceRepository;
 import com.nlmk.kb.server.service.AttestationResultsService;
@@ -247,7 +248,11 @@ public class MesResultAdapter implements ApcsAvro, ResultAdapter<VerificationRes
     }
 
     private AsapResponse prepareNotAttestedAsapResponse() {
+        var noNeedAtt = resultsService.getAttestationResultByCode(Status.NO_NEED_ATTESTATION.getValue());
         return AsapResponse.newBuilder()
+                .setApcsAttestationResultId(
+                        noNeedAtt.<CharSequence>map(BaseMdmDto::getId).orElse(null)
+                )
                 .setApcsAttestationResultCode(Status.NO_NEED_ATTESTATION.getValue())
                 .setNote("Алгоритм не реализован в АСАП")
                 .setNorms(Norms.newBuilder()

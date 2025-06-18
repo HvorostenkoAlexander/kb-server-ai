@@ -42,3 +42,5 @@ src/main/java/nlmk/nlmk
 src/main/java/nlmk/EnumOp.java
 src/main/java/nlmk/Metadata.java
 src/main/java/nlmk/Sys.java
+/src/main/java/nlmk/apcs/verification/results/cgp/v0/
+/src/main/java/nlmk/mes/cgp/asap/adapter/analysis/request/v2/
