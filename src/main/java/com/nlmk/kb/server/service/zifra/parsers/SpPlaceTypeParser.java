@@ -21,7 +21,7 @@ public class SpPlaceTypeParser implements CatalogueParser<SpPlaceTypeDto> {
         return SpPlaceTypeDto.builder()
                 .id(AdapterUtils.sequenceToString(pk.getLineId()))
                 .messageId(messageId)
-                .code(getAttrIntegerValueByName(data.getLineAttributes(), "code"))
+                .code(getAttrIntegerValueByNameWithPoint(data.getLineAttributes(), "code"))
                 .shName(getAttrStringValueByName(data.getLineAttributes(), "shName"))
                 .name(getAttrStringValueByName(data.getLineAttributes(), "name"))
                 .active(getAttrBooleanValueByName(data.getLineAttributes(), "active"))
