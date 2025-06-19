@@ -184,6 +184,7 @@ public class MesPgpKafkaRequestAdapterImpl extends CommonKafkaRequestAdapter<Asa
                 var attGroup = attestationGroup.get();
 
                 if (attGroup.getCode().equals(AttributeAttestationGroup.HIM.getCode())) {
+                    log.info("Обработка группы химии");
                     buildChemicalSpec(chemical, analyze, primeId);
                 } else if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())
                         || attGroup.getCode().equals(AttributeAttestationGroup.MECH.getCode())) {
@@ -198,12 +199,10 @@ public class MesPgpKafkaRequestAdapterImpl extends CommonKafkaRequestAdapter<Asa
                         protDate = analyze.getProtDate().toString();
                     }
 
-                    if (testTypeRequestId != null) {
-                        if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())) {
-                            buildMetallographicSpec(metallographic, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
-                        } else {
-                            buildMechanicalSpec(mechanical, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
-                        }
+                    if (attGroup.getCode().equals(AttributeAttestationGroup.MET.getCode())) {
+                        buildMetallographicSpec(metallographic, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
+                    } else {
+                        buildMechanicalSpec(mechanical, analyze, primeId, testTypeRequestId.toString(), hnum, protNum, protDate);
                     }
 
                 } else {
@@ -298,13 +297,11 @@ public class MesPgpKafkaRequestAdapterImpl extends CommonKafkaRequestAdapter<Asa
                 }
             }
 
-            // testTypeRequestId используется как signAnalysis в случае металлографии
+            // testTypeRequestId используется как signAnalysis в случае механики
             parseIntegerFromString(testTypeRequestId, TEMPLATE_TEST_TYPE_REQUEST_ID, TEMPLATE_MECHANIC)
                     .ifPresent(mechanicSpecBuilder::signAnalysis);
-            if (!hnum.isEmpty()) {
-                parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_MECHANIC)
-                        .ifPresent(mechanicSpecBuilder::hnum);
-            }
+            parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_MECHANIC)
+                    .ifPresent(mechanicSpecBuilder::hnum);
             parseIntegerFromString(protNum, TEMPLATE_PROT_NUM, TEMPLATE_MECHANIC)
                     .ifPresent(mechanicSpecBuilder::protNum);
 
@@ -373,10 +370,8 @@ public class MesPgpKafkaRequestAdapterImpl extends CommonKafkaRequestAdapter<Asa
             // testTypeRequestId используется как signAnalysis в случае металлографии
             parseIntegerFromString(testTypeRequestId, TEMPLATE_TEST_TYPE_REQUEST_ID, TEMPLATE_METALLOGRAPHIC)
                     .ifPresent(metallographicSpecBuilder::signAnalysis);
-            if (!hnum.isEmpty()) {
-                parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_METALLOGRAPHIC)
-                        .ifPresent(metallographicSpecBuilder::hnum);
-            }
+            parseIntegerFromString(hnum, TEMPLATE_HNUM, TEMPLATE_METALLOGRAPHIC)
+                    .ifPresent(metallographicSpecBuilder::hnum);
             parseIntegerFromString(protNum, TEMPLATE_PROT_NUM, TEMPLATE_METALLOGRAPHIC)
                     .ifPresent(metallographicSpecBuilder::protNum);
 
