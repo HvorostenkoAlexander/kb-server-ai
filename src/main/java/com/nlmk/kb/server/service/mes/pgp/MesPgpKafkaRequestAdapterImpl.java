@@ -220,6 +220,7 @@ public class MesPgpKafkaRequestAdapterImpl extends CommonKafkaRequestAdapter<Asa
         builder.metallographic(metallographic);
         builder.mechanical(mechanical);
         builder.specifications(specs);
+        builder.integralParameters(processIntegralParams(primeId, INTEGRAL_PARAMS_ATTRS, RequestSource.MES));
 
         return builder.build();
     }
