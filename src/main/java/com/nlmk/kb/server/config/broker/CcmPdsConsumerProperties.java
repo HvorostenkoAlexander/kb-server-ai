@@ -16,7 +16,7 @@ public class CcmPdsConsumerProperties extends ConsumerProperties {
                                     @Value("${kafka.ccm.pds.ssl-enabled}") boolean sslEnabled,
                                     @Value("${kafka.sslTruststorePassword}") String truststorePassword,
                                     @Value("${kafka.sslKeystorePassword}") String keystorePassword,
-                                    @Value("${kafka.client.truststore-path-002}") String truststorePath,
+                                    @Value("${kafka.client.truststore-path}") String truststorePath,
                                     @Value("${kafka.client.keystore-path}") String keystorePath) {
         super(kafkaServer,
                 kafkaGroupId,
