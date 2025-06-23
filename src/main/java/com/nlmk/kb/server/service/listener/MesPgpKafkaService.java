@@ -16,7 +16,6 @@ import nlmk.apcs.verification.results.cgp.v0.VerificationResultsCgp;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.AsapAnalysisRequestVer2;
 import nlmk.mes.cgp.asap.adapter.analysis.request.v2.EnumOp;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -33,7 +32,6 @@ import static com.nlmk.kb.server.config.KbConstants.LISTENER_EXC_MESSAGE_TEMPLAT
 import static com.nlmk.kb.server.config.KbConstants.MISSING_ATT_RESULT_MESSAGE_TEMPLATE;
 import static com.nlmk.kb.server.config.KbConstants.TEMPLATE_METAL_UNIT_ID;
 
-@Profile("!test")
 @Slf4j
 @Service
 public class MesPgpKafkaService {
