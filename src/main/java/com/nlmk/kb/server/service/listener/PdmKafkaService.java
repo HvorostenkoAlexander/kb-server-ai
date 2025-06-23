@@ -84,8 +84,7 @@ public class PdmKafkaService {
             throw new DateTimeParseException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
             log.warn("receiveMessageReq, Exception", e);
-            //ack.nack(sleepTime);
-            ack.acknowledge();
+            ack.nack(sleepTime);
             throw new KafkaMessageProcessingException(MessageFormat.format(KbConstants.LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
     }
