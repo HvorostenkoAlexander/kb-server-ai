@@ -20,6 +20,7 @@ import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.attestation.product.api.nsi.RegisterEquivalentsDto;
 import com.nlmk.attestation.product.api.nsi.SchemeStrippingSlabDto;
 import com.nlmk.attestation.product.api.nsi.SpChemicalPropertiesNotesDto;
+import com.nlmk.attestation.product.api.nsi.SpTkProdDto;
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
@@ -129,4 +130,9 @@ public interface PdmDtoConverter {
      * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=118428442">Проверка кодов (ушек) слябов( NSD_coding_slab )</a>
      */
     CodingSlabDto toCodingSlabDto(PdmDictionary dictionary);
+
+    /**
+     * <a href="https://confluence.nlmk.com/pages/viewpage.action?pageId=75575999">Вид продукции( NSD_tk_prod )</a>
+     */
+    SpTkProdDto toSpTkProdDto(PdmDictionary dictionary);
 }

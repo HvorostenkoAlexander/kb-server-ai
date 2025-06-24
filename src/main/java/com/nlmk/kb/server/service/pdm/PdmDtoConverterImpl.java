@@ -20,6 +20,7 @@ import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.attestation.product.api.nsi.RegisterEquivalentsDto;
 import com.nlmk.attestation.product.api.nsi.SchemeStrippingSlabDto;
 import com.nlmk.attestation.product.api.nsi.SpChemicalPropertiesNotesDto;
+import com.nlmk.attestation.product.api.nsi.SpTkProdDto;
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
@@ -84,6 +85,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.CATEGORY_G
 import static com.nlmk.attestation.product.api.specification.SpecCode.CATEGORY_OF_MARK;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CA_S;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CEMENTITE;
+import static com.nlmk.attestation.product.api.specification.SpecCode.CIPHER;
 import static com.nlmk.attestation.product.api.specification.SpecCode.CLOUD_INCLUSIONS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.COATING_THICKNESS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.COATING_THICKNESS_FRONT;
@@ -130,6 +132,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.FORM_SAP;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FRACTION_KSV_20_DVS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FRACTION_KSV_40_DVS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.FRACTION_KSV_60_DVS;
+import static com.nlmk.attestation.product.api.specification.SpecCode.FULL_PRODUCT_NAME;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H0041000;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H004500;
 import static com.nlmk.attestation.product.api.specification.SpecCode.H011000;
@@ -279,6 +282,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.PLASTICITY
 import static com.nlmk.attestation.product.api.specification.SpecCode.POINT_INCLUSIONS;
 import static com.nlmk.attestation.product.api.specification.SpecCode.PRIORITY;
 import static com.nlmk.attestation.product.api.specification.SpecCode.PRODUCTION_SHOP;
+import static com.nlmk.attestation.product.api.specification.SpecCode.PRODUCT_NAME;
 import static com.nlmk.attestation.product.api.specification.SpecCode.PRODUCT_STANDARD;
 import static com.nlmk.attestation.product.api.specification.SpecCode.PRODUCT_STANDARD_ADDITIONAL;
 import static com.nlmk.attestation.product.api.specification.SpecCode.R0;
@@ -388,6 +392,7 @@ import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD_02;
 import static com.nlmk.attestation.product.api.specification.SpecCode.YIELD_POINT;
 import static com.nlmk.attestation.product.api.specification.SpecCode.ZAUSENEC;
+import static com.nlmk.attestation.product.api.specification.SpecCode.ZINC_PLATING;
 
 @Slf4j
 @Component
@@ -1590,6 +1595,26 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
                 .codeBanDelivery(converter.getStringSpecValue(specs, CODE_BAN_DELIVERY))
                 .acceptVolCodLimit(converter.getStringSpecValue(specs, ACCEPT_VOL_COD_LIMIT))
                 .prAnnotation(converter.getStringSpecValue(specs, NOTE))
+                .build();
+    }
+
+    @Override
+    public SpTkProdDto toSpTkProdDto(PdmDictionary dictionary) {
+        Assert.notNull(dictionary, DICT_NOT_NULL);
+        Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
+
+        final var specs = dictionary.getData().getSpecifications();
+
+        log.debug("toSpTkProdDto, PDM DICTIONARY: {} ", dictionary);
+
+        return SpTkProdDto.builder()
+                .remoteId(dictionary.getPk().getId())
+                .updateTs(dictionary.getTs())
+                .prCode(converter.getStringSpecValue(specs, DELIVERY_TYPE))
+                .prNum(converter.parseToInteger(converter.getStringSpecValue(specs, CIPHER)))
+                .sapProd(converter.getStringSpecValue(specs, PRODUCT_NAME))
+                .routeProd(converter.getStringSpecValue(specs, FULL_PRODUCT_NAME))
+                .isZincPlating(converter.getStringSpecValue(specs, ZINC_PLATING))
                 .build();
     }
 
