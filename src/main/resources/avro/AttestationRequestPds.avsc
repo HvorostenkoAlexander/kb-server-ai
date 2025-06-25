@@ -1,6 +1,6 @@
 {
 	"type": "record",
-	"name": "AttestationRequest",
+	"name": "DbAttestationRequestVer1",
 	"namespace": "nlmk.l3.ccm.pds",
 	"doc": "Проведение аттестации ЕМ (АСАП)",
 	"fields": [
@@ -14,6 +14,7 @@
 			"type": {
 				"type": "enum",
 				"name": "EnumOp",
+				"namespace": "nlmk",
 				"symbols": [
 					"I",
 					"U",
@@ -26,7 +27,8 @@
 			"name": "pk",
 			"type": {
 				"type": "record",
-				"name": "RecordPk",
+				"name": "PkType",
+				"namespace": "nlmk.l3.ccm.pds.db.attestationrequest.ver1",
 				"fields": [
 					{
 						"name": "systemCode",
@@ -43,12 +45,40 @@
 			"doc": "Первичный ключ"
 		},
 		{
+			"name": "sys",
+			"type": [
+				"null",
+				{
+					"type": "record",
+					"name": "Sys",
+					"namespace": "nlmk",
+					"fields": [
+						{
+							"name": "seqID",
+							"type": "long",
+							"doc": "Монотонно возрастающий счетчик для проверки или восстановления оригинальной последовательности",
+							"default": -1
+						},
+						{
+							"name": "traceID",
+							"type": "string",
+							"doc": "Сквозной Trace ID (обычно UUID)",
+							"default": ""
+						}
+					]
+				}
+			],
+			"doc": "Системные поля, заполняемые источником",
+			"default": null
+		},
+		{
 			"name": "data",
 			"type": [
 				"null",
 				{
 					"type": "record",
-					"name": "RecordRootData",
+					"name": "RecordData",
+					"namespace": "nlmk.l3.ccm.pds.db.attestationrequest.ver1",
 					"fields": [
 						{
 							"name": "heat",
@@ -152,7 +182,7 @@
 							"name": "orderNum",
 							"type": [
 								"null",
-								"int"
+								"long"
 							],
 							"doc": "Номер заказа",
 							"default": null
@@ -341,7 +371,7 @@
 													"type": "array",
 													"items": {
 														"type": "record",
-														"name": "RecordTestDataData",
+														"name": "RecordDataTestDataData",
 														"fields": [
 															{
 																"name": "code",

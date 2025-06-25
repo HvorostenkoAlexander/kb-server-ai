@@ -15,8 +15,9 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
+import nlmk.EnumOp;
 import nlmk.l3.apcs.VerificationResultsPts;
-import nlmk.l3.ccm.pds.AttestationRequest;
+import nlmk.l3.ccm.pds.DbAttestationRequestVer1;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -37,13 +38,13 @@ public class CcmPdsKafkaService {
 
     private final long sleepTime;
     private final CcmCommonService ccmCommonService;
-    private final CcmMessageAdapter<AttestationRequest> ccmMessageAdapter;
+    private final CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter;
     private final AttestationResultSender attestationResultSender;
     private final CcmMessageService ccmMessageService;
 
     public CcmPdsKafkaService(@Value("${kafka.ack.nack.sleep-time}") long sleepTime,
                               CcmCommonService ccmCommonService,
-                              CcmMessageAdapter<AttestationRequest> ccmMessageAdapter,
+                              CcmMessageAdapter<DbAttestationRequestVer1> ccmMessageAdapter,
                               AttestationResultSender attestationResultSender,
                               CcmMessageService ccmMessageService) {
         this.sleepTime = sleepTime;
@@ -60,7 +61,7 @@ public class CcmPdsKafkaService {
                                   @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                                   @Header(KafkaHeaders.OFFSET) int offset,
                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) String timestamp,
-                                  @Payload AttestationRequest request,
+                                  @Payload DbAttestationRequestVer1 request,
                                   Acknowledgment ack) {
 
         log.info(
@@ -70,7 +71,7 @@ public class CcmPdsKafkaService {
         try {
             final var requestMessage = ccmMessageAdapter.adapt(request, topic, key, partition, offset);
 
-            if (request.getOp() == nlmk.l3.ccm.pds.EnumOp.D
+            if (request.getOp() == EnumOp.D
                     || requestMessage.getRequest().getValue() == null
                     || requestMessage.getRequest().getValue().getData() == null) {
                 log.warn(

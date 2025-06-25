@@ -17,26 +17,26 @@ import com.nlmk.kb.server.util.AdapterUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nlmk.l3.ccm.pds.RecordBundles;
-import nlmk.l3.ccm.pds.RecordChemical;
-import nlmk.l3.ccm.pds.RecordListValues;
-import nlmk.l3.ccm.pds.RecordPk;
-import nlmk.l3.ccm.pds.RecordRootData;
-import nlmk.l3.ccm.pds.RecordSpecifications;
-import nlmk.l3.ccm.pds.RecordTestData;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.PkType;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordBundles;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordChemical;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordData;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordListValues;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordSpecifications;
+import nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordTestData;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pds.AttestationRequest> {
+public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l3.ccm.pds.DbAttestationRequestVer1> {
 
     private final CommonConverter converter;
 
     @Override
     public com.nlmk.attestation.product.api.pam.AttestationRequest adapt(
-            nlmk.l3.ccm.pds.AttestationRequest requestMessagePds) {
+            nlmk.l3.ccm.pds.DbAttestationRequestVer1 requestMessagePds) {
         Assert.notNull(requestMessagePds, "requestMessagePds is null");
         Assert.notNull(requestMessagePds.getTs(), "requestMessagePds.getTs() is null");
         Assert.notNull(requestMessagePds.getOp(), "requestMessagePds.getOp() is null");
@@ -54,7 +54,7 @@ public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private Pk toPamPk(RecordPk recordPk) {
+    private Pk toPamPk(PkType recordPk) {
         if (recordPk == null) {
             return null;
         }
@@ -65,7 +65,7 @@ public class CcmPdsKafkaRequestAdapterImpl implements KafkaRequestAdapter<nlmk.l
                 .build();
     }
 
-    private DataField toPamDataField(RecordPk recordPk, RecordRootData recordData) {
+    private DataField toPamDataField(PkType recordPk, RecordData recordData) {
         String primeId = null;
         if (recordPk != null) {
             primeId = AdapterUtils.sequenceToString(recordPk.getId());
