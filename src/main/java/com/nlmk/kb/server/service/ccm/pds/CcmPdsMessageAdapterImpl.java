@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CcmPdsMessageAdapterImpl implements CcmMessageAdapter<nlmk.l3.ccm.pds.AttestationRequest> {
+public class CcmPdsMessageAdapterImpl implements CcmMessageAdapter<nlmk.l3.ccm.pds.DbAttestationRequestVer1> {
 
-    private final KafkaRequestAdapter<nlmk.l3.ccm.pds.AttestationRequest> adapter;
+    private final KafkaRequestAdapter<nlmk.l3.ccm.pds.DbAttestationRequestVer1> adapter;
 
     @Override
-    public CcmMessage adapt(nlmk.l3.ccm.pds.AttestationRequest requestMessage,
+    public CcmMessage adapt(nlmk.l3.ccm.pds.DbAttestationRequestVer1 requestMessage,
                             String topic,
                             String key,
                             int partition,
