@@ -20,10 +20,10 @@ import com.nlmk.attestation.product.api.nsi.PhysMechPropertiesDto;
 import com.nlmk.attestation.product.api.nsi.RegisterEquivalentsDto;
 import com.nlmk.attestation.product.api.nsi.SchemeStrippingSlabDto;
 import com.nlmk.attestation.product.api.nsi.SpChemicalPropertiesNotesDto;
-import com.nlmk.attestation.product.api.nsi.SpTkProdDto;
 import com.nlmk.attestation.product.api.nsi.SteelCategoryG4041Dto;
 import com.nlmk.attestation.product.api.nsi.ThicknessTkLimitDto;
 import com.nlmk.attestation.product.api.nsi.TkNumDto;
+import com.nlmk.attestation.product.api.nsi.TkProdDto;
 import com.nlmk.attestation.product.api.nsi.TolEvennessDtDto;
 import com.nlmk.attestation.product.api.nsi.TolShapeSlabDto;
 import com.nlmk.attestation.product.api.nsi.TolThickDtDto;
@@ -1599,7 +1599,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
     }
 
     @Override
-    public SpTkProdDto toSpTkProdDto(PdmDictionary dictionary) {
+    public TkProdDto toSpTkProdDto(PdmDictionary dictionary) {
         Assert.notNull(dictionary, DICT_NOT_NULL);
         Assert.notNull(dictionary.getData(), DICT_DATA_NOT_NULL);
 
@@ -1607,7 +1607,7 @@ public class PdmDtoConverterImpl implements PdmDtoConverter {
 
         log.debug("toSpTkProdDto, PDM DICTIONARY: {} ", dictionary);
 
-        return SpTkProdDto.builder()
+        return TkProdDto.builder()
                 .remoteId(dictionary.getPk().getId())
                 .updateTs(dictionary.getTs())
                 .prCode(converter.getStringSpecValue(specs, DELIVERY_TYPE))
