@@ -3,6 +3,8 @@ package com.nlmk.kb.server.testing;
 import com.nlmk.attestation.product.api.specification.SpecCode;
 import com.nlmk.attestation.product.api.specification.TypeCode;
 import java.util.List;
+
+import nlmk.EnumOp;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -20,7 +22,7 @@ class SendCcmMessageTest extends SendMessageToKafka {
 
     @Test
     void sendCcmPdsMessage() {
-        final var data = nlmk.l3.ccm.pds.RecordRootData.newBuilder()
+        final var data = nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordData.newBuilder()
                 .setHeat(123)
                 .setHnum(25217)
                 .setTnum(321)
@@ -29,59 +31,59 @@ class SendCcmMessageTest extends SendMessageToKafka {
                 .setThickness(2.65f)
                 .setWidth(1232.0f)
                 .setWeightNet(10.86f)
-                .setBundles(List.of(nlmk.l3.ccm.pds.RecordBundles.newBuilder()
+                .setBundles(List.of(nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordBundles.newBuilder()
                         .setStrip(1)
                         .setStripId("BUNDLE001")
                         .setStripWidth(1232.0f)
                         .setStripWeight(10.86f)
                         .build()))
                 .setWorkshopNum(6)
-                .setOrderNum(1270)
+                .setOrderNum(1270L)
                 .setOrderPos(3)
                 .setAttestationPoint(0)
                 .setSpecifications(List.of(
-                        nlmk.l3.ccm.pds.RecordSpecifications.newBuilder()
+                        nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordSpecifications.newBuilder()
                                 .setSpecCode(SpecCode.STEEL_MARK.getValue())
                                 .setSpecName(SpecCode.STEEL_MARK.getDesc())
                                 .setSpecTypeCode(1)
                                 .setSpecValue("0404")
                                 .setSpecTypeName("typeName")
                                 .setSpecTypeValue(1)
-                                .setListValues(List.of(nlmk.l3.ccm.pds.RecordListValues.newBuilder()
+                                .setListValues(List.of(nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordListValues.newBuilder()
                                         .setValue("Значение")
                                         .build()))
                                 .build(),
-                        nlmk.l3.ccm.pds.RecordSpecifications.newBuilder()
+                        nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordSpecifications.newBuilder()
                                 .setSpecCode(SpecCode.PRODUCT_STANDARD.getValue())
                                 .setSpecName(SpecCode.PRODUCT_STANDARD.getDesc())
                                 .setSpecTypeCode(2)
                                 .setSpecValue("-")
                                 .setSpecTypeName("typeName")
                                 .setSpecTypeValue(1)
-                                .setListValues(List.of(nlmk.l3.ccm.pds.RecordListValues.newBuilder()
+                                .setListValues(List.of(nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordListValues.newBuilder()
                                         .setValue("Значение")
                                         .build()))
                                 .build()
                 ))
                 .setChemical(List.of(
-                        nlmk.l3.ccm.pds.RecordChemical.newBuilder()
+                        nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordChemical.newBuilder()
                                 .setChemCode(9006)
                                 .setChemName("C")
                                 .setChemValue("0.12")
                                 .build(),
-                        nlmk.l3.ccm.pds.RecordChemical.newBuilder()
+                        nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordChemical.newBuilder()
                                 .setChemCode(9014)
                                 .setChemName("Si")
                                 .setChemValue("0.12")
                                 .build()
                 ))
-                .setTestData(List.of(nlmk.l3.ccm.pds.RecordTestData.newBuilder()
+                .setTestData(List.of(nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordTestData.newBuilder()
                                 .setTnum(1)
                                 .setTestDate("2023-11-10")
                                 .setSampleNum(2)
                                 .setSignAnalysis(1)
                                 .setTestTypeName("testType")
-                                .setData(List.of(nlmk.l3.ccm.pds.RecordTestDataData.newBuilder()
+                                .setData(List.of(nlmk.l3.ccm.pds.db.attestationrequest.ver1.RecordDataTestDataData.newBuilder()
                                         .setCode(1)
                                         .setName("testName")
                                         .setTypeCode(1)
@@ -92,10 +94,10 @@ class SendCcmMessageTest extends SendMessageToKafka {
                         )
                 ).build();
 
-        final var value = nlmk.l3.ccm.pds.AttestationRequest.newBuilder()
+        final var value = nlmk.l3.ccm.pds.DbAttestationRequestVer1.newBuilder()
                 .setTs("2022-11-24T13:00:25.194+05:00")
-                .setOp(nlmk.l3.ccm.pds.EnumOp.U)
-                .setPk(nlmk.l3.ccm.pds.RecordPk.newBuilder()
+                .setOp(EnumOp.U)
+                .setPk(nlmk.l3.ccm.pds.db.attestationrequest.ver1.PkType.newBuilder()
                         .setId("task-1271")
                         .setSystemCode("17")
                         .build())
