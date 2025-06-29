@@ -1,26 +1,20 @@
 package com.nlmk.kb.server.service.zifra;
 
-
 import com.nlmk.kb.server.api.ReimportDto;
 import com.nlmk.kb.server.api.ReimportRequestDto;
 import com.nlmk.kb.server.api.ReimportState;
 import com.nlmk.kb.server.api.ReimportType;
-import com.nlmk.kb.server.entity.Operation;
 import com.nlmk.kb.server.entity.Reimport;
-import com.nlmk.kb.server.entity.mdm.MdmDictionary;
-import com.nlmk.kb.server.entity.mdm.MdmMessage;
+import com.nlmk.kb.server.entity.pdm.PdmDictionary;
+import com.nlmk.kb.server.entity.pdm.PdmMessage;
 import com.nlmk.kb.server.exception.RemoteServiceSenderException;
 import com.nlmk.kb.server.mapper.ReimportMapper;
 import com.nlmk.kb.server.repository.ReimportRepository;
-import com.nlmk.kb.server.service.sender.NsiSender;
-import com.nlmk.kb.server.util.AdapterUtils;
+import com.nlmk.kb.server.service.pdm.PdmMessageService;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,25 +24,17 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import nlmk.l3.nsi.zifra.Data;
-import nlmk.l3.nsi.zifra.EnumOp;
-import nlmk.l3.nsi.zifra.pk;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Service
+@Service("PdmReimportServiceImpl")
 @RequiredArgsConstructor
-public class ReimportServiceImpl implements ReimportService {
+public class PdmReimportServiceImpl implements ReimportService {
 
     private final ReimportRepository reimportRepository;
-    private Map<Catalogue, CatalogueParser<?>> parserMap;
-    private final NsiSender nsiSender;
-    private final MdmMessageService messageService;
-    private final MdmDictionaryCreatorImpl mdmDictionaryCreator;
+    private final PdmMessageService messageService;
     private final ReimportStateService reimportStateService;
     private final ReimportMapper reimportMapper;
     private final EntityManager entityManager;
@@ -56,14 +42,6 @@ public class ReimportServiceImpl implements ReimportService {
     private static final Integer MAX_REIMPORT_SECONDS = 60;
     private static final String REIMPORT_STOPPED = "реимпорт остановлен";
     private static final String REIMPORT_FINISHED = "реимпорт завершен";
-
-    @Autowired
-    public void setCatalogueParsers(List<CatalogueParser<?>> catalogueParsers) {
-        this.parserMap = catalogueParsers.stream().collect(Collectors.toMap(
-                CatalogueParser::getCatalogue, Function.identity()
-        ));
-    }
-
 
     @Override
     public String startReimport(ReimportType reimportType, ReimportRequestDto requestDto) {
@@ -121,8 +99,8 @@ public class ReimportServiceImpl implements ReimportService {
         Long lastProcessedId = null;
 
         try {
-            List<MdmMessage> messages = findAllMessages(lastProcessedId, requestDto);
-            for (MdmMessage message : messages) {
+            List<PdmMessage> messages = findAllMessages(lastProcessedId, requestDto);
+            for (PdmMessage message : messages) {
                 if (reimport.getState() == ReimportState.STOP) {
                     result.setFinalStatus(REIMPORT_STOPPED);
                     break;
@@ -158,10 +136,10 @@ public class ReimportServiceImpl implements ReimportService {
         log.debug("Обновлен прогресс реимпорта: последний обработанный ID={}", lastProcessedId);
     }
 
-    private List<MdmMessage> findAllMessages(Long lastId, ReimportRequestDto filter) {
+    private List<PdmMessage> findAllMessages(Long lastId, ReimportRequestDto filter) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MdmMessage> query = cb.createQuery(MdmMessage.class);
-        Root<MdmMessage> root = query.from(MdmMessage.class);
+        CriteriaQuery<PdmMessage> query = cb.createQuery(PdmMessage.class);
+        Root<PdmMessage> root = query.from(PdmMessage.class);
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -193,19 +171,6 @@ public class ReimportServiceImpl implements ReimportService {
                 .getResultList();
     }
 
-    private Operation transformOperation(EnumOp enumOp) {
-        switch (enumOp) {
-            case I:
-                return Operation.I;
-            case U:
-                return Operation.U;
-            case D:
-                return Operation.D;
-            default:
-                return null;
-        }
-    }
-
     private boolean isReimportRunning(Reimport reimport) {
         return reimport.getState() == ReimportState.RUN
                 && reimport.getLastImportDate() != null
@@ -219,8 +184,8 @@ public class ReimportServiceImpl implements ReimportService {
         reimportRepository.save(reimport);
     }
 
-    private boolean validateMessage(MdmMessage message) {
-        MdmDictionary dictionary = message.getDictionary();
+    private boolean validateMessage(PdmMessage message) {
+        PdmDictionary dictionary = message.getDictionary();
         if (dictionary == null) {
             log.warn("Нет словаря для сообщения {}", message.getId());
             return false;
@@ -232,51 +197,19 @@ public class ReimportServiceImpl implements ReimportService {
         }
         return true;
     }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processSingleMessage(MdmMessage message, ReimportResult result) throws RemoteServiceSenderException {
-        MdmDictionary dictionary = message.getDictionary();
-        String catalogCode = AdapterUtils.sequenceToString(dictionary.getData().getCatalogCode());
-        Catalogue catalogue = Catalogue.fromCode(catalogCode);
-        Object dto = new Object();
-        if (catalogue == null) {
-            throw new RemoteServiceSenderException("Неизвестный каталог: " + catalogCode);
-        }
+    public void processSingleMessage(PdmMessage message, ReimportResult result) throws
+                                                                                RemoteServiceSenderException {
         try {
-            Operation operation = transformOperation(EnumOp.valueOf(dictionary.getOp()));
-            CatalogueParser<?> parser = parserMap.get(catalogue);
-
-            pk pk = nlmk.l3.nsi.zifra.pk.newBuilder()
-                    .setLineId(dictionary.getPk().getLineId())
-                    .setSystemCode(dictionary.getPk().getSystemCode())
-                    .build();
-
-            Data data = mdmDictionaryCreator.fromMdmData(dictionary.getData());
-            dto = parser.parse(pk, data, message.getId());
-
-            String response = nsiSender.sendBodyReturnString(dto, catalogue.getPath(), operation, message.getId());
-            log.info("Сообщение {} отправлено в НСИ. Ответ: {}", message.getId(), response);
-            if (operation != null) {
-                if (operation.getHttpMethod().equals(HttpMethod.POST) || operation.getHttpMethod()
-                        .equals(HttpMethod.PUT)) {
-                    String[] resp = response.split(":");
-                    message.setNote(resp[0]);
-                } else if (operation.getHttpMethod().equals(HttpMethod.DELETE)) {
-                    message.setNote("OK");
-                }
-                messageService.update(message);
-            }
+            messageService.sendToNsi(message);
             result.incrementProcessed();
         } catch (RemoteServiceSenderException ex) {
-            log.error("reimport, ошибка отправки в НСИ, DTO [{}], Каталог [{}], сообщение [{}]",
-                    dto, catalogue, ex.getMessage());
-            message.setNote("ERROR: " + ex.getMessage());
-            messageService.update(message);
+            log.error("reimport, ошибка отправки в НСИ, сообщение [{}]", ex.getMessage());
             result.incrementErrors();
         } catch (Exception e) {
             log.error("reimport, ошибка обработки сообщения ID={}", message.getId(), e);
             result.incrementErrors();
-            message.setNote("ERROR: " + e.getMessage());
-            messageService.update(message);
         }
     }
 

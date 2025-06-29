@@ -2,6 +2,7 @@ package com.nlmk.kb.server.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
@@ -26,4 +27,9 @@ public class ReimportRequestDto {
     @Schema(description = "Конец интервала (timestamp with time zone)",
             type = "string", format = "date-time", example = "2024-01-31T23:59:59Z")
     private Instant dend;
+
+    @AssertTrue(message = "Хотя бы одно из полей (id, topic, note, dstart, dend) должно быть заполнено")
+    public boolean isAtLeastOneFieldSet() {
+        return id != null || topic != null || note != null || dstart != null || dend != null;
+    }
 }

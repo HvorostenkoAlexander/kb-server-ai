@@ -1,6 +1,5 @@
 package com.nlmk.kb.server.controller;
 
-
 import com.nlmk.attestation.product.api.swagger.ErrorResponseDto;
 import com.nlmk.kb.server.api.ReimportDto;
 import com.nlmk.kb.server.api.ReimportRequestDto;
@@ -25,10 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
         @ApiResponse(responseCode = "401", description = "Не выполнена аутентификация", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))),
         @ApiResponse(responseCode = "403", description = "Не пройдена авторизация", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))),
 })
-@RequestMapping(value = "/reimport", produces = MediaType.APPLICATION_JSON_VALUE)
-public interface ReimportController {
+@RequestMapping(value = "/pdm/reimport", produces = MediaType.APPLICATION_JSON_VALUE)
+public interface PdmReimportController {
 
-    @Operation(summary = "Запуск реимпорта MDM",
+    @Operation(summary = "Запуск реимпорта PDM",
             description = "Фильтрация по ID, топику, статусу и временному интервалу.",
             security = {@SecurityRequirement(name = "bearer-key")})
     @ApiResponses({
@@ -46,4 +45,3 @@ public interface ReimportController {
     @GetMapping("/stop")
     ReimportDto getReimportStop();
 }
-

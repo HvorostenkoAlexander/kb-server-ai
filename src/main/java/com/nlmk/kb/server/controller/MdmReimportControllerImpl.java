@@ -5,8 +5,9 @@ import com.nlmk.kb.server.api.ReimportRequestDto;
 import com.nlmk.kb.server.api.ReimportType;
 import com.nlmk.kb.server.service.zifra.ReimportService;
 import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,14 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Timed(percentiles = {0.99, 0.95})
 @CrossOrigin(origins = "*", methods = {RequestMethod.POST})
 @RestController
-@RequiredArgsConstructor
-public class ReimportControllerImpl implements ReimportController {
+public class MdmReimportControllerImpl implements MdmReimportController {
+
     private final ReimportService reimportService;
+
+    @Autowired
+    public MdmReimportControllerImpl(@Qualifier("MdmReimportServiceImpl") ReimportService reimportService) {
+        this.reimportService = reimportService;
+    }
 
     @Override
     public String postReimportStart(ReimportRequestDto requestDto) {
         log.info("getReimportStart");
-       return reimportService.startReimport(ReimportType.MDM_MESSAGE, requestDto);
+        return reimportService.startReimport(ReimportType.MDM_MESSAGE, requestDto);
     }
 
     @Override
