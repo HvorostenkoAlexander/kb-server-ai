@@ -94,30 +94,34 @@ public class CcmKc1KafkaService {
             }
             ack.acknowledge();
         } catch (DateTimeParseException e) {
-            log.warn("receiveMessageReq, DateTimeParseException", e);
-            ack.acknowledge();
+            logAndAcknowledge(e, ack);
             throw new DateTimeParseException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultException e) {
-            log.warn("receiveMessageReq, AttestationResultException", e);
-            ack.nack(sleepTime);
+            logAndNack(e, ack);
             throw new AttestationResultException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (KafkaRestConfigException e) {
-            log.warn("receiveMessageReq, KafkaRestConfigException", e);
-            ack.acknowledge();
+            logAndAcknowledge(e, ack);
             throw new KafkaRestConfigException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (AttestationResultSenderException e) {
-            log.warn("receiveMessageReq, AttestationResultSenderException", e);
-            ack.nack(sleepTime);
+            logAndNack(e, ack);
             throw new AttestationResultSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (RemoteServiceSenderException e) {
-            log.warn("receiveMessageReq, RemoteServiceSenderException", e);
-            ack.nack(sleepTime);
+            logAndNack(e, ack);
             throw new RemoteServiceSenderException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         } catch (Exception e) {
-            log.warn("receiveMessageReq, Exception", e);
-            ack.nack(sleepTime);
+            logAndNack(e, ack);
             throw new KafkaMessageProcessingException(MessageFormat.format(LISTENER_EXC_MESSAGE_TEMPLATE, e));
         }
+    }
+
+    private void logAndAcknowledge(Exception e, Acknowledgment ack) {
+        log.warn("receiveMessageReq, {}", e.getClass().getSimpleName(), e);
+        ack.acknowledge();
+    }
+
+    private void logAndNack(Exception e, Acknowledgment ack) {
+        log.warn("receiveMessageReq, {}", e.getClass().getSimpleName(), e);
+        ack.nack(sleepTime);
     }
 
 }
