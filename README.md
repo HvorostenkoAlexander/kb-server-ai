@@ -1,6 +1,6 @@
 # Kafka broker Module (kb-server)
 Модуль подключения к топикам Kafka НЛМК. (AI)
-
+claude code
 ## Сборка библиотеки `product-api`
 
 Модуль зависит от библиотеки `product-api`.
