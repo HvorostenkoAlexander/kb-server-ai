@@ -115,13 +115,17 @@ public class CcmKc1KafkaService {
     }
 
     private void logAndAcknowledge(Exception e, Acknowledgment ack) {
-        log.warn("receiveMessageReq, {}", e.getClass().getSimpleName(), e);
+        logWarn(e);
         ack.acknowledge();
     }
 
     private void logAndNack(Exception e, Acknowledgment ack) {
-        log.warn("receiveMessageReq, {}", e.getClass().getSimpleName(), e);
+        logWarn(e);
         ack.nack(sleepTime);
+    }
+
+    private void logWarn(Exception e) {
+        log.warn("receiveMessageReq, {}", e.getClass().getSimpleName(), e);
     }
 
 }
