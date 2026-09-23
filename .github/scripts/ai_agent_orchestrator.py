@@ -1,11 +1,9 @@
 import os
 import sys
 import json
-import time
 import glob
-from github import Github
-from google import genai
-from google.genai import types
+from github import Github, Auth
+from openai import OpenAI
 
 def get_project_context():
     """Собирает файлы конфигурации и структуру проекта для определения контекста."""
@@ -26,25 +24,29 @@ def main():
     issue_number = os.getenv("ISSUE_NUMBER")
     issue_title = os.getenv("ISSUE_TITLE", "")
     issue_body = os.getenv("ISSUE_BODY", "")
-    gemini_key = os.getenv("GEMINI_API_KEY")
+    groq_key = os.getenv("GROQ_API_KEY")
     github_token = os.getenv("GITHUB_TOKEN")
     repo_name = os.getenv("REPO_NAME")
 
-    if not gemini_key:
-        print("❌ Ошибка: GEMINI_API_KEY не установлен.")
+    if not groq_key:
+        print("❌ Ошибка: GROQ_API_KEY не установлен.")
         sys.exit(1)
 
     print(f"🤖 Начинаю обработку задачи #{issue_number} в репозитории {repo_name}...")
 
-    gh = Github(github_token)
+    gh = Github(auth=Auth.Token(github_token))
     repo = gh.get_repo(repo_name)
     issue = repo.get_issue(int(issue_number))
 
-    issue.create_comment("🚀 **gear-bot-dev** начал анализ задачи и подготовку решения...")
+    issue.create_comment("🚀 **gear-bot-dev** начал анализ задачи и генерацию решения через Groq...")
 
     project_context = get_project_context()
 
-    client = genai.Client(api_key=gemini_key)
+    # Подключаемся к Groq LPU API
+    client = OpenAI(
+        base_url="https://api.groq.com/openai/v1",
+        api_key=groq_key,
+    )
 
     prompt = f"""
     You are an expert Senior Software Engineer working on the repository '{repo_name}'.
@@ -72,35 +74,25 @@ def main():
     }}
     """
 
-    # --- Вызов Gemini API с повторными попытками при ошибке 503 (перегрузка сервера) ---
-    response = None
-    max_retries = 3
-    retry_delay = 5  # пауза в секундах между попытками
-
-    for attempt in range(1, max_retries + 1):
-        try:
-            print(f"📡 Запрос к Gemini API (попытка {attempt}/{max_retries})...")
-            response = client.models.generate_content(
-                model='gemini-1.5-flash',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json"
-                )
-            )
-            break  # Успешно получили ответ — выходим из цикла
-        except Exception as e:
-            print(f"⚠️ Попытка {attempt} завершилась ошибкой: {e}")
-            if attempt < max_retries:
-                print(f"⏳ Ожидание {retry_delay} сек. перед повторной попыткой...")
-                time.sleep(retry_delay)
-            else:
-                print("❌ Превышено количество попыток подключения к Gemini API.")
-                sys.exit(1)
+    print("📡 Отправка запроса в Groq API (llama-3.3-70b-versatile)...")
+    try:
+        response = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "You are a helpful software engineering assistant that outputs strictly raw JSON."},
+                {"role": "user", "content": prompt}
+            ],
+            model="llama-3.3-70b-versatile",
+            response_format={"type": "json_object"}
+        )
+        response_text = response.choices[0].message.content
+    except Exception as e:
+        print(f"❌ Ошибка вызова Groq API: {e}")
+        sys.exit(1)
 
     try:
-        result = json.loads(response.text)
+        result = json.loads(response_text)
     except Exception as e:
-        print(f"❌ Ошибка парсинга JSON от AI: {e}\nОтвет: {response.text}")
+        print(f"❌ Ошибка парсинга JSON от AI: {e}\nОтвет: {response_text}")
         sys.exit(1)
 
     for file_info in result.get("files", []):
