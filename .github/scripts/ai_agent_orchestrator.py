@@ -81,7 +81,7 @@ def main():
         try:
             print(f"📡 Запрос к Gemini API (попытка {attempt}/{max_retries})...")
             response = client.models.generate_content(
-                model='gemini-3.6-flash',
+                model='gemini-1.5-flash',
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json"
