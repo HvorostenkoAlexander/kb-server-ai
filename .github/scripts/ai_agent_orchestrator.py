@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import time
 import glob
 from github import Github
 from google import genai
@@ -71,13 +72,30 @@ def main():
     }}
     """
 
-    response = client.models.generate_content(
-        model='gemini-3.6-flash',
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            response_mime_type="application/json"
-        )
-    )
+    # --- Вызов Gemini API с повторными попытками при ошибке 503 (перегрузка сервера) ---
+    response = None
+    max_retries = 3
+    retry_delay = 5  # пауза в секундах между попытками
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            print(f"📡 Запрос к Gemini API (попытка {attempt}/{max_retries})...")
+            response = client.models.generate_content(
+                model='gemini-3.6-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json"
+                )
+            )
+            break  # Успешно получили ответ — выходим из цикла
+        except Exception as e:
+            print(f"⚠️ Попытка {attempt} завершилась ошибкой: {e}")
+            if attempt < max_retries:
+                print(f"⏳ Ожидание {retry_delay} сек. перед повторной попыткой...")
+                time.sleep(retry_delay)
+            else:
+                print("❌ Превышено количество попыток подключения к Gemini API.")
+                sys.exit(1)
 
     try:
         result = json.loads(response.text)
