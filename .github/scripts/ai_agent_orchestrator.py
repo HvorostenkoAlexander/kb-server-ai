@@ -74,19 +74,19 @@ def main():
     }}
     """
 
-    print("📡 Отправка запроса в Groq API (llama-3.3-70b-versatile)...")
+print("📡 Отправка запроса в API (openai/gpt-oss-120b)...")
     try:
         response = client.chat.completions.create(
             messages=[
                 {"role": "system", "content": "You are a helpful software engineering assistant that outputs strictly raw JSON."},
                 {"role": "user", "content": prompt}
             ],
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             response_format={"type": "json_object"}
         )
         response_text = response.choices[0].message.content
     except Exception as e:
-        print(f"❌ Ошибка вызова Groq API: {e}")
+        print(f"❌ Ошибка вызова API: {e}")
         sys.exit(1)
 
     try:
