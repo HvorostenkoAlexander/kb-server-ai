@@ -38,11 +38,11 @@ def main():
     repo = gh.get_repo(repo_name)
     issue = repo.get_issue(int(issue_number))
 
-    issue.create_comment("🚀 **gear-bot-dev** начал анализ задачи и генерацию решения через Groq...")
+    issue.create_comment("🚀 **gear-bot-dev** начал анализ задачи и генерацию решения...")
 
     project_context = get_project_context()
 
-    # Подключаемся к Groq LPU API
+    # Подключаемся к Groq API
     client = OpenAI(
         base_url="https://api.groq.com/openai/v1",
         api_key=groq_key,
@@ -74,7 +74,7 @@ def main():
     }}
     """
 
-print("📡 Отправка запроса в API (openai/gpt-oss-120b)...")
+    print("📡 Отправка запроса в API (openai/gpt-oss-120b)...")
     try:
         response = client.chat.completions.create(
             messages=[
